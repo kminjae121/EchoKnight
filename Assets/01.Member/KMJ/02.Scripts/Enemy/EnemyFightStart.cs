@@ -27,5 +27,10 @@ namespace EnemySystem
             director.Stop();
             //턴을 바꿔줌
         }
+
+        public void ActionShake()
+        {
+            
+        }
     }
 }

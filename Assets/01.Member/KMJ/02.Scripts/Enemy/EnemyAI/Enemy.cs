@@ -6,7 +6,7 @@ public class Enemy : MonoBehaviour
     private bool _isMyTurn = false;
     public void Die()
     {
-        gameObject.SetActive(false);
+        Debug.Log("죽는 애니메이션 실행");
     }
     
     public void Hit()

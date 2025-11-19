@@ -9,6 +9,8 @@ namespace UnitSystem
 {
     public class Unit : MonoBehaviour
     {
+        [field: SerializeField] public UnitSO unitSO { get; private set; }
+        
         public UnityEvent OnHitEvent = null;
         public UnityEvent OnDeadEvent = null;
 

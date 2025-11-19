@@ -1,3 +1,4 @@
+using UnitSystem;
 using UnityEngine;
 
 namespace EnemySystem
@@ -9,10 +10,15 @@ namespace EnemySystem
         Up = 3,
         Down = 4,
     }
-    public class EnemyGridMovingSystem : MonoBehaviour
+    public class EnemyGridMovingSystem : MonoBehaviour, IUnitComponent
     {
         private bool _isMoveToTarget;
     
+        public void Initialize(Unit owner)
+        {
+            
+        }
+        
         public void Move()
         {
             if (_isMoveToTarget == true)
@@ -58,5 +64,6 @@ namespace EnemySystem
                     break;
             }
         }
+
     }
 }

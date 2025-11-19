@@ -18,27 +18,15 @@ public class UnitSO : ScriptableObject
     [Header("OwnUnitCards")]
     public List<UnitSkillCardSO> unitSkillCards;
 
-    [Space(3)]
-    [Header("CharacterMesh")]
-    public Mesh characterMesh;
-    
-    [Header("CharacterMaterial")]
-    public Material characterMaterial;
-    
     [Header("CharacterAnimationController")]
     public AnimatorController animationController;
-    
-    [Header("WeaponMesh")] 
-    public List<Mesh> weaponMesh;
 
     [Space(4)]
     [Header("CharacterOwnCost")]
     public int cost;
     
     [Space(4)]
-    
     [Header("UnitSettings")]
-    public bool isUseDoubleWeapon;
     public bool isLongRange;
 
 

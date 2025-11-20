@@ -29,9 +29,11 @@ public class UnitSO : ScriptableObject
     [Header("UnitSettings")]
     public bool isLongRange;
 
+    public float moveSpeed;
 
     [Header("UnitType")]
     public UnitType unitType = UnitType.MeleeAttacker;
+
 
     private void OnValidate()
     {

@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EntityComponent;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace UnitSystem
 {
-    public class Unit : MonoBehaviour
+    public class Unit : Entity
     {
         [field: SerializeField] public UnitSO unitSO { get; private set; }
         
-        public UnityEvent OnHitEvent = null;
-        public UnityEvent OnDeadEvent = null;
-
-        public bool isDead { get; private set; } = false;
         
         protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();
 
@@ -25,7 +22,7 @@ namespace UnitSystem
             InitializeComponents();
             AfterInitialize();
             
-            OnDeadEvent.AddListener(Dead);
+            OnDeathEvent.AddListener(Dead);
         }
 
         protected virtual void Dead()

@@ -10,7 +10,7 @@ namespace EnemySystem
         Up = 3,
         Down = 4,
     }
-    public class EnemyGridMovingSystem : MonoBehaviour, IUnitComponent
+    public class EnemyGridMovingSystem : MonoBehaviour
     {
         private bool _isMoveToTarget;
     

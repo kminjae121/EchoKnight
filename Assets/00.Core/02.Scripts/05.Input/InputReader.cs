@@ -1,4 +1,6 @@
 ﻿using System;
+using EntityComponent;
+using UnitSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,17 +9,24 @@ namespace Input
     [CreateAssetMenu(fileName = "Input", menuName = "Input/InputReader", order = 0)]
     public class InputReader : ScriptableObject, Controls.IPlayerActions
     {
-        private Controls _controls;
         
         [SerializeField] private LayerMask whatIsGround;
         
+        [SerializeField] private LayerMask WhatIsEnemy;
+        
+        [SerializeField] private LayerMask WhatIsPlayer;
+        
+        private Controls _controls;
         public event Action OnAttackEvent;
         public event Action OnClickMoveEvent;
+
+        public event Action OnSelectUnitEvent;
         
         private Vector3 _gridPosition;
-        private Vector2 _screenPosition; 
+        private Vector2 _screenPosition;
 
-        private void Awake()
+
+        private void OnEnable()
         {
             if (_controls == null)
             {
@@ -27,22 +36,12 @@ namespace Input
             _controls.Player.Enable();
         }
 
+
         private void OnDestroy()
         {
             _controls.Player.Disable();
         }
-
-        public void OnAttack(InputAction.CallbackContext context)
-        {
-            if (context.performed)
-                OnAttackEvent?.Invoke();
-        }
-
-        public void OnClickMove(InputAction.CallbackContext context)
-        {
-            if(context.performed)
-                OnClickMoveEvent?.Invoke();
-        }
+        
         
         public Vector3 GetWorldPosition()
         {
@@ -50,6 +49,7 @@ namespace Input
             Debug.Assert(mainCam != null, "No main camera in this scene");
             
             Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
             {
                 _gridPosition = hit.point;
@@ -57,6 +57,51 @@ namespace Input
 
             return _gridPosition;
         }
+
+        public Unit GetUnit()
+        {
+            Camera mainCam = Camera.main;
+            Debug.Assert(mainCam != null, "No main camera in this scene");
+            
+            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            
+            if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsPlayer))
+            {
+                return hit.collider.gameObject.GetComponent<Unit>();
+            }
+            return null;
+        }
+
+        public Entity GetEnemy()
+        {
+            Camera mainCam = Camera.main;
+            Debug.Assert(mainCam != null, "No main camera in this scene");
+            
+            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            
+            if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsEnemy))
+            {
+                return hit.collider.gameObject.GetComponent<Entity>();
+            }
+            return null;
+        }
+
+        public void OnClick(InputAction.CallbackContext context)
+        {
+            if (GetUnit() != null)
+            {
+                OnSelectUnitEvent?.Invoke();
+            }
+            else if (GetEnemy() != null)
+            {
+                OnAttackEvent?.Invoke();
+            }
+            else
+            {
+                OnClickMoveEvent?.Invoke();
+            }
+        }
+
         public void OnPointer(InputAction.CallbackContext context)
         {
             _screenPosition = context.ReadValue<Vector2>();

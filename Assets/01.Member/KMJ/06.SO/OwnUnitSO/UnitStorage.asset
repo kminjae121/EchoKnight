@@ -9,13 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ac6c49583ad8fa498a963cb4786ab53, type: 3}
-  m_Name: BasicUnit
+  m_Script: {fileID: 11500000, guid: a0b3f7419ecd42b19ff13da8b7308429, type: 3}
+  m_Name: UnitStorage
   m_EditorClassIdentifier: 
-  UnitName: Golden
-  unitSkillCards: []
-  animationController: {fileID: 9100000, guid: d8767eb64b3d27a4f82cafb8be9d082d, type: 2}
-  cost: 2
-  isLongRange: 0
-  moveSpeed: 3
-  unitType: 1
+  units:
+  - {fileID: 11400000, guid: 6934258a09f8e914a93f4bb2a550ea45, type: 2}
+  - {fileID: 11400000, guid: 9f799c1228a11c24e9a98a9e4d907a49, type: 2}

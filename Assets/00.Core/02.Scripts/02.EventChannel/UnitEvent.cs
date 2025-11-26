@@ -11,9 +11,9 @@ namespace GameEventChannel
 
     public class UnitSelectEvent : GameEvent
     {
-        public GameObject Unit;
+        public Unit Unit;
 
-        public UnitSelectEvent Initializer(GameObject unit)
+        public UnitSelectEvent Initializer(Unit unit)
         {
             Unit = unit;
             return this;

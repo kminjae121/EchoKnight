@@ -30,6 +30,7 @@ public class UnitSO : ScriptableObject
     public bool isLongRange;
 
     public float moveSpeed;
+    public float attackDistance;
 
     [Header("UnitType")]
     public UnitType unitType = UnitType.MeleeAttacker;

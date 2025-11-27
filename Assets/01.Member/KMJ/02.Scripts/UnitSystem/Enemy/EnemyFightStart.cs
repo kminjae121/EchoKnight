@@ -6,7 +6,7 @@ using UnityEngine.Timeline;
 
 namespace EnemySystem
 {
-    public class EnemyFightStart : MonoBehaviour, IUnitComponent
+    public class EnemyFightStart : MonoBehaviour
     {
         [SerializeField] private PlayableDirector director;
 
@@ -16,7 +16,7 @@ namespace EnemySystem
         }
         public void Initialize(Unit owner)
         {
-            
+                
         }
 
         public void StartAttack()

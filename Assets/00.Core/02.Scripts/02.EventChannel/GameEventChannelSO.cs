@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Code.Core.GameEvent
+namespace GameEventChannel
 {
     public class GameEvent
     { }

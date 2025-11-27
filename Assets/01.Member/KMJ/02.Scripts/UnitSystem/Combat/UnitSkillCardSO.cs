@@ -7,6 +7,10 @@ namespace Skill
     {
         public string skillCardName;
 
+        public int cost;
+
         public float coolTime;
+
+        public float damage;
     }
 }

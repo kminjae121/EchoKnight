@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using GameEventChannel;
+using Input;
 using UnitSystem;
 using UnityEngine;
 using UnityEngine.Events;
@@ -11,15 +12,15 @@ namespace UnitManaging
     {
         [SerializeField] private GameEventChannelSO selectUnitEventChannel;
         [SerializeField] private GameEventChannelSO unitDeadEventChannel;
+        [SerializeField] private InputReader inputReader;
         [SerializeField] private UnitStorage storageCompo;
         [field: SerializeField] public List<Transform> startingTrm { get; private set; }  
         
-
-
-        public List<UnitInfoSO> _selectedUnits { get; private set; }    
+        public List<UnitInfoSO> _selectedUnits { get; private set; } = new List<UnitInfoSO>();
         
-        private List<GameObject> _myOwnUnitList = new List<GameObject>();
-        private GameObject _currrentSelectedUnit;
+        private List<Unit> _myOwnUnitList = new List<Unit>();
+        
+        private Unit _currrentSelectedUnit;
 
         private void Awake()
         {
@@ -29,22 +30,48 @@ namespace UnitManaging
 
         private void Start()
         {
+            SelectUnits("Golden");
+            SelectUnits("Light");
             for (int i = 0; i < _selectedUnits.Count; i++)
             {
                 GameObject spawnUnit = Instantiate(_selectedUnits[i].UnitPrefab,
                     startingTrm[i].position, Quaternion.identity);
                     
                 
-                _myOwnUnitList.Add(spawnUnit);
+                _myOwnUnitList.Add(spawnUnit.GetComponent<Unit>());
             }
+            inputReader.OnSelectUnitEvent += SelectUnit;
+        }
 
-            ChangingSelectUnit(0);
+        public void SelectUnit()
+        {
+            Unit unit = inputReader.GetUnit();
+
+            if (unit == _currrentSelectedUnit)
+            {
+                Debug.Log("원래 선택된 친구");
+                return;
+            }
+            
+            ChangingSelectUnit(unit.name);
         }
         
-        /// <summary>
-        /// 선택한 유닛을 바꾸는 코드
-        /// </summary>
-        /// <param name="unitIndex">바꿀 유닛의 인덱스</param>
+        private void ChangingSelectUnit(string UnitName)
+        {
+            if (_currrentSelectedUnit != null)
+            {
+                _currrentSelectedUnit.GetComponent<BasicUnit>().SelectThisUnit(false);   
+            }
+            
+            Unit unit = _myOwnUnitList.Find(unit => unit.gameObject.name == UnitName);
+
+            _currrentSelectedUnit = unit;
+
+            _currrentSelectedUnit.GetComponent<BasicUnit>().SelectThisUnit(true);
+            
+            selectUnitEventChannel.RaiseEvent(UnitEvent.UnitSelectEvent.Initializer(_currrentSelectedUnit));
+        }
+
         private void ChangingSelectUnit(int unitIndex)
         {
             _currrentSelectedUnit.GetComponent<BasicUnit>().SelectThisUnit(false);
@@ -62,11 +89,13 @@ namespace UnitManaging
         /// <param name="selectedUnits"></param>
         public void SelectUnits(string selectedUnits)
         {
+            Debug.Log(_selectedUnits);
             _selectedUnits.Add(storageCompo.GetUnitInfo(selectedUnits));
         }
+        
         private void RemoveDeadUnit(UnitDeadEvent evt)
         {
-            GameObject unit = _myOwnUnitList.Find(unit => unit.gameObject.name == evt.DeadUnitName);
+            Unit unit = _myOwnUnitList.Find(unit => unit.gameObject.name == evt.DeadUnitName);
            
             if (unit != null)
             {

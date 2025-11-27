@@ -11,8 +11,8 @@ namespace UnitSystem
         private BasicUnit _owner;
 
         private float _moveSpeed => _owner.unitSO.moveSpeed;
-        
-        private bool _isMoveing;
+
+        private bool _isMoveing = false;
         
         public void Initialize(Unit owner)
         {

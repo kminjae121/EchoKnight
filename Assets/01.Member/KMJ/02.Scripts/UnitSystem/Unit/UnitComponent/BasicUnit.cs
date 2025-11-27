@@ -9,7 +9,7 @@ namespace  UnitSystem
     public class BasicUnit : Unit
     {
         [SerializeField] private GameEventChannelSO unitDeadChannel;
-        public InputReader inputSO { get; private set; }
+        [field: SerializeField] public InputReader inputSO { get; private set; }
 
         public bool isSelect { get; set; } = false;
         
@@ -46,6 +46,7 @@ namespace  UnitSystem
 
         public void SelectThisUnit(bool isSelected)
         {
+            Debug.Log($"{gameObject.name}의 선택이 {isSelected} 되었습니다");
             isSelect = isSelected;
         }
     }

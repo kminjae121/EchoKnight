@@ -10,7 +10,7 @@ namespace UnitSystem
 {
     public class Unit : Entity
     {
-        [field: SerializeField] public UnitSO unitSO { get; private set; }
+        public UnitSO unitSO;
         
         
         protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();

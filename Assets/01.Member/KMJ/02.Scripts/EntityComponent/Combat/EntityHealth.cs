@@ -68,9 +68,10 @@ namespace EntityComponent
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
             int typeHash = damageData.isCritical ? criticalText.nameHash : normalText.nameHash;
-            Vector3 position = hitPoint + new Vector3(0, 1.5f);
+            Vector3 position = hitPoint + new Vector3(0, 0.3f);
             PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damageData.damage.ToString(), typeHash
                 , position, 0.5f);  
+            
             textEventChannel.RaiseEvent(textEvt);
             //크리티컬 처리는 나중에.
             if (currentHealth <= 0)

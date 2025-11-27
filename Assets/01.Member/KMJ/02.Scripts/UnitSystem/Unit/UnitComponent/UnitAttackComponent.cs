@@ -23,9 +23,10 @@ namespace UnitSystem
         {
             _owner = owner; 
             
-            _unit = _owner as  BasicUnit;
+            _unit = _owner as BasicUnit;
 
             _inputReader = _unit.inputSO;
+            
             _unitSO = _unit.unitSO;
         }
         
@@ -33,7 +34,7 @@ namespace UnitSystem
         private void Awake()
         {
             _damageData = new DamageData();
-            _damageData.damage = 1;
+            _damageData.damage = 1.2345f;
 
             _inputReader.OnAttackEvent += AttackEnemy;
         }
@@ -45,18 +46,18 @@ namespace UnitSystem
 
         public void AttackEnemy()
         {
-            Entity enemy = _inputReader.GetEnemy();
-
-            float distance = Vector3.Distance(_unit.transform.position, enemy.transform.position);
-
-            if (distance >= _unitSO.attackDistance)
+            if (_unit.isSelect)
             {
-                Debug.Log("떄림");
-                return;
+                Entity enemy = _inputReader.GetEnemy();
+
+                float distance = Vector3.Distance(_unit.transform.position, enemy.transform.position);
+
+                if (distance >= _unitSO.attackDistance)
+                {
+                    enemy.GetCompo<EntityHealth>().ApplyDamage(_damageData, 
+                        enemy.transform.position,transform.position,attackData,null);   
+                }   
             }
-            
-            enemy.GetCompo<EntityHealth>().ApplyDamage(_damageData, 
-                transform.position,transform.position,attackData,null);
         }
     }
 }

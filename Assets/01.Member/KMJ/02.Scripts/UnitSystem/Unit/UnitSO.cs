@@ -4,7 +4,7 @@ using Skill;
 using UnityEditor.Animations;
 using UnityEngine;
 
-public enum UnitType
+public enum EntityType
 {
     LongRanger,
     MeleeAttacker,
@@ -29,18 +29,25 @@ public class UnitSO : ScriptableObject
     [Header("UnitSettings")]
     public bool isLongRange;
 
+    public float turnSpeed;
+
+    public bool isPlayerUnit;
+
+    public float turnGauge;
+    
     public float moveSpeed;
+    
     public float attackDistance;
 
     [Header("UnitType")]
-    public UnitType unitType = UnitType.MeleeAttacker;
+    public EntityType entityType = EntityType.MeleeAttacker;
 
 
     private void OnValidate()
     {
         if (isLongRange)
-            unitType = UnitType.LongRanger;
+            entityType = EntityType.LongRanger;
         else
-            unitType = UnitType.MeleeAttacker;
+            entityType = EntityType.MeleeAttacker;
     }
 }

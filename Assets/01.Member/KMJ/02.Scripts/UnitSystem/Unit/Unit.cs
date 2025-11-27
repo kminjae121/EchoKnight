@@ -10,8 +10,12 @@ namespace UnitSystem
 {
     public class Unit : Entity
     {
-        [field: SerializeField] public UnitSO unitSO { get; private set; }
         
+        [field: SerializeField] public UnitSO unitSO { get; private set; }
+
+        public float turnSpeed { get; set; }
+        public bool isPlayerUnit {get; set;}
+        public float turnGauge {get; set;}
         
         protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();
 
@@ -21,6 +25,9 @@ namespace UnitSystem
             AddComponents();
             InitializeComponents();
             AfterInitialize();
+            turnSpeed = unitSO.turnSpeed;
+            isPlayerUnit = unitSO.isPlayerUnit;
+            turnGauge = unitSO.turnGauge;
             
             OnDeathEvent.AddListener(Dead);
         }

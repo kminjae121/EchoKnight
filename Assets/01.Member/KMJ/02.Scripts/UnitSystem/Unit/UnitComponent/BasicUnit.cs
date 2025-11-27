@@ -10,8 +10,10 @@ namespace  UnitSystem
     {
         [SerializeField] private GameEventChannelSO unitDeadChannel;
         [field: SerializeField] public InputReader inputSO { get; private set; }
-
+        
         public bool isSelect { get; set; } = false;
+
+        public int maxCardCost = 10;
         
         public int cardCost { get; set; } = 0;
         
@@ -19,6 +21,11 @@ namespace  UnitSystem
         {
             base.Dead();
             unitDeadChannel.RaiseEvent(UnitEvent.UnitDeadEvent.Initializer(gameObject.name));
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
         }
 
         private void OnValidate()
@@ -31,7 +38,7 @@ namespace  UnitSystem
 
         public bool GetCost(int cost)
         {
-            if (cardCost >= 10 || cardCost + cost >= 10)
+            if (cardCost >= maxCardCost || cardCost + cost >= maxCardCost)
                 return false;
             
             cardCost += cost;

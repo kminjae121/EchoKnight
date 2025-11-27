@@ -1,3 +1,4 @@
+using UnitSystem;
 using UnityEngine;
 
 namespace EnemySystem
@@ -13,6 +14,11 @@ namespace EnemySystem
     {
         private bool _isMoveToTarget;
     
+        public void Initialize(Unit owner)
+        {
+            
+        }
+        
         public void Move()
         {
             if (_isMoveToTarget == true)
@@ -58,5 +64,6 @@ namespace EnemySystem
                     break;
             }
         }
+
     }
 }

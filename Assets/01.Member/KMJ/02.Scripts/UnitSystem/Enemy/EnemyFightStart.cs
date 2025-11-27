@@ -1,4 +1,5 @@
 ﻿using System;
+using UnitSystem;
 using UnityEngine;
 using UnityEngine.Playables;
 using UnityEngine.Timeline;
@@ -12,6 +13,10 @@ namespace EnemySystem
         private void Awake()
         {
             director.Stop();
+        }
+        public void Initialize(Unit owner)
+        {
+                
         }
 
         public void StartAttack()
@@ -27,5 +32,6 @@ namespace EnemySystem
             director.Stop();
             //턴을 바꿔줌
         }
+
     }
 }

@@ -8,7 +8,7 @@ using UnityEngine.Events;
 
 namespace UnitSystem
 {
-    public class Unit : Entity
+    public class Unit : MonoBehaviour
     {
         
         [field: SerializeField] public UnitSO unitSO { get; private set; }
@@ -22,32 +22,26 @@ namespace UnitSystem
 
         protected virtual void Awake()
         {
-            AddComponents();
-            InitializeComponents();
-            AfterInitialize();
+            AddUnitComponents();
+            InitializeUnitComponents();
+            
             turnSpeed = unitSO.turnSpeed;
             isPlayerUnit = unitSO.isPlayerUnit;
             turnGauge = unitSO.turnGauge;
             
-            OnDeathEvent.AddListener(Dead);
         }
 
         protected virtual void Dead()
         {
             
         }
-        private void InitializeComponents()
+        private void InitializeUnitComponents()
         {
             _components.Values.ToList().ForEach(component => component.Initialize(this));
         }
+        
 
-        private void AfterInitialize()
-        {
-            _components.Values.OfType<IAfterInitialize>()
-                .ToList().ForEach(component => component.AfterInitialize());
-        }
-
-        private void AddComponents()
+        private void AddUnitComponents()
         {
             GetComponentsInChildren<IUnitComponent>().ToList()
                 .ForEach(component => _components.Add(component.GetType(), component));

@@ -10,7 +10,7 @@ public class Enemy : Unit
     protected override void Awake()
     {
         base.Awake();
-        OnDeathEvent.AddListener(TestDealth);
+        //on.AddListener(TestDealth);
         
     }
 

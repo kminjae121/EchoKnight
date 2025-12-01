@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnitSystem;
 using UnityEngine;
 
 namespace EntityComponent
 {
-    public class EntityStatCompo : MonoBehaviour, IEntityComponent
+    public class EntityStatCompo : MonoBehaviour, IUnitComponent
     {
         [SerializeField] private StatOverride[] statOverrides;
         //private StatSO[] _stats; //진짜 스탯들
         private Dictionary<string, StatSO> _stats;
-        public Entity Owner { get; private set; } //밖에서 참조 가능하게
-        public void Initialize(Entity entity)
+        public Unit Owner { get; private set; } //밖에서 참조 가능하게
+        
+        public void Initialize(Unit owner)
         {
-            Owner = entity;
+            Owner = owner;
             _stats = statOverrides.ToDictionary(s => s.Stat.statName, s=>s.CreateStat());
         }
 
@@ -62,5 +64,6 @@ namespace EntityComponent
             if (target == null) return;
             target.OnValueChanged -= handler;
         }
+
     }
 }

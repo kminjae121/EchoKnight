@@ -46,16 +46,17 @@ namespace UnitSystem
 
         public void AttackEnemy()
         {
+            Debug.Log("공격됨");
             if (_unit.isSelect)
             {
-                Entity enemy = _inputReader.GetEnemy();
+                Unit enemy = _inputReader.GetEnemy();
 
                 float distance = Vector3.Distance(_unit.transform.position, enemy.transform.position);
 
                 if (distance >= _unitSO.attackDistance)
                 {
-                    enemy.GetCompo<EntityHealth>().ApplyDamage(_damageData, 
-                        enemy.transform.position,transform.position,attackData,null);   
+                    enemy.GetUnitCompo<EntityHealth>().ApplyDamage(_damageData, 
+                        enemy.transform.position,transform.position,attackData,_owner);   
                 }   
             }
         }

@@ -280,6 +280,7 @@ MonoBehaviour:
   OnDeathEvent:
     m_PersistentCalls:
       m_Calls: []
+  <unitSO>k__BackingField: {fileID: 11400000, guid: 13c742cd81754804786cc1e1241a0a8f, type: 2}
 --- !u!114 &404868831
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -932,7 +933,7 @@ MonoBehaviour:
   statOverrides:
   - stat: {fileID: 11400000, guid: 63387e3874071ca48bdeb9a8b73277ff, type: 2}
     isUseOverride: 0
-    overrideBaseValue: 0
+    overrideBaseValue: 1000
 --- !u!1 &1941761919
 GameObject:
   m_ObjectHideFlags: 0
@@ -1022,9 +1023,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3849495597224c5ca597c04c947c83f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectUnitEventChannel: {fileID: 11400000, guid: 351c1f898966fa942b4f3a4ae7570dec, type: 2}
+  isDontDestroyOnLoad: 1
   unitDeadEventChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
-  inputReader: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   storageCompo: {fileID: 1968829129}
   <startingTrm>k__BackingField:
   - {fileID: 1471296541}

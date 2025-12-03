@@ -1,7 +1,7 @@
 using System;
 using GameEventChannel;
 using Input;
-using UnitSystem;
+using Unity.Collections;
 using UnityEngine;
 
 namespace  UnitSystem
@@ -11,7 +11,6 @@ namespace  UnitSystem
         [SerializeField] private GameEventChannelSO unitDeadChannel;
         [field: SerializeField] public InputReader inputSO { get; private set; }
         
-        public bool isSelect { get; set; } = false;
 
         public int maxCardCost = 10;
         
@@ -20,12 +19,11 @@ namespace  UnitSystem
         protected override void Dead()
         {
             base.Dead();
-            unitDeadChannel.RaiseEvent(UnitEvent.UnitDeadEvent.Initializer(gameObject.name));
         }
 
-        protected override void Awake()
+        protected override void OnEnable()
         {
-            base.Awake();
+            base.OnEnable();
         }
 
         private void OnValidate()
@@ -54,7 +52,7 @@ namespace  UnitSystem
         public void SelectThisUnit(bool isSelected)
         {
             Debug.Log($"{gameObject.name}의 선택이 {isSelected} 되었습니다");
-            isSelect = isSelected;
+            isPlayerUnit = isSelected;
         }
     }
    

@@ -37,11 +37,11 @@ namespace Input
         }
 
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             _controls.Player.Disable();
+            
         }
-        
         
         public Vector3 GetWorldPosition()
         {
@@ -52,7 +52,7 @@ namespace Input
             
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
             {
-                _gridPosition = hit.point;
+                _gridPosition = hit.transform.position;
             }
 
             return _gridPosition;

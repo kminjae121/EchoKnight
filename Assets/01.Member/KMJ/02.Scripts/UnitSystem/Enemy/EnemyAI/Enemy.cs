@@ -6,12 +6,10 @@ using UnityEngine;
 public class Enemy : Unit
 {
 
-    
-    protected override void Awake()
+   
+    protected override void OnEnable()
     {
-        base.Awake();
-        //on.AddListener(TestDealth);
-        
+        base.OnEnable();
     }
 
     public void TestDealth()

@@ -1,29 +1,17 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Code.Core.Interfaces;
 using UnitSystem;
 using UnityEngine;
 
 namespace Code.Managers
 {
-    public class TurnManager : MonoBehaviour
+    public class TurnManager : MonoBehaviour, ITurnManager
     {
         [SerializeField] private int showFutureTurnCount = 5;
 
-        private List<Unit> activeUnits = new();
         private Queue<Unit> turnQueue = new();
         private Unit _currentUnit;
-
-        public void RegisterUnit(Unit unit)
-        {
-            if (!activeUnits.Contains(unit))
-                activeUnits.Add(unit);
-        }
-        
-        public void RemoveUnit(Unit unit)
-        {
-            if (activeUnits.Contains(unit))
-                activeUnits.Remove(unit);
-        }
         
         public void StartBattle()
         {

@@ -8,39 +8,40 @@ using UnityEngine.Events;
 
 namespace UnitSystem
 {
-    public class Unit : Entity
+    public class Unit : MonoBehaviour
     {
-        public UnitSO unitSO;
         
+        [field: SerializeField] public UnitSO unitSO { get; private set; }
+
+        public float turnSpeed { get; set; }
+        public bool isPlayerUnit {get; set;}
+        public float turnGauge {get; set;}
         
         protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();
 
 
         protected virtual void Awake()
         {
-            AddComponents();
-            InitializeComponents();
-            AfterInitialize();
+            AddUnitComponents();
+            InitializeUnitComponents();
             
-            OnDeathEvent.AddListener(Dead);
+            turnSpeed = unitSO.turnSpeed;
+            isPlayerUnit = unitSO.isPlayerUnit;
+            turnGauge = unitSO.turnGauge;
+            
         }
 
         protected virtual void Dead()
         {
             
         }
-        private void InitializeComponents()
+        private void InitializeUnitComponents()
         {
             _components.Values.ToList().ForEach(component => component.Initialize(this));
         }
+        
 
-        private void AfterInitialize()
-        {
-            _components.Values.OfType<IAfterInitialize>()
-                .ToList().ForEach(component => component.AfterInitialize());
-        }
-
-        private void AddComponents()
+        private void AddUnitComponents()
         {
             GetComponentsInChildren<IUnitComponent>().ToList()
                 .ForEach(component => _components.Add(component.GetType(), component));

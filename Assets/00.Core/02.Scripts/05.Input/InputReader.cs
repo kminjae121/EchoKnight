@@ -72,7 +72,7 @@ namespace Input
             return null;
         }
 
-        public Entity GetEnemy()
+        public Unit GetEnemy()
         {
             Camera mainCam = Camera.main;
             Debug.Assert(mainCam != null, "No main camera in this scene");
@@ -81,24 +81,27 @@ namespace Input
             
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsEnemy))
             {
-                return hit.collider.gameObject.GetComponent<Entity>();
+                return hit.collider.gameObject.GetComponent<Unit>();
             }
             return null;
         }
 
         public void OnClick(InputAction.CallbackContext context)
         {
-            if (GetUnit() != null)
+            if (context.performed)
             {
-                OnSelectUnitEvent?.Invoke();
-            }
-            else if (GetEnemy() != null)
-            {
-                OnAttackEvent?.Invoke();
-            }
-            else
-            {
-                OnClickMoveEvent?.Invoke();
+                if (GetUnit() != null)
+                {
+                    OnSelectUnitEvent?.Invoke();
+                }
+                else if (GetEnemy() != null)
+                {
+                    OnAttackEvent?.Invoke();
+                }
+                else
+                {
+                    OnClickMoveEvent?.Invoke();
+                }
             }
         }
 

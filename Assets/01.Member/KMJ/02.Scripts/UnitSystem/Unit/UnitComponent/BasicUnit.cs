@@ -10,10 +10,7 @@ namespace  UnitSystem
     {
         [SerializeField] private GameEventChannelSO unitDeadChannel;
         [field: SerializeField] public InputReader inputSO { get; private set; }
-
-        public float turnSpeed { get; set; }
-        public bool isPlayerUnit { get; set; }
-        public float turnGauge { get; set; }
+        
         public bool isSelect { get; set; } = false;
 
         public int maxCardCost = 10;
@@ -29,9 +26,6 @@ namespace  UnitSystem
         protected override void Awake()
         {
             base.Awake();
-            turnSpeed = unitSO.turnSpeed;
-            isPlayerUnit = unitSO.isPlayerUnit;
-            turnGauge = unitSO.turnGauge;
         }
 
         private void OnValidate()

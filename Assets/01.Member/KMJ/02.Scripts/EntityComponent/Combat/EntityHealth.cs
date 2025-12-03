@@ -6,9 +6,9 @@ using TextInfo = UI.TextInfo;
 
 namespace EntityComponent
 {
-    public class EntityHealth : MonoBehaviour, IEntityComponent, IDamageable, IAfterInitialize
+    public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable, IAfterInitialize
     {
-        private Entity _entity;
+        private Unit _entity;
         private ActionData _actionData;
         private EntityStatCompo _statCompo;
 
@@ -25,14 +25,14 @@ namespace EntityComponent
         public delegate void OnHealthChanged(float current, float max);
 
         public event OnHealthChanged OnHealthChangedEvent;
-
-        public void Initialize(Entity entity)
-        {
-            _entity = entity;
-            _actionData = entity.GetCompo<ActionData>();
-            _statCompo = entity.GetCompo<EntityStatCompo>();
-        }
         
+        public void Initialize(Unit owner)
+        {
+            _entity = owner;
+            _actionData = owner.GetUnitCompo<ActionData>();
+            _statCompo = owner.GetUnitCompo<EntityStatCompo>();
+        }
+
         public void AfterInitialize()
         {
             maxHealth = currentHealth = _statCompo.SubscribeStat(
@@ -46,16 +46,15 @@ namespace EntityComponent
 
         private void HandleMaxHPChanged(StatSO stat, float currentvalue, float previousvalue)
         {
-            float changed = currentvalue - previousvalue; //얼마만큼 변했는지를 측정
+            float changed = currentvalue - previousvalue; 
             maxHealth = currentvalue;
             if (changed > 0)
                 currentHealth = Mathf.Clamp(currentHealth + changed, 0, maxHealth);
             else
                 currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-            //현재 체력에는 변한값만큼 더해준다.(안해줘도 상관없다. 안하면 최대체력 증가시 체력감소가 된다.)
         }
 
-        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Entity dealer)
+        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer)
         {
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
@@ -74,14 +73,13 @@ namespace EntityComponent
             
             textEventChannel.RaiseEvent(textEvt);
             //크리티컬 처리는 나중에.
-            if (currentHealth <= 0)
-            {
-                _entity.OnDeathEvent?.Invoke();
-            }
-            
-            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
+            //if (currentHealth <= 0)
+            //{
+            //    _entity.OnDeathEvent?.Invoke();
+            //}
+            //
+            //_entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
         }
 
-        
     }
 }

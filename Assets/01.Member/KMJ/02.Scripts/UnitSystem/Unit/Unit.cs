@@ -4,6 +4,7 @@ using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Code.UnitSystem
 {
@@ -13,8 +14,11 @@ namespace Code.UnitSystem
 
         public float TurnSpeed { get; private set; }
         
+        public UnityEvent OnStartTurnEvent;
+        
         public void OnTurnStart()
         { 
+            
         }
 
         public void OnTurnEnd()
@@ -45,6 +49,9 @@ namespace Code.UnitSystem
         public void SetThisUnit(bool isSelect)
         {
             IsPlayerUnit = isSelect;
+            
+            if(IsPlayerUnit)
+                OnStartTurnEvent?.Invoke();
         }
         
 

@@ -9,6 +9,8 @@ namespace Code.UnitSystem
         [SerializeField] private Animator thisAnimator;
 
         private Unit _owner;
+
+        private bool isMove = false;
         
         public void Initialize(Unit owner)
         {

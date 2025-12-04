@@ -1,6 +1,7 @@
 ﻿using System;
 using Code.Core.Interfaces;
 using Code.Map;
+using Code.UnitSystem;
 using EntityComponent;
 using UnitSystem;
 using UnityEngine;
@@ -43,6 +44,23 @@ namespace Input
         {
             _controls.Player.Disable();
             
+        }
+
+        public GameObject GetWorldPosition()
+        {
+            Camera mainCam = Camera.main;
+            Debug.Assert(mainCam != null, "No main camera in this scene");
+
+            GameObject gameObj = null;
+            
+            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            
+            if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
+            {
+                gameObj = hit.transform.gameObject;
+            }
+
+            return gameObj;
         }
         
         public IMapTile GetSelectedTile()

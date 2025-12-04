@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using System.Collections;
 using Code.Core.Interfaces;
-using UnityEngine.Tilemaps;
+using UnitSystem;
 
-namespace UnitSystem
+
+namespace Code.UnitSystem
 {
     public class UnitMovement : MonoBehaviour, IUnitComponent
     {
@@ -36,22 +36,28 @@ namespace UnitSystem
             _isMoveing = true;
 
             IMapTile tile = _owner.inputSO.GetSelectedTile();
-            //Vector3 moveingTileTrm = _owner.inputSO.GetWorldPosition();
+            GameObject tileTrm = _owner.inputSO.GetWorldPosition();
 
-            StartCoroutine(MoveStart(tile));
+            StartCoroutine(MoveStart(tile, tileTrm));
         }
 
-        private IEnumerator MoveStart(IMapTile tileInfo)
+        private IEnumerator MoveStart(IMapTile tileInfo,GameObject tile)
         {
+            Debug.Log(tile.transform.position);
+            Debug.Log(tileInfo.IsWalkable);
+            
             if (tileInfo.IsWalkable)
             {
-                Vector2Int targetPos = tileInfo.GridPosition;
-            
-                while (Vector2.Distance(_owner.transform.position,targetPos) > 0.01f)
+                while (Vector3.Distance(_owner.transform.position, tile.transform.position) > 0.01f)
                 {
-                    _owner.transform.position = Vector2.MoveTowards(_owner.transform.position, targetPos, _moveSpeed * Time.deltaTime);
+                    _owner.transform.position = Vector3.MoveTowards(
+                        _owner.transform.position,
+                        tile.transform.position,
+                        _moveSpeed * Time.deltaTime
+                    );
+
                     yield return null;
-                }   
+                }
             }
             _isMoveing = false;
         }

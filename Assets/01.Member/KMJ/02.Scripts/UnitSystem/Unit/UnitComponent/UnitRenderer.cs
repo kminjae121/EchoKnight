@@ -1,7 +1,8 @@
 ﻿using System;
+using UnitSystem;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitRenderer : MonoBehaviour, IUnitComponent
     {

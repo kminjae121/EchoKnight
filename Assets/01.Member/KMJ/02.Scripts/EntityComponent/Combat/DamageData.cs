@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EntityComponent
+namespace Code.EntityComponent
 {
     [Flags]
     public enum DamageType

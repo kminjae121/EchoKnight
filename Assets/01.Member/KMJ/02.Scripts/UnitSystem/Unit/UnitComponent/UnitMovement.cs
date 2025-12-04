@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine;
 using System.Collections;
+using Code.Core.Interfaces;
 using UnityEngine.Tilemaps;
 
 namespace UnitSystem
@@ -33,22 +34,25 @@ namespace UnitSystem
                 return;
             
             _isMoveing = true;
-            
-            Vector3 moveingTileTrm = _owner.inputSO.GetWorldPosition();
 
-            StartCoroutine(MoveStart(moveingTileTrm));
+            IMapTile tile = _owner.inputSO.GetSelectedTile();
+            //Vector3 moveingTileTrm = _owner.inputSO.GetWorldPosition();
+
+            StartCoroutine(MoveStart(tile));
         }
 
-        private IEnumerator MoveStart(Vector3 targetTile)
+        private IEnumerator MoveStart(IMapTile tileInfo)
         {
-            Vector3 targetPos = targetTile;
-            
-            while (Vector3.Distance(_owner.transform.position, targetPos) > 0.01f)
+            if (tileInfo.IsWalkable)
             {
-                _owner.transform.position = Vector3.MoveTowards(_owner.transform.position, targetPos, _moveSpeed * Time.deltaTime);
-                yield return null;
+                Vector2Int targetPos = tileInfo.GridPosition;
+            
+                while (Vector2.Distance(_owner.transform.position,targetPos) > 0.01f)
+                {
+                    _owner.transform.position = Vector2.MoveTowards(_owner.transform.position, targetPos, _moveSpeed * Time.deltaTime);
+                    yield return null;
+                }   
             }
-
             _isMoveing = false;
         }
     }

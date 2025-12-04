@@ -13,11 +13,11 @@ namespace UnitSystem
         
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
-        public float turnSpeed { get; set; }
-        public bool isPlayerUnit {get; set;}
-        public float turnGauge {get; set;}
-        public Action OnDeathEvent { get; set; }
-        public Action OnHitEvent { get; set; }
+        public float turnSpeed { get; private set; }
+        public bool isPlayerUnit {get; private set;}
+        public float turnGauge {get; private set;}
+        public Action OnDeathEvent { get; private set; }
+        public Action OnHitEvent { get; private set; }
 
         protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();
 

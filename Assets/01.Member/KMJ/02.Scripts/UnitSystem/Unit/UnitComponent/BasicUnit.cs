@@ -1,4 +1,6 @@
 using System;
+using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using GameEventChannel;
 using Input;
 using Unity.Collections;
@@ -6,11 +8,19 @@ using UnityEngine;
 
 namespace  UnitSystem
 {
-    public class BasicUnit : Unit
+    public class BasicUnit : Unit, ITurnable
     {
         [SerializeField] private GameEventChannelSO unitDeadChannel;
         [field: SerializeField] public InputReader inputSO { get; private set; }
+
+        public bool IsPlayerUnit => isPlayerUnit;
         
+        public float TurnGauge => turnGauge;
+
+        public bool IsReadyDoAct => TurnGauge >= 100f;
+
+        public float TurnSpeed => turnSpeed;
+
 
         public int maxCardCost = 10;
         
@@ -19,6 +29,7 @@ namespace  UnitSystem
         protected override void Dead()
         {
             base.Dead();
+            Die();
         }
 
         protected override void OnEnable()
@@ -52,8 +63,14 @@ namespace  UnitSystem
         public void SelectThisUnit(bool isSelected)
         {
             Debug.Log($"{gameObject.name}의 선택이 {isSelected} 되었습니다");
-            isPlayerUnit = isSelected;
+            //isPlayerUnit = isSelected;
         }
+
+        public void Die()
+        {
+            Bus<UnitDeadEvent>.Raise(new UnitDeadEvent(this));
+        }
+
     }
    
 }

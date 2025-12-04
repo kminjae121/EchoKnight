@@ -1,4 +1,6 @@
 ﻿using System;
+using Code.Core.Interfaces;
+using Code.Map;
 using EntityComponent;
 using UnitSystem;
 using UnityEngine;
@@ -43,19 +45,21 @@ namespace Input
             
         }
         
-        public Vector3 GetWorldPosition()
+        public IMapTile GetSelectedTile()
         {
             Camera mainCam = Camera.main;
             Debug.Assert(mainCam != null, "No main camera in this scene");
+            
+            IMapTile maptile = new MapTile();
             
             Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
             
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
             {
-                _gridPosition = hit.transform.position;
+                maptile = hit.transform.GetComponent<IMapTile>();
             }
 
-            return _gridPosition;
+            return maptile;
         }
 
         public Unit GetUnit()

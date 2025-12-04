@@ -1,7 +1,7 @@
 ﻿using Code.Core.Interfaces;
 using UnityEngine;
 
-namespace Code.Map
+namespace Code. Map
 {
     public class GridMap : MonoBehaviour, IGridMap
     {
@@ -12,23 +12,48 @@ namespace Code.Map
         
         [Header("Tile Prefab")]
         [SerializeField] private GameObject tilePrefab;
-    
+
+        [SerializeField, HideInInspector] private MapTile[] serializedTiles;
+
         private MapTile[,] tiles;
-    
+
         public int Width => width;
         public int Height => height;
         public float TileSize => tileSize;
-    
+
         private void Awake()
         {
-            GenerateMap();
+            RebuildTileArray();
         }
-    
+
+        private void OnEnable()
+        {
+            RebuildTileArray();
+        }
+
+        private void RebuildTileArray()
+        {
+            if (serializedTiles == null || serializedTiles.Length == 0) return;
+            if (serializedTiles.Length != width * height) return;
+
+            tiles = new MapTile[width, height];
+            
+            for (int i = 0; i < serializedTiles.Length; i++)
+            {
+                if (serializedTiles[i] == null) continue;
+                
+                int x = i % width;
+                int y = i / width;
+                tiles[x, y] = serializedTiles[i];
+            }
+        }
+
         public void GenerateMap()
         {
             ClearMap();
             tiles = new MapTile[width, height];
-    
+            serializedTiles = new MapTile[width * height];
+
             for (int x = 0; x < width; x++)
             {
                 for (int y = 0; y < height; y++)
@@ -37,7 +62,7 @@ namespace Code.Map
                 }
             }
         }
-    
+
         private void CreateTile(int x, int y)
         {
             Vector3 worldPosition = GridToWorldPosition(x, y);
@@ -53,64 +78,71 @@ namespace Code.Map
                 tileObject.transform.position = worldPosition;
                 tileObject.transform.parent = transform;
             }
-    
+
             MapTile tile = tileObject.GetComponent<MapTile>();
             if (tile == null)
             {
                 tile = tileObject.AddComponent<MapTile>();
             }
             
-            tile. Initialize(new Vector2Int(x, y));
+            tile.Initialize(new Vector2Int(x, y));
             tiles[x, y] = tile;
+            serializedTiles[y * width + x] = tile;
         }
-    
+
         private void ClearMap()
         {
-            if (tiles == null) return;
-    
-            for (int x = 0; x < tiles.GetLength(0); x++)
+            if (serializedTiles != null)
             {
-                for (int y = 0; y < tiles. GetLength(1); y++)
+                foreach (var tile in serializedTiles)
                 {
-                    if (tiles[x, y] != null)
+                    if (tile != null)
                     {
-                        DestroyImmediate(tiles[x, y].gameObject);
+                        DestroyImmediate(tile. gameObject);
                     }
                 }
             }
+
             tiles = null;
+            serializedTiles = null;
         }
-    
+
         public Vector3 GridToWorldPosition(int x, int y)
         {
             return new Vector3(x * tileSize, 0f, y * tileSize) + transform.position;
         }
-    
+
         public Vector2Int WorldToGridPosition(Vector3 worldPosition)
         {
-            Vector3 localPos = worldPosition - transform.position;
+            Vector3 localPos = worldPosition - transform. position;
             int x = Mathf.RoundToInt(localPos.x / tileSize);
             int y = Mathf.RoundToInt(localPos. z / tileSize);
             return new Vector2Int(x, y);
         }
-    
+
         public IMapTile GetTile(Vector2Int position)
         {
-            return GetTile(position. x, position.y);
+            return GetTile(position.x, position.y);
         }
-    
+
         public IMapTile GetTile(int x, int y)
         {
             if (! IsValidPosition(new Vector2Int(x, y))) return null;
-            return tiles[x, y];
+            
+            if (tiles == null)
+            {
+                RebuildTileArray();
+            }
+            
+            return tiles? [x, y];
         }
-    
+
         public bool IsValidPosition(Vector2Int position)
         {
             return position.x >= 0 && position.x < width &&
                    position.y >= 0 && position.y < height;
         }
-    
+
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);

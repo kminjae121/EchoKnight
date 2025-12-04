@@ -5,13 +5,22 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class Unit : MonoBehaviour, ITurnable
     {
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
         public float TurnSpeed { get; private set; }
+        
+        public void OnTurnStart()
+        { 
+        }
+
+        public void OnTurnEnd()
+        {
+        }
+
         public float TurnGauge { get; set; }
         
         public bool IsReadyDoAct => TurnGauge >= 100f;
@@ -33,15 +42,11 @@ namespace UnitSystem
             TurnGauge = 0f;
         }
 
-      //  protected virtual void Awake()
-      //  {
-      //      AddUnitComponents();
-      //      InitializeUnitComponents();
-      //      
-      //      turnSpeed = unitSO.turnSpeed;
-      //      isPlayerUnit = unitSO.isPlayerUnit;
-      //      turnGauge = unitSO.turnGauge;
-      //  }
+        public void SetThisUnit(bool isSelect)
+        {
+            IsPlayerUnit = isSelect;
+        }
+        
 
         protected virtual void Dead()
         {

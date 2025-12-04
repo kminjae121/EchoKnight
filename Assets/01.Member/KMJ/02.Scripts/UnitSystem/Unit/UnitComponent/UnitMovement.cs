@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using System.Collections;
 using Code.Core.Interfaces;
-using UnityEngine.Tilemaps;
+using UnitSystem;
 
-namespace UnitSystem
+
+namespace Code.UnitSystem
 {
     public class UnitMovement : MonoBehaviour, IUnitComponent
     {
@@ -43,6 +43,9 @@ namespace UnitSystem
 
         private IEnumerator MoveStart(IMapTile tileInfo,GameObject tile)
         {
+            Debug.Log(tile.transform.position);
+            Debug.Log(tileInfo.IsWalkable);
+            
             if (tileInfo.IsWalkable)
             {
                 while (Vector3.Distance(_owner.transform.position, tile.transform.position) > 0.01f)
@@ -55,7 +58,6 @@ namespace UnitSystem
 
                     yield return null;
                 }
-
             }
             _isMoveing = false;
         }

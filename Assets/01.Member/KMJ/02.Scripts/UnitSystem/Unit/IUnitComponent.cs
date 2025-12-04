@@ -1,4 +1,4 @@
-﻿namespace UnitSystem
+﻿namespace Code.UnitSystem
 {
     public interface IUnitComponent
     {

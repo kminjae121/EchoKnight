@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using Code.Core;
 using Code.Core.Events.Bus;
+using Code.UnitSystem;
 using GameEventChannel;
-using Input;
-using UnitSystem;
-using UnityEngine;
-using UnityEngine.Events;
 
-namespace UnitManaging
+using UnityEngine;
+
+
+namespace Code.UnitManaging
 {
     public class OwnUnitManage : MonoSingleton<OwnUnitManage>
     {

@@ -1,9 +1,11 @@
 ﻿using System;
+using Code.EntityComponent;
 using EntityComponent;
 using Input;
+using UnitSystem;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitAttackComponent : MonoBehaviour, IUnitComponent
     {
@@ -57,7 +59,7 @@ namespace UnitSystem
                 {
                     enemy.GetUnitCompo<EntityHealth>().ApplyDamage(_damageData, 
                         enemy.transform.position,transform.position,attackData,_owner);   
-                }   
+                }      
             }
         }
     }

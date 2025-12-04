@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using UnitSystem;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitStorage : MonoBehaviour
     { 

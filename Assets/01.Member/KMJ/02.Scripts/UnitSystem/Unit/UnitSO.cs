@@ -29,9 +29,9 @@ public class UnitSO : ScriptableObject
     [Header("UnitSettings")]
     public bool isLongRange;
 
-    public float turnSpeed;
+    public float turnSpeed = 3f;
 
-    public bool isPlayerUnit;
+    public bool isPlayerUnit = false;
     
     public float moveSpeed;
     

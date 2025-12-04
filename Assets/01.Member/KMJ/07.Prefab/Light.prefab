@@ -144,7 +144,6 @@ GameObject:
   - component: {fileID: 7777815519673234050}
   - component: {fileID: 2028605086286046326}
   - component: {fileID: 2082924246846638380}
-  - component: {fileID: 4015052802404652309}
   - component: {fileID: 1563928005834036559}
   - component: {fileID: -9178604830381640580}
   m_Layer: 7
@@ -227,27 +226,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &4015052802404652309
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5246640078112962036}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1563928005834036559
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -261,8 +239,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <unitSO>k__BackingField: {fileID: 11400000, guid: 13c742cd81754804786cc1e1241a0a8f, type: 2}
-  unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
+  OnStartTurnEvent:
+    m_PersistentCalls:
+      m_Calls: []
   <inputSO>k__BackingField: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
+  unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
   maxCardCost: 10
 --- !u!114 &-9178604830381640580
 MonoBehaviour:

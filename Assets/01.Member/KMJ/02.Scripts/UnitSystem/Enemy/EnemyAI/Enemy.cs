@@ -1,20 +1,21 @@
-using EnemySystem;
-using EntityComponent;
+using Code.Core.Interfaces;
+using Code.UnitSystem;
 using UnitSystem;
-using UnityEngine;
 
-public class Enemy : Unit
+public class Enemy : Unit, ITurnable
 {
-
-    
-    protected override void Awake()
+    protected override void OnEnable()
     {
-        base.Awake();
-        //on.AddListener(TestDealth);
-        
+        base.OnEnable();
     }
 
-    public void TestDealth()
+    protected override void Dead()
+    {
+        TestDeath();
+        base.Dead();
+    }
+
+    public void TestDeath()
     {
         gameObject.SetActive(false);
     }

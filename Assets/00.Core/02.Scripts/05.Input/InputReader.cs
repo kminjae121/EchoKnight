@@ -1,4 +1,7 @@
 ﻿using System;
+using Code.Core.Interfaces;
+using Code.Map;
+using Code.UnitSystem;
 using EntityComponent;
 using UnitSystem;
 using UnityEngine;
@@ -37,25 +40,44 @@ namespace Input
         }
 
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             _controls.Player.Disable();
+            
         }
-        
-        
-        public Vector3 GetWorldPosition()
+
+        public GameObject GetWorldPosition()
         {
             Camera mainCam = Camera.main;
             Debug.Assert(mainCam != null, "No main camera in this scene");
+
+            GameObject gameObj = null;
             
             Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
             
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
             {
-                _gridPosition = hit.point;
+                gameObj = hit.transform.gameObject;
             }
 
-            return _gridPosition;
+            return gameObj;
+        }
+        
+        public IMapTile GetSelectedTile()
+        {
+            Camera mainCam = Camera.main;
+            Debug.Assert(mainCam != null, "No main camera in this scene");
+            
+            IMapTile maptile = new MapTile();
+            
+            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            
+            if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
+            {
+                maptile = hit.transform.GetComponent<IMapTile>();
+            }
+
+            return maptile;
         }
 
         public Unit GetUnit()

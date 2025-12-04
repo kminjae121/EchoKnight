@@ -1,9 +1,12 @@
 ﻿using System;
+using Code.Core.Events.Bus;
+using Code.EntityComponent;
 using EntityComponent;
 using Input;
+using UnitSystem;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitAttackComponent : MonoBehaviour, IUnitComponent
     {
@@ -18,6 +21,8 @@ namespace UnitSystem
         
         private BasicUnit _unit;
 
+        private bool isAttack = false;
+
 
         public void Initialize(Unit owner)
         {
@@ -28,9 +33,16 @@ namespace UnitSystem
             _inputReader = _unit.inputSO;
             
             _unitSO = _unit.unitSO;
+            
+            Bus<UnitAttackEvent>.Subscribe(HandleMoveEvent);
         }
-        
-        
+
+        private void HandleMoveEvent(UnitAttackEvent evt)
+        {
+            isAttack = evt.isAttack;
+        }
+
+
         private void Awake()
         {
             _damageData = new DamageData();
@@ -46,8 +58,7 @@ namespace UnitSystem
 
         public void AttackEnemy()
         {
-            Debug.Log("공격됨");
-            if (_unit.isSelect)
+            if (_unit.IsPlayerUnit && isAttack)
             {
                 Unit enemy = _inputReader.GetEnemy();
 
@@ -57,8 +68,10 @@ namespace UnitSystem
                 {
                     enemy.GetUnitCompo<EntityHealth>().ApplyDamage(_damageData, 
                         enemy.transform.position,transform.position,attackData,_owner);   
-                }   
+                }      
             }
+
+            isAttack = false;
         }
     }
 }

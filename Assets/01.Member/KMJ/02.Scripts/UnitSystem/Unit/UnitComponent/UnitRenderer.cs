@@ -1,13 +1,16 @@
 ﻿using System;
+using UnitSystem;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitRenderer : MonoBehaviour, IUnitComponent
     {
         [SerializeField] private Animator thisAnimator;
 
         private Unit _owner;
+
+        private bool isMove = false;
         
         public void Initialize(Unit owner)
         {

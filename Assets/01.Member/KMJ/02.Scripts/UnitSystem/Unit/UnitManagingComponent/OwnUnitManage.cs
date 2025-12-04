@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Core;
+using Code.Core.Events.Bus;
+using Code.UnitSystem;
 using GameEventChannel;
-using Input;
-using UnitSystem;
-using UnityEngine;
-using UnityEngine.Events;
 
-namespace UnitManaging
+using UnityEngine;
+
+
+namespace Code.UnitManaging
 {
     public class OwnUnitManage : MonoSingleton<OwnUnitManage>
     {
@@ -19,11 +20,8 @@ namespace UnitManaging
         
         private List<Unit> _myOwnUnitList = new List<Unit>();
         
-        private Unit _currrentSelectedUnit;
-        
         private void Awake()
         {
-            unitDeadEventChannel.AddListener<UnitDeadEvent>(RemoveDeadUnit);
         }
         
         
@@ -31,7 +29,6 @@ namespace UnitManaging
         {
             SelectUnits("Golden");
             SelectUnits("Light");
-            
             MakeGameUnit();
         }
         
@@ -46,46 +43,12 @@ namespace UnitManaging
                     startingTrm[i].position, Quaternion.identity);
         
         
+                Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(spawnUnit.GetComponent<Unit>()));
                 _myOwnUnitList.Add(spawnUnit.GetComponent<Unit>());
+                
             }
             
-            _myOwnUnitList.Sort((a, b) => b.unitSO.turnSpeed.CompareTo(a.unitSO.turnSpeed));
-        
-            SelectUnit(_myOwnUnitList[0]);
-        }
-        
-        public void SelectUnit(Unit unit)
-        {
-            if (unit == _currrentSelectedUnit)
-            {
-                Debug.Log("원래 선택된 친구");
-                return;
-            }
-            
-            ChangingSelectUnit(unit.name);
-        }
-        
-        private void ChangingSelectUnit(string UnitName)
-        {
-            if (_currrentSelectedUnit != null)
-            {
-                _currrentSelectedUnit.GetComponent<BasicUnit>().SelectThisUnit(false);   
-            }
-            
-            Unit unit = _myOwnUnitList.Find(unit => unit.gameObject.name == UnitName);
-        
-            _currrentSelectedUnit = unit;
-        
-            _currrentSelectedUnit.GetComponent<BasicUnit>().SelectThisUnit(true);
-        }
-        
-        private void ChangingSelectUnit(int unitIndex)
-        {
-            _currrentSelectedUnit.GetComponent<BasicUnit>().SelectThisUnit(false);
-            
-            _currrentSelectedUnit = _myOwnUnitList[unitIndex];
-        
-            _currrentSelectedUnit.GetComponent<BasicUnit>().SelectThisUnit(true);
+            _myOwnUnitList[0].SetThisUnit(true);
         }
         
         /// <summary>
@@ -97,15 +60,15 @@ namespace UnitManaging
             _selectedUnits.Add(storageCompo.GetUnitInfo(selectedUnits));
         }
         
-        private void RemoveDeadUnit(UnitDeadEvent evt)
-        {
-            Unit unit = _myOwnUnitList.Find(unit => unit.gameObject.name == evt.DeadUnitName);
-           
-            if (unit != null)
-            {
-                _myOwnUnitList.Remove(unit);
-            }
-        }
+        //private void RemoveDeadUnit(UnitDeadEvent evt)
+        //{
+        //    Unit unit = _myOwnUnitList.Find(unit => unit.gameObject.name == evt.DeadUnitName);
+        //   
+        //    if (unit != null)
+        //    {
+        //        _myOwnUnitList.Remove(unit);
+        //    }
+        //}
 
     }
 }

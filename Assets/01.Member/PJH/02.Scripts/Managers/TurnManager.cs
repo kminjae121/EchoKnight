@@ -1,71 +1,96 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using UnitSystem;
+using Code.UnitSystem;
 using UnityEngine;
 
 namespace Code.Managers
 {
-    public class TurnManager : MonoBehaviour, ITurnManager
+    public class TurnManager : MonoBehaviour
     {
         [SerializeField] private int showFutureTurnCount = 5;
-
-        private Queue<Unit> turnQueue = new();
-        private Unit _currentUnit;
+        [SerializeField] private float requiredGauge = 100f;
+        [SerializeField] private UnitManager unitManager;
         
+        private readonly Queue<ITurnable> _turnQueue = new();
+        private ITurnable _currentTurnUnit;
+
+        private void Awake()
+        {
+            Bus<UnitTurnEndEvent>.Subscribe(EndUnitTurn);
+        }
+
         public void StartBattle()
         {
-            StartTurn();
+            ChargeTurnGauge();
         }
         
-        private void StartTurn()
+        private void EndUnitTurn(UnitTurnEndEvent evt)
         {
-            // var orderedUnits = activeUnits
-            //     .Where(u => !u.IsDead)
-            //     .OrderByDescending(u => u.speed)
-            //     .ToList();
-
-            StartNextUnitTurn();
+            _currentTurnUnit?.OnTurnEnd();
+            _currentTurnUnit = null;
+            
+            AddTurnGauge();
+            UpdateTurnQueue();
+            StartNextTurn();
         }
-
-        private void StartNextUnitTurn()
+        
+        private void ChargeTurnGauge()
         {
-            if (turnQueue.Count == 0)
+            var units =  unitManager.GetAllUnits();
+
+            foreach (var unit in units)
+                unit.TurnGauge += unit.TurnSpeed + requiredGauge;
+
+            UpdateTurnQueue();
+            StartNextTurn();
+        }
+        
+        private void StartNextTurn()
+        {
+            if (_turnQueue.Count == 0)
             {
-                StartTurn();
+                ChargeTurnGauge();
                 return;
             }
 
-            _currentUnit = turnQueue.Dequeue();
-            
-            // 플레이어 유닛인지 아닌지 검사해서 함수 실행
+            _currentTurnUnit = _turnQueue.Dequeue();
+            _currentTurnUnit?.OnTurnStart();
+        }
+        
+        private void AddTurnGauge()
+        {
+            foreach (var unit in unitManager.GetAllUnits())
+                unit.TurnGauge += unit.TurnSpeed;
         }
 
-        private void EndUnitTurn()
+        private void UpdateTurnQueue()
         {
-            StartNextUnitTurn();
-        }
-        
-        private void StartPlayerTurn()
-        {
+            var orderedUnits = unitManager.GetAllUnits()
+                .Where(unit => unit.IsReadyDoAct)
+                .OrderByDescending(unit => unit.TurnGauge)
+                .ToList();
             
+            foreach (var unit in orderedUnits)
+            {
+                unit.TurnGauge -= requiredGauge;
+                _turnQueue.Enqueue(unit);
+            }
         }
         
-        private void StartEnemyTurn()
-        {
-            
-        }
-        
+        #region UI Functions
+
         private void UpdateFutureTurnUI()
         {
-            
         }
         
         private List<Unit> PredictFutureTurns(List<Unit> units)
         {
             // 속도 기반으로 예측해서 정렬 뒤 리턴해주기
-            
             return null;
         }
+
+        #endregion
     }
 }

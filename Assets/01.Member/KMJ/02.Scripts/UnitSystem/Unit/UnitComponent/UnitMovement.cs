@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
+using Code.Core.Events.Bus;
 using UnityEngine;
-using System.Collections;
-using UnityEngine.Tilemaps;
+using Code.Core.Interfaces;
+using UnitSystem;
 
-namespace UnitSystem
+
+namespace Code.UnitSystem
 {
     public class UnitMovement : MonoBehaviour, IUnitComponent
     {
@@ -12,13 +14,20 @@ namespace UnitSystem
 
         private float _moveSpeed => _owner.unitSO.moveSpeed;
 
-        private bool _isMoveing = false;
+        private bool _isMove = false;
         
         public void Initialize(Unit owner)
         {
             _owner = owner as BasicUnit;
             
             _owner.inputSO.OnClickMoveEvent += Move;
+            
+            Bus<UnitMoveEvent>.Subscribe(HandleMoveEvent);
+        }
+
+        private void HandleMoveEvent(UnitMoveEvent obj)
+        {
+            _isMove = obj.isMove;
         }
 
         /// <summary>
@@ -26,30 +35,38 @@ namespace UnitSystem
         /// </summary>
         private void Move()
         {
-            if (!_owner.isSelect)
+            if (!_owner.IsPlayerUnit)
                 return;
             
-            if (_isMoveing)
+            if (!_isMove)
                 return;
-            
-            _isMoveing = true;
-            
-            Vector3 moveingTileTrm = _owner.inputSO.GetWorldPosition();
 
-            StartCoroutine(MoveStart(moveingTileTrm));
+            IMapTile tile = _owner.inputSO.GetSelectedTile();
+            GameObject tileTrm = _owner.inputSO.GetWorldPosition();
+
+            StartCoroutine(MoveStart(tile, tileTrm));
         }
 
-        private IEnumerator MoveStart(Vector3 targetTile)
+        private IEnumerator MoveStart(IMapTile tileInfo,GameObject tile)
         {
-            Vector3 targetPos = targetTile;
+            Debug.Log(tile.transform.position);
+            Debug.Log(tileInfo.IsWalkable);
             
-            while (Vector3.Distance(_owner.transform.position, targetPos) > 0.01f)
+            if (tileInfo.IsWalkable)
             {
-                _owner.transform.position = Vector3.MoveTowards(_owner.transform.position, targetPos, _moveSpeed * Time.deltaTime);
-                yield return null;
+                while (Vector3.Distance(_owner.transform.position, tile.transform.position) > 0.01f)
+                {
+                    _owner.transform.position = Vector3.MoveTowards(
+                        _owner.transform.position,
+                        tile.transform.position,
+                        _moveSpeed * Time.deltaTime
+                    );
+
+                    yield return null;
+                }
             }
 
-            _isMoveing = false;
+            _isMove = false;
         }
     }
 }

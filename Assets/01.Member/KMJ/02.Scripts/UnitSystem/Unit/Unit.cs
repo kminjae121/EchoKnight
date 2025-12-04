@@ -1,45 +1,75 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EntityComponent;
-using JetBrains.Annotations;
+using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
-    public class Unit : MonoBehaviour
+    public class Unit : MonoBehaviour, ITurnable
     {
-        
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
-        public float turnSpeed { get; set; }
-        public bool isPlayerUnit {get; set;}
-        public float turnGauge {get; set;}
+        public float TurnSpeed { get; private set; }
         
-        protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();
+        public UnityEvent OnStartTurnEvent;
+        
+        public void OnTurnStart()
+        { 
+            
+        }
 
+        public void OnTurnEnd()
+        {
+        }
 
-        protected virtual void Awake()
+        public float TurnGauge { get; set; }
+        
+        public bool IsReadyDoAct => TurnGauge >= 100f;
+        public bool IsPlayerUnit {get; private set;}
+        
+        public Action OnDeathEvent { get; private set; }
+        public Action OnHitEvent { get; private set; }
+
+        protected readonly Dictionary<Type,IUnitComponent> _components = new();
+
+        protected virtual void OnEnable()
         {
             AddUnitComponents();
             InitializeUnitComponents();
+            AfterInitializeComponents();
             
-            turnSpeed = unitSO.turnSpeed;
-            isPlayerUnit = unitSO.isPlayerUnit;
-            turnGauge = unitSO.turnGauge;
-            
+            TurnSpeed = unitSO.turnSpeed;
+            IsPlayerUnit = unitSO.isPlayerUnit;
+            TurnGauge = 0f;
         }
+
+        public void SetThisUnit(bool isSelect)
+        {
+            IsPlayerUnit = isSelect;
+            
+            if(IsPlayerUnit)
+                OnStartTurnEvent?.Invoke();
+        }
+        
 
         protected virtual void Dead()
         {
-            
+            Bus<UnitDeadEvent>.Raise(new UnitDeadEvent(this));
         }
+        
         private void InitializeUnitComponents()
         {
             _components.Values.ToList().ForEach(component => component.Initialize(this));
         }
-        
+
+        private void AfterInitializeComponents()
+        {
+            _components.Values.OfType<IAfterInitialize>()
+                .ToList().ForEach(component => component.AfterInitialize());
+        }
 
         private void AddUnitComponents()
         {

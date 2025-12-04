@@ -1,10 +1,10 @@
-﻿using System.Globalization;
+﻿using Code.UI;
+using Code.UnitSystem;
+using EntityComponent;
 using GameEventChannel;
-using UnitSystem;
 using UnityEngine;
-using TextInfo = UI.TextInfo;
 
-namespace EntityComponent
+namespace Code.EntityComponent
 {
     public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable, IAfterInitialize
     {
@@ -56,6 +56,7 @@ namespace EntityComponent
 
         public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer)
         {
+            
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
             _actionData.HitByPowerAttack = attackData.isPowerAttack;
@@ -72,13 +73,12 @@ namespace EntityComponent
                 , position, 0.5f);  
             
             textEventChannel.RaiseEvent(textEvt);
-            //크리티컬 처리는 나중에.
-            //if (currentHealth <= 0)
-            //{
-            //    _entity.OnDeathEvent?.Invoke();
-            //}
-            //
-            //_entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
+           if (currentHealth <= 0)
+           {
+               _entity.OnDeathEvent?.Invoke();
+           }
+           
+           _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
         }
 
     }

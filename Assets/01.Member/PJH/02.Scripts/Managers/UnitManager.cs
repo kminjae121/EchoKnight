@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Core.Events.Bus;
 using UnitSystem;
 using UnityEngine;
@@ -7,20 +8,33 @@ namespace Code.Managers
 {
     public class UnitManager : MonoBehaviour
     {
-        public readonly HashSet<Unit> activeUnits = new();
+        private readonly HashSet<Unit> activeUnits = new();
 
-        private void OnEnable()
+        private void Awake()
         {
             Bus<UnitSpawnEvent>.Subscribe(RegisterUnit);
             Bus<UnitDeadEvent>.Subscribe(RemoveUnit);
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<UnitSpawnEvent>.Unsubscribe(RegisterUnit);
             Bus<UnitDeadEvent>.Unsubscribe(RemoveUnit);
         }
 
+        #region Public Functions
+
+        public IReadOnlyCollection<Unit> GetAllUnits()
+            => activeUnits;
+
+        public IEnumerable<Unit> GetPlayerUnits()
+            => activeUnits.Where(unit => unit.isPlayerUnit);
+
+        public IEnumerable<Unit> GetEnemyUnits()
+            => activeUnits.Where(unit => !unit.isPlayerUnit);
+        
+        #endregion
+        
         private void RegisterUnit(UnitSpawnEvent evt)
             => activeUnits.Add(evt.Unit);
 

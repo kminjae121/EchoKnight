@@ -6,12 +6,41 @@ using UnityEngine;
 
 namespace Code.Managers
 {
-    public class TurnManager : MonoBehaviour, ITurnManager
+    public class TurnManager : MonoBehaviour
     {
         [SerializeField] private int showFutureTurnCount = 5;
+        [SerializeField] private float requiredGauge = 100f;
+        [SerializeField] private UnitManager unitManager;
+        
+        private readonly Queue<ITurnable> _turnQueue = new();
+        private ITurnable _currentTurnUnit;
 
-        private Queue<Unit> _turnQueue = new();
-        private Unit _currentUnit;
+        private void AddTurnGauge()
+        {
+            var units =  unitManager.GetAllUnits();
+            
+            foreach (var unit in units)
+                unit.TurnGauge += unit.TurnSpeed;
+            
+            var orderedUnits = units
+                .Where(unit => unit.IsReadyDoAct)
+                .OrderByDescending(unit => unit.TurnGauge)
+                .ToList();
+
+            foreach (var unit in orderedUnits)
+            {
+                unit.TurnGauge -= requiredGauge;
+                _turnQueue.Enqueue(unit);
+            }
+        }
+
+        private void SortedTurnQueue()
+        {
+            var orderedUnits = unitManager.GetAllUnits()
+                .Where(unit => unit.IsReadyDoAct)
+                .OrderByDescending(unit => unit.TurnGauge)
+                .ToList();
+        }
         
         public void StartBattle()
         {
@@ -20,10 +49,23 @@ namespace Code.Managers
         
         private void StartTurn()
         {
-            // var orderedUnits = activeUnits
-            //     .Where(u => !u.IsDead)
-            //     .OrderByDescending(u => u.speed)
-            //     .ToList();
+            var units =  unitManager.GetAllUnits();
+
+            foreach (var unit in units)
+            {
+                unit.TurnGauge += unit.TurnSpeed + requiredGauge;
+            }
+
+            var orderedUnits = units
+                .Where(unit => unit.IsReadyDoAct)
+                .OrderByDescending(unit => unit.TurnGauge)
+                .ToList();
+
+            foreach (var unit in orderedUnits)
+            {
+                unit.TurnGauge -= requiredGauge;
+                _turnQueue.Enqueue(unit);
+            }
 
             StartNextUnitTurn();
         }
@@ -36,24 +78,15 @@ namespace Code.Managers
                 return;
             }
 
-            _currentUnit = _turnQueue.Dequeue();
+            _currentTurnUnit = _turnQueue.Dequeue();
             
-            // 플레이어 유닛인지 아닌지 검사해서 함수 실행
+            //_currentTurnUnit.OnTurnStart();
         }
 
         private void EndUnitTurn()
         {
+            AddTurnGauge();
             StartNextUnitTurn();
-        }
-        
-        private void StartPlayerTurn()
-        {
-            
-        }
-        
-        private void StartEnemyTurn()
-        {
-            
         }
         
         private void UpdateFutureTurnUI()

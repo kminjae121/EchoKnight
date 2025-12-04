@@ -10,5 +10,8 @@ namespace Code.Core.Interfaces
         bool IsReadyDoAct { get; }
         
         float TurnSpeed { get; }
+
+        void OnTurnStart();
+        void OnTurnEnd();
     }
 }

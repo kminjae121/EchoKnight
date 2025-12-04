@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using UnitSystem;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     [CreateAssetMenu(fileName = "Unit", menuName = "Unit/Storage", order = 0)]
     public class UnitStorageSO : ScriptableObject

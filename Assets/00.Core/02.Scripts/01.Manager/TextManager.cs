@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using _01.Member.KMJ._02.Scripts.Pool;
+using Code.Pool;
+using Code.UI;
 using GameEventChannel;
 using GondrLib.Dependencies;
 using GondrLib.ObjectPool.Runtime;
-using UI;
 using UnityEngine;
 
 namespace Core

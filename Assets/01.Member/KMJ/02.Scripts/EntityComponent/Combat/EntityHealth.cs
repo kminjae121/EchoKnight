@@ -1,10 +1,10 @@
-﻿using System.Globalization;
+﻿using Code.UI;
+using Code.UnitSystem;
+using EntityComponent;
 using GameEventChannel;
-using UnitSystem;
 using UnityEngine;
-using TextInfo = UI.TextInfo;
 
-namespace EntityComponent
+namespace Code.EntityComponent
 {
     public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable, IAfterInitialize
     {

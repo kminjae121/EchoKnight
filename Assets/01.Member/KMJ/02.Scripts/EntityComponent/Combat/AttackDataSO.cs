@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace EntityComponent
+namespace Code.EntityComponent
 {
     [CreateAssetMenu(fileName = "AttackData", menuName = "SO/Combat/AttackData", order = 0)]
     public class AttackDataSO : ScriptableObject

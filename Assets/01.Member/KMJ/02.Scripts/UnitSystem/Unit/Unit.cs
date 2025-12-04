@@ -29,9 +29,16 @@ namespace UnitSystem
             AfterInitializeComponents();
             
             turnSpeed = unitSO.turnSpeed;
-            isPlayerUnit = unitSO.isPlayerUnit;
-            turnGauge = unitSO.turnGauge;
+            isPlayerUnit = false;
+            turnGauge = 0;
         }
+
+        public void SetThisUnit(bool isSelect)
+        {
+            isPlayerUnit = isSelect;
+        }
+        
+        
 
       //  protected virtual void Awake()
       //  {

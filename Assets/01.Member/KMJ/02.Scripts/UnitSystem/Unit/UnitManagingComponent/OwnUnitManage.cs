@@ -48,7 +48,7 @@ namespace UnitManaging
                 
             }
             
-            //_myOwnUnitList[0].isPlayerUnit = true;
+            _myOwnUnitList[0].SetThisUnit(true);
         }
         
         /// <summary>

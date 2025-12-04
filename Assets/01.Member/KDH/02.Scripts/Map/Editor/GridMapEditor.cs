@@ -1,9 +1,9 @@
-﻿using UnityEditor;
+﻿#if UNITY_EDITOR
+using UnityEditor;
 using UnityEngine;
 
 namespace Code.Map.Editor
 {
-#if UNITY_EDITOR
     [CustomEditor(typeof(GridMap))]
     public class GridMapEditor : UnityEditor.Editor
     {
@@ -22,5 +22,5 @@ namespace Code.Map.Editor
             }
         }
     }
-#endif
 }
+#endif

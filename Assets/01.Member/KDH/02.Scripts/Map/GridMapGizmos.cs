@@ -8,7 +8,7 @@ namespace Code.Map
     {
         [Header("Gizmo Settings")]
         [SerializeField] private bool showGizmos = true;
-        [SerializeField] private float gizmoHeight = 0.05f;
+        [SerializeField] private float gizmoHeight = 0.5f;
 
         [Header("Colors")]
         [SerializeField] private Color walkableColor = Color.green;

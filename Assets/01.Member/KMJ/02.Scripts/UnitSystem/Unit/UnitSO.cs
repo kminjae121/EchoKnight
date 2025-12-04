@@ -32,8 +32,6 @@ public class UnitSO : ScriptableObject
     public float turnSpeed;
 
     public bool isPlayerUnit;
-
-    public float turnGauge;
     
     public float moveSpeed;
     

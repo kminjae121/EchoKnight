@@ -12,7 +12,7 @@ namespace UnitSystem
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
         public float TurnSpeed { get; private set; }
-        public float TurnGauge {get; private set;}
+        public float TurnGauge { get; set; }
         
         public bool IsReadyDoAct => TurnGauge >= 100f;
         public bool IsPlayerUnit {get; private set;}
@@ -30,7 +30,7 @@ namespace UnitSystem
             
             TurnSpeed = unitSO.turnSpeed;
             IsPlayerUnit = unitSO.isPlayerUnit;
-            TurnGauge = unitSO.turnGauge;
+            TurnGauge = 0f;
         }
 
       //  protected virtual void Awake()

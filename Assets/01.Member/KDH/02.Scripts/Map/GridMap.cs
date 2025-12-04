@@ -1,7 +1,8 @@
 ﻿using Code.Core.Interfaces;
 using UnityEngine;
+using UnityEngine. Rendering.Universal;
 
-namespace Code. Map
+namespace Code.Map
 {
     public class GridMap : MonoBehaviour, IGridMap
     {
@@ -12,6 +13,13 @@ namespace Code. Map
         
         [Header("Tile Prefab")]
         [SerializeField] private GameObject tilePrefab;
+
+        [Header("Decal Settings")]
+        [SerializeField] private Material walkableMaterial;
+        [SerializeField] private Material nonWalkableMaterial;
+        [SerializeField] private Material enemyMaterial;
+        [SerializeField] private Material obstacleMaterial;
+        [SerializeField] private float decalHeight = 0.1f;
 
         [SerializeField, HideInInspector] private MapTile[] serializedTiles;
 
@@ -33,7 +41,7 @@ namespace Code. Map
 
         private void RebuildTileArray()
         {
-            if (serializedTiles == null || serializedTiles.Length == 0) return;
+            if (serializedTiles == null || serializedTiles. Length == 0) return;
             if (serializedTiles.Length != width * height) return;
 
             tiles = new MapTile[width, height];
@@ -76,7 +84,7 @@ namespace Code. Map
             {
                 tileObject = new GameObject($"Tile_{x}_{y}");
                 tileObject.transform.position = worldPosition;
-                tileObject.transform.parent = transform;
+                tileObject. transform.parent = transform;
             }
 
             MapTile tile = tileObject.GetComponent<MapTile>();
@@ -88,6 +96,23 @@ namespace Code. Map
             tile.Initialize(new Vector2Int(x, y));
             tiles[x, y] = tile;
             serializedTiles[y * width + x] = tile;
+
+            CreateDecal(tileObject);
+        }
+
+        private void CreateDecal(GameObject tileObject)
+        {
+            GameObject decalObject = new GameObject("Decal");
+            decalObject. transform.parent = tileObject.transform;
+            decalObject.transform.localPosition = Vector3.up * decalHeight;
+            decalObject.transform. localRotation = Quaternion. Euler(90f, 0f, 0f);
+
+            DecalProjector projector = decalObject. AddComponent<DecalProjector>();
+            projector.size = new Vector3(tileSize * 0.9f, tileSize * 0.9f, 0.5f);
+            projector.pivot = new Vector3(0f, 0f, 0.25f);
+
+            MapTileVisual visual = decalObject.AddComponent<MapTileVisual>();
+            visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial);
         }
 
         private void ClearMap()
@@ -98,7 +123,7 @@ namespace Code. Map
                 {
                     if (tile != null)
                     {
-                        DestroyImmediate(tile. gameObject);
+                        DestroyImmediate(tile.gameObject);
                     }
                 }
             }
@@ -114,7 +139,7 @@ namespace Code. Map
 
         public Vector2Int WorldToGridPosition(Vector3 worldPosition)
         {
-            Vector3 localPos = worldPosition - transform. position;
+            Vector3 localPos = worldPosition - transform.position;
             int x = Mathf.RoundToInt(localPos.x / tileSize);
             int y = Mathf.RoundToInt(localPos. z / tileSize);
             return new Vector2Int(x, y);
@@ -122,7 +147,7 @@ namespace Code. Map
 
         public IMapTile GetTile(Vector2Int position)
         {
-            return GetTile(position.x, position.y);
+            return GetTile(position. x, position.y);
         }
 
         public IMapTile GetTile(int x, int y)
@@ -140,14 +165,14 @@ namespace Code. Map
         public bool IsValidPosition(Vector2Int position)
         {
             return position.x >= 0 && position.x < width &&
-                   position.y >= 0 && position.y < height;
+                   position. y >= 0 && position.y < height;
         }
 
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);
             if (tile == null) return false;
-            return tile.CanUnitPass;
+            return tile. CanUnitPass;
         }
     }
 }

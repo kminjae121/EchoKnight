@@ -16,20 +16,32 @@ namespace UnitSystem
         public float turnSpeed { get; set; }
         public bool isPlayerUnit {get; set;}
         public float turnGauge {get; set;}
-        
+        public Action OnDeathEvent { get; set; }
+        public Action OnHitEvent { get; set; }
+
         protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();
 
 
-        protected virtual void Awake()
+        protected virtual void OnEnable()
         {
             AddUnitComponents();
             InitializeUnitComponents();
+            AfterInitializeComponents();
             
             turnSpeed = unitSO.turnSpeed;
             isPlayerUnit = unitSO.isPlayerUnit;
             turnGauge = unitSO.turnGauge;
-            
         }
+
+      //  protected virtual void Awake()
+      //  {
+      //      AddUnitComponents();
+      //      InitializeUnitComponents();
+      //      
+      //      turnSpeed = unitSO.turnSpeed;
+      //      isPlayerUnit = unitSO.isPlayerUnit;
+      //      turnGauge = unitSO.turnGauge;
+      //  }
 
         protected virtual void Dead()
         {
@@ -38,6 +50,12 @@ namespace UnitSystem
         private void InitializeUnitComponents()
         {
             _components.Values.ToList().ForEach(component => component.Initialize(this));
+        }
+
+        private void AfterInitializeComponents()
+        {
+            _components.Values.OfType<IAfterInitialize>()
+                .ToList().ForEach(component => component.AfterInitialize());
         }
         
 

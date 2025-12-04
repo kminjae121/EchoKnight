@@ -26,7 +26,7 @@ namespace UnitSystem
         /// </summary>
         private void Move()
         {
-            if (!_owner.isSelect)
+            if (!_owner.isPlayerUnit)
                 return;
             
             if (_isMoveing)

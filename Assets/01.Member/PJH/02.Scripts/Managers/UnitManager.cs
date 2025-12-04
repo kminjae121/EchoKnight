@@ -28,10 +28,10 @@ namespace Code.Managers
             => activeUnits;
 
         public IEnumerable<Unit> GetPlayerUnits()
-            => activeUnits.Where(unit => unit.isPlayerUnit);
+            => activeUnits.Where(unit => unit.IsPlayerUnit);
 
         public IEnumerable<Unit> GetEnemyUnits()
-            => activeUnits.Where(unit => !unit.isPlayerUnit);
+            => activeUnits.Where(unit => !unit.IsPlayerUnit);
         
         #endregion
         

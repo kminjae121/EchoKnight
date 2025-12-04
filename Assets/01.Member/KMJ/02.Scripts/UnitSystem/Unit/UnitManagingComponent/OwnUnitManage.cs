@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Core;
+using Code.Core.Events.Bus;
 using GameEventChannel;
 using Input;
 using UnitSystem;
@@ -42,11 +43,12 @@ namespace UnitManaging
                     startingTrm[i].position, Quaternion.identity);
         
         
+                Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(spawnUnit.GetComponent<Unit>()));
                 _myOwnUnitList.Add(spawnUnit.GetComponent<Unit>());
                 
             }
-
-            _myOwnUnitList[0].isPlayerUnit = true;
+            
+            //_myOwnUnitList[0].isPlayerUnit = true;
         }
         
         /// <summary>

@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using EntityComponent;
-using JetBrains.Annotations;
+using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace UnitSystem
 {
-    public class Unit : MonoBehaviour
+    public class Unit : MonoBehaviour, ITurnable
     {
-        
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
-        public float turnSpeed { get; private set; }
-        public bool isPlayerUnit {get; private set;}
-        public float turnGauge {get; private set;}
+        public float TurnSpeed { get; private set; }
+        public float TurnGauge { get; set; }
+        
+        public bool IsReadyDoAct => TurnGauge >= 100f;
+        public bool IsPlayerUnit {get; private set;}
+        
         public Action OnDeathEvent { get; private set; }
         public Action OnHitEvent { get; private set; }
 
-        protected Dictionary<Type,IUnitComponent> _components = new Dictionary<Type, IUnitComponent>();
-
+        protected readonly Dictionary<Type,IUnitComponent> _components = new();
 
         protected virtual void OnEnable()
         {
@@ -28,17 +28,10 @@ namespace UnitSystem
             InitializeUnitComponents();
             AfterInitializeComponents();
             
-            turnSpeed = unitSO.turnSpeed;
-            isPlayerUnit = false;
-            turnGauge = 0;
+            TurnSpeed = unitSO.turnSpeed;
+            IsPlayerUnit = unitSO.isPlayerUnit;
+            TurnGauge = 0f;
         }
-
-        public void SetThisUnit(bool isSelect)
-        {
-            isPlayerUnit = isSelect;
-        }
-        
-        
 
       //  protected virtual void Awake()
       //  {
@@ -52,8 +45,9 @@ namespace UnitSystem
 
         protected virtual void Dead()
         {
-            
+            Bus<UnitDeadEvent>.Raise(new UnitDeadEvent(this));
         }
+        
         private void InitializeUnitComponents()
         {
             _components.Values.ToList().ForEach(component => component.Initialize(this));
@@ -64,7 +58,6 @@ namespace UnitSystem
             _components.Values.OfType<IAfterInitialize>()
                 .ToList().ForEach(component => component.AfterInitialize());
         }
-        
 
         private void AddUnitComponents()
         {

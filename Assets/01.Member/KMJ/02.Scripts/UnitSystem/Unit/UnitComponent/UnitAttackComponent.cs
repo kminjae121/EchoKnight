@@ -47,7 +47,7 @@ namespace UnitSystem
         public void AttackEnemy()
         {
             Debug.Log("공격됨");
-            if (_unit.isPlayerUnit)
+            if (_unit.IsPlayerUnit)
             {
                 Unit enemy = _inputReader.GetEnemy();
 

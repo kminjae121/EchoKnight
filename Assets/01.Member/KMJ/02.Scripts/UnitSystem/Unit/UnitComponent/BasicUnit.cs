@@ -1,30 +1,19 @@
-using System;
 using Code.Core.Events.Bus;
-using Code.Core.Interfaces;
 using GameEventChannel;
 using Input;
-using Unity.Collections;
 using UnityEngine;
 
 namespace  UnitSystem
 {
-    public class BasicUnit : Unit, ITurnable
+    public class BasicUnit : Unit
     {
-        [SerializeField] private GameEventChannelSO unitDeadChannel;
         [field: SerializeField] public InputReader inputSO { get; private set; }
-
-        public bool IsPlayerUnit => isPlayerUnit;
         
-        public float TurnGauge => turnGauge;
-
-        public bool IsReadyDoAct => TurnGauge >= 100f;
-
-        public float TurnSpeed => turnSpeed;
-
+        [SerializeField] private GameEventChannelSO unitDeadChannel;
 
         public int maxCardCost = 10;
         
-        public int cardCost { get; set; } = 0;
+        public int cardCost { get; private set; }
         
         protected override void Dead()
         {
@@ -68,9 +57,6 @@ namespace  UnitSystem
 
         public void Die()
         {
-            Bus<UnitDeadEvent>.Raise(new UnitDeadEvent(this));
         }
-
     }
-   
 }

@@ -10,7 +10,7 @@ namespace Code.Managers
     {
         [SerializeField] private int showFutureTurnCount = 5;
 
-        private Queue<Unit> turnQueue = new();
+        private Queue<Unit> _turnQueue = new();
         private Unit _currentUnit;
         
         public void StartBattle()
@@ -30,13 +30,13 @@ namespace Code.Managers
 
         private void StartNextUnitTurn()
         {
-            if (turnQueue.Count == 0)
+            if (_turnQueue.Count == 0)
             {
                 StartTurn();
                 return;
             }
 
-            _currentUnit = turnQueue.Dequeue();
+            _currentUnit = _turnQueue.Dequeue();
             
             // 플레이어 유닛인지 아닌지 검사해서 함수 실행
         }

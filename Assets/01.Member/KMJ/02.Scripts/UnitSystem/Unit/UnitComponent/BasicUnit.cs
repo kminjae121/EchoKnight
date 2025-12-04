@@ -3,6 +3,7 @@ using Code.UnitSystem;
 using GameEventChannel;
 using Input;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace  UnitSystem
 {
@@ -15,6 +16,7 @@ namespace  UnitSystem
         public int maxCardCost = 10;
         
         public int cardCost { get; private set; }
+        
         
         protected override void Dead()
         {

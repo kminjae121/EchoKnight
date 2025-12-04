@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using Code.Core.Events.Bus;
 using UnityEngine;
 using Code.Core.Interfaces;
 using UnitSystem;
@@ -13,13 +14,20 @@ namespace Code.UnitSystem
 
         private float _moveSpeed => _owner.unitSO.moveSpeed;
 
-        private bool _isMoveing = false;
+        private bool _isMove = false;
         
         public void Initialize(Unit owner)
         {
             _owner = owner as BasicUnit;
             
             _owner.inputSO.OnClickMoveEvent += Move;
+            
+            Bus<UnitMoveEvent>.Subscribe(HandleMoveEvent);
+        }
+
+        private void HandleMoveEvent(UnitMoveEvent obj)
+        {
+            _isMove = obj.isMove;
         }
 
         /// <summary>
@@ -30,10 +38,8 @@ namespace Code.UnitSystem
             if (!_owner.IsPlayerUnit)
                 return;
             
-            if (_isMoveing)
+            if (!_isMove)
                 return;
-            
-            _isMoveing = true;
 
             IMapTile tile = _owner.inputSO.GetSelectedTile();
             GameObject tileTrm = _owner.inputSO.GetWorldPosition();
@@ -59,7 +65,8 @@ namespace Code.UnitSystem
                     yield return null;
                 }
             }
-            _isMoveing = false;
+
+            _isMove = false;
         }
     }
 }

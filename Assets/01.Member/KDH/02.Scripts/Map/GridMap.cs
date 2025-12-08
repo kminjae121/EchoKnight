@@ -19,7 +19,8 @@ namespace Code.Map
         [SerializeField] private Material nonWalkableMaterial;
         [SerializeField] private Material enemyMaterial;
         [SerializeField] private Material obstacleMaterial;
-        [SerializeField] private float decalHeight = 0.1f;
+        [SerializeField] private float decalHeight = 1f;
+        [SerializeField] private float projectionDepth = 1f;
 
         [SerializeField, HideInInspector] private MapTile[] serializedTiles;
 
@@ -41,7 +42,7 @@ namespace Code.Map
 
         private void RebuildTileArray()
         {
-            if (serializedTiles == null || serializedTiles. Length == 0) return;
+            if (serializedTiles == null || serializedTiles.Length == 0) return;
             if (serializedTiles.Length != width * height) return;
 
             tiles = new MapTile[width, height];
@@ -84,7 +85,7 @@ namespace Code.Map
             {
                 tileObject = new GameObject($"Tile_{x}_{y}");
                 tileObject.transform.position = worldPosition;
-                tileObject. transform.parent = transform;
+                tileObject.transform.parent = transform;
             }
 
             MapTile tile = tileObject.GetComponent<MapTile>();
@@ -104,15 +105,15 @@ namespace Code.Map
         {
             GameObject decalObject = new GameObject("Decal");
             decalObject. transform.parent = tileObject.transform;
-            decalObject.transform.localPosition = Vector3.up * decalHeight;
+            decalObject.transform. localPosition = Vector3.up * decalHeight;
             decalObject.transform. localRotation = Quaternion. Euler(90f, 0f, 0f);
 
-            DecalProjector projector = decalObject. AddComponent<DecalProjector>();
-            projector.size = new Vector3(tileSize * 0.9f, tileSize * 0.9f, 0.5f);
-            projector.pivot = new Vector3(0f, 0f, 0.25f);
+            DecalProjector projector = decalObject.AddComponent<DecalProjector>();
+            projector.size = new Vector3(tileSize * 0.9f, tileSize * 0.9f, projectionDepth);
+            projector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
 
-            MapTileVisual visual = decalObject.AddComponent<MapTileVisual>();
-            visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial);
+            MapTileVisual visual = decalObject. AddComponent<MapTileVisual>();
+            visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial, projectionDepth);
         }
 
         private void ClearMap()
@@ -172,7 +173,7 @@ namespace Code.Map
         {
             IMapTile tile = GetTile(position);
             if (tile == null) return false;
-            return tile. CanUnitPass;
+            return tile.CanUnitPass;
         }
     }
 }

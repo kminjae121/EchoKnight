@@ -11,5 +11,10 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         {
             unitCam.Priority = 2;
         }
+
+        public void EndThisUnit()
+        {
+            unitCam.Priority = 1;
+        }
     }
 }

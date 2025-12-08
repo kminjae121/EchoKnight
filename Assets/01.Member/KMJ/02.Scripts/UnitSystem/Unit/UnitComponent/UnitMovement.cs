@@ -64,10 +64,9 @@ namespace Code.UnitSystem
 
                     yield return null;
                 }
+                Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
+                _unit.TurnEnd();
             }
-            
-            _unit.TurnEnd();
-            _isMove = false;
         }
     }
 }

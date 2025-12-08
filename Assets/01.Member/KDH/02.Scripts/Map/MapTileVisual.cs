@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine. Rendering. Universal;
 
-namespace Code.Map
+namespace Code. Map
 {
+    [ExecuteAlways]
     [RequireComponent(typeof(DecalProjector))]
     public class MapTileVisual : MonoBehaviour
     {
@@ -26,7 +27,7 @@ namespace Code.Map
             UpdateVisual();
         }
 
-        public void Initialize(Material walkable, Material nonWalkable, Material enemy, Material obstacle)
+        public void Initialize(Material walkable, Material nonWalkable, Material enemy, Material obstacle, float projectionDepth)
         {
             walkableMaterial = walkable;
             nonWalkableMaterial = nonWalkable;
@@ -35,11 +36,16 @@ namespace Code.Map
             
             decalProjector = GetComponent<DecalProjector>();
             mapTile = GetComponentInParent<MapTile>();
+
+            Vector3 size = decalProjector.size;
+            size.z = projectionDepth;
+            decalProjector.size = size;
+            decalProjector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
             
             UpdateVisual();
         }
 
-        public void UpdateVisual()
+        private void UpdateVisual()
         {
             if (decalProjector == null || mapTile == null) return;
 
@@ -51,10 +57,10 @@ namespace Code.Map
             if (mapTile.HasEnemy)
                 return enemyMaterial;
             
-            if (mapTile.HasObstacle)
+            if (mapTile. HasObstacle)
                 return obstacleMaterial;
             
-            if (! mapTile.IsWalkable)
+            if (!mapTile.IsWalkable)
                 return nonWalkableMaterial;
             
             return walkableMaterial;

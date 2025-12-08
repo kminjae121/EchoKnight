@@ -14,7 +14,7 @@ namespace Code.Map
         public bool IsWalkable => isWalkable;
         public bool HasEnemy => hasEnemy;
         public bool HasObstacle => hasObstacle;
-    
+        
         public bool CanUnitPass => isWalkable && ! hasObstacle;
 
         public void Initialize(Vector2Int position)

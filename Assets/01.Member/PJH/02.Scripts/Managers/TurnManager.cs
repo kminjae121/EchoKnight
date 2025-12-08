@@ -2,7 +2,6 @@
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using Code.UnitSystem;
 using UnityEngine;
 
 namespace Code.Managers
@@ -12,7 +11,7 @@ namespace Code.Managers
         [SerializeField] private int showFutureTurnCount = 5;
         [SerializeField] private float requiredGauge = 100f;
         [SerializeField] private UnitManager unitManager;
-        
+
         private readonly Queue<ITurnable> _turnQueue = new();
         private ITurnable _currentTurnUnit;
 
@@ -21,24 +20,32 @@ namespace Code.Managers
             Bus<UnitTurnEndEvent>.Subscribe(EndUnitTurn);
         }
 
+        private void OnDestroy()
+        {
+            Bus<UnitTurnEndEvent>.Unsubscribe(EndUnitTurn);
+        }
+
         public void StartBattle()
         {
             ChargeTurnGauge();
         }
-        
+
         private void EndUnitTurn(UnitTurnEndEvent evt)
         {
             _currentTurnUnit?.OnTurnEnd();
             _currentTurnUnit = null;
-            
+
             AddTurnGauge();
             UpdateTurnQueue();
             StartNextTurn();
         }
-        
+
+        /// <summary>
+        /// 처음에 모든 유닛을 행동 가능하도록 만드는 함수 ㅋㅋㄹㅃㅃ
+        /// </summary>
         private void ChargeTurnGauge()
         {
-            var units =  unitManager.GetAllUnits();
+            var units = unitManager.GetAllUnits();
 
             foreach (var unit in units)
                 unit.TurnGauge += unit.TurnSpeed + requiredGauge;
@@ -46,49 +53,49 @@ namespace Code.Managers
             UpdateTurnQueue();
             StartNextTurn();
         }
-        
+
         private void StartNextTurn()
         {
-            if (_turnQueue.Count == 0)
+            while (_turnQueue.Count == 0)
             {
-                ChargeTurnGauge();
-                return;
+                AddTurnGauge();
+                UpdateTurnQueue();
             }
 
             _currentTurnUnit = _turnQueue.Dequeue();
             _currentTurnUnit?.OnTurnStart();
         }
-        
+
         private void AddTurnGauge()
         {
             foreach (var unit in unitManager.GetAllUnits())
                 unit.TurnGauge += unit.TurnSpeed;
         }
 
+        /// <summary>
+        /// 유닛을 턴 큐에 넣는다.
+        /// </summary>
         private void UpdateTurnQueue()
         {
             var orderedUnits = unitManager.GetAllUnits()
                 .Where(unit => unit.IsReadyDoAct)
                 .OrderByDescending(unit => unit.TurnGauge)
                 .ToList();
-            
-            foreach (var unit in orderedUnits)
-            {
-                unit.TurnGauge -= requiredGauge;
-                _turnQueue.Enqueue(unit);
-            }
-        }
-        
-        #region UI Functions
 
-        private void UpdateFutureTurnUI()
-        {
+            foreach (var unit in orderedUnits)
+                while (unit.TurnGauge >= requiredGauge) // 연속 행동이 가능하게
+                {
+                    unit.TurnGauge -= requiredGauge;
+                    _turnQueue.Enqueue(unit);
+                }
         }
-        
-        private List<Unit> PredictFutureTurns(List<Unit> units)
+
+        #region UI Function
+
+        private List<ITurnable> GetFutureTurns()
         {
-            // 속도 기반으로 예측해서 정렬 뒤 리턴해주기
-            return null;
+            // 나중에 턴 큐에 없는 애들도 줘야 함.
+            return _turnQueue.ToList();
         }
 
         #endregion

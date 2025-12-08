@@ -12,22 +12,27 @@ namespace Code.UnitSystem
     {
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
-        public float TurnSpeed { get; private set; }
+        public float TurnSpeed { get; private set; } 
         
         public UnityEvent OnStartTurnEvent;
         
-        public void OnTurnStart()
+        public virtual void OnTurnStart()
         { 
             
         }
 
-        public void OnTurnEnd()
+        public virtual void OnTurnEnd()
         {
+            isMyTurn = false;
         }
 
         public float TurnGauge { get; set; }
+
+        public bool isMyTurn { get; set; } = false;
         
         public bool IsReadyDoAct => TurnGauge >= 100f;
+
+        public string UnitName => unitSO.UnitName;
         public bool IsPlayerUnit {get; private set;}
         
         public Action OnDeathEvent { get; private set; }
@@ -48,7 +53,7 @@ namespace Code.UnitSystem
 
         public void SetThisUnit(bool isSelect)
         {
-            IsPlayerUnit = isSelect;
+            isMyTurn = isSelect;
             
             if(IsPlayerUnit)
                 OnStartTurnEvent?.Invoke();

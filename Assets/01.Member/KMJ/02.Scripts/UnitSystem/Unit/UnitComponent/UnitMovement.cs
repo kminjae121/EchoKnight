@@ -10,17 +10,17 @@ namespace Code.UnitSystem
 {
     public class UnitMovement : MonoBehaviour, IUnitComponent
     {
-        private BasicUnit _owner;
+        private BasicUnit _unit;
 
-        private float _moveSpeed => _owner.unitSO.moveSpeed;
+        private float _moveSpeed => _unit.unitSO.moveSpeed;
 
         private bool _isMove = false;
         
         public void Initialize(Unit owner)
         {
-            _owner = owner as BasicUnit;
+            _unit = owner as BasicUnit;
             
-            _owner.inputSO.OnClickMoveEvent += Move;
+            _unit.inputSO.OnClickMoveEvent += Move;
             
             Bus<UnitMoveEvent>.Subscribe(HandleMoveEvent);
         }
@@ -35,14 +35,14 @@ namespace Code.UnitSystem
         /// </summary>
         private void Move()
         {
-            if (!_owner.IsPlayerUnit)
+            if (!_unit.isMyTurn)
                 return;
             
             if (!_isMove)
                 return;
 
-            IMapTile tile = _owner.inputSO.GetSelectedTile();
-            GameObject tileTrm = _owner.inputSO.GetWorldPosition();
+            IMapTile tile = _unit.inputSO.GetSelectedTile();
+            GameObject tileTrm = _unit.inputSO.GetWorldPosition();
 
             StartCoroutine(MoveStart(tile, tileTrm));
         }
@@ -54,10 +54,10 @@ namespace Code.UnitSystem
             
             if (tileInfo.IsWalkable)
             {
-                while (Vector3.Distance(_owner.transform.position, tile.transform.position) > 0.01f)
+                while (Vector3.Distance(_unit.transform.position, tile.transform.position) > 0.01f)
                 {
-                    _owner.transform.position = Vector3.MoveTowards(
-                        _owner.transform.position,
+                    _unit.transform.position = Vector3.MoveTowards(
+                        _unit.transform.position,
                         tile.transform.position,
                         _moveSpeed * Time.deltaTime
                     );
@@ -65,7 +65,8 @@ namespace Code.UnitSystem
                     yield return null;
                 }
             }
-
+            
+            _unit.TurnEnd();
             _isMove = false;
         }
     }

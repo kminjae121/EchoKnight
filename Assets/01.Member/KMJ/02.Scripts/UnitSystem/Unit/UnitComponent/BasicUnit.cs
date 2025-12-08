@@ -15,9 +15,26 @@ namespace  UnitSystem
 
         public int maxCardCost = 10;
         
+        
         public int cardCost { get; private set; }
-        
-        
+
+        public override void OnTurnStart()
+        {
+            isMyTurn = true;
+            base.OnTurnStart();
+        }
+
+        public override void OnTurnEnd()
+        {
+            isMyTurn = false;
+            base.OnTurnEnd();
+        }
+
+        public void TurnEnd()
+        {
+            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+        }
+
         protected override void Dead()
         {
             base.Dead();

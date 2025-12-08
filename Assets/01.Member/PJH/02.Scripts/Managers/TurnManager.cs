@@ -2,6 +2,7 @@
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using TMPro;
 using UnityEngine;
 
 namespace Code.Managers
@@ -11,7 +12,8 @@ namespace Code.Managers
         [SerializeField] private int showFutureTurnCount = 5;
         [SerializeField] private float requiredGauge = 100f;
         [SerializeField] private UnitManager unitManager;
-
+        [SerializeField] private TextMeshProUGUI turnUnitText;
+        
         private readonly Queue<ITurnable> _turnQueue = new();
         private ITurnable _currentTurnUnit;
 
@@ -64,6 +66,7 @@ namespace Code.Managers
 
             _currentTurnUnit = _turnQueue.Dequeue();
             _currentTurnUnit?.OnTurnStart();
+            turnUnitText.text = _currentTurnUnit.UnitName;
         }
 
         private void AddTurnGauge()

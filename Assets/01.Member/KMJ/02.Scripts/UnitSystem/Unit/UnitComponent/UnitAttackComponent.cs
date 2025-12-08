@@ -58,7 +58,7 @@ namespace Code.UnitSystem
 
         public void AttackEnemy()
         {
-            if (_unit.IsPlayerUnit && isAttack)
+            if (_unit.isMyTurn && isAttack)
             {
                 Unit enemy = _inputReader.GetEnemy();
 
@@ -70,6 +70,8 @@ namespace Code.UnitSystem
                         enemy.transform.position,transform.position,attackData,_owner);   
                 }      
             }
+            
+            _unit.TurnEnd();
 
             isAttack = false;
         }

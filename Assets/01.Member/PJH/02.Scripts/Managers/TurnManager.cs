@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
@@ -19,6 +20,12 @@ namespace Code.Managers
         private void Awake()
         {
             Bus<UnitTurnEndEvent>.Subscribe(EndUnitTurn);
+        }
+
+
+        private void Start()
+        {
+            StartBattle();
         }
 
         public void StartBattle()

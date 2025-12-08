@@ -1,8 +1,9 @@
+using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.UnitSystem;
 using UnitSystem;
 
-public class Enemy : Unit, ITurnable
+public class Enemy : Unit
 {
     protected override void OnEnable()
     {
@@ -13,6 +14,18 @@ public class Enemy : Unit, ITurnable
     {
         TestDeath();
         base.Dead();
+    }
+
+    public override void OnTurnStart()
+    {
+        Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+        
+        base.OnTurnStart();
+    }
+
+    public override void OnTurnEnd()
+    {
+        base.OnTurnEnd();
     }
 
     public void TestDeath()

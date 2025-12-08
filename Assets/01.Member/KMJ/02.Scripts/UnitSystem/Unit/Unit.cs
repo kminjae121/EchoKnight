@@ -16,16 +16,19 @@ namespace Code.UnitSystem
         
         public UnityEvent OnStartTurnEvent;
         
-        public void OnTurnStart()
+        public virtual void OnTurnStart()
         { 
             
         }
 
-        public void OnTurnEnd()
+        public virtual void OnTurnEnd()
         {
+            isMyTurn = false;
         }
 
         public float TurnGauge { get; set; }
+
+        public bool isMyTurn { get; set; } = false;
         
         public bool IsReadyDoAct => TurnGauge >= 100f;
         public bool IsPlayerUnit {get; private set;}
@@ -48,7 +51,7 @@ namespace Code.UnitSystem
 
         public void SetThisUnit(bool isSelect)
         {
-            IsPlayerUnit = isSelect;
+            isMyTurn = isSelect;
             
             if(IsPlayerUnit)
                 OnStartTurnEvent?.Invoke();

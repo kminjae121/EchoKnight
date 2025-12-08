@@ -60,7 +60,7 @@ namespace Code. Map
             if (mapTile. HasObstacle)
                 return obstacleMaterial;
             
-            if (! mapTile.IsWalkable)
+            if (!mapTile.IsWalkable)
                 return nonWalkableMaterial;
             
             return walkableMaterial;

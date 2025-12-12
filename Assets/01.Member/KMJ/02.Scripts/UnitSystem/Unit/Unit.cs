@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using GameEventChannel;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -15,6 +16,7 @@ namespace Code.UnitSystem
         public float TurnSpeed { get; private set; } 
         
         public UnityEvent OnStartTurnEvent;
+        public UnityEvent OnEndTurnEvent;
         
         public virtual void OnTurnStart()
         { 

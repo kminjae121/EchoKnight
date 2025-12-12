@@ -48,7 +48,7 @@ namespace Code.UnitManaging
                 
             }
             
-            _myOwnUnitList[0].SetThisUnit(true);
+            //_myOwnUnitList[0].SetThisUnit(true);
         }
         
         /// <summary>

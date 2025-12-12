@@ -21,17 +21,20 @@ namespace  UnitSystem
         public override void OnTurnStart()
         {
             isMyTurn = true;
+            OnStartTurnEvent?.Invoke();
             base.OnTurnStart();
         }
 
         public override void OnTurnEnd()
         {
             isMyTurn = false;
+            
             base.OnTurnEnd();
         }
 
         public void TurnEnd()
         {
+            OnEndTurnEvent?.Invoke();
             Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
         }
 

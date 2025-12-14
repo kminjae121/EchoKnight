@@ -2,8 +2,16 @@
 
 namespace Code.UnitSystem.SkillSystem
 {
-    public class BaseSkill : MonoBehaviour
+    public abstract class BaseSkill : MonoBehaviour
     {
+        public float damage;
+
+        public int useSkillPoint;
+
+        public void UseSkill()
+        {
+            
+        }
         
     }
 }

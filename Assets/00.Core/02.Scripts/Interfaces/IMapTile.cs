@@ -5,10 +5,10 @@ namespace Code.Core.Interfaces
     public interface IMapTile
     {
         Vector2Int GridPosition { get; }
-        bool IsWalkable { get; }
+        bool IsWalkable { get;  } 
         bool HasEnemy { get; }
-        bool HasObstacle { get; }
-        bool CanUnitPass { get; }
+        bool HasObstacle { get;  }
+        bool CanUnitPass { get;  }
     
         void SetWalkable(bool walkable);
         void SetEnemy(bool hasEnemy);

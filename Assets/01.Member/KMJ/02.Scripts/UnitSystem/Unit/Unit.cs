@@ -19,13 +19,16 @@ namespace Code.UnitSystem
         public UnityEvent OnEndTurnEvent;
         
         public virtual void OnTurnStart()
-        { 
-            
+        {
+            Debug.Log(this.gameObject.name);
+            isMyTurn = true;
+            OnStartTurnEvent?.Invoke();
         }
 
         public virtual void OnTurnEnd()
         {
             isMyTurn = false;
+            OnEndTurnEvent?.Invoke();
         }
 
         public float TurnGauge { get; set; }
@@ -35,7 +38,7 @@ namespace Code.UnitSystem
         public bool IsReadyDoAct => TurnGauge >= 100f;
 
         public string UnitName => unitSO.UnitName;
-        public bool IsPlayerUnit {get; private set;}
+        public bool IsPlayerUnit { get; set; }
         
         public Action OnDeathEvent { get; private set; }
         public Action OnHitEvent { get; private set; }
@@ -51,14 +54,6 @@ namespace Code.UnitSystem
             TurnSpeed = unitSO.turnSpeed;
             IsPlayerUnit = unitSO.isPlayerUnit;
             TurnGauge = 0f;
-        }
-
-        public void SetThisUnit(bool isSelect)
-        {
-            isMyTurn = isSelect;
-            
-            if(IsPlayerUnit)
-                OnStartTurnEvent?.Invoke();
         }
         
 

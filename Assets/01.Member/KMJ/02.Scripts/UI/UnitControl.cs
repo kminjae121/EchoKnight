@@ -19,7 +19,7 @@ namespace Code.UI
 
         private void HandleMove()
         {
-            Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(true));
+            Bus<UnitMoveEvent>.Raise(new UnitMoveEvent());
         }
         
 

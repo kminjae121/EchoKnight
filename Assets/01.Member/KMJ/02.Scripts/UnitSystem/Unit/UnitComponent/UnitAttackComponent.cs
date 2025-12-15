@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using EntityComponent;
@@ -55,7 +56,7 @@ namespace Code.UnitSystem
         {
             _inputReader.OnAttackEvent -= AttackEnemy;
         }
-
+        
         public void AttackEnemy()
         {
             if (_unit.isMyTurn && isAttack)
@@ -75,5 +76,6 @@ namespace Code.UnitSystem
 
             isAttack = false;
         }
+
     }
 }

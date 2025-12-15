@@ -17,6 +17,9 @@ namespace Code.UnitSystem
         [SerializeField] private Vector3 _horizontalCheckBoxSize;
 
         [SerializeField] private LayerMask _whatIsGround;
+
+        private Collider[] verticalCollider;
+        private Collider[] horizontalCollider;
         
         private float _moveSpeed => _unit.unitSO.moveSpeed;
 
@@ -36,10 +39,10 @@ namespace Code.UnitSystem
         {
             if (_unit.isMyTurn)
             {
-                Collider[] collider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
-                Collider[] collider2 = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
+                verticalCollider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
+                horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
             
-                collider.ToList().ForEach(obj =>
+                verticalCollider.ToList().ForEach(obj =>
                 {
                     IMapTile tile = obj.GetComponent<IMapTile>();
 
@@ -50,7 +53,7 @@ namespace Code.UnitSystem
                     }
                 });
             
-                collider2.ToList().ForEach(obj =>
+                horizontalCollider.ToList().ForEach(obj =>
                 {
                     IMapTile tile = obj.GetComponent<IMapTile>();
 
@@ -67,29 +70,20 @@ namespace Code.UnitSystem
 
         public void ResetTile()
         {
-            
-            Collider[] collider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
-            Collider[] collider2 = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
-
-            
-            collider.ToList().ForEach(obj =>
+            horizontalCollider.ToList().ForEach(obj =>
             {
                 IMapTile tile = obj.GetComponent<IMapTile>();
 
-                if (tile.IsWalkable)
-                {
-                    tile.SetWalkable(false);
-                }
+                tile.SetWalkable(false);
+                tile.SetEnemy(true);
             });
             
-            collider2.ToList().ForEach(obj =>
+            verticalCollider.ToList().ForEach(obj =>
             {
                 IMapTile tile = obj.GetComponent<IMapTile>();
-
-                if (tile.IsWalkable)
-                {
-                    tile.SetWalkable(false);
-                }
+                
+                tile.SetWalkable(false);
+                tile.SetEnemy(true);
             });
         }
 
@@ -112,9 +106,6 @@ namespace Code.UnitSystem
 
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
-            Debug.Log(tile.transform.position);
-            Debug.Log(tileInfo.IsWalkable);
-
             if (tileInfo.IsWalkable)
             {
                 while (Vector3.Distance(_unit.transform.position, tile.transform.position) > 0.01f)
@@ -124,15 +115,15 @@ namespace Code.UnitSystem
                         tile.transform.position,
                         _moveSpeed * Time.deltaTime
                     );
-
                     yield return null;
                 }
 
-                Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
+                ResetTile();
+                //Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
                 _unit.TurnEnd();
             }
 
-            ResetTile();
+            _isMove = false;
         }
         
         private void OnDrawGizmosSelected()

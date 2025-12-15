@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3294a67faafa4b7dbc3b09d5551baf20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 3.5, y: 2, z: 0.5}
-  _horizontalCheckBoxSize: {x: 0.5, y: 2, z: 3.5}
+  _verticalCheckBoxSize: {x: 3, y: 1, z: 0.1}
+  _horizontalCheckBoxSize: {x: 0.1, y: 1, z: 3.5}
   _whatIsGround:
     serializedVersion: 2
     m_Bits: 64
@@ -268,18 +268,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 2682628836158502387}
-        m_TargetAssemblyTypeName: UnitSystem.BasicUnit, Assembly-CSharp
-        m_MethodName: set_isMyTurn
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
   OnEndTurnEvent:
     m_PersistentCalls:
       m_Calls:
@@ -296,6 +284,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  <TurnGauge>k__BackingField: 100
   <inputSO>k__BackingField: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
   maxCardCost: 10

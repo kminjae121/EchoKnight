@@ -123,7 +123,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &5710953835394621746
 Transform:
   m_ObjectHideFlags: 0
@@ -151,8 +151,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3294a67faafa4b7dbc3b09d5551baf20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 4, y: 2, z: 1}
-  _horizontalCheckBoxSize: {x: 1, y: 2, z: 4}
+  _verticalCheckBoxSize: {x: 3.5, y: 1, z: 0.1}
+  _horizontalCheckBoxSize: {x: 0.1, y: 1, z: 3.5}
   _whatIsGround:
     serializedVersion: 2
     m_Bits: 64
@@ -296,6 +296,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  <TurnGauge>k__BackingField: 0
   <inputSO>k__BackingField: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
   maxCardCost: 10

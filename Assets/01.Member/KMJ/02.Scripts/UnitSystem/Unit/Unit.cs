@@ -31,7 +31,7 @@ namespace Code.UnitSystem
             OnEndTurnEvent?.Invoke();
         }
 
-        public float TurnGauge { get; set; }
+        [field: SerializeField] public float TurnGauge { get; set; }
 
         public bool isMyTurn { get; set; } = false;
         

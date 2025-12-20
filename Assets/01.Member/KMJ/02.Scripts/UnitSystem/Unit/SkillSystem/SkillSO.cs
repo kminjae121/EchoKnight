@@ -1,0 +1,13 @@
+﻿using UnityEngine;
+using UnityEngine.UI;
+
+namespace Code.UnitSystem.SkillSystem
+{
+    [CreateAssetMenu(fileName = "SkillSO/Skill", menuName = "skillSO", order = 0)]
+    public class SkillSO : ScriptableObject
+    {
+        public string skillName;
+        public Image skillUIImage;
+        public string className;
+    }
+}

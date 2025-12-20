@@ -11,6 +11,12 @@ namespace Code.UnitSystem.SkillSystem
         public int useSkillPoint;
 
         public bool isCanUseSkill = false;
+        
+        public virtual void InitializeSkill()
+        {
+            
+        }
+
         public virtual void UseSkill()
         {
             if (_skillCompo.currentSkillCost - useSkillPoint < 0)
@@ -18,6 +24,7 @@ namespace Code.UnitSystem.SkillSystem
             
             _skillCompo.currentSkillCost -= useSkillPoint;
         }
+        
 
         public void CanUseThisSkill()
         {
@@ -29,6 +36,9 @@ namespace Code.UnitSystem.SkillSystem
             isCanUseSkill = false;
         }
         
-        
+        public virtual void SkillFeedback()
+        {
+
+        }
     }
 }

@@ -20,7 +20,6 @@ namespace Code.UnitSystem
         
         public virtual void OnTurnStart()
         {
-            Debug.Log(this.gameObject.name);
             isMyTurn = true;
             OnStartTurnEvent?.Invoke();
         }

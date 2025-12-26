@@ -94,7 +94,7 @@ namespace Input
             return null;
         }
 
-        public Unit GetEnemy()
+        public GameObject GetEnemy()
         {
             Camera mainCam = Camera.main;
             Debug.Assert(mainCam != null, "No main camera in this scene");
@@ -103,8 +103,9 @@ namespace Input
             
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsEnemy))
             {
-                return hit.collider.gameObject.GetComponent<Unit>();
+                return hit.collider.gameObject;
             }
+
             return null;
         }
 

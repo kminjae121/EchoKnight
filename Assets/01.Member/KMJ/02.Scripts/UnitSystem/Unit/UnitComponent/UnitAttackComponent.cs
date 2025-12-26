@@ -1,28 +1,53 @@
-﻿using System;
+﻿ using System;
 using System.Collections;
+using System.Linq;
+using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.EntityComponent;
 using EntityComponent;
+using GameEventChannel;
 using Input;
 using UnitSystem;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Code.UnitSystem
 {
     public class UnitAttackComponent : MonoBehaviour, IUnitComponent
     {
         private Unit _owner;
+
+        [SerializeField] private Vector3 _attackVerticalCheckBoxSize;
+        [SerializeField] private Vector3 _attackHorizontalCheckBoxSize;
+
+        private Collider[] _attackVerticalCollider;
+        private Collider[] _attackHorizontalCollider;
+        
+        
+        [SerializeField] private UnitRotation rotationCompo; 
+        
+        [SerializeField] private LayerMask _whatIsGround;
         
         private DamageData _damageData;
         [SerializeField] private AttackDataSO attackData;
 
+        [SerializeField] private UnitAnimationTrigger triggerCompo;
+
+        public UnityEvent<GameObject> attackEvent;
+        
         private InputReader _inputReader;
 
         private UnitSO _unitSO;
         
         private BasicUnit _unit;
 
+        private GameObject _targetEnemy = null;
+
         private bool isAttack = false;
+
+        public UnityEvent attackStartEvent;
+        public UnityEvent attackEndEvent;
 
 
         public void Initialize(Unit owner)
@@ -35,47 +60,150 @@ namespace Code.UnitSystem
             
             _unitSO = _unit.unitSO;
             
-            Bus<UnitAttackEvent>.Subscribe(HandleMoveEvent);
+            Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
         }
-
-        private void HandleMoveEvent(UnitAttackEvent evt)
-        {
-            isAttack = evt.isAttack;
-        }
-
-
         private void Awake()
         {
             _damageData = new DamageData();
             _damageData.damage = 1.2345f;
 
             _inputReader.OnAttackEvent += AttackEnemy;
+            
+            
         }
+
+        private void Start()
+        {
+            triggerCompo.OnTakeDamageTrigger += TakeDamage;
+            TurnEnd();
+        }
+
+        private void FindEnemyIsThere(GameObject enemy)
+        {
+            _attackVerticalCollider.ToList().ForEach(obj =>
+            {
+                if (enemy == obj.gameObject)
+                {
+                    _targetEnemy = enemy;
+                }
+            });
+            
+            _attackHorizontalCollider.ToList().ForEach(obj =>
+            {
+                if (enemy == obj.gameObject)
+                {
+                    _targetEnemy = enemy;
+                }
+            });
+        }
+
+        public void CheckCanAttack(UnitAttackEvent evt)
+        {
+            if (_unit.isMyTurn)
+            {
+                attackStartEvent?.Invoke();
+                _attackVerticalCollider = Physics.OverlapBox(transform.position, _attackVerticalCheckBoxSize, Quaternion.identity, _whatIsGround);
+                _attackHorizontalCollider = Physics.OverlapBox(transform.position, _attackHorizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
+            
+                _attackVerticalCollider.ToList().ForEach(obj =>
+                {
+                    if (obj.TryGetComponent(out IMapTile tile))
+                    {
+                        if (!tile.HasObstacle)
+                        {
+                            tile.SetWalkable(true);
+                            tile.SetEnemy(false);
+                        }
+                    }
+                });
+            
+                _attackHorizontalCollider.ToList().ForEach(obj =>
+                {
+                    if (obj.TryGetComponent(out IMapTile tile))
+                    {
+                        if (!tile.HasObstacle)
+                        {
+                            tile.SetWalkable(true);
+                            tile.SetEnemy(false);
+                        }
+                    }
+                });
+                isAttack = true;
+            }
+        }
+        
+        public void ResetTile()
+        {
+            if (_attackHorizontalCollider == null && _attackVerticalCollider == null)
+                return;
+            
+            _attackHorizontalCollider.ToList().ForEach(obj =>
+            {
+                if (obj.TryGetComponent(out IMapTile tile))
+                {
+                    tile.SetWalkable(false);
+                    tile.SetEnemy(true);
+                }
+            });
+            
+            _attackVerticalCollider.ToList().ForEach(obj =>
+            {
+                if (obj.TryGetComponent(out IMapTile tile))
+                {
+                    tile.SetWalkable(false);
+                    tile.SetEnemy(true);
+                }
+            });
+            
+            _attackHorizontalCollider.ToList().Clear();
+            _attackVerticalCollider.ToList().Clear();
+
+            isAttack = true;
+        }
+
 
         private void OnDestroy()
         {
             _inputReader.OnAttackEvent -= AttackEnemy;
         }
         
+
         public void AttackEnemy()
         {
             if (_unit.isMyTurn && isAttack)
             {
-                Unit enemy = _inputReader.GetEnemy();
+                GameObject enemy = _inputReader.GetEnemy();
 
-                float distance = Vector3.Distance(_unit.transform.position, enemy.transform.position);
+                FindEnemyIsThere(enemy);
+                
+                rotationCompo.SetDir(enemy.transform.position);
+                
+                attackEvent?.Invoke(_targetEnemy);          
+            }   
+            ResetTile();
+        }
 
-                if (distance >= _unitSO.attackDistance)
-                {
-                    enemy.GetUnitCompo<EntityHealth>().ApplyDamage(_damageData, 
-                        enemy.transform.position,transform.position,attackData,_owner);   
-                }      
-            }
-            
+        public void TurnEnd()
+        {
             _unit.TurnEnd();
-
+                
             isAttack = false;
         }
 
+        public void TakeDamage()
+        {
+            _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
+                _targetEnemy.transform.position,transform.position,attackData,_owner);
+        }
+
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireCube(transform.position, _attackVerticalCheckBoxSize);
+
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireCube(transform.position, _attackHorizontalCheckBoxSize);
+        }
     }
 }

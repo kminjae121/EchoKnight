@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Linq;
+using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using UnityEngine;
 using Code.Core.Interfaces;
 using UnitSystem;
+using UnityEngine.Events;
 
 
 namespace Code.UnitSystem
@@ -20,10 +22,16 @@ namespace Code.UnitSystem
 
         private Collider[] verticalCollider;
         private Collider[] horizontalCollider;
+
+        public UnityEvent moveEvent;
         
         private float _moveSpeed => _unit.unitSO.moveSpeed;
 
         private bool _isMove = false;
+        
+        [SerializeField] private UnitAnimation animationCompo;
+
+        [SerializeField] private UnitRotation rotationCompo; 
         
         public void Initialize(Unit owner)
         {
@@ -39,6 +47,7 @@ namespace Code.UnitSystem
         {
             if (_unit.isMyTurn)
             {
+                moveEvent?.Invoke();
                 verticalCollider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
                 horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
             
@@ -70,6 +79,9 @@ namespace Code.UnitSystem
 
         public void ResetTile()
         {
+            if (horizontalCollider == null && verticalCollider == null)
+                return;
+
             horizontalCollider.ToList().ForEach(obj =>
             {
                 IMapTile tile = obj.GetComponent<IMapTile>();
@@ -106,8 +118,10 @@ namespace Code.UnitSystem
 
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
+            rotationCompo.SetDir(tile.transform.position);
             if (tileInfo.IsWalkable)
             {
+                animationCompo.PlaySelectAnimation("MOVE");   
                 while (Vector3.Distance(_unit.transform.position, tile.transform.position) > 0.01f)
                 {
                     _unit.transform.position = Vector3.MoveTowards(
@@ -122,7 +136,7 @@ namespace Code.UnitSystem
                 //Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
                 _unit.TurnEnd();
             }
-
+            animationCompo.PlaySelectAnimation("IDLE");   
             _isMove = false;
         }
         

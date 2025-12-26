@@ -10,6 +10,8 @@ namespace Code.UnitSystem
             
         public Action OnAttackTrigger;
         
+        public Action OnTakeDamageTrigger;
+        
         private Unit _entity;
         
         public void Initialize(Unit  entity)
@@ -23,6 +25,8 @@ namespace Code.UnitSystem
         }
         
         private void MeleeAttack() => OnAttackTrigger?.Invoke();
-        
+
+        private void GetDamage() => OnTakeDamageTrigger?.Invoke();
+
     }
 }

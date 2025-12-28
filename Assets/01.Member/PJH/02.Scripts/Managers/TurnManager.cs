@@ -43,7 +43,7 @@ namespace Code.Managers
         }
 
         /// <summary>
-        /// 처음에 모든 유닛을 행동 가능하도록 만드는 함수 ㅋㅋㄹㅃㅃ
+        /// 처음에 모든 유닛을 행동 가능하도록 만드는 함수
         /// </summary>
         private void ChargeTurnGauge()
         {

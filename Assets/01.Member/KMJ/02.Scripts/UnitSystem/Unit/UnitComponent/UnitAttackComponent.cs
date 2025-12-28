@@ -16,7 +16,6 @@ namespace Code.UnitSystem
 {
     public class UnitAttackComponent : MonoBehaviour, IUnitComponent
     {
-        private Unit _owner;
 
         [SerializeField] private Vector3 _attackVerticalCheckBoxSize;
         [SerializeField] private Vector3 _attackHorizontalCheckBoxSize;
@@ -24,10 +23,10 @@ namespace Code.UnitSystem
         private Collider[] _attackVerticalCollider;
         private Collider[] _attackHorizontalCollider;
         
+        [SerializeField] private LayerMask _whatIsGround;
         
         [SerializeField] private UnitRotation rotationCompo; 
         
-        [SerializeField] private LayerMask _whatIsGround;
         
         private DamageData _damageData;
         [SerializeField] private AttackDataSO attackData;
@@ -38,6 +37,7 @@ namespace Code.UnitSystem
         
         private InputReader _inputReader;
 
+        private Unit _owner;
         private UnitSO _unitSO;
         
         private BasicUnit _unit;
@@ -68,8 +68,6 @@ namespace Code.UnitSystem
             _damageData.damage = 1.2345f;
 
             _inputReader.OnAttackEvent += AttackEnemy;
-            
-            
         }
 
         private void Start()

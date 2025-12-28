@@ -8,7 +8,6 @@ public class SwordFlagSkill : BaseSkill
 {
     [SerializeField] private Animator animator;
     [SerializeField] private UnitAnimation animtionCompo;
-    [SerializeField] private UnitAnimationTrigger triggerCompo;
  
     private void Start()
     {

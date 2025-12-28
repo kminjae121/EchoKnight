@@ -107,9 +107,9 @@ namespace Code.UnitSystem
                 {
                     if (obj.TryGetComponent(out IMapTile tile))
                     {
-                        if (!tile.HasObstacle)
+                        if (!tile.HasObstacle)    
                         {
-                            tile.SetWalkable(true);
+                            tile.SetWalkable(true);      
                             tile.SetEnemy(false);
                         }
                     }

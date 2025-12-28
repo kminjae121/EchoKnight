@@ -56,10 +56,6 @@ namespace Code.UnitSystem.SkillSystem
         
         public void InitializeSkills()
         {
-            skills.Values.ToList().ForEach(skill =>
-            {
-                skill.CanUseThisSkill();
-            });
         }
         
         public void StartSkill(string skillName)
@@ -69,11 +65,14 @@ namespace Code.UnitSystem.SkillSystem
             
             BaseSkill skill = skills.GetValueOrDefault(skillName);
             
-            skill.UseSkill();
+            skill.ShowSkillRange();
         }
 
         public void AddSkill(SkillSO skillSO)
         {
+            if (_skillList.Count == 2)
+                return;
+            
             if (skillSO == null) return;
             _skillList.Add(skillSO);
 
@@ -89,6 +88,13 @@ namespace Code.UnitSystem.SkillSystem
                 skills.GetValueOrDefault(skillSO.skillName).InitializeSkill();
             }
 
+        }
+
+        public void RemoveSkill(SkillSO skillSO)
+        {
+            _skillList.Remove(skillSO);
+
+            skills.Remove(skillSO.skillName);
         }
     }
 }

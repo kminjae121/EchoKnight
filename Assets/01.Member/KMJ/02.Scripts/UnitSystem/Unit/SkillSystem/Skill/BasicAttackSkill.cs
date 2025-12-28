@@ -11,7 +11,6 @@ public class BasicAttackSkill : BaseSkill
 {
     [SerializeField] private Animator animator;
     [SerializeField] private UnitAnimation animtionCompo;
-    [SerializeField] private UnitAnimationTrigger triggerCompo;
 
     [SerializeField] private float atkMoveSpeed;
     
@@ -29,7 +28,7 @@ public class BasicAttackSkill : BaseSkill
     
     public void AttackAction(GameObject target)
     {
-        _ownTrm = transform.position;
+        _ownTrm = _owner.transform.position;
         StartCoroutine(MeleeAttackAction(target));
     }
 
@@ -39,23 +38,26 @@ public class BasicAttackSkill : BaseSkill
             
         animtionCompo.PlaySelectAnimation("MOVE");
             
-        while (Vector3.Distance(gameObject.transform.position, target.transform.position) > attackMoveDistance)
+        while (Vector3.Distance(_owner.transform.position, target.transform.position) > attackMoveDistance)
         {
-            Vector3 currentPos = gameObject.transform.position;
+            Vector3 currentPos = _owner.transform.position;
             Vector3 targetPos = target.transform.position;
                 
             targetPos.y = currentPos.y;
 
-            gameObject.transform.position = Vector3.MoveTowards(
+            _owner.transform.position = Vector3.MoveTowards(
                 currentPos,
                 targetPos,
                 atkMoveSpeed * Time.deltaTime
             );
 
+            if (Vector3.Distance(_owner.transform.position, target.transform.position) < attackMoveDistance * 2.5)
+            {
+                animtionCompo.PlaySelectAnimation("BAS");
+            }
+
             yield return null;
         }
-            
-        animtionCompo.PlaySelectAnimation("BAS");
     }
     
     public void TakeDamage()
@@ -73,10 +75,10 @@ public class BasicAttackSkill : BaseSkill
     {
         animtionCompo.PlaySelectAnimation("MOVE");
             
-        while (Vector3.Distance(gameObject.transform.position, _ownTrm) > 0.01f)
+        while (Vector3.Distance(_owner.transform.position, _ownTrm) > 0.01f)
         {
-            gameObject.transform.position = Vector3.MoveTowards(
-                gameObject.transform.position,
+            _owner.transform.position = Vector3.MoveTowards(
+                _owner.transform.position,
                 _ownTrm,
                 atkMoveSpeed * Time.deltaTime
             );

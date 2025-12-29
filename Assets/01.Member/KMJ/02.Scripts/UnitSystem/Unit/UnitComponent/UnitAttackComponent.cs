@@ -9,6 +9,7 @@ using EntityComponent;
 using GameEventChannel;
 using Input;
 using UnitSystem;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -16,7 +17,8 @@ namespace Code.UnitSystem
 {
     public class UnitAttackComponent : MonoBehaviour, IUnitComponent
     {
-
+        private CinemachineImpulseSource impulseSource;
+        
         [SerializeField] private Vector3 _attackVerticalCheckBoxSize;
         [SerializeField] private Vector3 _attackHorizontalCheckBoxSize;
 
@@ -68,6 +70,8 @@ namespace Code.UnitSystem
             _damageData.damage = 1.2345f;
 
             _inputReader.OnAttackEvent += AttackEnemy;
+            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
+            attackEndEvent.AddListener(TurnEnd);
         }
 
         private void Start()
@@ -97,37 +101,46 @@ namespace Code.UnitSystem
 
         public void CheckCanAttack(UnitAttackEvent evt)
         {
-            if (_unit.isMyTurn)
+            if (evt.isAttack)
             {
-                attackStartEvent?.Invoke();
-                _attackVerticalCollider = Physics.OverlapBox(transform.position, _attackVerticalCheckBoxSize, Quaternion.identity, _whatIsGround);
-                _attackHorizontalCollider = Physics.OverlapBox(transform.position, _attackHorizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
-            
-                _attackVerticalCollider.ToList().ForEach(obj =>
+                if (_unit.isMyTurn)
                 {
-                    if (obj.TryGetComponent(out IMapTile tile))
-                    {
-                        if (!tile.HasObstacle)    
-                        {
-                            tile.SetWalkable(true);      
-                            tile.SetEnemy(false);
-                        }
-                    }
-                });
+                    attackStartEvent?.Invoke();
+                    _attackVerticalCollider = Physics.OverlapBox(transform.position, _attackVerticalCheckBoxSize, Quaternion.identity, _whatIsGround);
+                    _attackHorizontalCollider = Physics.OverlapBox(transform.position, _attackHorizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
             
-                _attackHorizontalCollider.ToList().ForEach(obj =>
-                {
-                    if (obj.TryGetComponent(out IMapTile tile))
+                    _attackVerticalCollider.ToList().ForEach(obj =>
                     {
-                        if (!tile.HasObstacle)
+                        if (obj.TryGetComponent(out IMapTile tile))
                         {
-                            tile.SetWalkable(true);
-                            tile.SetEnemy(false);
+                            if (!tile.HasObstacle)    
+                            {
+                                tile.SetWalkable(true);      
+                                tile.SetEnemy(false);
+                            }
                         }
-                    }
-                });
-                isAttack = true;
+                    });
+            
+                    _attackHorizontalCollider.ToList().ForEach(obj =>
+                    {
+                        if (obj.TryGetComponent(out IMapTile tile))
+                        {
+                            if (!tile.HasObstacle)
+                            {
+                                tile.SetWalkable(true);
+                                tile.SetEnemy(false);
+                            }
+                        }
+                    });
+                    isAttack = true;
+                }
             }
+            else
+            {
+                ResetTile();
+                isAttack = false;
+            }
+            
         }
         
         public void ResetTile()
@@ -139,8 +152,11 @@ namespace Code.UnitSystem
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetWalkable(false);
-                    tile.SetEnemy(true);
+                    if (!tile.HasObstacle)
+                    {
+                        tile.SetWalkable(false);
+                        tile.SetEnemy(true);
+                    }
                 }
             });
             
@@ -148,8 +164,11 @@ namespace Code.UnitSystem
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetWalkable(false);
-                    tile.SetEnemy(true);
+                    if (!tile.HasObstacle)
+                    {
+                        tile.SetWalkable(false);
+                        tile.SetEnemy(true);
+                    }
                 }
             });
             
@@ -190,6 +209,8 @@ namespace Code.UnitSystem
 
         public void TakeDamage()
         {
+            impulseSource.GenerateImpulse(0.6f);  
+            
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
                 _targetEnemy.transform.position,transform.position,attackData,_owner);
         }

@@ -13,8 +13,10 @@ namespace Code.UnitSystem
     {
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
-        public float TurnSpeed { get; private set; } 
-        
+        public float TurnSpeed { get; private set; }
+
+        public Sprite UnitImage { get; private set; }
+
         public UnityEvent OnStartTurnEvent;
         public UnityEvent OnEndTurnEvent;
         

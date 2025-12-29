@@ -1,4 +1,6 @@
 ﻿
+using UnityEngine;
+
 namespace Code.Core.Interfaces
 {
     public interface ITurnable
@@ -11,6 +13,8 @@ namespace Code.Core.Interfaces
         bool IsReadyDoAct { get; }
         
         float TurnSpeed { get; }
+        
+        Sprite UnitImage { get; }
 
         void OnTurnStart();
         void OnTurnEnd();

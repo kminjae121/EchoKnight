@@ -17,6 +17,8 @@ namespace Code.UnitSystem
         
         public UnityEvent OnStartTurnEvent;
         public UnityEvent OnEndTurnEvent;
+        public UnityEvent OnHitEvent;
+        
         
         public virtual void OnTurnStart()
         {
@@ -40,7 +42,6 @@ namespace Code.UnitSystem
         public bool IsPlayerUnit { get; set; }
         
         public Action OnDeathEvent { get; private set; }
-        public Action OnHitEvent { get; private set; }
 
         protected readonly Dictionary<Type,IUnitComponent> _components = new();
 

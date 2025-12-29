@@ -13,6 +13,8 @@ namespace Code.UI
 
         [SerializeField] private Button skillbtn;
 
+        private bool isCanSkill = true;
+
         private void Awake()
         {
             skillbtn.onClick.AddListener(HandleClickRange);
@@ -20,7 +22,17 @@ namespace Code.UI
 
         private void HandleClickRange()
         {
-            skillCompnent.StartSkill(skillName);
+            if (isCanSkill)
+            {
+                skillCompnent.StartSkill(skillName);
+                isCanSkill = false;
+            }
+            else
+            {
+                skillCompnent.CancelSkill(skillName);
+                isCanSkill = true;
+            }
+                
         }
     }
 }

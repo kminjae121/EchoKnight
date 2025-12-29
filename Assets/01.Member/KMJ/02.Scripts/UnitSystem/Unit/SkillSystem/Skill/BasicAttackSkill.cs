@@ -5,10 +5,13 @@ using Code.EntityComponent;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class BasicAttackSkill : BaseSkill
 {
+    
+    [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private Animator animator;
     [SerializeField] private UnitAnimation animtionCompo;
 
@@ -22,6 +25,8 @@ public class BasicAttackSkill : BaseSkill
         skillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
+        impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
+        Debug.Log(impulseSource.gameObject.name);
         _damageData.damage = 2.3456f;
     }
     
@@ -30,11 +35,12 @@ public class BasicAttackSkill : BaseSkill
     {
         _ownTrm = _owner.transform.position;
         StartCoroutine(MeleeAttackAction(target));
+        skillStartEvent?.Invoke();
     }
 
     private IEnumerator MeleeAttackAction(GameObject target)
     {
-        yield return new WaitForSeconds(1.3f);
+        yield return new WaitForSeconds(2.2f);
             
         animtionCompo.PlaySelectAnimation("MOVE");
             
@@ -62,6 +68,7 @@ public class BasicAttackSkill : BaseSkill
     
     public void TakeDamage()
     {
+        impulseSource.GenerateImpulse(0.6f);
         _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
             _targetEnemy.transform.position,transform.position,attackData,_owner);
     }

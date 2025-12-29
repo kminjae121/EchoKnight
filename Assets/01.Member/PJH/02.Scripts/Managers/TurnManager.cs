@@ -58,6 +58,7 @@ namespace Code.Managers
 
             AdvanceTime(_currentTurnUnit);
 
+            // 사실 필요 없지만 가독성을 위해
             _currentTurnUnit.TurnGauge = 0f;
             _currentTurnUnit.OnTurnStart();
 

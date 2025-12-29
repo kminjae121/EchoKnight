@@ -552,6 +552,7 @@ GameObject:
   - component: {fileID: 7981569603284882097}
   - component: {fileID: 3559569980093964770}
   - component: {fileID: 6337751774613420988}
+  - component: {fileID: 5175523000720465999}
   m_Layer: 0
   m_Name: UnitCam
   m_TagString: Untagged
@@ -648,6 +649,30 @@ MonoBehaviour:
     Time: 0
     Smoothing: 0
     IgnoreY: 0
+--- !u!114 &5175523000720465999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1077728548742184760}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b2d199b96b516448144ab30fb26aed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ApplyAfter: 2
+  ChannelMask: 1
+  Gain: 1
+  Use2DDistance: 0
+  UseCameraSpace: 1
+  SignalCombinationMode: 0
+  ReactionSettings:
+    m_SecondaryNoise: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
+    AmplitudeGain: 8
+    FrequencyGain: 4
+    Duration: 0.6
+    m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &1389279870274202329
 GameObject:
   m_ObjectHideFlags: 0
@@ -1168,7 +1193,7 @@ GameObject:
   - component: {fileID: 4416300527113325303}
   - component: {fileID: 6429403500470982661}
   m_Layer: 7
-  m_Name: Light
+  m_Name: Knight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1683,7 +1708,7 @@ Transform:
   m_GameObject: {fileID: 3033585035091998650}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.42, z: 0}
+  m_LocalPosition: {x: 0, y: 0.33, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2352,13 +2377,43 @@ MonoBehaviour:
   damage: 0
   useSkillPoint: 0
   isCanUseSkill: 0
+  skillStartEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1143128515452140542}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: SetThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   skillEvent:
     m_PersistentCalls:
       m_Calls: []
   skillEndEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1143128515452140542}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: EndThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   _owner: {fileID: 2682628836158502387}
+  impulseSource: {fileID: 0}
   animator: {fileID: 5930818674794191497}
   animtionCompo: {fileID: 2953721302162278736}
   atkMoveSpeed: 3

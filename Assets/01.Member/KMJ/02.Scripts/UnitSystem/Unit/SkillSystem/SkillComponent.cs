@@ -68,6 +68,17 @@ namespace Code.UnitSystem.SkillSystem
             skill.ShowSkillRange();
         }
 
+        public void CancelSkill(string skillName)
+        {
+            if(!skills.ContainsKey(skillName))
+                return;
+            
+            BaseSkill skill = skills.GetValueOrDefault(skillName);
+            
+            skill.BlockThisSkill();
+            skill.ResetTile();
+        }
+
         public void AddSkill(SkillSO skillSO)
         {
             if (_skillList.Count == 2)

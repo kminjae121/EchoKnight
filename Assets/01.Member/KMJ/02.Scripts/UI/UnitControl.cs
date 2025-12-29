@@ -11,6 +11,9 @@ namespace Code.UI
         [SerializeField] private Button atkBtn;
         [SerializeField] private Button moveBtn;
 
+        private bool isMoveing = true;
+        private bool isAttacking = true;
+
         private void Awake()
         {
             atkBtn.onClick.AddListener(HandleAttack);
@@ -19,13 +22,31 @@ namespace Code.UI
 
         private void HandleMove()
         {
-            Bus<UnitMoveEvent>.Raise(new UnitMoveEvent());
+            if (isMoveing)
+            {
+                Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(true));
+                isMoveing = false;
+            }
+            else
+            {
+                Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
+                isMoveing = true;
+            }
         }
         
 
         private void HandleAttack()
         {
-            Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(true));
+            if (isAttacking)
+            {
+                Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(true));
+                isAttacking = false;
+            }
+            else
+            {
+                Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(false));
+                isAttacking = true;
+            }
         }
         
     }

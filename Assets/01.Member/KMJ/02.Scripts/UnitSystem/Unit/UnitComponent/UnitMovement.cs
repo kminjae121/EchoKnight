@@ -45,36 +45,45 @@ namespace Code.UnitSystem
 
         public void CheckCanMoveTile(UnitMoveEvent evt)
         {
-            if (_unit.isMyTurn)
+            if (evt.isMove)
             {
-                moveEvent?.Invoke();
-                verticalCollider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
-                horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
-            
-                verticalCollider.ToList().ForEach(obj =>
+                if (_unit.isMyTurn)
                 {
-                    IMapTile tile = obj.GetComponent<IMapTile>();
-
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(true);
-                        tile.SetEnemy(false);
-                    }
-                });
+                    moveEvent?.Invoke();
+                    verticalCollider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
+                    horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
             
-                horizontalCollider.ToList().ForEach(obj =>
-                {
-                    IMapTile tile = obj.GetComponent<IMapTile>();
-
-                    if (!tile.HasObstacle)
+                    verticalCollider.ToList().ForEach(obj =>
                     {
-                        tile.SetWalkable(true);
-                        tile.SetEnemy(false);
-                    }
-                });
+                        IMapTile tile = obj.GetComponent<IMapTile>();
 
-                _isMove = true;   
+                        if (!tile.HasObstacle)
+                        {
+                            tile.SetWalkable(true);
+                            tile.SetEnemy(false);
+                        }
+                    });
+            
+                    horizontalCollider.ToList().ForEach(obj =>
+                    {
+                        IMapTile tile = obj.GetComponent<IMapTile>();
+
+                        if (!tile.HasObstacle)
+                        {
+                            tile.SetWalkable(true);
+                            tile.SetEnemy(false);
+                        }
+                    });
+
+                    _isMove = true;   
+                }
             }
+            else
+            {
+                ResetTile();
+                _isMove = false;
+            }
+            
         }
 
         public void ResetTile()

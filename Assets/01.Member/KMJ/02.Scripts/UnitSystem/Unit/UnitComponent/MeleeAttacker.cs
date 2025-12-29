@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using Code.UnitSystem;
 using UnitSystem;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
@@ -11,7 +12,6 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
     public class MeleeAttacker : MonoBehaviour
     {
         [SerializeField] private UnitAttackComponent atkCompo;
-
 
         [SerializeField] private float atkMoveSpeed;
 
@@ -45,7 +45,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
-            yield return new WaitForSeconds(1.3f);
+            yield return new WaitForSeconds(2.2f);
             
             animtionCompo.PlaySelectAnimation("MOVE");
             

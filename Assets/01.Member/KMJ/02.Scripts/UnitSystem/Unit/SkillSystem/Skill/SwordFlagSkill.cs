@@ -18,6 +18,7 @@ public class SwordFlagSkill : BaseSkill
 
     private void UseSkill(GameObject target)
     {
+        skillStartEvent?.Invoke();
         animtionCompo.PlaySelectAnimation("SWORDFLAG");
     }
 

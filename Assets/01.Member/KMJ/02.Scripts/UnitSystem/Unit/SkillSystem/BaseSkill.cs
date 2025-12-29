@@ -41,6 +41,7 @@ namespace Code.UnitSystem.SkillSystem
         
         protected DamageData _damageData;
 
+        public UnityEvent skillStartEvent;
         public UnityEvent<GameObject> skillEvent;
         public UnityEvent skillEndEvent;
         

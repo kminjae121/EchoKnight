@@ -6,7 +6,7 @@ namespace Code.Core.Interfaces
         string UnitName { get; }
         bool IsPlayerUnit { get; }
 
-        float TurnGauge { get; }
+        float TurnGauge { get; set; }
         
         bool IsReadyDoAct { get; }
         

@@ -95,16 +95,23 @@ namespace Code.UnitSystem
             {
                 IMapTile tile = obj.GetComponent<IMapTile>();
 
-                tile.SetWalkable(false);
-                tile.SetEnemy(true);
+                if (!tile.HasObstacle)
+                {
+                    tile.SetWalkable(false);
+                    tile.SetEnemy(true);
+                }
             });
             
             verticalCollider.ToList().ForEach(obj =>
             {
                 IMapTile tile = obj.GetComponent<IMapTile>();
-                
-                tile.SetWalkable(false);
-                tile.SetEnemy(true);
+
+                if (!tile.HasObstacle)
+                {
+                    tile.SetWalkable(false);
+                    tile.SetEnemy(true);
+                    
+                }
             });
         }
 
@@ -123,10 +130,16 @@ namespace Code.UnitSystem
             GameObject tileTrm = _unit.inputSO.GetWorldPosition();
 
             StartCoroutine(MoveStart(tile, tileTrm));
+            ResetTile();
         }
 
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
+            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit,100);
+
+            hit.transform.TryGetComponent(out IMapTile maptile);
+            maptile.SetObstacle(false);
+            
             rotationCompo.SetDir(tile.transform.position);
             if (tileInfo.IsWalkable)
             {
@@ -140,9 +153,14 @@ namespace Code.UnitSystem
                     );
                     yield return null;
                 }
-
-                ResetTile();
                 //Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
+                
+                Physics.Raycast(transform.position, Vector3.down, out RaycastHit hittor, 100);
+
+                hittor.transform.TryGetComponent(out IMapTile maptiles);
+                Debug.Log(hittor.transform.name);
+                maptiles.SetObstacle(true);
+                
                 _unit.TurnEnd();
             }
             animationCompo.PlaySelectAnimation("IDLE");   

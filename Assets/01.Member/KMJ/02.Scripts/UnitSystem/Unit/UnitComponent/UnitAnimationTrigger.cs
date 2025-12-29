@@ -7,6 +7,8 @@ namespace Code.UnitSystem
     public class UnitAnimationTrigger : MonoBehaviour,IUnitComponent
     {
         public Action OnAnimationEndTrigger;
+
+        public Action OnEnemyAnimationEndTrigger;
             
         public Action OnAttackTrigger;
         
@@ -17,6 +19,8 @@ namespace Code.UnitSystem
         public Action OnBaseAttackSkillEndTrigger;
         
         public Action OnSwordFlagSkillTrigger;
+
+        public Action OnSwordFlagSkillEndTrigger;
         
         private Unit _entity;
         
@@ -36,8 +40,12 @@ namespace Code.UnitSystem
 
         private void BasicAttackSkill() => OnBaseAttackSkillTrigger?.Invoke();
         private void SwordFlagSkill() => OnSwordFlagSkillTrigger?.Invoke();
+        
+        private void SwordFlagSkillEnd() => OnSwordFlagSkillEndTrigger?.Invoke();
 
         private void BasicAttackEndSkill() => OnBaseAttackSkillEndTrigger?.Invoke();
+        
+        private void EnemyAnimationEnd() => OnEnemyAnimationEndTrigger?.Invoke();
 
     }
 }

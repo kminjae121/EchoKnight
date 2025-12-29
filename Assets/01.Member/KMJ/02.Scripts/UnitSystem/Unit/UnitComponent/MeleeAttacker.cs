@@ -24,6 +24,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         [SerializeField] private float attackMoveDistance = 1.5f;
 
         public bool isRunningAttack = false;
+        
         private Vector3 _ownTrm;
         private void Awake()
         {
@@ -62,7 +63,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
                     atkMoveSpeed * Time.deltaTime
                 );
                 
-                if(isRunningAttack && Vector3.Distance(gameObject.transform.position, target.transform.position) > attackMoveDistance * 2)
+                if(isRunningAttack && Vector3.Distance(gameObject.transform.position, target.transform.position) < attackMoveDistance * 2.67)
                     animtionCompo.PlaySelectAnimation("ATTACK");
 
                 yield return null;

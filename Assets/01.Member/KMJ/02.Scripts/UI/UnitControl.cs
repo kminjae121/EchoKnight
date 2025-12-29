@@ -11,8 +11,8 @@ namespace Code.UI
         [SerializeField] private Button atkBtn;
         [SerializeField] private Button moveBtn;
 
-        private bool isMoveing = true;
-        private bool isAttacking = true;
+        public bool isMoveing = true;
+        public bool isAttacking = true;
 
         private void Awake()
         {
@@ -32,6 +32,16 @@ namespace Code.UI
                 Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
                 isMoveing = true;
             }
+        }
+
+        public void SetMovingTrue()
+        {
+            isMoveing = true;
+        }
+
+        public void SetAttackingTrue()
+        {
+            isAttacking = true;
         }
         
 

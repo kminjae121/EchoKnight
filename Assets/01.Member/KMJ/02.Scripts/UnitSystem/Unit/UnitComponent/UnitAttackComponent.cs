@@ -71,6 +71,7 @@ namespace Code.UnitSystem
 
             _inputReader.OnAttackEvent += AttackEnemy;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
+            attackEndEvent.AddListener(TurnEnd);
         }
 
         private void Start()
@@ -151,8 +152,11 @@ namespace Code.UnitSystem
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetWalkable(false);
-                    tile.SetEnemy(true);
+                    if (!tile.HasObstacle)
+                    {
+                        tile.SetWalkable(false);
+                        tile.SetEnemy(true);
+                    }
                 }
             });
             
@@ -160,8 +164,11 @@ namespace Code.UnitSystem
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetWalkable(false);
-                    tile.SetEnemy(true);
+                    if (!tile.HasObstacle)
+                    {
+                        tile.SetWalkable(false);
+                        tile.SetEnemy(true);
+                    }
                 }
             });
             

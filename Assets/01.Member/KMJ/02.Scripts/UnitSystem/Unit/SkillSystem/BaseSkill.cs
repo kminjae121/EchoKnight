@@ -131,8 +131,11 @@ namespace Code.UnitSystem.SkillSystem
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetWalkable(false);
-                    tile.SetEnemy(true);
+                    if (!tile.HasObstacle)
+                    {
+                        tile.SetWalkable(false);
+                        tile.SetEnemy(true);
+                    }
                 }
             });
             
@@ -140,8 +143,11 @@ namespace Code.UnitSystem.SkillSystem
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetWalkable(false);
-                    tile.SetEnemy(true);
+                    if (!tile.HasObstacle)
+                    {
+                        tile.SetWalkable(false);
+                        tile.SetEnemy(true);
+                    }
                 }
             });
             

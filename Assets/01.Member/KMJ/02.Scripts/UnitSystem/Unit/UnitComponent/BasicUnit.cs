@@ -1,4 +1,6 @@
+using System;
 using Code.Core.Events.Bus;
+using Code.UI;
 using Code.UnitSystem;
 using GameEventChannel;
 using Input;
@@ -14,9 +16,15 @@ namespace  UnitSystem
         [SerializeField] private GameEventChannelSO unitDeadChannel;
 
         public int maxCardCost = 10;
-        
+
+        private UnitControl _controlUI;
         
         public int cardCost { get; private set; }
+
+        private void Start()
+        {
+            _controlUI = GameObject.Find("BaseButton").GetComponent<UnitControl>();
+        }
 
         public override void OnTurnStart()
         {
@@ -30,6 +38,8 @@ namespace  UnitSystem
             isMyTurn = false;
             
             base.OnTurnEnd();
+            _controlUI.SetMovingTrue();
+            _controlUI.SetAttackingTrue();
         }
 
         public void TurnEnd()

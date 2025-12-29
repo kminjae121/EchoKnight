@@ -13,7 +13,7 @@ namespace Code.UnitSystem.SkillSystem
 {
     public abstract class BaseSkill : MonoBehaviour
     {
-        [SerializeField] private UnitAnimationTrigger triggerCompo;
+        [SerializeField] protected UnitAnimationTrigger triggerCompo;
         [SerializeField] protected SkillComponent _skillCompo;
         
         [SerializeField] private Vector3 _attackVerticalCheckBoxSize;

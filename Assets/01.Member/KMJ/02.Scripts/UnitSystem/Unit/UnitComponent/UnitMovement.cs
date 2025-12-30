@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
@@ -24,6 +25,8 @@ namespace Code.UnitSystem
         private Collider[] horizontalCollider;
 
         public UnityEvent moveEvent;
+
+        private SetUnitCamera unitCam;
         
         private float _moveSpeed => _unit.unitSO.moveSpeed;
 
@@ -40,6 +43,8 @@ namespace Code.UnitSystem
             _unit.inputSO.OnClickMoveEvent += Move;
             
             Bus<UnitMoveEvent>.Subscribe(CheckCanMoveTile);
+
+            unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
         }   
 
 
@@ -49,6 +54,7 @@ namespace Code.UnitSystem
             {
                 if (_unit.isMyTurn)
                 {
+                    unitCam.SetThisUnit();
                     moveEvent?.Invoke();
                     verticalCollider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
                     horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
@@ -132,6 +138,8 @@ namespace Code.UnitSystem
                 StartCoroutine(MoveStart(tile, tileTrm));
                 ResetTile();
             }
+            
+            unitCam.EndThisUnit();
         }
 
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
@@ -150,8 +158,6 @@ namespace Code.UnitSystem
                     yield return null;
                 }
                 //Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
-                
-                _unit.TurnEnd();
             }
             animationCompo.PlaySelectAnimation("IDLE");   
             _isMove = false;

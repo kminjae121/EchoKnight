@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.EntityComponent;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
@@ -93,6 +94,6 @@ public class BasicAttackSkill : BaseSkill
         }
         animtionCompo.PlaySelectAnimation("IDLE");
         
-        skillEndEvent?.Invoke();
+        //skillEndEvent?.Invoke();
     }
 }

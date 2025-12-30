@@ -13,7 +13,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 
         private void Start()
         {
-            ownCam = GameObject.Find("Cam").gameObject;
+            ownCam = GameObject.Find("BasicCam").gameObject;
         }
 
         public void SetThisUnit()

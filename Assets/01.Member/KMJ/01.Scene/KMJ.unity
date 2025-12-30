@@ -9237,7 +9237,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 500, y: 200}
+  m_SizeDelta: {x: 600, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &265302229
 MonoBehaviour:
@@ -12922,6 +12922,81 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3724603690060609949, guid: 73ca473cd32396743bb16006ca7621d9, type: 3}
   m_PrefabInstance: {fileID: 367678364}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &368095503
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 368095505}
+  - component: {fileID: 368095504}
+  m_Layer: 0
+  m_Name: BasicCam
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &368095504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368095503}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Priority:
+    Enabled: 1
+    m_Value: 1
+  OutputChannel: 1
+  StandbyUpdate: 2
+  m_StreamingVersion: 20241001
+  m_LegacyPriority: 0
+  Target:
+    TrackingTarget: {fileID: 0}
+    LookAtTarget: {fileID: 0}
+    CustomLookAtTarget: 0
+  Lens:
+    FieldOfView: 60
+    OrthographicSize: 5
+    NearClipPlane: 0.3
+    FarClipPlane: 1000
+    Dutch: 0
+    ModeOverride: 0
+    PhysicalProperties:
+      GateFit: 2
+      SensorSize: {x: 21.946, y: 16.002}
+      LensShift: {x: 0, y: 0}
+      FocusDistance: 10
+      Iso: 200
+      ShutterSpeed: 0.005
+      Aperture: 16
+      BladeCount: 5
+      Curvature: {x: 2, y: 11}
+      BarrelClipping: 0.25
+      Anamorphism: 0
+  BlendHint: 0
+--- !u!4 &368095505
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 368095503}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0.24684188, y: -0.29710993, z: 0.079047725, w: 0.918992}
+  m_LocalPosition: {x: -5.34, y: 14.46, z: -20.37}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 149.956, y: -215.857, z: -180.092}
 --- !u!1 &370765622
 GameObject:
   m_ObjectHideFlags: 0
@@ -20381,7 +20456,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 50
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -20407,8 +20482,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 593438743}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.49301183, y: -0.5082592, z: 0.49164504, w: 0.5068501}
-  m_LocalPosition: {x: -9.51, y: 22.17, z: -13.2}
+  m_LocalRotation: {x: 0.24684188, y: -0.29710993, z: 0.079047725, w: 0.918992}
+  m_LocalPosition: {x: -5.34, y: 14.46, z: -20.37}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -31071,8 +31146,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 200}
-  m_SizeDelta: {x: 400, y: 150}
+  m_AnchoredPosition: {x: -13, y: 575}
+  m_SizeDelta: {x: 300, y: 150}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &885891715
 MonoBehaviour:
@@ -35706,8 +35781,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1025106190}
   - component: {fileID: 1025106189}
+  - component: {fileID: 1025106191}
   m_Layer: 0
-  m_Name: Cam
+  m_Name: TopCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -35727,7 +35803,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Priority:
     Enabled: 1
-    m_Value: 1
+    m_Value: 0
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
@@ -35771,6 +35847,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 91.752014, y: -275.20898, z: -185.207}
+--- !u!114 &1025106191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1025106188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e0d24438a27f4091928471fcead4800e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unitCam: {fileID: 1025106189}
 --- !u!1 &1026961733
 GameObject:
   m_ObjectHideFlags: 0
@@ -41984,8 +42073,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 150}
+  m_AnchoredPosition: {x: -13, y: 398}
+  m_SizeDelta: {x: 300, y: 150}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1211267183
 MonoBehaviour:
@@ -45526,7 +45615,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 150}
+  m_SizeDelta: {x: 300, y: 150}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1355686328
 MonoBehaviour:
@@ -58553,12 +58642,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5465527800487375716, guid: deb2da044377d2549a061592bb737efb, type: 3}
       propertyPath: m_Type
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5465527800487375716, guid: deb2da044377d2549a061592bb737efb, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 4b3d2095baccc2041b973b66b786b9d0, type: 3}
+      objectReference: {fileID: 21300000, guid: c241e847af767d148b898393a975bb22, type: 3}
     - target: {fileID: 5465527800487375716, guid: deb2da044377d2549a061592bb737efb, type: 3}
       propertyPath: m_Color.b
       value: 1
@@ -77423,6 +77512,7 @@ SceneRoots:
   - {fileID: 1866353844}
   - {fileID: 1968829127}
   - {fileID: 1025106190}
+  - {fileID: 368095505}
   - {fileID: 754098241}
   - {fileID: 306749202}
   - {fileID: 404868829}

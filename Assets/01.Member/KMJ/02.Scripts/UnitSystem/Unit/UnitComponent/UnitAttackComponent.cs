@@ -51,6 +51,8 @@ namespace Code.UnitSystem
         public UnityEvent attackStartEvent;
         public UnityEvent attackEndEvent;
 
+        private SetUnitCamera unitCam;
+
 
         public void Initialize(Unit owner)
         {
@@ -63,6 +65,8 @@ namespace Code.UnitSystem
             _unitSO = _unit.unitSO;
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
+
+            unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
         }
         private void Awake()
         {
@@ -71,13 +75,12 @@ namespace Code.UnitSystem
 
             _inputReader.OnAttackEvent += AttackEnemy;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-            attackEndEvent.AddListener(TurnEnd);
+            //attackEndEvent.AddListener(TurnEnd);
         }
 
         private void Start()
         {
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
-            TurnEnd();
         }
 
         private void FindEnemyIsThere(GameObject enemy)
@@ -105,6 +108,7 @@ namespace Code.UnitSystem
             {
                 if (_unit.isMyTurn)
                 {
+                    unitCam.SetThisUnit();
                     attackStartEvent?.Invoke();
                     _attackVerticalCollider = Physics.OverlapBox(transform.position, _attackVerticalCheckBoxSize, Quaternion.identity, _whatIsGround);
                     _attackHorizontalCollider = Physics.OverlapBox(transform.position, _attackHorizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
@@ -172,6 +176,8 @@ namespace Code.UnitSystem
             _attackVerticalCollider.ToList().Clear();
 
             isAttack = true;
+            
+            unitCam.EndThisUnit();
         }
 
 

@@ -48,6 +48,8 @@ namespace Code.UnitSystem.SkillSystem
         [SerializeField] protected Unit _owner;
         
         private UnitSO _unitSO;
+
+        private SetUnitCamera unitCam;
         
         private BasicUnit _unit;
         
@@ -65,6 +67,9 @@ namespace Code.UnitSystem.SkillSystem
             skillEndEvent.AddListener(TurnEnd);
 
             _damageData.damage = 1.234f;
+            
+            
+            unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
         }
 
         public virtual void ShowSkillRange()
@@ -94,6 +99,7 @@ namespace Code.UnitSystem.SkillSystem
 
         public void CheckCanAttack()
         {
+            unitCam.SetThisUnit();
             _attackVerticalCollider = Physics.OverlapBox(transform.position, _attackVerticalCheckBoxSize, Quaternion.identity, _whatIsGround);
             _attackHorizontalCollider = Physics.OverlapBox(transform.position, _attackHorizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
             
@@ -151,6 +157,7 @@ namespace Code.UnitSystem.SkillSystem
             _attackVerticalCollider.ToList().Clear();
 
             BlockThisSkill();
+            unitCam.EndThisUnit();
         }
 
 

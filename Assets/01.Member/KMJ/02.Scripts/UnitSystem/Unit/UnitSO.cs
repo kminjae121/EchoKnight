@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using Skill;
-using UnityEditor.Animations;
 using UnityEngine;
 
 public enum EntityType
@@ -22,7 +20,7 @@ public class UnitSO : ScriptableObject
     public List<UnitSkillCardSO> unitSkillCards;
 
     [Header("CharacterAnimationController")]
-    public AnimatorController animationController;
+    public RuntimeAnimatorController animationController;
 
     [Space(4)]
     [Header("CharacterOwnCost")]

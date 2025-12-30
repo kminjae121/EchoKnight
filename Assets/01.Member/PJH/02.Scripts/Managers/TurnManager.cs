@@ -10,7 +10,6 @@ namespace Code.Managers
     public class TurnManager : MonoBehaviour
     {
         [SerializeField] private float baseTurnGauge = 100f;
-        [SerializeField] private int showFutureTurnCount = 5;
         [SerializeField] private UnitManager unitManager;
         [SerializeField] private TextMeshProUGUI turnUnitText;
 
@@ -108,13 +107,13 @@ namespace Code.Managers
             if (turnUnitText != null && _currentTurnUnit != null)
                 turnUnitText.text = _currentTurnUnit.UnitName;
         }
-        
-        private List<ITurnable> GetTimelineUnits(int count)
+
+        public List<ITurnable> GetTimelineUnits(int count)
         {
             return _units
                 .Where(u => u != _currentTurnUnit)
                 .OrderBy(u => u.TurnGauge)
-                .Take(showFutureTurnCount)
+                .Take(count)
                 .ToList();
         }
 

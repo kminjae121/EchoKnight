@@ -6,6 +6,7 @@ using GameEventChannel;
 using Input;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace  UnitSystem
 {
@@ -18,12 +19,19 @@ namespace  UnitSystem
         public int maxCardCost = 10;
 
         private UnitControl _controlUI;
-        
+
+        private Button endTurnBtn;
         public int cardCost { get; private set; }
+        
+        
 
         private void Start()
         {
             _controlUI = GameObject.Find("BaseButton").GetComponent<UnitControl>();
+            endTurnBtn = GameObject.Find("TurnEnd").GetComponent<Button>();
+            
+            
+            endTurnBtn.onClick.AddListener(TurnEnd);
         }
 
         public override void OnTurnStart()
@@ -35,17 +43,21 @@ namespace  UnitSystem
 
         public override void OnTurnEnd()
         {
-            isMyTurn = false;
+                isMyTurn = false;
             
-            base.OnTurnEnd();
-            _controlUI.SetMovingTrue();
-            _controlUI.SetAttackingTrue();
+                base.OnTurnEnd();
+                TurnEnd();
+                _controlUI.SetMovingTrue();
+                _controlUI.SetAttackingTrue();
         }
 
         public void TurnEnd()
         {
-            OnEndTurnEvent?.Invoke();
-            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+            if (isMyTurn)
+            {
+                OnEndTurnEvent?.Invoke();
+                Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+            }
         }
 
         protected override void Dead()

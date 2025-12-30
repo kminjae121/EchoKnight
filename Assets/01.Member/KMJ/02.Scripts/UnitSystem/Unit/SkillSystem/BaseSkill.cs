@@ -104,7 +104,6 @@ namespace Code.UnitSystem.SkillSystem
                     if (!tile.HasObstacle)
                     {
                         tile.SetWalkable(true);
-                        tile.SetEnemy(false);
                     }
                 }
             });
@@ -116,7 +115,6 @@ namespace Code.UnitSystem.SkillSystem
                     if (!tile.HasObstacle)
                     {
                         tile.SetWalkable(true);
-                        tile.SetEnemy(false);
                     }
                 }
             });
@@ -134,7 +132,6 @@ namespace Code.UnitSystem.SkillSystem
                     if (!tile.HasObstacle)
                     {
                         tile.SetWalkable(false);
-                        tile.SetEnemy(true);
                     }
                 }
             });
@@ -146,7 +143,6 @@ namespace Code.UnitSystem.SkillSystem
                     if (!tile.HasObstacle)
                     {
                         tile.SetWalkable(false);
-                        tile.SetEnemy(true);
                     }
                 }
             });

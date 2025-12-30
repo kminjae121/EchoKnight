@@ -27,7 +27,17 @@ namespace Code.UI
             var units = turnManager.GetTimelineUnits(showTurnOrderCount);
             
             for (int i = 0; i < showTurnOrderCount; ++i)
-                turnOrderImages[i].sprite = units[0].UnitImage;
+            {
+                if (i < units.Count)
+                {
+                    turnOrderImages[i].sprite = units[i].UnitImage;
+                    turnOrderImages[i].enabled = true;
+                }
+                else
+                {
+                    turnOrderImages[i].enabled = false;
+                }
+            }
         }
     }
 }

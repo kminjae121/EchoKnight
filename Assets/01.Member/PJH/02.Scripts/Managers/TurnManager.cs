@@ -62,6 +62,8 @@ namespace Code.Managers
             _currentTurnUnit.OnTurnStart();
 
             UpdateCurrentTurnUI();
+
+            Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
         }
 
         private ITurnable GetNextUnit()

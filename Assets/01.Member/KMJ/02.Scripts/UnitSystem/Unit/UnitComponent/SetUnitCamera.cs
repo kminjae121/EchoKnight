@@ -1,4 +1,6 @@
-﻿using Unity.Cinemachine;
+﻿using System;
+using Code.Core.Events.Bus;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
@@ -7,13 +9,22 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
     {
         [SerializeField] private CinemachineCamera unitCam;
 
+        private GameObject ownCam;
+
+        private void Start()
+        {
+            ownCam = GameObject.Find("Cam").gameObject;
+        }
+
         public void SetThisUnit()
         {
+            Bus<CamMovingEvent>.Raise(new CamMovingEvent(unitCam.gameObject));
             unitCam.Priority = 2;
         }
 
         public void EndThisUnit()
         {
+            Bus<CamMovingEvent>.Raise(new CamMovingEvent(ownCam.gameObject));
             unitCam.Priority = -1;
         }
     }

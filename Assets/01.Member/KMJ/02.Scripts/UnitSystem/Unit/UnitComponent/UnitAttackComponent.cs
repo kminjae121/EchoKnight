@@ -116,7 +116,6 @@ namespace Code.UnitSystem
                             if (!tile.HasObstacle)    
                             {
                                 tile.SetWalkable(true);      
-                                tile.SetEnemy(false);
                             }
                         }
                     });
@@ -128,7 +127,6 @@ namespace Code.UnitSystem
                             if (!tile.HasObstacle)
                             {
                                 tile.SetWalkable(true);
-                                tile.SetEnemy(false);
                             }
                         }
                     });
@@ -155,7 +153,6 @@ namespace Code.UnitSystem
                     if (!tile.HasObstacle)
                     {
                         tile.SetWalkable(false);
-                        tile.SetEnemy(true);
                     }
                 }
             });
@@ -167,7 +164,6 @@ namespace Code.UnitSystem
                     if (!tile.HasObstacle)
                     {
                         tile.SetWalkable(false);
-                        tile.SetEnemy(true);
                     }
                 }
             });

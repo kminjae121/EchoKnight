@@ -57,10 +57,9 @@ namespace Code.UnitSystem
                     {
                         IMapTile tile = obj.GetComponent<IMapTile>();
 
-                        if (!tile.HasObstacle)
+                        if (!tile.HasObstacle && !tile.HasEnemy)
                         {
                             tile.SetWalkable(true);
-                            tile.SetEnemy(false);
                         }
                     });
             
@@ -68,10 +67,9 @@ namespace Code.UnitSystem
                     {
                         IMapTile tile = obj.GetComponent<IMapTile>();
 
-                        if (!tile.HasObstacle)
+                        if (!tile.HasObstacle && !tile.HasEnemy)
                         {
                             tile.SetWalkable(true);
-                            tile.SetEnemy(false);
                         }
                     });
 
@@ -98,7 +96,6 @@ namespace Code.UnitSystem
                 if (!tile.HasObstacle)
                 {
                     tile.SetWalkable(false);
-                    tile.SetEnemy(true);
                 }
             });
             
@@ -109,8 +106,6 @@ namespace Code.UnitSystem
                 if (!tile.HasObstacle)
                 {
                     tile.SetWalkable(false);
-                    tile.SetEnemy(true);
-                    
                 }
             });
         }
@@ -135,11 +130,6 @@ namespace Code.UnitSystem
 
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
-            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit,100);
-
-            hit.transform.TryGetComponent(out IMapTile maptile);
-            maptile.SetObstacle(false);
-            
             rotationCompo.SetDir(tile.transform.position);
             if (tileInfo.IsWalkable)
             {
@@ -154,12 +144,6 @@ namespace Code.UnitSystem
                     yield return null;
                 }
                 //Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
-                
-                Physics.Raycast(transform.position, Vector3.down, out RaycastHit hittor, 100);
-
-                hittor.transform.TryGetComponent(out IMapTile maptiles);
-                Debug.Log(hittor.transform.name);
-                maptiles.SetObstacle(true);
                 
                 _unit.TurnEnd();
             }

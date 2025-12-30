@@ -57,7 +57,7 @@ public class BasicAttackSkill : BaseSkill
                 atkMoveSpeed * Time.deltaTime
             );
 
-            if (Vector3.Distance(_owner.transform.position, target.transform.position) < attackMoveDistance * 2.5)
+            if (Vector3.Distance(_owner.transform.position, target.transform.position) < attackMoveDistance * 2)
             {
                 animtionCompo.PlaySelectAnimation("BAS");
             }

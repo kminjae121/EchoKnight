@@ -21,7 +21,7 @@ public class PoolManagerEditor : EditorWindow
     private List<PoolItemUI> _itemList;
     private PoolItemUI _selectedItem;
 
-    private UnityEditor.Editor _cachedEditor;
+    private Editor _cachedEditor;
     private VisualElement _inspectorView;
 
     [MenuItem("Tools/PoolManager")]

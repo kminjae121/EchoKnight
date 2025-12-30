@@ -211,7 +211,7 @@ namespace Code.UnitSystem
 
         public void TakeDamage()
         {
-            Bus<HitStopEvent>.Raise(new HitStopEvent(0.6f));
+            Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f));
             impulseSource.GenerateImpulse(0.6f);  
             
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 

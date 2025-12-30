@@ -113,7 +113,7 @@ namespace Code.Managers
         public List<ITurnable> GetTimelineUnits(int count)
         {
             return _units
-                .Where(u => u != _currentTurnUnit)
+                //.Where(u => u != _currentTurnUnit)
                 .OrderBy(u => u.TurnGauge)
                 .Take(count)
                 .ToList();

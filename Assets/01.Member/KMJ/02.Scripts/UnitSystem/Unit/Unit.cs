@@ -56,6 +56,7 @@ namespace Code.UnitSystem
             TurnSpeed = unitSO.turnSpeed;
             IsPlayerUnit = unitSO.isPlayerUnit;
             TurnGauge = 0f;
+            UnitImage = unitSO.UnitImage;
         }
         
 

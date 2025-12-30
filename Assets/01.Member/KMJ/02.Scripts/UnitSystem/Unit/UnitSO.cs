@@ -15,6 +15,9 @@ public class UnitSO : ScriptableObject
     [Header("UnitName")]
     public string UnitName;
     
+    [Header("UnitImage")]
+    public Sprite UnitImage;
+    
     [Header("OwnUnitCards")]
     public List<UnitSkillCardSO> unitSkillCards;
 

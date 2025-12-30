@@ -94,6 +94,6 @@ public class BasicAttackSkill : BaseSkill
         }
         animtionCompo.PlaySelectAnimation("IDLE");
         
-        //skillEndEvent?.Invoke();
+        skillEndEvent?.Invoke();
     }
 }

@@ -65,6 +65,6 @@ public class SwordFlagSkill : BaseSkill
 
     private void TurnEnd()
     {
-        //skillEndEvent?.Invoke();
+        skillEndEvent?.Invoke();
     }
 }

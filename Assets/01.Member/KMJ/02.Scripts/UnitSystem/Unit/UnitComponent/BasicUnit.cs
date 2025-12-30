@@ -22,8 +22,8 @@ namespace  UnitSystem
 
         private Button endTurnBtn;
         public int cardCost { get; private set; }
-        
-        
+
+        [SerializeField] private Image unitImage;
 
         private void Start()
         {

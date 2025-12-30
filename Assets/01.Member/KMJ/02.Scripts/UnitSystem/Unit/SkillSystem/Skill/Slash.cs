@@ -1,4 +1,5 @@
 ﻿using System;
+using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using UnityEngine;
 
@@ -29,6 +30,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         {
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
             {
+                Bus<HitStopEvent>.Raise(new HitStopEvent(0.6f));
                 other.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,
                     atkData,null);
                 

@@ -197,7 +197,7 @@ namespace Code.UnitSystem
                 
                 rotationCompo.SetDir(enemy.transform.position);
                 
-                attackEvent?.Invoke(_targetEnemy);          
+                attackEvent?.Invoke(_targetEnemy);      
             }   
             ResetTile();
         }
@@ -211,6 +211,7 @@ namespace Code.UnitSystem
 
         public void TakeDamage()
         {
+            Bus<HitStopEvent>.Raise(new HitStopEvent(0.6f));
             impulseSource.GenerateImpulse(0.6f);  
             
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 

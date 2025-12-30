@@ -3,6 +3,7 @@ using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Interfaces;
 using UnitSystem;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 using Unit = Code.UnitSystem.Unit;
@@ -15,6 +16,9 @@ namespace EnemySystem
         [SerializeField] private UnitRotation rotationCompo;
         [SerializeField] private UnitAnimation animationCompo;
 
+        [SerializeField] private LayerMask whatIsGround;
+
+        [SerializeField] private Transform owner;
         public UnityEvent OnMoveEndEvent;
     
         public void Initialize(Unit owner)
@@ -24,19 +28,13 @@ namespace EnemySystem
         
         public void Move()
         {
-                MoveToRandomGrid();
-        }
-
-        private void MoveToTarget()
-        {
-            Debug.Log("플레이어 방향으로 움직임");
+            MoveToRandomGrid();
         }
 
 
         private void MoveToRandomGrid()
         {
             int randomDir = Random.Range(1, 5);
-            Debug.Log(randomDir);
             
             Moveing(randomDir);
         }
@@ -48,64 +46,45 @@ namespace EnemySystem
 
         private void MoveTo(int dirInt)
         {
-            Debug.Log("움직임");
-            
-            switch (dirInt)
+            Vector3 step = dirInt switch
             {
-                case 1:
-                    StartCoroutine(Move(Vector3.forward));
-                    break;
-                case 2:
-                    StartCoroutine(Move(Vector3.back));
-                    break;
-                case 3:
-                    StartCoroutine(Move(Vector3.right));
-                    break;
-                case 4:
-                    StartCoroutine(Move(Vector3.left));
-                    break;
-            }
+                1 => new Vector3(-1f, 0f, 0f), 
+                2 => new Vector3( 1f, 0f, 0f), 
+                3 => new Vector3( 0f, 0f, 1f), 
+                4 => new Vector3( 0f, 0f,-1f), 
+                _ => Vector3.zero
+            };
+
+            if (step == Vector3.zero) return;
+            
+            StartCoroutine(Move(step));
         }
 
-        private IEnumerator Move(Vector3 dir)
+        private IEnumerator Move(Vector3 step)
         {
-            Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit,100);
-
-            hit.transform.TryGetComponent(out IMapTile maptile);
-            maptile.SetObstacle(false);
+            Vector3 target = owner.position + step;
             
-            Physics.Raycast(transform.position, dir, out RaycastHit hits, 0.5f);
-
-            if (hits.transform.TryGetComponent(out IMapTile tile))
+            if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, whatIsGround))
             {
-                rotationCompo.SetDir(hits.transform.position);
-                if (!tile.HasObstacle)
+                rotationCompo.SetDir(target);
+                while ((owner.position - target).sqrMagnitude > 0.0001f)
                 {
-                    animationCompo.PlaySelectAnimation("MOVE");   
-                    while (Vector3.Distance(transform.position, hits.transform.position) > 0.01f)
-                    {
-                        transform.position = Vector3.MoveTowards(
-                            transform.position,
-                            hits.transform.position,
-                            2 * Time.deltaTime
-                        );
-                        yield return null;
-                    }
-                
-                    Physics.Raycast(transform.position, Vector3.down, out RaycastHit hittor, 100);
+                    owner.position = Vector3.MoveTowards(
+                        owner.position,
+                        target,
+                        2 * Time.deltaTime
+                    );
+                    yield return null;
+                }
+            
+                owner.position = target;
 
-                    hittor.transform.TryGetComponent(out IMapTile maptiles);
-                    Debug.Log(hittor.transform.name);
-                    maptiles.SetObstacle(true);
-                
-                    OnMoveEndEvent.Invoke();
-                    
-                    animationCompo.PlaySelectAnimation("IDLE");  
-                }
-                else
-                {
-                    MoveToRandomGrid();
-                }
+                OnMoveEndEvent?.Invoke();   
+            }
+            else
+            {
+                Move();
+                yield break; 
             }
         }
     }

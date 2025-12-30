@@ -22,6 +22,7 @@ public class Enemy : Unit
 
     private void Start()
     {
+        Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(this));
         animationCompo.PlaySelectAnimation("IDLE");
         triggerCompo.OnEnemyAnimationEndTrigger += ChangeIdle;
     }
@@ -40,7 +41,7 @@ public class Enemy : Unit
     public override void OnTurnStart()
     {
         base.OnTurnStart();
-        Debug.Log("적 작동함");
+        moveCompo.Move();
     }
 
     public override void OnTurnEnd()

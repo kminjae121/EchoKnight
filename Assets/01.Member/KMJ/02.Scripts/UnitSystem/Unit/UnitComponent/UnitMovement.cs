@@ -124,8 +124,14 @@ namespace Code.UnitSystem
             IMapTile tile = _unit.inputSO.GetSelectedTile();
             GameObject tileTrm = _unit.inputSO.GetWorldPosition();
 
-            StartCoroutine(MoveStart(tile, tileTrm));
-            ResetTile();
+            if(tile == null)
+                ResetTile();
+            
+            else
+            {
+                StartCoroutine(MoveStart(tile, tileTrm));
+                ResetTile();
+            }
         }
 
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)

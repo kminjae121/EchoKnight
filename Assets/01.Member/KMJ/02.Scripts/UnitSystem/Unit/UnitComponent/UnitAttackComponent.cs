@@ -75,7 +75,7 @@ namespace Code.UnitSystem
 
             _inputReader.OnAttackEvent += AttackEnemy;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-            //attackEndEvent.AddListener(TurnEnd);
+            attackEndEvent.AddListener(TurnEnd);
         }
 
         private void Start()

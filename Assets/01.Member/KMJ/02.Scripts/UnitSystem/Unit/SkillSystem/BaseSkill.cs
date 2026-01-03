@@ -64,7 +64,7 @@ namespace Code.UnitSystem.SkillSystem
             
             _unitSO = _unit.unitSO;
             
-            //skillEndEvent.AddListener(TurnEnd);
+            skillEndEvent.AddListener(TurnEnd);
 
             _damageData.damage = 1.234f;
             

@@ -144,6 +144,12 @@ namespace Code.UnitSystem
 
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
+            if (tile == null) 
+                yield break;
+            
+            if(tileInfo == null)
+                yield break;
+            
             rotationCompo.SetDir(tile.transform.position);
             if (tileInfo.IsWalkable)
             {

@@ -194,10 +194,17 @@ namespace Code.UnitSystem
                 GameObject enemy = _inputReader.GetEnemy();
 
                 FindEnemyIsThere(enemy);
+
+                if (_targetEnemy == null)
+                {
+                    attackEndEvent?.Invoke();
+                    ResetTile();
+                    return;
+                }
                 
-                rotationCompo.SetDir(enemy.transform.position);
+                rotationCompo.SetDir(_targetEnemy.transform.position);
                 
-                attackEvent?.Invoke(_targetEnemy);      
+                attackEvent?.Invoke(_targetEnemy);
             }   
             ResetTile();
         }
@@ -216,6 +223,8 @@ namespace Code.UnitSystem
             
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
                 _targetEnemy.transform.position,transform.position,attackData,_owner);
+            
+            _targetEnemy = null;
         }
 
 

@@ -15,23 +15,15 @@ using UnityEngine.Events;
 
 namespace Code.UnitSystem
 {
-    public class UnitAttackComponent : MonoBehaviour, IUnitComponent
+    public class UnitAttackComponent : RangeComponent, IUnitComponent
     {
         private CinemachineImpulseSource impulseSource;
         
-        [SerializeField] private Vector3 _attackVerticalCheckBoxSize;
-        [SerializeField] private Vector3 _attackHorizontalCheckBoxSize;
-
-        private Collider[] _attackVerticalCollider;
-        private Collider[] _attackHorizontalCollider;
-        
-        [SerializeField] private LayerMask _whatIsGround;
-        
         [SerializeField] private UnitRotation rotationCompo; 
+        [SerializeField] private AttackDataSO attackData;
         
         
         private DamageData _damageData;
-        [SerializeField] private AttackDataSO attackData;
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
@@ -85,7 +77,7 @@ namespace Code.UnitSystem
 
         private void FindEnemyIsThere(GameObject enemy)
         {
-            _attackVerticalCollider.ToList().ForEach(obj =>
+            _verticalCollider.ToList().ForEach(obj =>
             {
                 if (enemy == obj.gameObject)
                 {
@@ -93,7 +85,7 @@ namespace Code.UnitSystem
                 }
             });
             
-            _attackHorizontalCollider.ToList().ForEach(obj =>
+            _horizontalCollider.ToList().ForEach(obj =>
             {
                 if (enemy == obj.gameObject)
                 {
@@ -110,72 +102,20 @@ namespace Code.UnitSystem
                 {
                     unitCam.SetThisUnit();
                     attackStartEvent?.Invoke();
-                    _attackVerticalCollider = Physics.OverlapBox(transform.position, _attackVerticalCheckBoxSize, Quaternion.identity, _whatIsGround);
-                    _attackHorizontalCollider = Physics.OverlapBox(transform.position, _attackHorizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
-            
-                    _attackVerticalCollider.ToList().ForEach(obj =>
-                    {
-                        if (obj.TryGetComponent(out IMapTile tile))
-                        {
-                            if (!tile.HasObstacle)    
-                            {
-                                tile.SetWalkable(true);      
-                            }
-                        }
-                    });
-            
-                    _attackHorizontalCollider.ToList().ForEach(obj =>
-                    {
-                        if (obj.TryGetComponent(out IMapTile tile))
-                        {
-                            if (!tile.HasObstacle)
-                            {
-                                tile.SetWalkable(true);
-                            }
-                        }
-                    });
-                    isAttack = true;
+                    FindObjectInRange();
                 }
             }
             else
             {
-                ResetTile();
-                isAttack = false;
+                ResetsTile();
+                EndAct();
             }
             
         }
         
-        public void ResetTile()
+        public void ResetsTile()
         {
-            if (_attackHorizontalCollider == null && _attackVerticalCollider == null)
-                return;
-            
-            _attackHorizontalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(false);
-                    }
-                }
-            });
-            
-            _attackVerticalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(false);
-                    }
-                }
-            });
-            
-            _attackHorizontalCollider.ToList().Clear();
-            _attackVerticalCollider.ToList().Clear();
-
-            isAttack = true;
+            ResetTile();
             
             unitCam.EndThisUnit();
         }
@@ -189,7 +129,7 @@ namespace Code.UnitSystem
 
         public void AttackEnemy()
         {
-            if (_unit.isMyTurn && isAttack)
+            if (_unit.isMyTurn && _isAct)
             {
                 _targetEnemy = null;
                 
@@ -208,14 +148,14 @@ namespace Code.UnitSystem
                 
                 attackEvent?.Invoke(_targetEnemy);
             }   
-            ResetTile();
+            ResetsTile();
         }
 
         public void TurnEnd()
         {
             _unit.TurnEnd();
                 
-            isAttack = false;
+            EndAct();
         }
 
         public void TakeDamage()
@@ -225,18 +165,6 @@ namespace Code.UnitSystem
             
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
                 _targetEnemy.transform.position,transform.position,attackData,_owner);
-            
-            _targetEnemy = null;
-        }
-
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, _attackVerticalCheckBoxSize);
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, _attackHorizontalCheckBoxSize);
         }
     }
 }

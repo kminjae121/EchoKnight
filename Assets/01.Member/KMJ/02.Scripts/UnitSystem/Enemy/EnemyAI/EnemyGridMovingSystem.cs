@@ -1,5 +1,6 @@
 using System.Collections;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using Code.UnitSystem;
 using UnitSystem;
 using UnityEngine;
 using UnityEngine.Events;

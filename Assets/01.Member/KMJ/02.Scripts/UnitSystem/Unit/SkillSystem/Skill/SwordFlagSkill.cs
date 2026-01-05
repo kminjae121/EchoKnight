@@ -12,7 +12,7 @@ public class SwordFlagSkill : BaseSkill
 {
     [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private Animator animator;
-    [SerializeField] private UnitAnimation animtionCompo;
+    private UnitAnimation animtionCompo;
 
     [SerializeField] private GameObject slashVFXPrefab;
 
@@ -28,6 +28,7 @@ public class SwordFlagSkill : BaseSkill
         triggerCompo.OnSwordFlagSkillTrigger += MakeSlash;
         triggerCompo.OnSwordFlagSkillTrigger += CamShaking;
         triggerCompo.OnSwordFlagSkillEndTrigger += TurnEnd;
+        animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
 
 

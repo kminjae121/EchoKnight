@@ -22,14 +22,10 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
         [SerializeField] private float attackMoveDistance = 1.5f;
-
+        
         public bool isRunningAttack = false;
         
         private Vector3 _ownTrm;
-        private void Awake()
-        {
-            
-        }
 
         private void Start()
         {

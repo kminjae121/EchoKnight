@@ -1,12 +1,17 @@
 ﻿using System;
+using Code.UnitSystem;
 using UnityEngine;
 
-namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
-    public class UnitRotation : MonoBehaviour
+    public class UnitRotation : MonoBehaviour, IUnitComponent
     {
         private Vector3 _targetRotation;
         
+        public void Initialize(Code.UnitSystem.Unit owner)
+        {
+            
+        }
         private void Update()
         {
             RotationUnit();

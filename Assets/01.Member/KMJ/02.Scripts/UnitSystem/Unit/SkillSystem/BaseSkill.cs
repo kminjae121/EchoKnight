@@ -11,25 +11,18 @@ using UnityEngine.Events;
 
 namespace Code.UnitSystem.SkillSystem
 {
-    public abstract class BaseSkill : MonoBehaviour
+    public abstract class BaseSkill : RangeComponent
     {
-        [SerializeField] protected UnitAnimationTrigger triggerCompo;
-        [SerializeField] protected SkillComponent _skillCompo;
-        
-        [SerializeField] private Vector3 _attackVerticalCheckBoxSize;
-        [SerializeField] private Vector3 _attackHorizontalCheckBoxSize;
-
-        private Collider[] _attackVerticalCollider;
-        private Collider[] _attackHorizontalCollider;
-        
-        [SerializeField] private LayerMask _whatIsGround;
-        
-        [SerializeField] private UnitRotation rotationCompo; 
-        
+        [SerializeField] protected Unit _owner;
         [SerializeField] protected AttackDataSO attackData;
-
         
-        [SerializeField] private InputReader _inputReader;
+        #region UnitComponent
+            protected SkillComponent _skillCompo;
+            private UnitRotation rotationCompo; 
+            protected UnitAnimationTrigger triggerCompo;
+        #endregion
+        
+        private InputReader _inputReader;
         
         protected GameObject _targetEnemy = null;
         
@@ -41,28 +34,29 @@ namespace Code.UnitSystem.SkillSystem
         
         protected DamageData _damageData;
 
-        public UnityEvent skillStartEvent;
-        public UnityEvent<GameObject> skillEvent;
-        public UnityEvent skillEndEvent;
-        
-        [SerializeField] protected Unit _owner;
-        
-        private UnitSO _unitSO;
-
         private SetUnitCamera unitCam;
         
         private BasicUnit _unit;
         
+        #region SkillEvent
+            public UnityEvent skillStartEvent;
+            public UnityEvent<GameObject> skillEvent;
+            public UnityEvent skillEndEvent;
+
+        #endregion
 
         public virtual void InitializeSkill()
         {
-            _inputReader.OnAttackEvent += UseSkill;
             
             _unit = _owner as BasicUnit;
 
             _inputReader = _unit.inputSO;
             
-            _unitSO = _unit.unitSO;
+            _inputReader.OnAttackEvent += UseSkill;
+
+            rotationCompo = _unit.GetUnitCompo<UnitRotation>();
+            triggerCompo = _unit.GetUnitCompo<UnitAnimationTrigger>();
+            _skillCompo = _unit.GetUnitCompo<SkillComponent>();
             
             skillEndEvent.AddListener(TurnEnd);
 
@@ -80,7 +74,7 @@ namespace Code.UnitSystem.SkillSystem
         
         private void FindEnemyIsThere(GameObject enemy)
         {
-            _attackVerticalCollider.ToList().ForEach(obj =>
+            _verticalCollider.ToList().ForEach(obj =>
             {
                 if (enemy == obj.gameObject)
                 {
@@ -88,7 +82,7 @@ namespace Code.UnitSystem.SkillSystem
                 }
             });
             
-            _attackHorizontalCollider.ToList().ForEach(obj =>
+            _horizontalCollider.ToList().ForEach(obj =>
             {
                 if (enemy == obj.gameObject)
                 {
@@ -100,61 +94,12 @@ namespace Code.UnitSystem.SkillSystem
         public void CheckCanAttack()
         {
             unitCam.SetThisUnit();
-            _attackVerticalCollider = Physics.OverlapBox(transform.position, _attackVerticalCheckBoxSize, Quaternion.identity, _whatIsGround);
-            _attackHorizontalCollider = Physics.OverlapBox(transform.position, _attackHorizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
-            
-            _attackVerticalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(true);
-                    }
-                }
-            });
-            
-            _attackHorizontalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(true);
-                    }
-                }
-            });
+            FindObjectInRange();
         }
         
-        public void ResetTile()
+        public void ResetSTile()
         {
-            if (_attackHorizontalCollider == null && _attackVerticalCollider == null)
-                return;
-            
-            _attackHorizontalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(false);
-                    }
-                }
-            });
-            
-            _attackVerticalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(false);
-                    }
-                }
-            });
-            
-            _attackHorizontalCollider.ToList().Clear();
-            _attackVerticalCollider.ToList().Clear();
+            ResetTile();
 
             BlockThisSkill();
             
@@ -181,7 +126,7 @@ namespace Code.UnitSystem.SkillSystem
                 skillEvent?.Invoke(_targetEnemy);          
             
             }
-            ResetTile();   
+            ResetSTile();   
         }
 
         public void TurnEnd()
@@ -190,17 +135,7 @@ namespace Code.UnitSystem.SkillSystem
                 
             BlockThisSkill();
         }
-
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, _attackVerticalCheckBoxSize);
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, _attackHorizontalCheckBoxSize);
-        }
-
+        
         public virtual void UseSkill()
         {
             if (isCanUseSkill == false)
@@ -223,11 +158,6 @@ namespace Code.UnitSystem.SkillSystem
         public void BlockThisSkill()
         {
             isCanUseSkill = false;
-        }
-        
-        public virtual void SkillFeedback()
-        {
-
         }
     }
 }

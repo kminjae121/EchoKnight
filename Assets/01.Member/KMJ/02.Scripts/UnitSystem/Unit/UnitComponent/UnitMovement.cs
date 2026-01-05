@@ -12,25 +12,15 @@ using UnityEngine.Events;
 
 namespace Code.UnitSystem
 {
-    public class UnitMovement : MonoBehaviour, IUnitComponent
+    public class UnitMovement : RangeComponent, IUnitComponent
     {
         private BasicUnit _unit;
-        
-        [SerializeField] private Vector3 _verticalCheckBoxSize;
-        [SerializeField] private Vector3 _horizontalCheckBoxSize;
-
-        [SerializeField] private LayerMask _whatIsGround;
-
-        private Collider[] verticalCollider;
-        private Collider[] horizontalCollider;
 
         public UnityEvent moveEvent;
 
         private SetUnitCamera unitCam;
         
         private float _moveSpeed => _unit.unitSO.moveSpeed;
-
-        private bool _isMove = false;
         
         [SerializeField] private UnitAnimation animationCompo;
 
@@ -48,6 +38,10 @@ namespace Code.UnitSystem
         }   
 
 
+        /// <summary>
+        /// 움직이게 해주는 코드
+        /// </summary>
+        /// <param name="evt"></param>
         public void CheckCanMoveTile(UnitMoveEvent evt)
         {
             if (evt.isMove)
@@ -56,65 +50,17 @@ namespace Code.UnitSystem
                 {
                     unitCam.SetThisUnit();
                     moveEvent?.Invoke();
-                    verticalCollider =Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsGround);
-                    horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsGround);
-            
-                    verticalCollider.ToList().ForEach(obj =>
-                    {
-                        IMapTile tile = obj.GetComponent<IMapTile>();
-
-                        if (!tile.HasObstacle && !tile.HasEnemy)
-                        {
-                            tile.SetWalkable(true);
-                        }
-                    });
-            
-                    horizontalCollider.ToList().ForEach(obj =>
-                    {
-                        IMapTile tile = obj.GetComponent<IMapTile>();
-
-                        if (!tile.HasObstacle && !tile.HasEnemy)
-                        {
-                            tile.SetWalkable(true);
-                        }
-                    });
-
-                    _isMove = true;   
+                    FindObjectInRange(); 
                 }
             }
             else
             {
                 ResetTile();
-                _isMove = false;
+                EndAct();
             }
             
         }
-
-        public void ResetTile()
-        {
-            if (horizontalCollider == null && verticalCollider == null)
-                return;
-
-            horizontalCollider.ToList().ForEach(obj =>
-            {
-                IMapTile tile = obj.GetComponent<IMapTile>();
-
-                if (!tile.HasObstacle)
-                {
-                    tile.SetWalkable(false);
-                }
-            });
-            
-            verticalCollider.ToList().ForEach(obj =>
-            {
-                IMapTile tile = obj.GetComponent<IMapTile>();
-
-                if (!tile.HasObstacle)
-                {
-                    tile.SetWalkable(false);
-                }
-            });
-        }
+        
 
         /// <summary>
         /// 플레이어가 움직이는 코드
@@ -124,7 +70,7 @@ namespace Code.UnitSystem
             if (!_unit.isMyTurn)
                 return;
             
-            if (!_isMove)
+            if (!_isAct)
                 return;
 
             IMapTile tile = _unit.inputSO.GetSelectedTile();
@@ -142,6 +88,12 @@ namespace Code.UnitSystem
             unitCam.EndThisUnit();
         }
 
+        /// <summary>
+        /// 움직이는 코드
+        /// </summary>
+        /// <param name="tileInfo">움직일 타일의 정보컴포넌트</param>
+        /// <param name="tile">움직일 타일의 Transform </param>
+        /// <returns></returns>
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
             if (tile == null) 
@@ -163,19 +115,10 @@ namespace Code.UnitSystem
                     );
                     yield return null;
                 }
-                //Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
             }
             animationCompo.PlaySelectAnimation("IDLE");   
-            _isMove = false;
+            _isAct = false;
         }
         
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, _verticalCheckBoxSize);
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, _horizontalCheckBoxSize);
-        }
     }
 }

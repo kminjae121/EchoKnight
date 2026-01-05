@@ -76,7 +76,7 @@ namespace Code.UnitSystem.SkillSystem
             BaseSkill skill = skills.GetValueOrDefault(skillName);
             
             skill.BlockThisSkill();
-            skill.ResetTile();
+            skill.ResetSTile();
         }
 
         public void AddSkill(SkillSO skillSO)

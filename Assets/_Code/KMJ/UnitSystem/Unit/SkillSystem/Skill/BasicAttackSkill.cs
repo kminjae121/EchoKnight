@@ -15,21 +15,22 @@ public class BasicAttackSkill : BaseSkill
     
     [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private Animator animator;
-    [SerializeField] private UnitAnimation animtionCompo;
+    private UnitAnimation animtionCompo;
 
     [SerializeField] private float atkMoveSpeed;
     
     [SerializeField] private float attackMoveDistance = 1.5f;
         
     private Vector3 _ownTrm;
+    
     private void Start()
     {
         skillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
         impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-        Debug.Log(impulseSource.gameObject.name);
         _damageData.damage = 2.3456f;
+        animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
     
     

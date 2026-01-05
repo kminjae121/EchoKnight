@@ -827,7 +827,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _verticalCheckBoxSize: {x: 3, y: 1, z: 0.1}
   _horizontalCheckBoxSize: {x: 0.1, y: 1, z: 3.5}
-  _whatIsGround:
+  _whatIsTarget:
     serializedVersion: 2
     m_Bits: 64
   moveEvent:
@@ -835,7 +835,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2105293790733927659}
         m_TargetAssemblyTypeName: Code.UnitSystem.UnitAttackComponent, Assembly-CSharp
-        m_MethodName: ResetTile
+        m_MethodName: ResetsTile
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2578,16 +2578,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c98f19c4e974744a86ce9936552195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerCompo: {fileID: 126909229950184335}
-  _skillCompo: {fileID: 4256917421717104377}
-  _attackVerticalCheckBoxSize: {x: 3, y: 3, z: 3}
-  _attackHorizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsGround:
+  _verticalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _horizontalCheckBoxSize: {x: 2, y: 1, z: 2}
+  _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
-  rotationCompo: {fileID: 6429403500470982661}
+  _owner: {fileID: 2682628836158502387}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
-  _inputReader: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   damage: 0
   useSkillPoint: 0
   isCanUseSkill: 0
@@ -2638,10 +2635,8 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  _owner: {fileID: 2682628836158502387}
   impulseSource: {fileID: 0}
   animator: {fileID: 5930818674794191497}
-  animtionCompo: {fileID: 2953721302162278736}
   atkMoveSpeed: 3
   attackMoveDistance: 1.5
 --- !u!1 &5608303052415764264
@@ -3115,9 +3110,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a756be0c718b41b588cb881237e7bf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _attackVerticalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _attackHorizontalCheckBoxSize: {x: 2, y: 1, z: 2}
-  _whatIsGround:
+  _verticalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _horizontalCheckBoxSize: {x: 1, y: 1, z: 1}
+  _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
   rotationCompo: {fileID: 6429403500470982661}

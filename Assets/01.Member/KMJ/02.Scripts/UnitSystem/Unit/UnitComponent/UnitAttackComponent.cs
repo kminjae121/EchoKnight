@@ -191,6 +191,8 @@ namespace Code.UnitSystem
         {
             if (_unit.isMyTurn && isAttack)
             {
+                _targetEnemy = null;
+                
                 GameObject enemy = _inputReader.GetEnemy();
 
                 FindEnemyIsThere(enemy);

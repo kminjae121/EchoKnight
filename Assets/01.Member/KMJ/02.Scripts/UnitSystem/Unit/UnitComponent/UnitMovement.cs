@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
@@ -8,6 +9,7 @@ using UnityEngine;
 using Code.Core.Interfaces;
 using UnitSystem;
 using UnityEngine.Events;
+using Debug = System.Diagnostics.Debug;
 
 
 namespace Code.UnitSystem
@@ -24,7 +26,11 @@ namespace Code.UnitSystem
         
         [SerializeField] private UnitAnimation animationCompo;
 
-        [SerializeField] private UnitRotation rotationCompo; 
+        [SerializeField] private UnitRotation rotationCompo;
+
+        private GameObject _currentMapTile = null;
+
+        private List<GameObject> _movingtiles =  new List<GameObject>();
         
         public void Initialize(Unit owner)
         {
@@ -58,9 +64,33 @@ namespace Code.UnitSystem
                 ResetTile();
                 EndAct();
             }
+        }
+
+        private void CheckTilesCanMoving()
+        {
+            _horizontalCollider.ToList().ForEach(tile =>
+            {
+                if (tile.TryGetComponent(out IMapTile tiled))
+                {
+                    if (!tiled.HasObstacle)
+                    {
+                        _movingtiles.Add(tile.gameObject);
+                    }
+                }
+            });
+            
+            _verticalCollider.ToList().ForEach(tile =>
+            {
+                if (tile.TryGetComponent(out IMapTile tiled))
+                {
+                    if (!tiled.HasObstacle)
+                    {
+                        _movingtiles.Add(tile.gameObject);
+                    }
+                }
+            });
             
         }
-        
 
         /// <summary>
         /// 플레이어가 움직이는 코드
@@ -72,13 +102,23 @@ namespace Code.UnitSystem
             
             if (!_isAct)
                 return;
+            
+            CheckTilesCanMoving();
 
             IMapTile tile = _unit.inputSO.GetSelectedTile();
             GameObject tileTrm = _unit.inputSO.GetWorldPosition();
 
-            if(tile == null)
+            if (!_movingtiles.Contains(tileTrm))
+            {
                 ResetTile();
-            
+                return;
+            }
+
+            if (tile == null)
+            {
+                ResetTile();
+                return;
+            }
             else
             {
                 StartCoroutine(MoveStart(tile, tileTrm));
@@ -102,6 +142,9 @@ namespace Code.UnitSystem
             if(tileInfo == null)
                 yield break;
             
+            if(_currentMapTile != null)
+                _currentMapTile.GetComponent<IMapTile>().SetObstacle(false);
+            
             rotationCompo.SetDir(tile.transform.position);
             if (tileInfo.IsWalkable)
             {
@@ -116,6 +159,13 @@ namespace Code.UnitSystem
                     yield return null;
                 }
             }
+
+            _currentMapTile = tile;
+
+            tile.transform.TryGetComponent(out IMapTile EndMapTile);
+
+            EndMapTile.SetObstacle(true);
+            
             animationCompo.PlaySelectAnimation("IDLE");   
             _isAct = false;
         }

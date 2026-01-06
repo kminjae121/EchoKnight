@@ -9,6 +9,8 @@ namespace Code.UnitSystem
         public Action OnAnimationEndTrigger;
 
         public Action OnEnemyAnimationEndTrigger;
+
+        public Action OnEnemyDieEndTrigger;
             
         public Action OnAttackTrigger;
         
@@ -33,6 +35,8 @@ namespace Code.UnitSystem
         {
             OnAnimationEndTrigger?.Invoke();
         }
+
+        private void EnemyDead() => OnEnemyDieEndTrigger?.Invoke();
         
         private void MeleeAttack() => OnAttackTrigger?.Invoke();
 

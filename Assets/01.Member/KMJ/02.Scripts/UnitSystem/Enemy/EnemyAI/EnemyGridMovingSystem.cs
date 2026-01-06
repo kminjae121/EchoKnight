@@ -1,5 +1,6 @@
 using System.Collections;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using Code.Core.Interfaces;
 using Code.UnitSystem;
 using UnitSystem;
 using UnityEngine;
@@ -64,6 +65,15 @@ namespace EnemySystem
             
             if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, whatIsGround))
             {
+                if (hit.transform.TryGetComponent(out IMapTile tile))
+                {
+                    if (tile.HasObstacle)
+                    {
+                        Move();
+                        yield break; 
+                    }
+                }
+                    
                 rotationCompo.SetDir(target);
                 while ((owner.position - target).sqrMagnitude > 0.0001f)
                 {

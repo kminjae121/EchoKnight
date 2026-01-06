@@ -25,6 +25,13 @@ public class Enemy : Unit
         Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(this));
         animationCompo.PlaySelectAnimation("IDLE");
         triggerCompo.OnEnemyAnimationEndTrigger += ChangeIdle;
+        triggerCompo.OnEnemyDieEndTrigger += Die;
+    }
+
+    private void Die()
+    {
+        Bus<EnemyDieEvent>.Raise(new EnemyDieEvent(1));
+        gameObject.SetActive(false);
     }
 
     private void ChangeIdle()
@@ -34,7 +41,7 @@ public class Enemy : Unit
 
     protected override void Dead()
     {
-        TestDeath();
+        DeadEnemy();
         base.Dead();
     }
 
@@ -60,8 +67,8 @@ public class Enemy : Unit
         animationCompo.PlaySelectAnimation("HIT");
     }
 
-    public void TestDeath()
+    public void DeadEnemy()
     {
-        gameObject.SetActive(false);
+        animationCompo.PlaySelectAnimation("DIE");
     }
 }

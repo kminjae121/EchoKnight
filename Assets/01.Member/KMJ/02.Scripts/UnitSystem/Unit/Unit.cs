@@ -43,7 +43,7 @@ namespace Code.UnitSystem
         public string UnitName => unitSO.UnitName;
         public bool IsPlayerUnit { get; set; }
         
-        public Action OnDeathEvent { get; private set; }
+        public Action OnDeathEvent { get; set; }
 
         protected readonly Dictionary<Type,IUnitComponent> _components = new();
 
@@ -57,6 +57,8 @@ namespace Code.UnitSystem
             IsPlayerUnit = unitSO.isPlayerUnit;
             TurnGauge = 0f;
             UnitImage = unitSO.UnitImage;
+
+            OnDeathEvent += Dead;
         }
         
 

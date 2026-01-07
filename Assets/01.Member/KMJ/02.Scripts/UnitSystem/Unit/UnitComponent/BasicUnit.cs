@@ -22,6 +22,7 @@ namespace  UnitSystem
 
         private Button endTurnBtn;
         public int cardCost { get; private set; }
+        
 
         [SerializeField] private Image unitImage;
 
@@ -30,8 +31,13 @@ namespace  UnitSystem
             _controlUI = GameObject.Find("BaseButton").GetComponent<UnitControl>();
             endTurnBtn = GameObject.Find("TurnEnd").GetComponent<Button>();
             
-            
             endTurnBtn.onClick.AddListener(TurnEnd);
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            endTurnBtn.onClick.RemoveListener(TurnEnd);
         }
 
         public override void OnTurnStart()
@@ -43,12 +49,13 @@ namespace  UnitSystem
 
         public override void OnTurnEnd()
         {
-                isMyTurn = false;
-                
-                base.OnTurnEnd();
-                TurnEnd();
-                _controlUI.SetMovingTrue();
-                _controlUI.SetAttackingTrue();
+            isMyTurn = false;
+            
+            base.OnTurnEnd();
+            TurnEnd();
+            
+            Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+            Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
         }
 
         public void TurnEnd()
@@ -96,8 +103,7 @@ namespace  UnitSystem
 
         public void SelectThisUnit(bool isSelected)
         {
-            Debug.Log($"{gameObject.name}의 선택이 {isSelected} 되었습니다");
-            //isPlayerUnit = isSelected;
+            
         }
 
         public void Die()

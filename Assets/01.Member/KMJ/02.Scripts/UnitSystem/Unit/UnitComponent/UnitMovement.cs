@@ -14,7 +14,7 @@ using Debug = System.Diagnostics.Debug;
 
 namespace Code.UnitSystem
 {
-    public class UnitMovement : RangeComponent, IUnitComponent
+    public class UnitMovement : RangeComponent
     {
         private BasicUnit _unit;
 
@@ -31,17 +31,24 @@ namespace Code.UnitSystem
         private GameObject _currentMapTile = null;
 
         private List<GameObject> _movingtiles =  new List<GameObject>();
-        
-        public void Initialize(Unit owner)
+
+        protected override void Start()
         {
-            _unit = owner as BasicUnit;
+            base.Start();
+            _unit = _owner as BasicUnit;
             
             _unit.inputSO.OnClickMoveEvent += Move;
             
             Bus<UnitMoveEvent>.Subscribe(CheckCanMoveTile);
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
-        }   
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            _unit.inputSO.OnClickMoveEvent -= Move;
+        }
 
 
         /// <summary>
@@ -50,13 +57,13 @@ namespace Code.UnitSystem
         /// <param name="evt"></param>
         public void CheckCanMoveTile(UnitMoveEvent evt)
         {
+            moveEvent?.Invoke();
             if (evt.isMove)
             {
                 if (_unit.isMyTurn)
                 {
-                    unitCam.SetThisUnit();
-                    moveEvent?.Invoke();
                     FindObjectInRange(); 
+                    unitCam.SetThisUnit();
                 }
             }
             else

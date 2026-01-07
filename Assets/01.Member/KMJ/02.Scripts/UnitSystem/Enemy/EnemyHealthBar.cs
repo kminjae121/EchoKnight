@@ -21,6 +21,11 @@ namespace EnemySystem
             Bus<CamMovingEvent>.OnEvent += SetCam;
         }
 
+        private void OnDestroy()
+        {
+            Bus<CamMovingEvent>.OnEvent -= SetCam;
+        }
+
         private void SetCam(CamMovingEvent evt)
         {
             targetCamera = evt.target;

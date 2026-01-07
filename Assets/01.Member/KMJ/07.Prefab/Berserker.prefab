@@ -786,7 +786,6 @@ MonoBehaviour:
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
-  _owner: {fileID: 2682628836158502387}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   damage: 0
   useSkillPoint: 0
@@ -859,7 +858,6 @@ MonoBehaviour:
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
-  _owner: {fileID: 2682628836158502387}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   damage: 0
   useSkillPoint: 0
@@ -1113,19 +1111,7 @@ MonoBehaviour:
     m_Bits: 64
   moveEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 2105293790733927659}
-        m_TargetAssemblyTypeName: Code.UnitSystem.UnitAttackComponent, Assembly-CSharp
-        m_MethodName: ResetsTile
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   animationCompo: {fileID: 1243646029168592352}
   rotationCompo: {fileID: 3966720720610224676}
 --- !u!1 &1682997429621746059
@@ -1534,6 +1520,7 @@ GameObject:
   - component: {fileID: 5629794309468085115}
   - component: {fileID: 3966720720610224676}
   - component: {fileID: 8687093477269508340}
+  - component: {fileID: 9109243178793357433}
   m_Layer: 7
   m_Name: Berserker
   m_TagString: Untagged
@@ -1716,6 +1703,18 @@ MonoBehaviour:
   triggerCompo: {fileID: 4102828035171866210}
   attackMoveDistance: 1.1
   isRunningAttack: 1
+--- !u!114 &9109243178793357433
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333293328105742335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b25af39072b7408d9c69b3f6ef864bfb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -2084,7 +2083,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4411150160875403787}
-  - component: {fileID: 6068139144634553853}
   - component: {fileID: 5930818674794191497}
   - component: {fileID: 4102828035171866210}
   - component: {fileID: 1243646029168592352}
@@ -2112,19 +2110,6 @@ Transform:
   - {fileID: 8938274382132586526}
   m_Father: {fileID: 663893733135974173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6068139144634553853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3033585035091998650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 34172865c10e4ccbbac4039dc016b1e4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  thisAnimator: {fileID: 5930818674794191497}
 --- !u!95 &5930818674794191497
 Animator:
   serializedVersion: 7
@@ -3978,18 +3963,6 @@ MonoBehaviour:
   attackStartEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3797456684523285631}
-        m_TargetAssemblyTypeName: Code.UnitSystem.UnitMovement, Assembly-CSharp
-        m_MethodName: ResetTile
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 8758395380733786865}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive

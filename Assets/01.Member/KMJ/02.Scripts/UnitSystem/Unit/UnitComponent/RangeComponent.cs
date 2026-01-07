@@ -1,12 +1,17 @@
 ﻿using System;
 using System.Linq;
 using Code.Core.Interfaces;
+using UnitSystem;
 using UnityEngine;
 
-namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
-    public class RangeComponent : MonoBehaviour
+    public class RangeComponent : MonoBehaviour, IUnitComponent
     {
+        private UnitManageRangeCompo _rangeComponent;
+
+        protected Unit _owner;
+        
         [SerializeField] private Vector3 _verticalCheckBoxSize;
         [SerializeField] private Vector3 _horizontalCheckBoxSize;
 
@@ -16,16 +21,32 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         
         [SerializeField] protected LayerMask _whatIsTarget;
 
+        protected Action ResetTileEvent;
+        
         protected bool _isAct = false;
 
-        private void Awake()
+        public void Initialize(Unit owner)
+        {
+            _owner = owner;
+            _rangeComponent = owner.GetUnitCompo<UnitManageRangeCompo>();
+        }
+        protected virtual void Awake()
         {
             
+        }
+
+        protected virtual void Start()
+        {
+            
+        }
+
+        protected virtual void OnDestroy()
+        {
             
         }
 
 
-        protected void ResetTile()
+        public void ResetTile()
         {
             if (_horizontalCollider == null && _verticalCollider == null)
                 return;
@@ -54,16 +75,18 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             
             _horizontalCollider.ToList().Clear();
             _verticalCollider.ToList().Clear();
-
+            ResetTileEvent?.Invoke();
             _isAct = false;
         }
 
 
         protected void FindObjectInRange()
         {
+            _rangeComponent.RemoveAllRange();
+            
             _verticalCollider = Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsTarget);
             _horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsTarget);
-            
+
             _verticalCollider.ToList().ForEach(obj =>
             {
                 if (obj.TryGetComponent(out IMapTile tile))
@@ -89,7 +112,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             _isAct = true;
         }
 
-        protected void EndAct()
+        public void EndAct()
         {
             _isAct = false;
         }
@@ -103,5 +126,6 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             Gizmos.color = Color.blue;
             Gizmos.DrawWireCube(transform.position, _horizontalCheckBoxSize);
         }
+
     }
 }

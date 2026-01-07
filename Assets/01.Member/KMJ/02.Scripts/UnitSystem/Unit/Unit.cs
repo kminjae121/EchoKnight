@@ -17,6 +17,8 @@ namespace Code.UnitSystem
 
         public Sprite UnitImage { get; private set; }
 
+        public UnitManageRangeCompo RangesCompo { get; set; }
+        
         public UnityEvent OnStartTurnEvent;
         public UnityEvent OnEndTurnEvent;
         public UnityEvent OnHitEvent;
@@ -59,8 +61,15 @@ namespace Code.UnitSystem
             UnitImage = unitSO.UnitImage;
 
             OnDeathEvent += Dead;
+            
+            RangesCompo = GetUnitCompo<UnitManageRangeCompo>();
         }
-        
+
+        protected virtual  void OnDestroy()
+        {
+            OnDeathEvent -= Dead;
+        }
+
 
         protected virtual void Dead()
         {

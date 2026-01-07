@@ -32,8 +32,18 @@ public class BasicAttackSkill : BaseSkill
         _damageData.damage = 2.3456f;
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        
+        skillEvent.RemoveListener(AttackAction);
+        triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
+        triggerCompo.OnBaseAttackSkillTrigger -= TakeDamage;
+    }
     
-    
+
+
     public void AttackAction(GameObject target)
     {
         _ownTrm = _owner.transform.position;

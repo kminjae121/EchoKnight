@@ -20,6 +20,11 @@ namespace Code.UI
             skillbtn.onClick.AddListener(HandleClickRange);
         }
 
+        private void OnDestroy()
+        {
+            skillbtn.onClick.RemoveListener(HandleClickRange);
+        }
+
         private void HandleClickRange()
         {
             if (isCanSkill)

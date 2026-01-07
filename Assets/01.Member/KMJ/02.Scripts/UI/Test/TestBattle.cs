@@ -15,6 +15,11 @@ public class TestBattle : MonoBehaviour
         thisBtn.onClick.AddListener(PlayGame);
     }
 
+    private void OnDestroy()
+    {
+        thisBtn.onClick.RemoveListener(PlayGame);
+    }
+
     public void PlayGame()
     {
         if (!isPlaying)

@@ -34,6 +34,13 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             atkCompo.attackEvent.AddListener(AttackAction);
         }
 
+        private void OnDestroy()
+        {
+            triggerCompo.OnAttackTrigger -= AttackEnd;
+                
+            atkCompo.attackEvent.RemoveListener(AttackAction);
+        }
+
         public void AttackAction(GameObject target)
         {
             _ownTrm = transform.position;

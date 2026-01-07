@@ -18,6 +18,18 @@ namespace Code.UI
         {
             atkBtn.onClick.AddListener(HandleAttack);
             moveBtn.onClick.AddListener(HandleMove);
+            
+            Bus<UnitMoveControlEvent>.Subscribe(SetMoving);
+            Bus<UnitAttackControlEvent>.Subscribe(SetAttacking);
+        }
+
+        private void OnDestroy()
+        {
+            atkBtn.onClick.RemoveListener(HandleAttack);
+            moveBtn.onClick.RemoveListener(HandleMove);
+            
+            Bus<UnitMoveControlEvent>.Unsubscribe(SetMoving);
+            Bus<UnitAttackControlEvent>.Unsubscribe(SetAttacking);
         }
 
         private void HandleMove()
@@ -26,6 +38,7 @@ namespace Code.UI
             {
                 Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(true));
                 isMoveing = false;
+                isAttacking = true;
             }
             else
             {
@@ -34,14 +47,14 @@ namespace Code.UI
             }
         }
 
-        public void SetMovingTrue()
+        public void SetMoving(UnitMoveControlEvent evt)
         {
-            isMoveing = true;
+            isMoveing =  evt.isMoving;
         }
 
-        public void SetAttackingTrue()
+        public void SetAttacking(UnitAttackControlEvent evt)
         {
-            isAttacking = true;
+            isAttacking = evt.isAttacking;
         }
         
 
@@ -51,6 +64,7 @@ namespace Code.UI
             {
                 Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(true));
                 isAttacking = false;
+                isMoveing = true;
             }
             else
             {

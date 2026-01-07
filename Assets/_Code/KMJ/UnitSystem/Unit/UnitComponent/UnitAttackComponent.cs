@@ -15,13 +15,12 @@ using UnityEngine.Events;
 
 namespace Code.UnitSystem
 {
-    public class UnitAttackComponent : RangeComponent, IUnitComponent
+    public class UnitAttackComponent : RangeComponent
     {
         private CinemachineImpulseSource impulseSource;
         
         [SerializeField] private UnitRotation rotationCompo; 
         [SerializeField] private AttackDataSO attackData;
-        
         
         private DamageData _damageData;
 
@@ -30,11 +29,10 @@ namespace Code.UnitSystem
         public UnityEvent<GameObject> attackEvent;
         
         private InputReader _inputReader;
-
-        private Unit _owner;
+        
         private UnitSO _unitSO;
         
-        private BasicUnit _unit;
+        private BasicUnit _basicUnit;
 
         private GameObject _targetEnemy = null;
 
@@ -45,23 +43,30 @@ namespace Code.UnitSystem
 
         private SetUnitCamera unitCam;
 
-
-        public void Initialize(Unit owner)
+        
+        private void Awake()
         {
-            _owner = owner; 
             
-            _unit = _owner as BasicUnit;
+        }
 
-            _inputReader = _unit.inputSO;
+        protected override void Start()
+        {
+            base.Start();
             
-            _unitSO = _unit.unitSO;
+            _basicUnit = _owner as BasicUnit;
+
+            _inputReader = _basicUnit.inputSO;
+            
+            _unitSO = _basicUnit.unitSO;
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
-        }
-        private void Awake()
-        {
+
+            ResetTileEvent += EndUnit;
+            
+            triggerCompo.OnTakeDamageTrigger += TakeDamage;
+            
             _damageData = new DamageData();
             _damageData.damage = 1.2345f;
 
@@ -69,11 +74,17 @@ namespace Code.UnitSystem
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
             attackEndEvent.AddListener(TurnEnd);
         }
-
-        private void Start()
+        
+        private void OnDestroy()
         {
-            triggerCompo.OnTakeDamageTrigger += TakeDamage;
+            _inputReader.OnAttackEvent -= AttackEnemy;
+            triggerCompo.OnTakeDamageTrigger -= TakeDamage;
+            attackEndEvent.RemoveListener(TurnEnd);
+            Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
+            ResetTileEvent -= EndUnit;
         }
+        
+
 
         private void FindEnemyIsThere(GameObject enemy)
         {
@@ -98,7 +109,7 @@ namespace Code.UnitSystem
         {
             if (evt.isAttack)
             {
-                if (_unit.isMyTurn)
+                if (_basicUnit.isMyTurn)
                 {
                     unitCam.SetThisUnit();
                     attackStartEvent?.Invoke();
@@ -107,29 +118,23 @@ namespace Code.UnitSystem
             }
             else
             {
-                ResetsTile();
+                ResetTile();
                 EndAct();
             }
             
         }
         
-        public void ResetsTile()
+        public void EndUnit()
         {
-            ResetTile();
-            
             unitCam.EndThisUnit();
         }
 
 
-        private void OnDestroy()
-        {
-            _inputReader.OnAttackEvent -= AttackEnemy;
-        }
         
 
         public void AttackEnemy()
         {
-            if (_unit.isMyTurn && _isAct)
+            if (_basicUnit.isMyTurn && _isAct)
             {
                 _targetEnemy = null;
                 
@@ -139,7 +144,6 @@ namespace Code.UnitSystem
 
                 if (_targetEnemy == null)
                 {
-                    attackEndEvent?.Invoke();
                     ResetTile();
                     return;
                 }
@@ -148,12 +152,12 @@ namespace Code.UnitSystem
                 
                 attackEvent?.Invoke(_targetEnemy);
             }   
-            ResetsTile();
+            ResetTile();
         }
 
         public void TurnEnd()
         {
-            _unit.TurnEnd();
+            _basicUnit.TurnEnd();
                 
             EndAct();
         }

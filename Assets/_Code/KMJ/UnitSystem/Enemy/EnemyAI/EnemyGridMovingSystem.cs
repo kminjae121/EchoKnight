@@ -19,6 +19,8 @@ namespace EnemySystem
 
         [SerializeField] private Transform owner;
         public UnityEvent OnMoveEndEvent;
+
+        private GameObject _ownTrm;
     
         public void Initialize(Unit owner)
         {
@@ -65,13 +67,9 @@ namespace EnemySystem
             
             if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, whatIsGround))
             {
-                if (hit.transform.TryGetComponent(out IMapTile tile))
+                if (_ownTrm != null)
                 {
-                    if (tile.HasObstacle)
-                    {
-                        Move();
-                        yield break; 
-                    }
+                    _ownTrm.GetComponent<IMapTile>().SetObstacle(false);
                 }
                     
                 rotationCompo.SetDir(target);
@@ -84,8 +82,21 @@ namespace EnemySystem
                     );
                     yield return null;
                 }
-            
                 owner.position = target;
+                
+                if (hit.transform.TryGetComponent(out IMapTile tile))
+                {
+                    if (tile.HasObstacle)
+                    {
+                        Move();
+                        yield break; 
+                    }
+                    
+                    tile.SetObstacle(true);
+
+                    _ownTrm = hit.transform.gameObject;
+                }
+            
 
                 OnMoveEndEvent?.Invoke();   
             }

@@ -31,6 +31,15 @@ public class SwordFlagSkill : BaseSkill
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
 
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+        skillEvent.RemoveListener(UseSkill);
+        triggerCompo.OnSwordFlagSkillTrigger -= MakeSlash;
+        triggerCompo.OnSwordFlagSkillTrigger -= CamShaking;
+        triggerCompo.OnSwordFlagSkillEndTrigger -= TurnEnd;
+    }
+
 
     private void UseSkill(GameObject target)
     {

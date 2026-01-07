@@ -13,7 +13,6 @@ namespace Code.UnitSystem.SkillSystem
 {
     public abstract class BaseSkill : RangeComponent
     {
-        [SerializeField] protected Unit _owner;
         [SerializeField] protected AttackDataSO attackData;
         
         #region UnitComponent
@@ -48,22 +47,44 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void InitializeSkill()
         {
             
+        }
+
+        protected override void Awake()
+        {
+            base.Awake();
+            
             _unit = _owner as BasicUnit;
 
             _inputReader = _unit.inputSO;
-            
+
             _inputReader.OnAttackEvent += UseSkill;
 
             rotationCompo = _unit.GetUnitCompo<UnitRotation>();
             triggerCompo = _unit.GetUnitCompo<UnitAnimationTrigger>();
             _skillCompo = _unit.GetUnitCompo<SkillComponent>();
-            
+
             skillEndEvent.AddListener(TurnEnd);
 
             _damageData.damage = 1.234f;
-            
-            
+
+
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
+
+            ResetTileEvent += skillEnd;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            
+        }
+
+
+        public virtual void OnDisable()
+        {
+            skillEndEvent.RemoveListener(TurnEnd);
+            _inputReader.OnAttackEvent -= UseSkill;
+            ResetTileEvent -= skillEnd;
         }
 
         public virtual void ShowSkillRange()
@@ -94,15 +115,15 @@ namespace Code.UnitSystem.SkillSystem
         public void CheckCanAttack()
         {
             unitCam.SetThisUnit();
+            Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
+            Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             FindObjectInRange();
         }
         
-        public void ResetSTile()
+        public void skillEnd()
         {
-            ResetTile();
-
             BlockThisSkill();
-            
+            ResetTile();
             unitCam.EndThisUnit();
         }
 
@@ -126,7 +147,7 @@ namespace Code.UnitSystem.SkillSystem
                 skillEvent?.Invoke(_targetEnemy);          
             
             }
-            ResetSTile();   
+            skillEnd();   
         }
 
         public void TurnEnd()

@@ -19,6 +19,11 @@ namespace Code.Core
             Bus<EnemyDieEvent>.Subscribe(EndStage);
         }
 
+        private void OnDestroy()
+        {
+            Bus<EnemyDieEvent>.Unsubscribe(EndStage);
+        }
+
         private void Start()
         {
             Bus<GageEvent>.Raise(new GageEvent(stageSO.behaviorCost));

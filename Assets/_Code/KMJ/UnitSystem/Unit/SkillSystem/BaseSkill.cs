@@ -123,7 +123,7 @@ namespace Code.UnitSystem.SkillSystem
         public void skillEnd()
         {
             BlockThisSkill();
-            
+            ResetTile();
             unitCam.EndThisUnit();
         }
 

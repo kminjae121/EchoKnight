@@ -98,6 +98,8 @@ namespace  UnitSystem
         public void RemoveCost(int cost)
         {
             cardCost -= cost;
+            
+            //코스트 줄어드는중
         }
 
 

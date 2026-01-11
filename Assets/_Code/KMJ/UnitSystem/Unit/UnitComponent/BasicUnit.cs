@@ -16,12 +16,12 @@ namespace  UnitSystem
         
         [SerializeField] private GameEventChannelSO unitDeadChannel;
 
-        public int maxCardCost = 10;
+        public int maxUsingCost = 100;
 
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
-        public int cardCost { get; private set; }
+        public float CurrentCost { get; private set; }
         
 
         [SerializeField] private Image unitImage;
@@ -43,6 +43,7 @@ namespace  UnitSystem
         public override void OnTurnStart()
         {
             isMyTurn = true;
+            CurrentCost = maxUsingCost;
             OnStartTurnEvent?.Invoke();
             base.OnTurnStart();
         }
@@ -88,17 +89,24 @@ namespace  UnitSystem
 
         public bool GetCost(int cost)
         {
-            if (cardCost >= maxCardCost || cardCost + cost >= maxCardCost)
+            if (CurrentCost >= maxUsingCost || CurrentCost + cost >= maxUsingCost)
                 return false;
             
-            cardCost += cost;
+            CurrentCost += cost;
             return true;
         }
 
-        public void RemoveCost(int cost)
+        public void RemoveCost(float cost)
         {
-            cardCost -= cost;
+            CurrentCost -= cost;
             
+            Debug.Log(CurrentCost);
+            
+            if (CurrentCost <= 0)
+            {
+                CurrentCost = 0;
+                TurnEnd();
+            }
             //코스트 줄어드는중
         }
 

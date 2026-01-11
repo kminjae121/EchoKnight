@@ -148,6 +148,8 @@ namespace Code.UnitSystem
                     return;
                 }
                 
+                _basicUnit.RemoveCost(40f);
+                
                 rotationCompo.SetDir(_targetEnemy.transform.position);
                 
                 attackEvent?.Invoke(_targetEnemy);

@@ -145,14 +145,12 @@ namespace Code.UnitSystem
                 if (_targetEnemy == null)
                 {
                     ResetTile();
+                    attackEvent?.Invoke(_targetEnemy);
                     return;
                 }
                 
-                _basicUnit.RemoveCost(40f);
-                
                 rotationCompo.SetDir(_targetEnemy.transform.position);
                 
-                attackEvent?.Invoke(_targetEnemy);
             }   
             ResetTile();
         }
@@ -171,6 +169,8 @@ namespace Code.UnitSystem
             
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
                 _targetEnemy.transform.position,transform.position,attackData,_owner);
+            
+            attackEvent?.Invoke(_targetEnemy);
         }
     }
 }

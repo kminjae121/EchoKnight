@@ -48,7 +48,10 @@ namespace Code.UnitSystem
 
         public void ResetTile()
         {
-            if (_horizontalCollider == null && _verticalCollider == null)
+            if (_horizontalCollider == null)
+                return;
+            
+            if(_verticalCollider == null)
                 return;
             
             _horizontalCollider.ToList().ForEach(obj =>

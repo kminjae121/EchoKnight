@@ -72,14 +72,12 @@ namespace Code.UnitSystem
 
             _inputReader.OnAttackEvent += AttackEnemy;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-            attackEndEvent.AddListener(TurnEnd);
         }
         
         private void OnDestroy()
         {
             _inputReader.OnAttackEvent -= AttackEnemy;
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
-            attackEndEvent.RemoveListener(TurnEnd);
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
             ResetTileEvent -= EndUnit;
         }
@@ -148,11 +146,9 @@ namespace Code.UnitSystem
                     return;
                 }
                 
-                _basicUnit.RemoveCost(40f);
-                
                 rotationCompo.SetDir(_targetEnemy.transform.position);
                 
-                attackEvent?.Invoke(_targetEnemy);
+                    attackEvent?.Invoke(_targetEnemy);
             }   
             ResetTile();
         }

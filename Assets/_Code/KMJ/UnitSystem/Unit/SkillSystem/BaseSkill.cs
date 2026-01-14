@@ -63,8 +63,6 @@ namespace Code.UnitSystem.SkillSystem
             triggerCompo = _unit.GetUnitCompo<UnitAnimationTrigger>();
             _skillCompo = _unit.GetUnitCompo<SkillComponent>();
 
-            skillEndEvent.AddListener(TurnEnd);
-
             _damageData.damage = 1.234f;
 
 

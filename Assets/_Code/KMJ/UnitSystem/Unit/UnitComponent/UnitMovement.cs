@@ -58,6 +58,14 @@ namespace Code.UnitSystem
         public void CheckCanMoveTile(UnitMoveEvent evt)
         {
             moveEvent?.Invoke();
+            
+            if (_unit.GetCurrentCost() <= 0)
+            {
+                ResetTile();
+                EndAct();
+                return;
+            }
+            
             if (evt.isMove)
             {
                 if (_unit.isMyTurn)
@@ -109,6 +117,7 @@ namespace Code.UnitSystem
             
             if (!_isAct)
                 return;
+            
             
             CheckTilesCanMoving();
 

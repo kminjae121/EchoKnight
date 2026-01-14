@@ -77,7 +77,9 @@ namespace Code.UnitSystem
             });
             
             _horizontalCollider.ToList().Clear();
+            _horizontalCollider = null;
             _verticalCollider.ToList().Clear();
+            _horizontalCollider = null;
             ResetTileEvent?.Invoke();
             _isAct = false;
         }

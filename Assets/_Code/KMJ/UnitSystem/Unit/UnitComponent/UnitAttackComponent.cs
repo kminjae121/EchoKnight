@@ -148,7 +148,9 @@ namespace Code.UnitSystem
                 
                 rotationCompo.SetDir(_targetEnemy.transform.position);
                 
-                    attackEvent?.Invoke(_targetEnemy);
+                attackEvent?.Invoke(_targetEnemy);
+                
+                _basicUnit.RemoveCost(25f);
             }   
             ResetTile();
         }

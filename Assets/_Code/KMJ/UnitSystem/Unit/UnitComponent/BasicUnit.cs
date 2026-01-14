@@ -96,6 +96,12 @@ namespace  UnitSystem
             return true;
         }
 
+
+        public float GetCurrentCost()
+        {
+            return CurrentCost;
+        }
+
         public void RemoveCost(float cost)
         {
             CurrentCost -= cost;
@@ -105,7 +111,6 @@ namespace  UnitSystem
             if (CurrentCost <= 0)
             {
                 CurrentCost = 0;
-                TurnEnd();
             }
             //코스트 줄어드는중
         }

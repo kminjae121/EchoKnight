@@ -76,6 +76,7 @@ namespace Code.EntityComponent
            if (currentHealth <= 0)
            {
                _entity.OnDeathEvent?.Invoke();
+               return;
            }
            
            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.

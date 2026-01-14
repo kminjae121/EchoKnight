@@ -30,7 +30,6 @@ public class Enemy : Unit
 
     private void Die()
     {
-        Bus<EnemyDieEvent>.Raise(new EnemyDieEvent(1));
         gameObject.SetActive(false);
     }
 
@@ -69,6 +68,7 @@ public class Enemy : Unit
 
     public void DeadEnemy()
     {
+        animationCompo.PlaySelectAnimation("IDLE");
         animationCompo.PlaySelectAnimation("DIE");
     }
 }

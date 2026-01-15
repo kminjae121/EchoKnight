@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Code.Core;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
@@ -27,8 +28,7 @@ namespace Code.UnitManaging
         
         private void Start()
         {
-            SelectUnits("Golden");
-            SelectUnits("Light");
+            SelectUnits();
             MakeGameUnit();
         }
         
@@ -55,9 +55,12 @@ namespace Code.UnitManaging
         /// 유닛을 선택하는 코드
         /// </summary>
         /// <param name="selectedUnits"></param>
-        public void SelectUnits(string selectedUnits)
+        public void SelectUnits()
         {
-            _selectedUnits.Add(storageCompo.GetUnitInfo(selectedUnits));
+            storageCompo.units.Values.ToList().ForEach(unit =>
+            {
+                _selectedUnits.Add(unit);
+            });
         }
         
         //private void RemoveDeadUnit(UnitDeadEvent evt)

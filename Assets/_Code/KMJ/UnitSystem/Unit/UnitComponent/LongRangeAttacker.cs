@@ -1,0 +1,80 @@
+using System.Collections;
+using System.Collections.Generic;
+using Code.UnitSystem;
+using UnitSystem;
+using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
+
+public class LongRangeAttacker : MonoBehaviour
+{
+    [SerializeField] private UnitAttackComponent atkCompo;
+
+        [SerializeField] private float atkMoveSpeed;
+
+        [SerializeField] private Animator animator;
+
+        [SerializeField] private UnitAnimation animtionCompo;
+
+        [SerializeField] private UnitAnimationTrigger triggerCompo;
+
+        [SerializeField] private GameObject effectPrefab;
+        
+        [SerializeField] private float attackMoveDistance = 1.5f;
+
+
+        private GameObject _target = null;
+        
+        public bool isRunningAttack = false;
+        
+        private Vector3 _ownTrm;
+
+        private void Start()
+        {
+            triggerCompo.OnLongRangeAttackTrigger += ShootLongRangeAttack;
+            triggerCompo.OnLongRangeAttackEndTrigger += AttackEnd;
+            atkCompo.attackEvent.AddListener(AttackAction);
+        }
+
+        private void OnDestroy()
+        {
+            triggerCompo.OnLongRangeAttackTrigger -= ShootLongRangeAttack;
+            triggerCompo.OnLongRangeAttackEndTrigger -= AttackEnd;
+            atkCompo.attackEvent.RemoveListener(AttackAction);
+        }
+
+        public void AttackAction(GameObject target)
+        {
+            _ownTrm = transform.position;
+            StartCoroutine(MeleeAttackAction(target));
+        }
+
+        private IEnumerator MeleeAttackAction(GameObject target)
+        {
+            _target = null;
+            
+            yield return new WaitForSeconds(2.2f);
+            
+             animtionCompo.PlaySelectAnimation("ATTACK");
+
+             _target = target;
+        }
+
+
+        private void ShootLongRangeAttack()
+        {
+            Vector3 dir = _target.transform.position;
+
+            dir.y += 3.5f;
+
+            effectPrefab.transform.position = dir;
+            
+            effectPrefab.SetActive(true);
+        }
+
+
+        private void AttackEnd()
+        {
+            animtionCompo.PlaySelectAnimation("IDLE");
+            atkCompo.attackEndEvent?.Invoke();
+        }
+}

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Code.UnitSystem;
 using UnitSystem;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
@@ -21,6 +22,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         [SerializeField] private GameObject shootPrefabs;
         
+        private CinemachineImpulseSource impulseSource;
+        
         private GameObject _target = null;
         
         public bool isRunningAttack = false;
@@ -32,6 +35,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             triggerCompo.OnShootAttackTrigger += Shoot;
             triggerCompo.OnShootAttackEndTrigger += AttackEnd;
             atkCompo.attackEvent.AddListener(AttackAction);
+            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
         }
 
         private void OnDestroy()
@@ -69,6 +73,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Vector3 slashRot = transform.rotation.eulerAngles;
         
             shootItem.transform.rotation = Quaternion.Euler(slashRot);
+            impulseSource.GenerateImpulse(0.3f);
         }
         
         private void AttackEnd()

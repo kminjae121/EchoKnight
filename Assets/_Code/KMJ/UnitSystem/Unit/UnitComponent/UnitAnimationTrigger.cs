@@ -23,6 +23,14 @@ namespace Code.UnitSystem
         public Action OnSwordFlagSkillTrigger;
 
         public Action OnSwordFlagSkillEndTrigger;
+
+        public Action OnLongRangeAttackTrigger;
+
+        public Action OnShootAttackTrigger;
+
+        public Action OnShootAttackEndTrigger;
+        
+        public Action OnLongRangeAttackEndTrigger;
         
         private Unit _entity;
         
@@ -35,6 +43,14 @@ namespace Code.UnitSystem
         {
             OnAnimationEndTrigger?.Invoke();
         }
+
+        private void LongRangeAttackEnd() => OnLongRangeAttackEndTrigger?.Invoke();
+
+        private void ShootAttackEnd() => OnShootAttackEndTrigger?.Invoke();
+        
+        private void LongRangeAttack() => OnLongRangeAttackTrigger?.Invoke();
+
+        private void ShootAttack() => OnShootAttackTrigger?.Invoke();
 
         private void EnemyDead() => OnEnemyDieEndTrigger?.Invoke();
         

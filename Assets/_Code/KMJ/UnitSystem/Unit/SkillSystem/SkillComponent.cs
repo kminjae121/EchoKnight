@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Code.KMJ.UnitSystem.involveUnitSO;
 using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem
@@ -11,12 +12,22 @@ namespace Code.UnitSystem.SkillSystem
         
         public int currentSkillCost = 10;
         
+        [SerializeField] private UnitSkillStorageSO storageSO = null;
+        
         private Dictionary<string, BaseSkill> skills = new Dictionary<string, BaseSkill>();
 
         private Unit _unit;
         
         public void Initialize(Unit owner)
         {
+            if (storageSO != null&& storageSO.skills != null)
+            {
+                storageSO.skills.ToList().ForEach(skillinfo =>
+                {
+                    AddSkill(skillinfo);
+                });
+            }
+            
             _unit = owner;
             
             skills = new Dictionary<string, BaseSkill>();

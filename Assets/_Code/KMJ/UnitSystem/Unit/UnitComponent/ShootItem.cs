@@ -22,7 +22,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private void FixedUpdate()
         {
-            transform.position += -transform.forward * _moveSpeed * Time.fixedDeltaTime;
+            transform.position += transform.forward * _moveSpeed * Time.fixedDeltaTime;
         }
 
         private void OnTriggerEnter(Collider other)

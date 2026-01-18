@@ -11,6 +11,18 @@ namespace Code.UnitSystem
 {
     public class Unit : MonoBehaviour, ITurnable
     {
+        [field: SerializeField] public float TurnGauge { get; set; }
+
+        public bool isMyTurn { get; set; } = false;
+        
+        public bool IsReadyDoAct => TurnGauge >= 100f;
+
+        public string UnitName => unitSO.UnitName;
+        public bool IsPlayerUnit { get; set; }
+        
+        public Action OnDeathEvent { get; set; }
+
+        protected readonly Dictionary<Type,IUnitComponent> _components = new();
         [field: SerializeField] public UnitSO unitSO { get; private set; }
 
         public float TurnSpeed { get; private set; }
@@ -21,7 +33,7 @@ namespace Code.UnitSystem
         
         public UnityEvent OnStartTurnEvent;
         public UnityEvent OnEndTurnEvent;
-        public UnityEvent OnHitEvent;
+        public Action OnHitEvent;
         
         
         public virtual void OnTurnStart()
@@ -36,18 +48,6 @@ namespace Code.UnitSystem
             OnEndTurnEvent?.Invoke();
         }
 
-        [field: SerializeField] public float TurnGauge { get; set; }
-
-        public bool isMyTurn { get; set; } = false;
-        
-        public bool IsReadyDoAct => TurnGauge >= 100f;
-
-        public string UnitName => unitSO.UnitName;
-        public bool IsPlayerUnit { get; set; }
-        
-        public Action OnDeathEvent { get; set; }
-
-        protected readonly Dictionary<Type,IUnitComponent> _components = new();
 
         protected virtual void OnEnable()
         {
@@ -60,9 +60,15 @@ namespace Code.UnitSystem
             TurnGauge = 0f;
             UnitImage = unitSO.UnitImage;
 
+            OnHitEvent += Hit;
             OnDeathEvent += Dead;
             
             RangesCompo = GetUnitCompo<UnitManageRangeCompo>();
+        }
+
+        protected virtual void Hit()
+        {
+            
         }
 
         protected virtual  void OnDestroy()

@@ -20,7 +20,7 @@ namespace Code.UnitSystem.SkillSystem
         
         public void Initialize(Unit owner)
         {
-            if (storageSO.skills != null && storageSO == null)
+            if (storageSO != null&& storageSO.skills != null)
             {
                 storageSO.skills.ToList().ForEach(skillinfo =>
                 {

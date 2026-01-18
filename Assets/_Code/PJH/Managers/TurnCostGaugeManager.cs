@@ -29,6 +29,9 @@ namespace Code.Managers
         public bool CanUseSkill(int skillValue)
             => currentGaugeValue.Value >= skillValue;
 
+        public void UseSkill(int skillValue)
+            => currentGaugeValue.Value -= skillValue;
+
         #region Test
 
         [ContextMenu("RaiseTurnEndEvent")]

@@ -64,8 +64,8 @@ public class LongRangeAttacker : MonoBehaviour
         {
             Vector3 dir = _target.transform.position;
 
-            dir.y += 3.5f;
-
+            dir.y += 0.4f;
+            
             effectPrefab.transform.position = dir;
             
             effectPrefab.SetActive(true);

@@ -1180,6 +1180,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04122b9d693b9694aa8442623c28c6bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  <TurnGauge>k__BackingField: 0
   <unitSO>k__BackingField: {fileID: 11400000, guid: a410916a75384cb49974c8aafd0d7bb7, type: 2}
   OnStartTurnEvent:
     m_PersistentCalls:
@@ -1261,10 +1262,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  OnHitEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  <TurnGauge>k__BackingField: 0
   <inputSO>k__BackingField: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
   maxUsingCost: 100
@@ -3078,6 +3075,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillList: []
   currentSkillCost: 10
+  storageSO: {fileID: 0}
 --- !u!1 &6793596474031118395
 GameObject:
   m_ObjectHideFlags: 0

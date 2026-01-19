@@ -21,6 +21,7 @@ namespace Code.UnitSystem
         
         [SerializeField] private UnitRotation rotationCompo; 
         [SerializeField] private AttackDataSO attackData;
+        [SerializeField] private float _atkDamage;
         
         private DamageData _damageData;
 
@@ -59,6 +60,8 @@ namespace Code.UnitSystem
             
             _unitSO = _basicUnit.unitSO;
             
+            
+            
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
@@ -68,7 +71,7 @@ namespace Code.UnitSystem
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
             
             _damageData = new DamageData();
-            _damageData.damage = 1.2345f;
+            _damageData.damage = _atkDamage;
 
             _inputReader.OnAttackEvent += AttackEnemy;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();

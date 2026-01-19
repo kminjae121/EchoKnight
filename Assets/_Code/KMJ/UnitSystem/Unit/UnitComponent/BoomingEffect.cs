@@ -23,7 +23,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             _collider = GetComponent<Collider>();
             _collider.enabled = false;
-            _damageData.damage = 0;
+            _damageData.damage = 4;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
         }
 

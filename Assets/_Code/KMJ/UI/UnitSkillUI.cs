@@ -17,9 +17,9 @@ namespace Code.UI
 
         [SerializeField] private List<Button> skillbtn;
 
-        [ItemCanBeNull] private List<string> thisSkillName;
+        [SerializeField] private List<string> thisSkillName;
 
-        private List<bool> isCanSkill;
+        [SerializeField] private List<bool> isCanSkill;
         
         private void Awake()
         {
@@ -51,7 +51,7 @@ namespace Code.UI
         private void HandleSkillUIEvent(SkillUIEvent evt)
         {
             skillCompnent = evt.skillComponent;
-            skillImage[evt.skillIdx] = evt.skillImage;
+            skillImage[evt.skillIdx].sprite = evt.skillImage;
             thisSkillName[evt.skillIdx] = evt.skillName;
             
             

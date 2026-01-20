@@ -14,7 +14,7 @@ namespace Code.UnitSystem.SkillSystem
         
         [SerializeField] private UnitSkillStorageSO storageSO = null;
         
-        private Dictionary<string, BaseSkill> skills = new Dictionary<string, BaseSkill>();
+        public Dictionary<string, BaseSkill> skills = new Dictionary<string, BaseSkill>();
 
         private Unit _unit;
         

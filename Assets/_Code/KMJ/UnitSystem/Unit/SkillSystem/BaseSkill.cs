@@ -8,6 +8,7 @@ using Input;
 using UnitSystem;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 namespace Code.UnitSystem.SkillSystem
 {
@@ -20,6 +21,8 @@ namespace Code.UnitSystem.SkillSystem
             private UnitRotation rotationCompo; 
             protected UnitAnimationTrigger triggerCompo;
         #endregion
+
+        [field: SerializeField] public Image skillImage { get; set; }
         
         private InputReader _inputReader;
         

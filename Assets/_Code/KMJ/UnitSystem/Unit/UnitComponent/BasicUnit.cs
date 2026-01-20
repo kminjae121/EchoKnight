@@ -68,8 +68,6 @@ namespace  UnitSystem
             {
                  skillCompo.skills.ToList().ForEach(skill =>
                  {
-                     Debug.Log(idx);
-                     Debug.Log("와우");
                      idx += 1;
                      Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key,skill.Value.skillImage,skillCompo));
                  });  

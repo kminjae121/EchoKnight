@@ -1,7 +1,9 @@
 using System;
+using System.Linq;
 using Code.Core.Events.Bus;
 using Code.UI;
 using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using GameEventChannel;
 using Input;
 using UnityEngine;
@@ -15,7 +17,8 @@ namespace  UnitSystem
         [field: SerializeField] public InputReader inputSO { get; private set; }
         
         [SerializeField] private GameEventChannelSO unitDeadChannel;
-        
+
+        public SkillComponent skillCompo { get; private set; }
         public UnitAnimation animationComponent { get; private set; }
 
         public int maxUsingCost = 100;
@@ -35,7 +38,8 @@ namespace  UnitSystem
             _controlUI = GameObject.Find("BaseButton").GetComponent<UnitControl>();
             endTurnBtn = GameObject.Find("TurnEnd").GetComponent<Button>();
 
-
+            skillCompo = GetUnitCompo<SkillComponent>();
+            
             animationComponent = GetUnitCompo<UnitAnimation>();
             
             endTurnBtn.onClick.AddListener(TurnEnd);
@@ -53,6 +57,17 @@ namespace  UnitSystem
             CurrentCost = maxUsingCost;
 
             float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+
+            int idx = -1;
+
+            if (skillCompo.skills == null)
+            {
+                 skillCompo.skills.ToList().ForEach(skill =>
+                 {
+                     idx += 1;
+                     Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key,skill.Value.skillImage,skillCompo));
+                 });  
+            }
             
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
             OnStartTurnEvent?.Invoke();

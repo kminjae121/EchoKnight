@@ -22,7 +22,7 @@ namespace Code.UnitSystem.SkillSystem
             protected UnitAnimationTrigger triggerCompo;
         #endregion
 
-        [field: SerializeField] public Image skillImage { get; set; }
+        [field: SerializeField] public Sprite skillImage { get; set; }
         
         private InputReader _inputReader;
         

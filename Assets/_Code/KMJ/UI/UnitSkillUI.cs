@@ -13,13 +13,15 @@ namespace Code.UI
     {
         private SkillComponent skillCompnent;
 
+        [SerializeField] private Sprite basicSprite;
+
         [SerializeField] private List<Image> skillImage;
 
         [SerializeField] private List<Button> skillbtn;
 
-        [ItemCanBeNull] private List<string> thisSkillName;
+        [SerializeField] private List<string> thisSkillName;
 
-        private List<bool> isCanSkill;
+        [SerializeField] private List<bool> isCanSkill;
         
         private void Awake()
         {
@@ -51,14 +53,25 @@ namespace Code.UI
         private void HandleSkillUIEvent(SkillUIEvent evt)
         {
             skillCompnent = evt.skillComponent;
-            skillImage[evt.skillIdx] = evt.skillImage;
+            if (evt.skillImage == null)
+            {
+                skillImage[evt.skillIdx].sprite = basicSprite;
+            }
+            else
+            {
+                skillImage[evt.skillIdx].sprite = evt.skillImage;
+            }
             thisSkillName[evt.skillIdx] = evt.skillName;
             
             
             skillbtn[evt.skillIdx].onClick.RemoveAllListeners();
             
             int capturedIdx = evt.skillIdx;
-            skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
+
+            if (evt.skillName != null)
+            {
+                skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
+            }
         }
     }
 }

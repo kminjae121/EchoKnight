@@ -60,7 +60,11 @@ namespace  UnitSystem
 
             int idx = -1;
 
-            if (skillCompo.skills == null)
+            for (int i = 0; i <= 2; i++)
+            {
+                Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,null,null));
+            }
+            if (skillCompo.skills != null)
             {
                  skillCompo.skills.ToList().ForEach(skill =>
                  {

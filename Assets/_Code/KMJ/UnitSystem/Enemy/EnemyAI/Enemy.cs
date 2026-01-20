@@ -47,6 +47,10 @@ public class Enemy : Unit
     public override void OnTurnStart()
     {
         base.OnTurnStart();
+        for (int i = 0; i <= 2; i++)
+        {
+            Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,null,null));
+        }
         moveCompo.Move();
     }
 

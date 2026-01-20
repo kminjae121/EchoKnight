@@ -24,7 +24,7 @@ namespace Code.UnitSystem.SkillSystem
             {
                 storageSO.skills.ToList().ForEach(skillinfo =>
                 {
-                    AddSkill(skillinfo);
+                    _skillList.Add(skillinfo);
                 });
             }
             
@@ -92,9 +92,6 @@ namespace Code.UnitSystem.SkillSystem
 
         public void AddSkill(SkillSO skillSO)
         {
-            if (_skillList.Count == 2)
-                return;
-            
             if (skillSO == null) return;
             _skillList.Add(skillSO);
 

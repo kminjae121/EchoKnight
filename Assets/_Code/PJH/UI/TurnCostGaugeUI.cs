@@ -1,5 +1,5 @@
-﻿using System;
-using Code.Managers;
+﻿using Code.Managers;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,6 +12,9 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI currentCostText;
         [SerializeField] private TextMeshProUGUI maxCostText;
         [SerializeField] private TurnCostGaugeManager gaugeManager;
+        [SerializeField] private float gaugeTweenTime = 0.3f;
+
+        private Tween gaugeTween;
 
         private void OnEnable()
         {
@@ -37,7 +40,14 @@ namespace Code.UI
         {
             currentCostText.text = value.ToString();
             maxCostText.text = gaugeManager.maxGaugeValue.ToString();
-            turnCostGaugeImage.fillAmount = gaugeManager.currentGaugeValue.Value / (float)gaugeManager.maxGaugeValue;
+
+            float targetFill = gaugeManager.currentGaugeValue.Value / (float)gaugeManager.maxGaugeValue;
+            
+            gaugeTween?.Kill();
+
+            gaugeTween = turnCostGaugeImage
+                .DOFillAmount(targetFill, gaugeTweenTime)
+                .SetEase(Ease.OutCubic);
         }
     }
 }

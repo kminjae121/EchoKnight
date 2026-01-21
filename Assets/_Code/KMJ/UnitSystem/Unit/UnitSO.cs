@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.UnitSystem.SkillSystem;
 using Skill;
 using UnityEngine;
 
@@ -17,7 +18,7 @@ public class UnitSO : ScriptableObject
     public Sprite UnitImage;
     
     [Header("OwnUnitCards")]
-    public List<UnitSkillCardSO> unitSkillCards;
+    public List<SkillSO> unitSkillCards;
 
     [Header("CharacterAnimationController")]
     public RuntimeAnimatorController animationController;

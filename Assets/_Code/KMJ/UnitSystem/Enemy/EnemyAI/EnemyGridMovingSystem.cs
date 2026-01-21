@@ -39,6 +39,19 @@ namespace EnemySystem
             
             Moveing(randomDir);
         }
+        
+        public void MoveTowardsTarget(Vector3 targetPos)
+        {
+            Vector3 dir = (targetPos - transform.position).normalized;
+            Vector3 step = Vector3.zero;
+            
+            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
+                step = new Vector3(Mathf.Sign(dir.x), 0, 0);
+            else
+                step = new Vector3(0, 0, Mathf.Sign(dir.z));
+
+            StartCoroutine(Move(step));
+        }
 
         private void Moveing(int dir)
         {

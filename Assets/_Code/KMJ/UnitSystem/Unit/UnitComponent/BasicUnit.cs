@@ -130,6 +130,9 @@ namespace  UnitSystem
                 return false;
             
             CurrentCost += cost;
+            float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+            
+            Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
             return true;
         }
 
@@ -142,8 +145,6 @@ namespace  UnitSystem
         public void RemoveCost(float cost)
         {
             CurrentCost -= cost;
-            
-            Debug.Log(CurrentCost);
             
             if (CurrentCost <= 0)
             {

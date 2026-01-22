@@ -6,6 +6,21 @@ namespace Code.UnitSystem
 {
     public class UnitAnimationTrigger : MonoBehaviour,IUnitComponent
     {
+        #region Bandlt
+
+        public Action OnThrowKnifeTrigger;
+
+        public Action OnAddAPTrigger;
+
+        #endregion
+
+        #region Archer
+
+        public Action OnFireArrowTrigger;
+        
+        public Action OnAimArrowTrigger;
+
+        #endregion
         public Action OnAnimationEndTrigger;
 
         public Action OnEnemyAnimationEndTrigger;
@@ -43,6 +58,21 @@ namespace Code.UnitSystem
         {
             OnAnimationEndTrigger?.Invoke();
         }
+
+        #region Bandlt
+
+        private void ThrowKnife() => OnThrowKnifeTrigger?.Invoke();
+        private void AddAP()=> OnAddAPTrigger?.Invoke();
+
+        #endregion
+
+        #region Archer
+
+        private void FireArrow() => OnFireArrowTrigger?.Invoke();
+        
+        private void AimArrow() => OnAimArrowTrigger?.Invoke();
+
+        #endregion
 
         private void LongRangeAttackEnd() => OnLongRangeAttackEndTrigger?.Invoke();
 

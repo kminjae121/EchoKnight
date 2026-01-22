@@ -21,6 +21,13 @@ namespace Code.UnitSystem
         public Action OnAimArrowTrigger;
 
         #endregion
+
+        #region Magical
+
+        public Action OnFireBallTrigger;
+        public Action OnHealTrigger;
+
+        #endregion
         public Action OnAnimationEndTrigger;
 
         public Action OnEnemyAnimationEndTrigger;
@@ -72,6 +79,13 @@ namespace Code.UnitSystem
         
         private void AimArrow() => OnAimArrowTrigger?.Invoke();
 
+        #endregion
+        
+        #region Magical
+        
+        private void FireBall() => OnFireBallTrigger?.Invoke();
+
+        private void Heal() => OnHealTrigger?.Invoke();
         #endregion
 
         private void LongRangeAttackEnd() => OnLongRangeAttackEndTrigger?.Invoke();

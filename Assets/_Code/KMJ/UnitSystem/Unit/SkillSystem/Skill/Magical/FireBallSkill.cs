@@ -42,6 +42,7 @@ using UnityEngine;
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            animtionCompo.PlaySelectAnimation("IDLE");
         }
         
         public void MakeArrow()
@@ -50,12 +51,12 @@ using UnityEngine;
 
             pos.y += 0.5f;
         
-            GameObject slash = Instantiate(fireBallPrefab, pos, Quaternion.identity);
+            fireBallPrefab.transform.position = pos;
+            fireBallPrefab.SetActive(true);
+
 
             Vector3 slashRot = transform.rotation.eulerAngles;
-
-            slashRot.y += 90;
         
-            slash.transform.rotation = Quaternion.Euler(slashRot);
+            fireBallPrefab.transform.rotation = Quaternion.Euler(slashRot);
         }
     }

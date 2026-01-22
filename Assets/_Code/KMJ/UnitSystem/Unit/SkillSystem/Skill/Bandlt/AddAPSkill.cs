@@ -38,6 +38,8 @@ using UnityEngine;
         private IEnumerator AddAp()
         {
             yield return new WaitForSeconds(2f);
+            effectPrefab.SetActive(true);
+            effectPrefab.GetComponent<ParticleSystem>().Play();
             animtionCompo.PlaySelectAnimation("HEAL");
         }
 
@@ -51,5 +53,6 @@ using UnityEngine;
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            animtionCompo.PlaySelectAnimation("IDLE");
         }
     }

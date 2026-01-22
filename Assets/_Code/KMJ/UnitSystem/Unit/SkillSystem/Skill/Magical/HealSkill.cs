@@ -41,16 +41,19 @@ using UnityEngine;
             yield return new WaitForSeconds(2f);
             animtionCompo.PlaySelectAnimation("HEAL");
         }
-        
+
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            animtionCompo.PlaySelectAnimation("IDLE");
         }
-        
+
         public void Heal()
         {
             EntityHealth health = _owner.GetUnitCompo<EntityHealth>();
             
             health.HealHp(20);
+            healPrefab.SetActive(true);
+            healPrefab.GetComponent<ParticleSystem>().Play();
         }
     }

@@ -39,6 +39,8 @@ namespace Code.UnitSystem.SkillSystem
         private SetUnitCamera unitCam;
         
         private BasicUnit _unit;
+
+        [SerializeField] private bool ownSkill = false;
         
         #region SkillEvent
             public UnityEvent skillStartEvent;
@@ -71,6 +73,7 @@ namespace Code.UnitSystem.SkillSystem
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
 
+            skillEndEvent.AddListener(CanUseSkillTrue);
             ResetTileEvent += skillEnd;
         }
 
@@ -83,15 +86,33 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void OnDisable()
         {
-            skillEndEvent.RemoveListener(TurnEnd);
+            skillEndEvent.RemoveListener(CanUseSkillTrue);
             _inputReader.OnAttackEvent -= UseSkill;
             ResetTileEvent -= skillEnd;
         }
 
+        private void CanUseSkillTrue()
+        {
+            Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+        }
+
         public virtual void ShowSkillRange()
         {
-            CheckCanAttack();
-            CanUseThisSkill();
+            if (_unit.gaugeManager.CanUseSkill(useSkillPoint))
+            {
+                if (ownSkill)
+                {
+                    _unit.gaugeManager.UseSkill(useSkillPoint);
+                    skillEvent?.Invoke(null);
+                }
+                else
+                {
+                    CheckCanAttack();
+                    CanUseThisSkill();
+                }
+            }
+            else
+                return;
         }
         
         private void FindEnemyIsThere(GameObject enemy)
@@ -145,8 +166,9 @@ namespace Code.UnitSystem.SkillSystem
             
                 rotationCompo.SetDir(enemy.transform.position);
             
-                skillEvent?.Invoke(_targetEnemy);          
-            
+                skillEvent?.Invoke(_targetEnemy);        
+                
+                _unit.gaugeManager.UseSkill(useSkillPoint);
             }
             skillEnd();   
         }

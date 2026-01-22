@@ -40,6 +40,7 @@ using UnityEngine;
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            animtionCompo.PlaySelectAnimation("IDLE");
         }
         
         public void MakeArrow()

@@ -45,17 +45,16 @@ using UnityEngine;
 
             pos.y += 0.5f;
         
-            GameObject slash = Instantiate(_knifePrefab, pos, Quaternion.identity);
+            GameObject shootItem = Instantiate(_knifePrefab, pos, Quaternion.identity);
 
             Vector3 slashRot = transform.rotation.eulerAngles;
-
-            slashRot.y += 90;
         
-            slash.transform.rotation = Quaternion.Euler(slashRot);
+            shootItem.transform.rotation = Quaternion.Euler(slashRot);
         }
         
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            animtionCompo.PlaySelectAnimation("IDLE");
         }
     }

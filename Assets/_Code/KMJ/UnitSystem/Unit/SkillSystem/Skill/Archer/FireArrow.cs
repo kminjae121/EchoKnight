@@ -35,6 +35,7 @@ using UnityEngine;
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            animtionCompo.PlaySelectAnimation("IDLE");
         }
         
         private IEnumerator FireArrowAction()

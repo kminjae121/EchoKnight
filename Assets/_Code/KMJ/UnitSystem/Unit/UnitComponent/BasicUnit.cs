@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using Code.Core.Events.Bus;
+using Code.Managers;
 using Code.UI;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
@@ -14,6 +15,7 @@ namespace  UnitSystem
 {
     public class BasicUnit : Unit
     {
+        public TurnCostGaugeManager gaugeManager { get; set; }
         [field: SerializeField] public InputReader inputSO { get; private set; }
         
         [SerializeField] private GameEventChannelSO unitDeadChannel;
@@ -35,6 +37,7 @@ namespace  UnitSystem
         
         private void Start()
         {
+            gaugeManager = GameObject.Find("TurnManager").GetComponent<TurnCostGaugeManager>();
             _controlUI = GameObject.Find("BaseButton").GetComponent<UnitControl>();
             endTurnBtn = GameObject.Find("TurnEnd").GetComponent<Button>();
 

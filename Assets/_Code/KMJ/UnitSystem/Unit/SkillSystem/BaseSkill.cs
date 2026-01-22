@@ -66,7 +66,7 @@ namespace Code.UnitSystem.SkillSystem
             triggerCompo = _unit.GetUnitCompo<UnitAnimationTrigger>();
             _skillCompo = _unit.GetUnitCompo<SkillComponent>();
 
-            _damageData.damage = 1.234f;
+            _damageData.damage = damage;
 
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
@@ -163,11 +163,6 @@ namespace Code.UnitSystem.SkillSystem
             if (isCanUseSkill == false)
                 return;
             
-            //if (_skillCompo.currentSkillCost - useSkillPoint < 0)
-            //    return;
-            //
-            //_skillCompo.currentSkillCost -= useSkillPoint;
-
             AttackEnemy();
         }
         

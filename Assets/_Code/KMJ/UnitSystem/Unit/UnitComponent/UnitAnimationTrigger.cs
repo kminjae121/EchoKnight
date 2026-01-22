@@ -9,23 +9,29 @@ namespace Code.UnitSystem
         #region Bandlt
 
         public Action OnThrowKnifeTrigger;
+        public Action OnThrowKnifeEndTrigger;
 
         public Action OnAddAPTrigger;
+        public Action OnAddAPEndTrigger;
 
         #endregion
 
         #region Archer
 
         public Action OnFireArrowTrigger;
+        public Action OnFireArrowEndTrigger;
         
         public Action OnAimArrowTrigger;
+        public Action OnAimArrowEndTrigger;
 
         #endregion
 
         #region Magical
 
         public Action OnFireBallTrigger;
+        public Action OnFireBallEndTrigger;
         public Action OnHealTrigger;
+        public Action OnHealEndTrigger;
 
         #endregion
         public Action OnAnimationEndTrigger;
@@ -69,23 +75,31 @@ namespace Code.UnitSystem
         #region Bandlt
 
         private void ThrowKnife() => OnThrowKnifeTrigger?.Invoke();
+
+        private void ThrowKnifeEnd() => OnThrowKnifeEndTrigger?.Invoke();
         private void AddAP()=> OnAddAPTrigger?.Invoke();
+        
+        private void AddAPEnd()=> OnAddAPEndTrigger?.Invoke();
 
         #endregion
 
         #region Archer
 
         private void FireArrow() => OnFireArrowTrigger?.Invoke();
+        private void FireArrowEnd() => OnFireArrowEndTrigger?.Invoke();
         
         private void AimArrow() => OnAimArrowTrigger?.Invoke();
+        private void AimArrowEnd() => OnAimArrowEndTrigger?.Invoke();
 
         #endregion
         
         #region Magical
         
         private void FireBall() => OnFireBallTrigger?.Invoke();
+        private void FireBallEnd() => OnFireBallEndTrigger?.Invoke();
 
         private void Heal() => OnHealTrigger?.Invoke();
+        private void HealEnd() => OnHealEndTrigger?.Invoke();
         #endregion
 
         private void LongRangeAttackEnd() => OnLongRangeAttackEndTrigger?.Invoke();

@@ -1645,6 +1645,8 @@ GameObject:
   m_Component:
   - component: {fileID: 8716369724573428111}
   - component: {fileID: 7904145215716462513}
+  - component: {fileID: 8467227793752848513}
+  - component: {fileID: 2656233011362560395}
   m_Layer: 7
   m_Name: SkillComponent
   m_TagString: Untagged
@@ -1679,9 +1681,75 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56ae9d42f1944b238682f97f832f1290, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skillList: []
+  _skillList:
+  - {fileID: 11400000, guid: 49aa6bbcc524d604e97103df070426a5, type: 2}
+  - {fileID: 11400000, guid: d55721ce64d71b44ab8c0a09e708d036, type: 2}
   currentSkillCost: 10
-  storageSO: {fileID: 0}
+  storageSO: {fileID: 11400000, guid: d624d89f40569d541a7e874ce4a243bf, type: 2}
+--- !u!114 &8467227793752848513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4247871956059741608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd8b90b09dbf4c50a53195465c73eef2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalCheckBoxSize: {x: 0.5, y: 1, z: 0.5}
+  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 128
+  attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
+  <skillImage>k__BackingField: {fileID: 21300000, guid: d98b775a6f3c03e43ba95a50dd259d3f, type: 3}
+  damage: 0
+  useSkillPoint: 0
+  isCanUseSkill: 0
+  skillStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  healPrefab: {fileID: 0}
+--- !u!114 &2656233011362560395
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4247871956059741608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 011c4356ee7a44009b7de753cac75e7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalCheckBoxSize: {x: 7.5, y: 1, z: 7.5}
+  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 256
+  attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
+  <skillImage>k__BackingField: {fileID: 21300000, guid: 04841b8a9cae96b42aa2a2689b689515, type: 3}
+  damage: 0
+  useSkillPoint: 0
+  isCanUseSkill: 0
+  skillStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  fireBallPrefab: {fileID: 0}
 --- !u!1 &4264332147043411263
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem.Skill
-{
     public class ThrowKnifeSkill : BaseSkill
     {
         [SerializeField] private GameObject _knifePrefab;
@@ -15,6 +14,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         private void Start()
         {
             triggerCompo.OnThrowKnifeTrigger += MakeThrowKnife;
+            triggerCompo.OnThrowKnifeEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         }
@@ -22,6 +22,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         protected override void OnDestroy()
         {
             triggerCompo.OnThrowKnifeTrigger -= MakeThrowKnife;
+            triggerCompo.OnThrowKnifeEndTrigger -= SkillEnd;
             skillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
         }
@@ -52,5 +53,9 @@ namespace Code.UnitSystem.SkillSystem.Skill
         
             slash.transform.rotation = Quaternion.Euler(slashRot);
         }
+        
+        private void SkillEnd()
+        {
+            skillEndEvent?.Invoke();
+        }
     }
-}

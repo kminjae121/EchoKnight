@@ -1,14 +1,12 @@
 ﻿using System.Collections;
+using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem.Skill
-{
     public class AddAPSkill : BaseSkill
     {
-        [SerializeField] private UnitAnimationTrigger triggerCompo;
-
         [SerializeField] private GameObject effectPrefab;
         
         private UnitAnimation animtionCompo;
@@ -19,12 +17,15 @@ namespace Code.UnitSystem.SkillSystem.Skill
             skillEvent.AddListener(AddAP);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
             triggerCompo.OnAddAPTrigger += PlusAP;
+
+            triggerCompo.OnAddAPEndTrigger += SkillEnd;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             skillEvent.RemoveListener(AddAP);
+            triggerCompo.OnAddAPEndTrigger -= SkillEnd;
             triggerCompo.OnAddAPTrigger -= PlusAP;
         }
 
@@ -46,5 +47,9 @@ namespace Code.UnitSystem.SkillSystem.Skill
 
             unit.GetCost(25);
         }
+        
+        private void SkillEnd()
+        {
+            skillEndEvent?.Invoke();
+        }
     }
-}

@@ -1,11 +1,11 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using Code.EntityComponent;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem.Skill
-{
+
     public class HealSkill : BaseSkill
     {
         [SerializeField] private GameObject healPrefab;
@@ -16,6 +16,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         {
             base.Start();
             triggerCompo.OnHealTrigger += Heal;
+            triggerCompo.OnHealEndTrigger += SkillEnd;
             skillEvent.AddListener(HealAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         }
@@ -23,6 +24,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         protected override void OnDestroy()
         { 
             triggerCompo.OnHealTrigger-= Heal;
+            triggerCompo.OnHealEndTrigger -= SkillEnd;
             skillEvent.RemoveListener(HealAction);
             base.OnDestroy();
             
@@ -40,6 +42,11 @@ namespace Code.UnitSystem.SkillSystem.Skill
             animtionCompo.PlaySelectAnimation("HEAL");
         }
         
+        private void SkillEnd()
+        {
+            skillEndEvent?.Invoke();
+        }
+        
         public void Heal()
         {
             EntityHealth health = _owner.GetUnitCompo<EntityHealth>();
@@ -47,4 +54,3 @@ namespace Code.UnitSystem.SkillSystem.Skill
             health.HealHp(20);
         }
     }
-}

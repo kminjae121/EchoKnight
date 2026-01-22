@@ -1,9 +1,8 @@
 ﻿using System.Collections;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem.Skill.Archer
-{
     public class AimArrow : BaseSkill
     {
         [SerializeField] private GameObject _ArrowPrefab;
@@ -13,6 +12,7 @@ namespace Code.UnitSystem.SkillSystem.Skill.Archer
         private void Start()
         {
             triggerCompo.OnAimArrowTrigger += MakeArrow;
+            triggerCompo.OnAimArrowEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         }
@@ -20,6 +20,7 @@ namespace Code.UnitSystem.SkillSystem.Skill.Archer
         protected override void OnDestroy()
         {
             triggerCompo.OnAimArrowTrigger -= MakeArrow;
+            triggerCompo.OnAimArrowEndTrigger -= SkillEnd;
             skillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
         }
@@ -33,7 +34,12 @@ namespace Code.UnitSystem.SkillSystem.Skill.Archer
         private IEnumerator FireArrowAction()
         {
             yield return new WaitForSeconds(2f);
-            animtionCompo.PlaySelectAnimation("AimArrow");
+            animtionCompo.PlaySelectAnimation("AIM");
+        }
+
+        private void SkillEnd()
+        {
+            skillEndEvent?.Invoke();
         }
         
         public void MakeArrow()
@@ -42,13 +48,10 @@ namespace Code.UnitSystem.SkillSystem.Skill.Archer
 
             pos.y += 0.5f;
         
-            GameObject slash = Instantiate(_ArrowPrefab, pos, Quaternion.identity);
+            GameObject shootItem = Instantiate(_ArrowPrefab, pos, Quaternion.identity);
 
             Vector3 slashRot = transform.rotation.eulerAngles;
-
-            slashRot.y += 90;
         
-            slash.transform.rotation = Quaternion.Euler(slashRot);
+            shootItem.transform.rotation = Quaternion.Euler(slashRot);
         }
     }
-}

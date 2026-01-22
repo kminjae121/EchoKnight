@@ -1,9 +1,8 @@
 ﻿using System.Collections;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem.Skill
-{
     public class FireBallSkill : BaseSkill
     {
         [SerializeField] private GameObject fireBallPrefab;
@@ -14,6 +13,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         {
             base.Start();
             triggerCompo.OnFireBallTrigger += MakeArrow;
+            triggerCompo.OnFireBallEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         }
@@ -21,6 +21,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         protected override void OnDestroy()
         { 
             triggerCompo.OnFireBallTrigger -= MakeArrow;
+            triggerCompo.OnFireBallEndTrigger -= SkillEnd;
             skillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
             
@@ -38,6 +39,11 @@ namespace Code.UnitSystem.SkillSystem.Skill
             animtionCompo.PlaySelectAnimation("FIREBALL");
         }
         
+        private void SkillEnd()
+        {
+            skillEndEvent?.Invoke();
+        }
+        
         public void MakeArrow()
         {
             Vector3 pos = transform.position;
@@ -53,4 +59,3 @@ namespace Code.UnitSystem.SkillSystem.Skill
             slash.transform.rotation = Quaternion.Euler(slashRot);
         }
     }
-}

@@ -4,15 +4,14 @@ using Code.Core.Interfaces;
 using Code.UnitSystem;
 using EnemySystem;
 using UnitSystem;
+using Unity.Behavior;
 using UnityEngine;
 
 public class Enemy : Unit
 {
-
+    [SerializeField] private BehaviorGraphAgent behaviorAgent;
     [SerializeField] private UnitAnimation animationCompo;
-
     [SerializeField] private UnitAnimationTrigger triggerCompo;
-
     [SerializeField] private EnemyGridMovingSystem moveCompo;
     
     protected override void OnEnable()
@@ -47,11 +46,16 @@ public class Enemy : Unit
     public override void OnTurnStart()
     {
         base.OnTurnStart();
+
         for (int i = 0; i <= 2; i++)
         {
-            Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,null,null));
+            Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null, null, null));
         }
-        moveCompo.Move();
+        
+        if (behaviorAgent != null)
+        {
+            behaviorAgent.BlackboardReference.SetVariableValue("IsMyTurn", true);
+        }
     }
 
     public override void OnTurnEnd()

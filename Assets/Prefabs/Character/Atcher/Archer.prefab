@@ -2663,6 +2663,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7513396104360579884}
   - component: {fileID: 1436627432719690847}
+  - component: {fileID: 7892059421470948934}
+  - component: {fileID: 2442742964246998859}
   m_Layer: 7
   m_Name: SkillComponent
   m_TagString: Untagged
@@ -2697,9 +2699,129 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56ae9d42f1944b238682f97f832f1290, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _skillList: []
+  _skillList:
+  - {fileID: 11400000, guid: cc8abb61a159ed94e925dbbe9ed92bbe, type: 2}
+  - {fileID: 11400000, guid: 9e6d2bb982fdce24195828fbf5725261, type: 2}
   currentSkillCost: 10
-  storageSO: {fileID: 0}
+  storageSO: {fileID: 11400000, guid: 1fcb7024abc920d4ca5613ef9316d5a1, type: 2}
+--- !u!114 &7892059421470948934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677092735934490779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7bf5f186b6e40f6a98429b771832613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalCheckBoxSize: {x: 6.5, y: 1, z: 6.5}
+  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 320
+  attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
+  <skillImage>k__BackingField: {fileID: 21300000, guid: e0d28137676e2ba428d9594922a7cfd3, type: 3}
+  damage: 0
+  useSkillPoint: 18
+  isCanUseSkill: 0
+  ownSkill: 0
+  skillStartEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5058329776480125379}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: SetThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  skillEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEndEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5058329776480125379}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: EndThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _ArrowPrefab: {fileID: 9115162897217047785, guid: f68319a6f4d5bbc4dbd0566e69d3ab26, type: 3}
+--- !u!114 &2442742964246998859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677092735934490779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a62f9fe152bd4067a325a3b02ca5dae7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalCheckBoxSize: {x: 6.5, y: 1, z: 6.5}
+  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 320
+  attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
+  <skillImage>k__BackingField: {fileID: 21300000, guid: 1fe784c0346a64742a9ab94ab0dd7617, type: 3}
+  damage: 0
+  useSkillPoint: 20
+  isCanUseSkill: 0
+  ownSkill: 0
+  skillStartEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5058329776480125379}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: SetThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  skillEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEndEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5058329776480125379}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: EndThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  _ArrowPrefab: {fileID: 9115162897217047785, guid: 40681ef34cf38bc43bb30e622f0a31cb, type: 3}
 --- !u!1 &6793596474031118395
 GameObject:
   m_ObjectHideFlags: 0

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Code.KMJ.UnitSystem.involveUnitSO;
+using Code.Core.Events.Bus;
 using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem
@@ -17,6 +18,8 @@ namespace Code.UnitSystem.SkillSystem
         public Dictionary<string, BaseSkill> skills = new Dictionary<string, BaseSkill>();
 
         private Unit _unit;
+
+        private bool isUseSkill = true;
         
         public void Initialize(Unit owner)
         {
@@ -64,19 +67,38 @@ namespace Code.UnitSystem.SkillSystem
 
             InitializeSkills();
         }
-        
+
+        private void Awake()
+        {
+            Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
+        }
+
+        private void OnDestroy()
+        {
+            Bus<UsingSkillEvent>.Unsubscribe(BooleanSkill);
+        }
+
+        private void BooleanSkill(UsingSkillEvent evt)
+        {
+            isUseSkill = evt.isUsingSkill;
+        }
+
         public void InitializeSkills()
         {
         }
         
         public void StartSkill(string skillName)
         {
-            if(!skills.ContainsKey(skillName))
-                return;
+            if (isUseSkill)
+            {
+                if(!skills.ContainsKey(skillName))
+                    return;
             
-            BaseSkill skill = skills.GetValueOrDefault(skillName);
+                BaseSkill skill = skills.GetValueOrDefault(skillName);
             
-            skill.ShowSkillRange();
+                skill.ShowSkillRange();
+                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(false));
+            }
         }
 
         public void CancelSkill(string skillName)

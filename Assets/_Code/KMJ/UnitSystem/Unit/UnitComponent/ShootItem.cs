@@ -11,6 +11,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         [SerializeField] private float _moveSpeed = 5f;
 
         private DamageData _damageData;
+        
+        [SerializeField] private float _atkDamage;
 
         [SerializeField] private AttackDataSO atkData;
 

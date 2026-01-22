@@ -135,7 +135,7 @@ namespace Code.UnitSystem
 
         public void AttackEnemy()
         {
-            if (_basicUnit.isMyTurn && _isAct)
+            if (_basicUnit.isMyTurn && _isAct && _basicUnit.GetCurrentCost() - 25 > 0)
             {
                 _targetEnemy = null;
                 

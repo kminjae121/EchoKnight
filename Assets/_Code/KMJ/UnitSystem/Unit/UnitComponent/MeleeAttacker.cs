@@ -83,8 +83,6 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 
         private IEnumerator ReturnOwnPos()
         {
-            Debug.Log(gameObject.transform.position);
-            Debug.Log(_ownTrm);
             
             animtionCompo.PlaySelectAnimation("MOVE");
             

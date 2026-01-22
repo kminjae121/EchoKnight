@@ -13,31 +13,10 @@ public partial class IsTargetInRangeCondition : Condition
 
     public override bool IsTrue()
     {
-        if (Agent.Value == null) return false;
+        if (Target.Value == null || Agent.Value == null) return false;
 
-        var unitManager = UnityEngine.Object.FindAnyObjectByType<UnitManager>();
-        if (unitManager == null) return false;
+        float distance = Vector3.Distance(Agent.Value.transform.position, Target.Value.transform.position);
 
-        var playerUnits = unitManager.GetPlayerUnits();
-        GameObject closest = null;
-        float minDst = float.MaxValue;
-
-        // 가장 가까운 플레이어 탐색
-        foreach (var unit in playerUnits)
-        {
-            float dst = Vector3.Distance(Agent.Value.transform.position, unit.transform.position);
-            if (dst <= Range.Value && dst < minDst)
-            {
-                minDst = dst;
-                closest = unit.gameObject;
-            }
-        }
-
-        if (closest != null)
-        {
-            Target.Value = closest; // 찾은 적 할당
-            return true;
-        }
-        return false;
+        return distance <= Range.Value;
     }
 }

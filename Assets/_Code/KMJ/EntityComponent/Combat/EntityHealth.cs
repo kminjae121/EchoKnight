@@ -44,6 +44,16 @@ namespace Code.EntityComponent
             _statCompo.UnSubscribeStat(hpStat, HandleMaxHPChanged);
         }
 
+        public void HealHp(float amount)
+        {
+            currentHealth += amount;
+
+            if (currentHealth > maxHealth)
+            {
+                currentHealth = maxHealth;
+            }
+        }
+        
         private void HandleMaxHPChanged(StatSO stat, float currentvalue, float previousvalue)
         {
             float changed = currentvalue - previousvalue; 

@@ -476,6 +476,7 @@ GameObject:
   - component: {fileID: 2077853977420060766}
   - component: {fileID: 6199149649704210913}
   - component: {fileID: 2326349147247666630}
+  - component: {fileID: 1798265536912207056}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -501,7 +502,6 @@ Transform:
   - {fileID: 3069726555314939035}
   - {fileID: 6793487557975282495}
   - {fileID: 6485723704589786601}
-  - {fileID: 1316072000948984753}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2758450560571051843
@@ -574,10 +574,10 @@ MonoBehaviour:
   OnEndTurnEvent:
     m_PersistentCalls:
       m_Calls: []
-  behaviorAgent: {fileID: 0}
+  behaviorAgent: {fileID: 2758450560571051843}
   animationCompo: {fileID: 3416386629718883097}
   triggerCompo: {fileID: 8503053869134199577}
-  moveCompo: {fileID: 4005819455020719518}
+  moveCompo: {fileID: 1798265536912207056}
 --- !u!114 &2077853977420060766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -635,6 +635,39 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &1798265536912207056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1506547141851097540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 412b4fa01377f0b45b38cec44b96324d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rotationCompo: {fileID: 6199149649704210913}
+  animationCompo: {fileID: 3416386629718883097}
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 64
+  owner: {fileID: 6855447029533052954}
+  OnMoveEndEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1434327849355395122}
+        m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
+        m_MethodName: TurnEnd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1532530410968089591
 GameObject:
   m_ObjectHideFlags: 0
@@ -3879,71 +3912,6 @@ Transform:
   - {fileID: 3984872700020031352}
   m_Father: {fileID: 6567966770842715533}
   m_LocalEulerAnglesHint: {x: -20.955616, y: -13.242254, z: 17.176922}
---- !u!1 &8758282759157804491
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1316072000948984753}
-  - component: {fileID: 4005819455020719518}
-  m_Layer: 8
-  m_Name: Move
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1316072000948984753
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8758282759157804491}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.583, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6855447029533052954}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4005819455020719518
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8758282759157804491}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 412b4fa01377f0b45b38cec44b96324d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  rotationCompo: {fileID: 6199149649704210913}
-  animationCompo: {fileID: 3416386629718883097}
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 64
-  owner: {fileID: 6855447029533052954}
-  OnMoveEndEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1434327849355395122}
-        m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
-        m_MethodName: TurnEnd
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!1 &8842079320505450781
 GameObject:
   m_ObjectHideFlags: 0

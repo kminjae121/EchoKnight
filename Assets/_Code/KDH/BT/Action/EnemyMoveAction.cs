@@ -18,7 +18,18 @@ public partial class EnemyMoveAction : Action
     protected override Status OnStart()
     {
         if (Agent.Value == null || Target.Value == null) return Status.Failure;
+        
         _mover = Agent.Value.GetComponent<EnemyGridMovingSystem>();
+
+        if (_mover == null) 
+        {
+            return Status.Failure;
+        }
+
+        if (_mover.OnMoveEndEvent == null)
+        {
+            _mover.OnMoveEndEvent = new UnityEngine.Events.UnityEvent();
+        }
         
         _mover.MoveTowardsTarget(Target.Value.transform.position);
         _mover.OnMoveEndEvent.AddListener(OnDone);

@@ -27,7 +27,7 @@ namespace Code.UnitSystem
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
-        public UnityEvent<GameObject> attackEvent;
+        public UnityEvent<GameObject> attackEvent = new UnityEvent<GameObject>();
         
         private InputReader _inputReader;
         
@@ -47,7 +47,10 @@ namespace Code.UnitSystem
         
         private void Awake()
         {
-            
+            if (attackEndEvent == null)
+            {
+                attackEndEvent = new UnityEvent();
+            }
         }
 
         protected override void Start()

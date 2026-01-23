@@ -160,7 +160,6 @@ namespace Code.UnitSystem
 
         public void TurnEnd()
         {
-            _basicUnit.TurnEnd();
                 
             EndAct();
         }

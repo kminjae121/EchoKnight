@@ -175,7 +175,6 @@ namespace Code.UnitSystem.SkillSystem
 
         public void TurnEnd()
         {
-            _unit.TurnEnd();
                 
             BlockThisSkill();
         }

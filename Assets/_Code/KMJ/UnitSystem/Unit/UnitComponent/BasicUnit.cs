@@ -33,6 +33,8 @@ namespace  UnitSystem
         
 
         [SerializeField] private Image unitImage;
+
+        public int PlayableUnitID { get; set; } = -1;
         
         
         private void Start()

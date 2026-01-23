@@ -8,13 +8,11 @@ namespace Code.Expedition.UI
 {
     public class ExpeditionNodeView : MonoBehaviour
     {
-        [Header("UI References")]
         [SerializeField] private Image nodeIcon;
         [SerializeField] private Image lockIcon;
         [SerializeField] private TextMeshProUGUI nodeNameText;
         [SerializeField] private Button nodeButton;
-
-        [Header("State Colors")]
+        
         [SerializeField] private Color normalColor = Color.white;
         [SerializeField] private Color lockedColor = Color.gray;
         [SerializeField] private Color visitedColor = Color.yellow;

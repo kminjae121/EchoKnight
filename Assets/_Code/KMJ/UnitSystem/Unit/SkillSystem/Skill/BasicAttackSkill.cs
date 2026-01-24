@@ -107,6 +107,7 @@ public class BasicAttackSkill : BaseSkill
         }
         animtionCompo.PlaySelectAnimation("IDLE");
         
-        skillEndEvent?.Invoke();
+        Debug.Log("실행됨");
+        skillEndEvent.Invoke();
     }
 }

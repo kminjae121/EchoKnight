@@ -10,7 +10,7 @@ namespace Code.UI
     {
         [SerializeField] private List<Slider> healthSliders;
 
-        [SerializeField] private List<Sprite> unitCharacterImages;
+        [SerializeField] private List<Image> unitCharacterImages;
 
         private void Awake()
         {
@@ -26,6 +26,7 @@ namespace Code.UI
         private void HandleUnitHealthBar(SetUpUnitHealthBar evt)
         {
             healthSliders[evt.unitCount].value = evt.finalValue;
+            unitCharacterImages[evt.unitCount].sprite = evt.unitImage;
         }
     }
 }

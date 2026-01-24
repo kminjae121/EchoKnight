@@ -56,7 +56,7 @@ namespace Code.UnitManaging
                 basicUnit.PlayableUnitID = count;
                 
                 Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,
-                    1,1));
+                    1,1,basicUnit.UnitImage));
             }
         }
         

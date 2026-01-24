@@ -61,6 +61,7 @@ namespace Code.UnitSystem
             
             if (_unit.GetCurrentCost() <= 0)
             {
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
                 ResetTile();
                 EndAct();
                 return;

@@ -23,6 +23,8 @@ namespace Input
         public event Action OnAttackEvent;
         public event Action OnClickMoveEvent;
 
+        public event Action OnClickEvent;
+
         public event Action OnSelectUnitEvent;
         
         private Vector3 _gridPosition;
@@ -113,6 +115,7 @@ namespace Input
         {
             if (context.performed)
             {
+                OnClickEvent?.Invoke();
                 if (GetUnit() != null)
                 {
                     OnSelectUnitEvent?.Invoke();

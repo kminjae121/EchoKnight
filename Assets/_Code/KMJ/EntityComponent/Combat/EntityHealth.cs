@@ -42,6 +42,10 @@ namespace Code.EntityComponent
                 hpStat, HandleMaxHPChanged, 10f);
         }
 
+        private void Update()
+        {
+        }
+
         private void OnDestroy()
         {
             _statCompo.UnSubscribeStat(hpStat, HandleMaxHPChanged);
@@ -96,7 +100,7 @@ namespace Code.EntityComponent
            {
                BasicUnit basicUnit = _entity as BasicUnit;
                
-               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth));
+               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
            }
            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
         }

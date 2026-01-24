@@ -2528,8 +2528,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   statOverrides:
   - stat: {fileID: 11400000, guid: 63387e3874071ca48bdeb9a8b73277ff, type: 2}
-    isUseOverride: 0
+    isUseOverride: 1
     overrideBaseValue: 100
+  - stat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
+    isUseOverride: 1
+    overrideBaseValue: 10
 --- !u!1 &6172298404207583199
 GameObject:
   m_ObjectHideFlags: 0
@@ -2737,6 +2740,7 @@ MonoBehaviour:
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
+  atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
   rotationCompo: {fileID: 6429403500470982661}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   _atkDamage: 0

@@ -30,8 +30,8 @@ namespace  UnitSystem
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
-        
-        public float CurrentCost { get; private set; }
+
+        public float CurrentCost { get; private set; } = 100;
         
 
         [SerializeField] private Image unitImage;
@@ -51,6 +51,8 @@ namespace  UnitSystem
             animationComponent = GetUnitCompo<UnitAnimation>();
 
             triggerCompo.OnDeadEvent += LastDie;
+
+            CurrentCost = 100;
         }
 
         protected override void OnDestroy()

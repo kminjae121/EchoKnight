@@ -58,28 +58,32 @@ namespace Code.UnitSystem
         public void CheckCanMoveTile(UnitMoveEvent evt)
         {
             moveEvent?.Invoke();
-            
-            if (_unit.GetCurrentCost() <= 0)
-            {
-                Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
-                ResetTile();
-                EndAct();
-                return;
-            }
-            
             if (evt.isMove)
             {
                 if (_unit.isMyTurn)
                 {
+                    if (_unit.GetCurrentCost() <= 0)
+                    {
+                        Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
+                        ResetTile();
+                        EndAct();
+                        return;
+                    }
+                    
                     FindObjectInRange(); 
                     unitCam.SetThisUnit();
+                }
+                else
+                {
+                    ResetTile();
+                    EndAct();
                 }
             }
             else
             {
                 ResetTile();
                 EndAct();
-            }
+            }   
         }
 
         private void CheckTilesCanMoving()

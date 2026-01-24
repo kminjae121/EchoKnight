@@ -22,17 +22,21 @@ namespace  UnitSystem
 
         public SkillComponent skillCompo { get; private set; }
         public UnitAnimation animationComponent { get; private set; }
+        
+        public UnitAnimationTrigger triggerCompo { get; private set; }
 
         public int maxUsingCost = 100;
 
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
-        
-        public float CurrentCost { get; private set; }
+
+        public float CurrentCost { get; private set; } = 100;
         
 
         [SerializeField] private Image unitImage;
+
+        public int PlayableUnitID { get; set; } = -1;
         
         
         private void Start()
@@ -42,13 +46,19 @@ namespace  UnitSystem
             endTurnBtn = GameObject.Find("TurnEndBtn").GetComponent<Button>();
 
             skillCompo = GetUnitCompo<SkillComponent>();
+            triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
             
             animationComponent = GetUnitCompo<UnitAnimation>();
+
+            triggerCompo.OnDeadEvent += LastDie;
+
+            CurrentCost = 100;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            triggerCompo.OnDeadEvent -= LastDie;
         }
 
         public override void OnTurnStart()
@@ -89,6 +99,7 @@ namespace  UnitSystem
 
         protected override void Hit()
         {
+            animationComponent.RestartFromEntry();
             animationComponent.PlaySelectAnimation("HIT");
             base.Hit();
         }
@@ -165,6 +176,11 @@ namespace  UnitSystem
         public void Die()
         {
             animationComponent.PlaySelectAnimation("DEAD");
+        }
+
+        public void LastDie()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

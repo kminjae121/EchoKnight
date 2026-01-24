@@ -34,6 +34,9 @@ namespace Code.UnitSystem
         public Action OnHealEndTrigger;
 
         #endregion
+
+        public Action OnDeadEvent;
+        
         public Action OnAnimationEndTrigger;
 
         public Action OnEnemyAnimationEndTrigger;
@@ -101,6 +104,9 @@ namespace Code.UnitSystem
         private void Heal() => OnHealTrigger?.Invoke();
         private void HealEnd() => OnHealEndTrigger?.Invoke();
         #endregion
+        
+        
+        private void Dead() => OnDeadEvent?.Invoke();
 
         private void LongRangeAttackEnd() => OnLongRangeAttackEndTrigger?.Invoke();
 

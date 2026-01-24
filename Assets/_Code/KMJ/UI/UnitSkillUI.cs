@@ -46,6 +46,7 @@ namespace Code.UI
             else
             {
                 skillCompnent.CancelSkill(thisSkillName[idx]);
+                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
                 isCanSkill[idx] = true;
             }
         }
@@ -72,6 +73,8 @@ namespace Code.UI
             {
                 skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
             }
+            
+            isCanSkill[evt.skillIdx] = true;
         }
     }
 }

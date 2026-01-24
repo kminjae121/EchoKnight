@@ -18,9 +18,16 @@ namespace EnemySystem
         [SerializeField] private LayerMask whatIsGround;
 
         [SerializeField] private Transform owner;
-        public UnityEvent OnMoveEndEvent;
+
+        public UnityEvent OnMoveEndEvent = new UnityEvent();
 
         private GameObject _ownTrm;
+        
+        private void Awake()
+        {
+            if (OnMoveEndEvent == null)
+                OnMoveEndEvent = new UnityEvent();
+        }
     
         public void Initialize(Unit owner)
         {
@@ -80,42 +87,39 @@ namespace EnemySystem
             
             if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, whatIsGround))
             {
+                if (hit.transform.TryGetComponent(out IMapTile checkTile))
+                {
+                    if (checkTile.HasObstacle)
+                    {
+                        OnMoveEndEvent?.Invoke();
+                        yield break; 
+                    }
+                }
+                
                 if (_ownTrm != null)
                 {
                     _ownTrm.GetComponent<IMapTile>().SetObstacle(false);
                 }
-                    
+            
                 rotationCompo.SetDir(target);
                 while ((owner.position - target).sqrMagnitude > 0.0001f)
                 {
-                    owner.position = Vector3.MoveTowards(
-                        owner.position,
-                        target,
-                        2 * Time.deltaTime
-                    );
+                    owner.position = Vector3.MoveTowards(owner.position, target, 2 * Time.deltaTime);
                     yield return null;
                 }
                 owner.position = target;
-                
+        
                 if (hit.transform.TryGetComponent(out IMapTile tile))
                 {
-                    if (tile.HasObstacle)
-                    {
-                        Move();
-                        yield break; 
-                    }
-                    
                     tile.SetObstacle(true);
-
                     _ownTrm = hit.transform.gameObject;
                 }
-            
-
+    
                 OnMoveEndEvent?.Invoke();   
             }
             else
             {
-                Move();
+                OnMoveEndEvent?.Invoke();
                 yield break; 
             }
         }

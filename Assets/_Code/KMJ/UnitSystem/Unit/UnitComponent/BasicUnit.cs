@@ -22,41 +22,47 @@ namespace  UnitSystem
 
         public SkillComponent skillCompo { get; private set; }
         public UnitAnimation animationComponent { get; private set; }
+        
+        public UnitAnimationTrigger triggerCompo { get; private set; }
 
         public int maxUsingCost = 100;
 
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
-        
-        public float CurrentCost { get; private set; }
+
+        public float CurrentCost { get; private set; } = 100;
         
 
         [SerializeField] private Image unitImage;
+
+        public int PlayableUnitID { get; set; } = -1;
         
         
         private void Start()
         {
             gaugeManager = GameObject.Find("TurnManager").GetComponent<TurnCostGaugeManager>();
             _controlUI = GameObject.Find("BaseButton").GetComponent<UnitControl>();
-            endTurnBtn = GameObject.Find("TurnEnd").GetComponent<Button>();
+            endTurnBtn = GameObject.Find("TurnEndBtn").GetComponent<Button>();
 
             skillCompo = GetUnitCompo<SkillComponent>();
+            triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
             
             animationComponent = GetUnitCompo<UnitAnimation>();
-            
-            endTurnBtn.onClick.AddListener(TurnEnd);
+
+            triggerCompo.OnDeadEvent += LastDie;
+
+            CurrentCost = 100;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            endTurnBtn.onClick.RemoveListener(TurnEnd);
+            triggerCompo.OnDeadEvent -= LastDie;
         }
 
         public override void OnTurnStart()
         {
-            isMyTurn = true;
             CurrentCost = maxUsingCost;
 
             float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
@@ -76,24 +82,24 @@ namespace  UnitSystem
                  });  
             }
             
+            endTurnBtn.onClick.AddListener(TurnEnd);
+            
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
             OnStartTurnEvent?.Invoke();
             base.OnTurnStart();
+            isMyTurn = true;
         }
 
         public override void OnTurnEnd()
         {
-            isMyTurn = false;
-            
-            base.OnTurnEnd();
-            TurnEnd();
-            
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
+            base.OnTurnEnd();
         }
 
         protected override void Hit()
         {
+            animationComponent.RestartFromEntry();
             animationComponent.PlaySelectAnimation("HIT");
             base.Hit();
         }
@@ -101,11 +107,12 @@ namespace  UnitSystem
 
         public void TurnEnd()
         {
-            if (isMyTurn)
+            if (isMyTurn == true)
             {
-                OnEndTurnEvent?.Invoke();
+                endTurnBtn.onClick.RemoveListener(TurnEnd);
                 Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             }
+
         }
 
         protected override void Dead()
@@ -169,6 +176,11 @@ namespace  UnitSystem
         public void Die()
         {
             animationComponent.PlaySelectAnimation("DEAD");
+        }
+
+        public void LastDie()
+        {
+            gameObject.SetActive(false);
         }
     }
 }

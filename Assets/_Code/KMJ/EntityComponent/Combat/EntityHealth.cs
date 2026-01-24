@@ -1,7 +1,10 @@
-﻿using Code.UI;
+﻿using System;
+using Code.Core.Events.Bus;
+using Code.UI;
 using Code.UnitSystem;
 using EntityComponent;
 using GameEventChannel;
+using UnitSystem;
 using UnityEngine;
 
 namespace Code.EntityComponent
@@ -37,6 +40,10 @@ namespace Code.EntityComponent
         {
             maxHealth = currentHealth = _statCompo.SubscribeStat(
                 hpStat, HandleMaxHPChanged, 10f);
+        }
+
+        private void Update()
+        {
         }
 
         private void OnDestroy()
@@ -88,7 +95,13 @@ namespace Code.EntityComponent
                _entity.OnDeathEvent?.Invoke();
                return;
            }
-           
+
+           if (_entity as BasicUnit)
+           {
+               BasicUnit basicUnit = _entity as BasicUnit;
+               
+               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
+           }
            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
         }
 

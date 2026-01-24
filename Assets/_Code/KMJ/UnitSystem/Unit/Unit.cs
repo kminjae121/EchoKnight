@@ -63,6 +63,7 @@ namespace Code.UnitSystem
             OnHitEvent += Hit;
             OnDeathEvent += Dead;
             
+            
             RangesCompo = GetUnitCompo<UnitManageRangeCompo>();
         }
 

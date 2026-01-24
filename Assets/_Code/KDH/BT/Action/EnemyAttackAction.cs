@@ -19,12 +19,22 @@ public partial class EnemyAttackAction : Action
     protected override Status OnStart()
     {
         if (Agent.Value == null || Target.Value == null) return Status.Failure;
+        
         _attacker = Agent.Value.GetComponent<UnitAttackComponent>();
         _rotator = Agent.Value.GetComponent<UnitRotation>();
+        
+        if (_attacker == null)
+        {
+            return Status.Failure;
+        }
+        
+        if (_attacker.attackEndEvent == null)
+        {
+            _attacker.attackEndEvent = new UnityEngine.Events.UnityEvent();
+        }
 
         _attacker.attackEndEvent.AddListener(OnDone);
         
-        // 타겟 방향 회전 후 공격
         if (_rotator != null) _rotator.SetDir(Target.Value.transform.position);
         _attacker.attackEvent?.Invoke(Target.Value);
 

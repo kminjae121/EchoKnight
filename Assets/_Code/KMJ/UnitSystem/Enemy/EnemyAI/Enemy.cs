@@ -19,6 +19,15 @@ public class Enemy : Unit
         base.OnEnable();
     }
 
+    private void Awake()
+    {
+        if (behaviorAgent == null)
+            behaviorAgent = GetComponent<BehaviorGraphAgent>();
+        
+        if (behaviorAgent != null)
+            behaviorAgent.BlackboardReference.SetVariableValue("IsMyTurn", false);
+    }
+
     private void Start()
     {
         Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(this));

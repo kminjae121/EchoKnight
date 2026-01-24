@@ -43,7 +43,6 @@ namespace Code.Managers
         {
             if (_currentTurnUnit == null)
                 return;
-
             _currentTurnUnit.OnTurnEnd();
             _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
             _currentTurnUnit = null;

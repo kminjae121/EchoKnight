@@ -47,6 +47,7 @@ using UnityEngine;
         
         public void MakeArrow()
         {
+            impulseSource.GenerateImpulse(0.5f);  
             Vector3 pos = transform.position;
 
             pos.y += 0.5f;

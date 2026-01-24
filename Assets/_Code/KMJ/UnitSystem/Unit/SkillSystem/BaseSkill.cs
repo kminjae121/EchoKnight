@@ -6,6 +6,7 @@ using Code.Core.Interfaces;
 using Code.EntityComponent;
 using Input;
 using UnitSystem;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -22,6 +23,7 @@ namespace Code.UnitSystem.SkillSystem
             protected UnitAnimationTrigger triggerCompo;
         #endregion
 
+        protected CinemachineImpulseSource impulseSource;
         [field: SerializeField] public Sprite skillImage { get; set; }
         
         private InputReader _inputReader;
@@ -69,6 +71,8 @@ namespace Code.UnitSystem.SkillSystem
             _skillCompo = _unit.GetUnitCompo<SkillComponent>();
 
             _damageData.damage = damage;
+            
+            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
 
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();

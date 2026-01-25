@@ -10,6 +10,9 @@ namespace _Code.Core.Managers
         public int playerCount;
         public static StageManager Instance { get; private set; }
 
+        [SerializeField] private GameObject gameClearUI;
+        [SerializeField] private GameObject gameOverUI;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -27,7 +30,7 @@ namespace _Code.Core.Managers
             enemies.Remove(enemy);
             if (enemies.Count == 0)
             {
-                
+                gameClearUI.SetActive(true);
             }
         }
 
@@ -42,7 +45,7 @@ namespace _Code.Core.Managers
 
             if (playerCount <= 0)
             {
-                
+                gameOverUI.SetActive(true); 
             }
         }
         

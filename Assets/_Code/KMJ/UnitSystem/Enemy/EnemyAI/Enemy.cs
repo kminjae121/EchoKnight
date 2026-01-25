@@ -40,6 +40,7 @@ public class Enemy : Unit
     private void Die()
     {
         gameObject.SetActive(false);
+        StageManager.Instance.RemoveEnemy(this.gameObject);
     }
 
     private void ChangeIdle()
@@ -88,7 +89,5 @@ public class Enemy : Unit
     {
         animationCompo.PlaySelectAnimation("IDLE");
         animationCompo.PlaySelectAnimation("DIE");
-        
-        StageManager.Instance.RemoveEnemy(this.gameObject);
     }
 }

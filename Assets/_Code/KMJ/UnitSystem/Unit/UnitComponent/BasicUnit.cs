@@ -118,7 +118,6 @@ namespace  UnitSystem
 
         protected override void Dead()
         {
-            Bus<UnitDeadEvent>.Raise(new UnitDeadEvent(this));
             base.Dead();
             Die();
         }
@@ -178,12 +177,12 @@ namespace  UnitSystem
         public void Die()
         {
             animationComponent.PlaySelectAnimation("DEAD");
-            StageManager.Instance.PlayerDie();
         }
 
         public void LastDie()
         {
             gameObject.SetActive(false);
+            StageManager.Instance.PlayerDie();
         }
     }
 }

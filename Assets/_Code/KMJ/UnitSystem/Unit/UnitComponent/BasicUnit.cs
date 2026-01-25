@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Managers;
 using Code.UI;
@@ -117,6 +118,7 @@ namespace  UnitSystem
 
         protected override void Dead()
         {
+            Bus<UnitDeadEvent>.Raise(new UnitDeadEvent(this));
             base.Dead();
             Die();
         }
@@ -176,6 +178,7 @@ namespace  UnitSystem
         public void Die()
         {
             animationComponent.PlaySelectAnimation("DEAD");
+            StageManager.Instance.PlayerDie();
         }
 
         public void LastDie()

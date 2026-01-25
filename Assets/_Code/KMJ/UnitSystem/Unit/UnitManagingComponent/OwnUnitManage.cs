@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Code.Core.Managers;
 using Code.Core;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
@@ -57,6 +58,8 @@ namespace Code.UnitManaging
                 
                 Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,
                     1,1,basicUnit.UnitImage));
+                
+                StageManager.Instance.AddPlayerCnt();
             }
         }
         

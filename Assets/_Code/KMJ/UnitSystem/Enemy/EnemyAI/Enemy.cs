@@ -1,4 +1,5 @@
 using System;
+using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.UnitSystem;
@@ -87,5 +88,7 @@ public class Enemy : Unit
     {
         animationCompo.PlaySelectAnimation("IDLE");
         animationCompo.PlaySelectAnimation("DIE");
+        
+        StageManager.Instance.RemoveEnemy(this.gameObject);
     }
 }

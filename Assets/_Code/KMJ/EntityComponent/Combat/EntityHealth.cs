@@ -44,6 +44,14 @@ namespace Code.EntityComponent
 
         private void Update()
         {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                DamageData data = new DamageData();
+                data.damage = 10;
+                AttackDataSO dataso = new AttackDataSO();
+                
+                ApplyDamage(data, transform.position, transform.position, dataso,null);
+            }
         }
 
         private void OnDestroy()

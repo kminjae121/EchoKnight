@@ -1,4 +1,5 @@
 using System;
+using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.UnitSystem;
@@ -39,6 +40,7 @@ public class Enemy : Unit
     private void Die()
     {
         gameObject.SetActive(false);
+        StageManager.Instance.RemoveEnemy(this.gameObject);
     }
 
     private void ChangeIdle()

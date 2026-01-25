@@ -92,6 +92,8 @@ namespace Code.UnitSystem
 
         private void CheckTilesCanMoving()
         {
+            _movingtiles.Clear();
+            
             _horizontalCollider.ToList().ForEach(tile =>
             {
                 if (tile.TryGetComponent(out IMapTile tiled))

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Managers;
 using Code.UI;
@@ -181,6 +182,7 @@ namespace  UnitSystem
         public void LastDie()
         {
             gameObject.SetActive(false);
+            StageManager.Instance.PlayerDie();
         }
     }
 }

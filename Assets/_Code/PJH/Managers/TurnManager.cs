@@ -28,7 +28,7 @@ namespace Code.Managers
 
         public void StartBattle()
         {
-            _units = unitManager.GetAllUnits().Select(u => u as ITurnable).ToList();
+            RefreshUnits();
 
             foreach (var unit in _units)
                 unit.TurnGauge = CalculateBaseTurnGauge(unit);
@@ -52,6 +52,8 @@ namespace Code.Managers
 
         private void StartNextTurn()
         {
+            RefreshUnits();
+            
             _currentTurnUnit = GetNextUnit();
 
             AdvanceTime(_currentTurnUnit);
@@ -63,6 +65,14 @@ namespace Code.Managers
             UpdateCurrentTurnUI();
 
             Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
+        }
+
+        private void RefreshUnits()
+        {
+            _units = unitManager
+                .GetAllUnits()
+                .OfType<ITurnable>()
+                .ToList();
         }
 
         private ITurnable GetNextUnit()

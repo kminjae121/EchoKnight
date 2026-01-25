@@ -32,6 +32,8 @@ namespace Code.UnitSystem
 
         private List<GameObject> _movingtiles =  new List<GameObject>();
 
+        [SerializeField] private GameObject _visualPrefabs;
+
         protected override void Start()
         {
             base.Start();
@@ -76,12 +78,14 @@ namespace Code.UnitSystem
                 else
                 {
                     ResetTile();
+                    _visualPrefabs.SetActive(false);
                     EndAct();
                 }
             }
             else
             {
                 ResetTile();
+                _visualPrefabs.SetActive(false);
                 EndAct();
             }   
         }
@@ -112,6 +116,21 @@ namespace Code.UnitSystem
             
         }
 
+        private void Update()
+        {
+            if (_unit.isMyTurn && _isAct)
+            {
+                CheckTilesCanMoving();
+                GameObject tileTrm = _unit.inputSO.GetWorldPosition();
+                
+                if (_movingtiles.Contains(tileTrm))
+                {
+                    _visualPrefabs.SetActive(true);
+                    _visualPrefabs.transform.position = tileTrm.transform.position;
+                }
+            }
+        }
+
         /// <summary>
         /// 플레이어가 움직이는 코드
         /// </summary>
@@ -124,7 +143,7 @@ namespace Code.UnitSystem
                 return;
             
             
-            CheckTilesCanMoving();
+           // CheckTilesCanMoving();
 
             IMapTile tile = _unit.inputSO.GetSelectedTile();
             GameObject tileTrm = _unit.inputSO.GetWorldPosition();
@@ -132,20 +151,24 @@ namespace Code.UnitSystem
             if (!_movingtiles.Contains(tileTrm))
             {
                 ResetTile();
+                _visualPrefabs.SetActive(false);
                 return;
             }
 
             if (tile == null)
             {
                 ResetTile();
+                _visualPrefabs.SetActive(false);
                 return;
             }
             else
             {
+                _visualPrefabs.SetActive(false);
                 StartCoroutine(MoveStart(tile, tileTrm));
                 ResetTile();
             }
             
+            _visualPrefabs.SetActive(false);
             unitCam.EndThisUnit();
         }
 

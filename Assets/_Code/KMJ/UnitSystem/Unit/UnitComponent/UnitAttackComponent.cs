@@ -5,9 +5,11 @@ using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.EntityComponent;
+using EnemySystem;
 using EntityComponent;
 using GameEventChannel;
 using Input;
+using TMPro.EditorUtilities;
 using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -151,14 +153,34 @@ namespace Code.UnitSystem
             }
             
         }
-        
+
         public void EndUnit()
         {
             unitCam.EndThisUnit();
         }
 
+        private void Update()
+        {
+            if (_basicUnit.isMyTurn && _isAct)
+            {
+                GameObject enemy = _inputReader.GetEnemy();
 
-        
+                FindEnemyIsThere(enemy);
+
+                if (_targetEnemy)
+                {
+                    _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                }
+            }
+            else
+            {
+                if (_targetEnemy != null)
+                {
+                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                }
+            }
+        }
+
 
         public void AttackEnemy()
         {
@@ -172,17 +194,27 @@ namespace Code.UnitSystem
 
                 if (_targetEnemy == null)
                 {
-                    ResetTile();
+                    //ResetTile();
                     return;
                 }
                 
+                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                
+                AttackStart();
+            }
+            ResetTile();
+        }
+
+        private void AttackStart()
+        {
+            if (_targetEnemy != null)
+            {
                 rotationCompo.SetDir(_targetEnemy.transform.position);
                 
                 attackEvent?.Invoke(_targetEnemy);
                 
-                _basicUnit.RemoveCost(25f);
+                _basicUnit.RemoveCost(25f);   
             }
-            ResetTile();
         }
 
         public void TurnEnd()

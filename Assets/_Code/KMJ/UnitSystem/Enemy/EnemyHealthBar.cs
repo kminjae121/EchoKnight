@@ -15,6 +15,7 @@ namespace EnemySystem
         [SerializeField] private EntityHealth healthCompo;
 
         [SerializeField] private GameObject targetCamera;
+        
 
         private void Awake()
         {

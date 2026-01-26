@@ -79,7 +79,14 @@ namespace Code.UnitSystem.SkillSystem
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
 
             skillEndEvent.AddListener(CanUseSkillTrue);
+            
+            skillEvent.AddListener(StartSkill);
             ResetTileEvent += skillEnd;
+        }
+
+        private void StartSkill(GameObject arg0)
+        {
+            
         }
 
         protected override void Start()
@@ -98,6 +105,7 @@ namespace Code.UnitSystem.SkillSystem
 
         private void CanUseSkillTrue()
         {
+            Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(false));
             Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
         }
 
@@ -109,6 +117,7 @@ namespace Code.UnitSystem.SkillSystem
                 {
                     _unit.gaugeManager.UseSkill(useSkillPoint);
                     skillEvent?.Invoke(null);
+                    Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
                 }
                 else
                 {
@@ -193,6 +202,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             if (isCanUseSkill)
             {
+                Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
                 GameObject enemy = _inputReader.GetEnemy();
 
                 FindEnemyIsThere(enemy);

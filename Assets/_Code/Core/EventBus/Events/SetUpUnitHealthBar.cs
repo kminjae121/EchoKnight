@@ -20,14 +20,14 @@ namespace Code.Core.Events.Bus
             this.maxValue = maxValue;
             this.unitImage = unitImage;
 
-            if (currentValue / maxValue <= 0f)
+            if (maxValue <= 0f)
             {
-                finalValue = 0f;
+                finalValue = 0f; 
+                return;
             }
-            else
-            {
-                finalValue = Mathf.Clamp01(currentValue / maxValue);
-            }
+            
+            float clampedCurrent = Mathf.Clamp(currentValue, 0f, maxValue);
+            finalValue = clampedCurrent / maxValue; 
         }
     }
 }

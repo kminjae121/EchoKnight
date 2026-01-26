@@ -27,7 +27,7 @@ namespace Code.UI
 
         private void Start()
         {
-            ReflashGauge(0);
+            ReflashGauge(100);
         }
 
         private void HandleCurrentGaugeValueChanged(int prev, int next)

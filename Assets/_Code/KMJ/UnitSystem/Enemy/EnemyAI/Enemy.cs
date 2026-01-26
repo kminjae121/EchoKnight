@@ -14,6 +14,8 @@ public class Enemy : Unit
     [SerializeField] private UnitAnimation animationCompo;
     [SerializeField] private UnitAnimationTrigger triggerCompo;
     [SerializeField] private EnemyGridMovingSystem moveCompo;
+
+    [SerializeField] private ParticleSystem bloodParticles;
     
     protected override void OnEnable()
     {
@@ -79,10 +81,13 @@ public class Enemy : Unit
         Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
     }
 
-    public void EnemyHit()
+    protected override void Hit()
     {
+        bloodParticles.gameObject.SetActive(true);
+        bloodParticles.Play();
         animationCompo.PlaySelectAnimation("IDLE");
         animationCompo.PlaySelectAnimation("HIT");
+        base.Hit();
     }
 
     public void DeadEnemy()

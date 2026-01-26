@@ -110,6 +110,18 @@ namespace Code.UnitSystem.SkillSystem
             
             skill.BlockThisSkill();
             skill.skillEnd();
+            
+            Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+        }
+
+        public void CancelAllSkill()
+        {
+            skills.Values.ToList().ForEach(skill =>
+            {
+                skill.skillEnd();
+                skill.BlockThisSkill();
+                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+            });
         }
 
         public void AddSkill(SkillSO skillSO)

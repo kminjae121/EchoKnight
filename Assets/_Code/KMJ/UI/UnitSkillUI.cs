@@ -40,14 +40,27 @@ namespace Code.UI
         {
             if (isCanSkill[idx])
             {
+                skillCompnent.CancelAllSkill();
+                
+                
                 skillCompnent.StartSkill(thisSkillName[idx]);
+
+                for (int i = 0; i < isCanSkill.Count; i++)
+                {
+                    isCanSkill[i] = true;
+                }
+
                 isCanSkill[idx] = false;
             }
             else
             {
-                skillCompnent.CancelSkill(thisSkillName[idx]);
+                skillCompnent.CancelAllSkill();
                 Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
-                isCanSkill[idx] = true;
+                
+                for (int i = 0; i < isCanSkill.Count; i++)
+                {
+                    isCanSkill[i] = true;
+                }
             }
         }
 

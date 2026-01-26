@@ -4,6 +4,7 @@ using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.EntityComponent;
+using EnemySystem;
 using Input;
 using UnitSystem;
 using Unity.Cinemachine;
@@ -121,7 +122,32 @@ namespace Code.UnitSystem.SkillSystem
                 return;
             }
         }
-        
+
+        private void Update()
+        {
+            if (_unit.isMyTurn && _isAct)
+            {
+                GameObject enemy = _inputReader.GetEnemy();
+
+                if(enemy == null && _targetEnemy != null)
+                {
+                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                }
+                else if (enemy != null)
+                {
+                    FindEnemyIsThere(enemy);
+                    _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                }
+            }
+            else
+            {
+                if (_targetEnemy != null)
+                {
+                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                }
+            }
+        }
+
         private void FindEnemyIsThere(GameObject enemy)
         {
             _verticalCollider.ToList().ForEach(obj =>

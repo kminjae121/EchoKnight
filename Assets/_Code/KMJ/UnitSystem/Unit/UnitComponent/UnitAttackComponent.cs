@@ -113,6 +113,7 @@ namespace Code.UnitSystem
 
         private void FindEnemyIsThere(GameObject enemy)
         {
+            _targetEnemy = null;
             _verticalCollider.ToList().ForEach(obj =>
             {
                 if (enemy == obj.gameObject)
@@ -165,10 +166,13 @@ namespace Code.UnitSystem
             {
                 GameObject enemy = _inputReader.GetEnemy();
 
-                FindEnemyIsThere(enemy);
-
-                if (_targetEnemy)
+                if(enemy == null && _targetEnemy != null)
                 {
+                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                }
+                else if (enemy != null)
+                {
+                    FindEnemyIsThere(enemy);
                     _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
                 }
             }
@@ -186,8 +190,6 @@ namespace Code.UnitSystem
         {
             if (_basicUnit.isMyTurn && _isAct)
             {
-                _targetEnemy = null;
-                
                 GameObject enemy = _inputReader.GetEnemy();
 
                 FindEnemyIsThere(enemy);

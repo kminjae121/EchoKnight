@@ -4,6 +4,7 @@ using System.Linq;
 using _Code.Core.Managers;
 using Code.Core;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.UnitSystem;
 using GameEventChannel;
 using UnitSystem;
@@ -44,13 +45,17 @@ namespace Code.UnitManaging
             {
                 GameObject spawnUnit = Instantiate(_selectedUnits[i].UnitPrefab,
                     startingTrm[i].position, Quaternion.identity);
-        
+
+                startingTrm[i].GetComponent<IMapTile>().SetObstacle(true);
+                
                 Unit unit = spawnUnit.GetComponent<Unit>();
         
                 Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(unit));
                 _myOwnUnitList.Add(unit);
 
                 BasicUnit basicUnit = unit as BasicUnit;
+
+                basicUnit._startTile = startingTrm[i].gameObject;
 
                 count += 1;
                 

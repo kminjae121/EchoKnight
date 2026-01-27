@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using _Code.Core.Managers;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.Managers;
 using Code.UI;
 using Code.UnitSystem;
@@ -21,6 +22,8 @@ namespace  UnitSystem
         
         [SerializeField] private GameEventChannelSO unitDeadChannel;
 
+        [SerializeField] private LayerMask whatIsGround;
+
         public SkillComponent skillCompo { get; private set; }
         public UnitAnimation animationComponent { get; private set; }
         
@@ -38,6 +41,10 @@ namespace  UnitSystem
         [SerializeField] private Image unitImage;
 
         public int PlayableUnitID { get; set; } = -1;
+
+        private UnitMovement movementCompo;
+
+        public GameObject _startTile = null;
         
         
         private void Start()
@@ -48,12 +55,15 @@ namespace  UnitSystem
 
             skillCompo = GetUnitCompo<SkillComponent>();
             triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
+            movementCompo = GetUnitCompo<UnitMovement>();
             
             animationComponent = GetUnitCompo<UnitAnimation>();
 
             triggerCompo.OnDeadEvent += LastDie;
 
             CurrentCost = 100;
+
+            movementCompo._currentMapTile = _startTile;
         }
 
         protected override void OnDestroy()

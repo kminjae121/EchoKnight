@@ -36,6 +36,7 @@ namespace Code.UI
         private void HandleUnitButton()
         {
             OnUnitButtonClicked?.Invoke(unitData);
+            gameObject.SetActive(false);
         }
     }
 }

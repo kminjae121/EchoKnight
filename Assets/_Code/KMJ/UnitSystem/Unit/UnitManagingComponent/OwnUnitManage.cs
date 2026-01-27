@@ -78,7 +78,7 @@ namespace Code.UnitManaging
         /// <param name="selectedUnits"></param>
         public void SelectUnits()
         {
-            storageCompo.units.Values.ToList().ForEach(unit =>
+            storageCompo.unitInfos.ForEach(unit =>
             {
                 _selectedUnits.Add(unit);
             });

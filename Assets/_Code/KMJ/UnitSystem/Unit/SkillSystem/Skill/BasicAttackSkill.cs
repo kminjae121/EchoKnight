@@ -27,7 +27,7 @@ public class BasicAttackSkill : BaseSkill
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
         impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-        _damageData.damage = 2.3456f;
+        _damageData.damage = 7;
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
 

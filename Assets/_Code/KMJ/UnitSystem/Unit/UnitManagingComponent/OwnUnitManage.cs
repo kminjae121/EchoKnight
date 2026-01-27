@@ -43,6 +43,10 @@ namespace Code.UnitManaging
             
             for (int i = 0; i < _selectedUnits.Count; i++)
             {
+                if (i >= 3)
+                {
+                    return;
+                }
                 GameObject spawnUnit = Instantiate(_selectedUnits[i].UnitPrefab,
                     startingTrm[i].position, Quaternion.identity);
 

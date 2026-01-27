@@ -209,8 +209,10 @@ namespace Code.UnitSystem.SkillSystem
             
                 rotationCompo.SetDir(enemy.transform.position);
             
-                skillEvent?.Invoke(_targetEnemy);        
-                
+                skillEvent?.Invoke(_targetEnemy);
+                    
+                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                _targetEnemy = null;
                 _unit.gaugeManager.UseSkill(useSkillPoint);
             }
             skillEnd();   

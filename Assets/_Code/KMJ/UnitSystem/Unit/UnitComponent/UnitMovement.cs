@@ -71,7 +71,7 @@ namespace Code.UnitSystem
                         EndAct();
                         return;
                     }
-                    
+                   
                     FindObjectInRange(); 
                     unitCam.SetThisUnit();
                 }
@@ -84,6 +84,7 @@ namespace Code.UnitSystem
             }
             else
             {
+                
                 ResetTile();
                 _visualPrefabs.SetActive(false);
                 EndAct();
@@ -212,6 +213,8 @@ namespace Code.UnitSystem
             tile.transform.TryGetComponent(out IMapTile EndMapTile);
 
             EndMapTile.SetObstacle(true);
+            Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             
             animationCompo.PlaySelectAnimation("IDLE");   
             _isAct = false;

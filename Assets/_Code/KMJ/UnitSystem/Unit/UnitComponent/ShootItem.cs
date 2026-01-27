@@ -37,6 +37,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
             {
                 Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 
                 impulseSource.GenerateImpulse(0.4f);  
                 other.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,

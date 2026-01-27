@@ -31,6 +31,10 @@ namespace Code.Lobby
         private void RandomSelectCharacter()
         {
             // 임시
+            character1.gameObject.SetActive(true);
+            character2.gameObject.SetActive(true);
+            character3.gameObject.SetActive(true);
+            
             character1.SetUnitInfo(unitInfoList[Random.Range(0, unitInfoList.Count)]);
             character2.SetUnitInfo(unitInfoList[Random.Range(0, unitInfoList.Count)]);
             character3.SetUnitInfo(unitInfoList[Random.Range(0, unitInfoList.Count)]);

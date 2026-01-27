@@ -45,6 +45,7 @@ namespace Code.UI
         {
             if (isCanSkill[idx])
             {
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
                 skillCompnent.CancelAllSkill();
                 
                 for (int i = 0; i < isCanSkill.Count; i++)
@@ -59,6 +60,8 @@ namespace Code.UI
             }
             else
             {
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+                
                 skillCompnent.CancelAllSkill();
                 Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
                 

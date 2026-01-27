@@ -28,7 +28,7 @@ namespace Code.UnitSystem
 
         [SerializeField] private UnitRotation rotationCompo;
 
-        private GameObject _currentMapTile = null;
+        public GameObject _currentMapTile { get; set; }= null;
 
         private List<GameObject> _movingtiles =  new List<GameObject>();
 

@@ -106,7 +106,7 @@ public class BasicAttackSkill : BaseSkill
             yield return null;
         }
         animtionCompo.PlaySelectAnimation("IDLE");
-        
+        Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
         skillEndEvent.Invoke();
         _targetEnemy = null;
     }

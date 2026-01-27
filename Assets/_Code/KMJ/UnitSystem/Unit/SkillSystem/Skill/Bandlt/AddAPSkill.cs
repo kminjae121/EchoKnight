@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;
@@ -53,6 +54,7 @@ using UnityEngine;
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
         }
     }

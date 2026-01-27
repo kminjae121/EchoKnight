@@ -173,7 +173,10 @@ namespace Code.UnitSystem
                 else if (enemy != null)
                 {
                     FindEnemyIsThere(enemy);
-                    _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                    if (_targetEnemy != null)
+                    {
+                        _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                    }
                 }
             }
             else
@@ -199,6 +202,8 @@ namespace Code.UnitSystem
                     //ResetTile();
                     return;
                 }
+                
+                Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
                 
                 _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
                 
@@ -232,6 +237,8 @@ namespace Code.UnitSystem
             
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
                 _targetEnemy.transform.position,transform.position,attackData,_owner);
+            
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
         }
     }
 }

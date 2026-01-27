@@ -121,12 +121,14 @@ namespace Code.UnitSystem.SkillSystem
                 }
                 else
                 {
+                    Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
                     CheckCanAttack();
                     CanUseThisSkill();
                 }
             }
             else
             {
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                 return;
             }
@@ -202,7 +204,6 @@ namespace Code.UnitSystem.SkillSystem
         {
             if (isCanUseSkill)
             {
-                Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
                 GameObject enemy = _inputReader.GetEnemy();
 
                 FindEnemyIsThere(enemy);

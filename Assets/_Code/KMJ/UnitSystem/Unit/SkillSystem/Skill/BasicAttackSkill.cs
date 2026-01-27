@@ -12,8 +12,6 @@ using UnityEngine;
 
 public class BasicAttackSkill : BaseSkill
 {
-    
-    [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private Animator animator;
     private UnitAnimation animtionCompo;
 
@@ -47,13 +45,14 @@ public class BasicAttackSkill : BaseSkill
     public void AttackAction(GameObject target)
     {
         _ownTrm = _owner.transform.position;
-        StartCoroutine(MeleeAttackAction(target));
+        StartCoroutine(MeleeAttackAction(target)); ;
         skillStartEvent?.Invoke();
     }
 
     private IEnumerator MeleeAttackAction(GameObject target)
     {
         yield return new WaitForSeconds(2.2f);
+        _targetEnemy = target;
             
         animtionCompo.PlaySelectAnimation("MOVE");
             
@@ -70,12 +69,12 @@ public class BasicAttackSkill : BaseSkill
                 atkMoveSpeed * Time.deltaTime
             );
 
-            if (Vector3.Distance(_owner.transform.position, target.transform.position) < attackMoveDistance * 2)
-            {
-                animtionCompo.PlaySelectAnimation("BAS");
-            }
-
             yield return null;
+        }
+        
+        if (Vector3.Distance(_owner.transform.position, target.transform.position) <= attackMoveDistance * 2)
+        {
+            animtionCompo.PlaySelectAnimation("BAS");
         }
     }
     
@@ -83,6 +82,7 @@ public class BasicAttackSkill : BaseSkill
     {
         Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
         impulseSource.GenerateImpulse(0.6f);
+        
         _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
             _targetEnemy.transform.position,transform.position,attackData,_owner);
     }
@@ -107,7 +107,7 @@ public class BasicAttackSkill : BaseSkill
         }
         animtionCompo.PlaySelectAnimation("IDLE");
         
-        Debug.Log("실행됨");
         skillEndEvent.Invoke();
+        _targetEnemy = null;
     }
 }

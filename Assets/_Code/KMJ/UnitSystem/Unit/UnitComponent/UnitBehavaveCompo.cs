@@ -1,96 +1,76 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
-using UnityEngine;
 using Code.Core.Interfaces;
+using Code.EntityComponent;
+using Code.UnitSystem;
+using EnemySystem;
+using EntityComponent;
+using TMPro;
 using UnitSystem;
+using Unity.Cinemachine;
+using Unity.VisualScripting;
+using UnityEngine;
 using UnityEngine.Events;
-using Debug = System.Diagnostics.Debug;
 
-
-namespace Code.UnitSystem
+namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 {
-    public class UnitMovement : RangeComponent
+    public class UnitBehavaveCompo : RangeComponent
     {
         private BasicUnit _unit;
-
-        public UnityEvent moveEvent;
-
+        
         private SetUnitCamera unitCam;
-        
-        private float _moveSpeed => _unit.unitSO.moveSpeed;
-        
         [SerializeField] private UnitAnimation animationCompo;
 
         [SerializeField] private UnitRotation rotationCompo;
-
+        [SerializeField] private UnitAnimationTrigger triggerCompo;
+        [SerializeField] private GameObject _visualPrefabs;
+        
+        private float _moveSpeed => _unit.unitSO.moveSpeed;
         public GameObject _currentMapTile { get; set; }= null;
 
         private List<GameObject> _movingtiles =  new List<GameObject>();
-
-        [SerializeField] private GameObject _visualPrefabs;
-
+        
         protected override void Start()
         {
             base.Start();
+            
             _unit = _owner as BasicUnit;
             
             _unit.inputSO.OnClickMoveEvent += Move;
-            
-            Bus<UnitMoveEvent>.Subscribe(CheckCanMoveTile);
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
         }
 
         protected override void OnDestroy()
         {
-            base.OnDestroy();
             _unit.inputSO.OnClickMoveEvent -= Move;
+            base.OnDestroy();
         }
 
 
-        /// <summary>
-        /// 움직이게 해주는 코드
-        /// </summary>
-        /// <param name="evt"></param>
-        public void CheckCanMoveTile(UnitMoveEvent evt)
+        private void Update()
         {
-            moveEvent?.Invoke();
-            if (evt.isMove)
+            if (_unit.isMyTurn && _isAct)
             {
-                if (_unit.isMyTurn)
+                CheckTilesCanMoving();
+                GameObject tileTrm = _unit.inputSO.GetWorldPosition();
+            
+                if (_movingtiles.Contains(tileTrm))
                 {
-                    if (_unit.GetCurrentCost() <= 0)
-                    {
-                        Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
-                        ResetTile();
-                        EndAct();
-                        return;
-                    }
-                   
-                    FindObjectInRange(); 
-                    unitCam.SetThisUnit();
-                }
-                else
-                {
-                    ResetTile();
-                    _visualPrefabs.SetActive(false);
-                    EndAct();
-                }
+                    _visualPrefabs.SetActive(true);
+                    _visualPrefabs.transform.position = tileTrm.transform.position;
+                }   
             }
             else
             {
-                
-                ResetTile();
                 _visualPrefabs.SetActive(false);
-                EndAct();
-            }   
+            }
         }
-
+        
         private void CheckTilesCanMoving()
         {
             _movingtiles.Clear();
@@ -118,46 +98,35 @@ namespace Code.UnitSystem
             });
             
         }
-
-        private void Update()
-        {
-            if (_unit.isMyTurn && _isAct)
-            {
-                CheckTilesCanMoving();
-                GameObject tileTrm = _unit.inputSO.GetWorldPosition();
-                
-                if (_movingtiles.Contains(tileTrm))
-                {
-                    _visualPrefabs.SetActive(true);
-                    _visualPrefabs.transform.position = tileTrm.transform.position;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 플레이어가 움직이는 코드
-        /// </summary>
+        
+        
+        
         private void Move()
         {
             if (!_unit.isMyTurn)
                 return;
-            
             if (!_isAct)
                 return;
+            
+            if (_unit.GetCurrentCost() <= 0)
+            {
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
+                ResetTile();
+                EndAct();
+                return;
+            }
             
             IMapTile tile = _unit.inputSO.GetSelectedTile();
             GameObject tileTrm = _unit.inputSO.GetWorldPosition();
 
             if (!_movingtiles.Contains(tileTrm))
             {
-                ResetTile();
                 _visualPrefabs.SetActive(false);
                 return;
             }
 
             if (tile == null)
             {
-                ResetTile();
                 _visualPrefabs.SetActive(false);
                 return;
             }
@@ -165,21 +134,17 @@ namespace Code.UnitSystem
             {
                 _visualPrefabs.SetActive(false);
                 StartCoroutine(MoveStart(tile, tileTrm));
-                ResetTile();
             }
             
             _visualPrefabs.SetActive(false);
-            unitCam.EndThisUnit();
         }
-
-        /// <summary>
-        /// 움직이는 코드
-        /// </summary>
-        /// <param name="tileInfo">움직일 타일의 정보컴포넌트</param>
-        /// <param name="tile">움직일 타일의 Transform </param>
-        /// <returns></returns>
+        
+        
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
+            _isAct = false;
+            
             if (tile == null) 
                 yield break;
             
@@ -188,6 +153,9 @@ namespace Code.UnitSystem
             
             if(_currentMapTile != null)
                 _currentMapTile.GetComponent<IMapTile>().SetObstacle(false);
+            
+            
+            yield return new WaitForSeconds(0.3f);
             
             rotationCompo.SetDir(tile.transform.position);
             if (tileInfo.IsWalkable)
@@ -210,12 +178,13 @@ namespace Code.UnitSystem
             tile.transform.TryGetComponent(out IMapTile EndMapTile);
 
             EndMapTile.SetObstacle(true);
-            Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            _visualPrefabs.SetActive(false);
+            
+            _isAct = true;
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
             
             animationCompo.PlaySelectAnimation("IDLE");   
-            _isAct = false;
         }
-        
     }
 }

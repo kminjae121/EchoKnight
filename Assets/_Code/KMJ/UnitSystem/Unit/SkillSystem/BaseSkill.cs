@@ -116,6 +116,7 @@ namespace Code.UnitSystem.SkillSystem
                 if (ownSkill)
                 {
                     _unit.gaugeManager.UseSkill(useSkillPoint);
+                    Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true));
                     skillEvent?.Invoke(null);
                     Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
                 }
@@ -147,7 +148,10 @@ namespace Code.UnitSystem.SkillSystem
                 else if (enemy != null)
                 {
                     FindEnemyIsThere(enemy);
-                    _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                    if (_targetEnemy != null)
+                    {
+                        _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                    }
                 }
             }
             else
@@ -212,6 +216,7 @@ namespace Code.UnitSystem.SkillSystem
             
                 skillEvent?.Invoke(_targetEnemy);
                     
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true));
                 _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
                 _targetEnemy = null;
                 _unit.gaugeManager.UseSkill(useSkillPoint);

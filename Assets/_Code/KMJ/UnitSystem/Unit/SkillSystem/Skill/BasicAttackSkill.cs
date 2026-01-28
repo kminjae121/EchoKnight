@@ -51,7 +51,9 @@ public class BasicAttackSkill : BaseSkill
 
     private IEnumerator MeleeAttackAction(GameObject target)
     {
-        yield return new WaitForSeconds(2.2f);
+        
+        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.1f);
         _targetEnemy = target;
             
         animtionCompo.PlaySelectAnimation("MOVE");
@@ -108,6 +110,7 @@ public class BasicAttackSkill : BaseSkill
         animtionCompo.PlaySelectAnimation("IDLE");
         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
         skillEndEvent.Invoke();
+        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
         _targetEnemy = null;
     }
 }

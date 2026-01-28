@@ -25,14 +25,13 @@ namespace Code.UnitSystem
         [SerializeField] private StatSO atkDamageStat;
         
         [SerializeField] private UnitRotation rotationCompo; 
-        [SerializeField] private AttackDataSO attackData;
-        [SerializeField] private float _atkDamage;
+        [SerializeField] private AttackDataSO attackData; 
+        private float _atkDamage; 
         
         private DamageData _damageData;
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
-        public UnityEvent<GameObject> attackEvent = new UnityEvent<GameObject>();
         
         private InputReader _inputReader;
         
@@ -44,6 +43,7 @@ namespace Code.UnitSystem
 
         private bool isAttack = false;
 
+        public UnityEvent<GameObject> attackEvent = new UnityEvent<GameObject>();
         public UnityEvent attackStartEvent;
         public UnityEvent attackEndEvent;
 
@@ -74,7 +74,8 @@ namespace Code.UnitSystem
             Debug.Assert(target != null, $"{atkDamageStat.statName} does not exist");
             target.OnValueChanged += HandleAtkDamageChanged;
             _atkDamage = target.Value;
-            
+
+            _atkDamage = _basicUnit.unitSO.atkDamage;
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
 
@@ -89,10 +90,13 @@ namespace Code.UnitSystem
 
             _inputReader.OnAttackEvent += AttackEnemy;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
+
+            attackEndEvent.AddListener(AttackEnded);
         }
         
         private void OnDestroy()
         {
+            attackEndEvent.RemoveListener(AttackEnded);
             _inputReader.OnAttackEvent -= AttackEnemy;
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
@@ -106,6 +110,13 @@ namespace Code.UnitSystem
         private void HandleAtkDamageChanged(StatSO stat, float currentvalue, float previousvalue)
         {
             _atkDamage = _atkDamage + currentvalue;
+            
+            _basicUnit.unitSO.atkDamage = _atkDamage;
+        }
+
+        private void AttackEnded()
+        {
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
         
 
@@ -172,6 +183,7 @@ namespace Code.UnitSystem
                 else if (enemy != null)
                 {
                     FindEnemyIsThere(enemy);
+                    
                     if (_targetEnemy != null)
                     {
                         _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
@@ -218,7 +230,7 @@ namespace Code.UnitSystem
                 rotationCompo.SetDir(_targetEnemy.transform.position);
                 
                 attackEvent?.Invoke(_targetEnemy);
-                
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
                 _basicUnit.RemoveCost(25f);   
             }
         }
@@ -237,7 +249,8 @@ namespace Code.UnitSystem
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
                 _targetEnemy.transform.position,transform.position,attackData,_owner);
             
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }
 }

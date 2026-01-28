@@ -72,6 +72,7 @@ namespace Code.UI
                 Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(false));
                 isAttacking = true;
+                Bus<UnitSetMoveEvent>.Raise(new  UnitSetMoveEvent(true));
             }
         }
         

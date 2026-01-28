@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using Skill;
 using UnityEngine;
@@ -16,6 +17,9 @@ public class UnitSO : ScriptableObject
     
     [Header("UnitImage")]
     public Sprite UnitImage;
+
+    [Header("WhatItIs")] 
+    public UnitInfoSO UnitInfo;
     
     [Header("OwnUnitCards")]
     public List<SkillSO> unitSkillCards;
@@ -36,6 +40,8 @@ public class UnitSO : ScriptableObject
     public bool isPlayerUnit = false;
     
     public float moveSpeed;
+
+    public float atkDamage;
     
     public float attackDistance;
 

@@ -38,7 +38,9 @@ using UnityEngine;
 
         private IEnumerator AddAp()
         {
-            yield return new WaitForSeconds(2f);
+           
+            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
             effectPrefab.SetActive(true);
             effectPrefab.GetComponent<ParticleSystem>().Play();
             animtionCompo.PlaySelectAnimation("HEAL");
@@ -56,5 +58,7 @@ using UnityEngine;
             skillEndEvent?.Invoke();
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }

@@ -39,7 +39,9 @@ using UnityEngine;
         
         private IEnumerator FireBall()
         {
-            yield return new WaitForSeconds(2f);
+            
+            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
             animtionCompo.PlaySelectAnimation("HEAL");
         }
 
@@ -48,6 +50,8 @@ using UnityEngine;
             skillEndEvent?.Invoke();
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
         }
 
         public void Heal()

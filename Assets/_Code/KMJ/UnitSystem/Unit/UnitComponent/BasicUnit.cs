@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using _Code.Core.Managers;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
@@ -17,6 +18,7 @@ namespace  UnitSystem
 {
     public class BasicUnit : Unit
     {
+        public UnitBehavaveCompo behaveCompo { get; set; }
         public TurnCostGaugeManager gaugeManager { get; set; }
         [field: SerializeField] public InputReader inputSO { get; private set; }
         
@@ -55,15 +57,18 @@ namespace  UnitSystem
 
             skillCompo = GetUnitCompo<SkillComponent>();
             triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
-            movementCompo = GetUnitCompo<UnitMovement>();
+            //movementCompo = GetUnitCompo<UnitMovement>();
+            behaveCompo = GetUnitCompo<UnitBehavaveCompo>();
             
             animationComponent = GetUnitCompo<UnitAnimation>();
+            
+            Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
 
             triggerCompo.OnDeadEvent += LastDie;
 
             CurrentCost = 100;
 
-            movementCompo._currentMapTile = _startTile;
+            //movementCompo._currentMapTile = _startTile;
         }
 
         protected override void OnDestroy()
@@ -74,6 +79,7 @@ namespace  UnitSystem
 
         public override void OnTurnStart()
         {
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
             CurrentCost = maxUsingCost;
 
             float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
@@ -98,6 +104,7 @@ namespace  UnitSystem
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
             OnStartTurnEvent?.Invoke();
             base.OnTurnStart();
+            behaveCompo.FindObjectInRange();
             isMyTurn = true;
         }
 
@@ -105,7 +112,13 @@ namespace  UnitSystem
         {
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
+            behaveCompo.ResetTile();
             base.OnTurnEnd();
+        }
+
+        public void StartWalk(UnitSetMoveEvent evt)
+        {
+            behaveCompo.ReCheckInRange();
         }
 
         protected override void Hit()
@@ -114,7 +127,14 @@ namespace  UnitSystem
             animationComponent.PlaySelectAnimation("HIT");
             base.Hit();
         }
-        
+
+        private void Update()
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+            {
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
+            }
+        }
 
         public void TurnEnd()
         {

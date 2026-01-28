@@ -869,61 +869,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7258450117951674533}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1876903824739441900
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 2345861116907254543}
-  - component: {fileID: 4579603497430823932}
-  m_Layer: 0
-  m_Name: Movement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2345861116907254543
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876903824739441900}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2773054132212776123}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4579603497430823932
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1876903824739441900}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3294a67faafa4b7dbc3b09d5551baf20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 4, y: 1, z: 4}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 64
-  moveEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  animationCompo: {fileID: 1091717516924593186}
-  rotationCompo: {fileID: 1970335402761181577}
-  _visualPrefabs: {fileID: 8798863749719068622}
 --- !u!1 &1920534428421415873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1054,7 +999,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 261276867403286900}
-  - {fileID: 2345861116907254543}
+  - {fileID: 77579645504495796}
   - {fileID: 7269518069167314072}
   - {fileID: 7329433671826857726}
   - {fileID: 7859804201741803563}
@@ -1126,7 +1071,7 @@ MonoBehaviour:
   unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
   whatIsGround:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 64
   maxUsingCost: 100
   unitImage: {fileID: 0}
   _startTile: {fileID: 0}
@@ -1676,32 +1621,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a756be0c718b41b588cb881237e7bf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _horizontalCheckBoxSize: {x: 5, y: 1, z: 5}
+  _verticalCheckBoxSize: {x: 0.1, y: 1, z: 5}
+  _horizontalCheckBoxSize: {x: 5, y: 1, z: 0.1}
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
+  isMove: 0
   atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
   rotationCompo: {fileID: 1970335402761181577}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
-  _atkDamage: 5
   triggerCompo: {fileID: 2692279809152063950}
   attackEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5058329776480125379}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: SetThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   attackStartEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1719,20 +1651,7 @@ MonoBehaviour:
         m_CallState: 2
   attackEndEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5058329776480125379}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: EndThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &3320223913805349855
 GameObject:
   m_ObjectHideFlags: 0
@@ -1749,7 +1668,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4197122529185304397
 Transform:
   m_ObjectHideFlags: 0
@@ -2186,7 +2105,7 @@ Transform:
   m_GameObject: {fileID: 5354915792614801470}
   serializedVersion: 2
   m_LocalRotation: {x: 0.23896568, y: -0, z: -0, w: 0.97102803}
-  m_LocalPosition: {x: 0, y: 4.2183814, z: -3.9860587}
+  m_LocalPosition: {x: 0, y: 4.218382, z: -3.9860585}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2686,11 +2605,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7bf5f186b6e40f6a98429b771832613, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 6.5, y: 1, z: 6.5}
+  _verticalCheckBoxSize: {x: 0.2, y: 1, z: 8}
   _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
+  isMove: 0
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
   <skillImage>k__BackingField: {fileID: 21300000, guid: e0d28137676e2ba428d9594922a7cfd3, type: 3}
   damage: 0
@@ -2699,39 +2619,13 @@ MonoBehaviour:
   ownSkill: 0
   skillStartEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5058329776480125379}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: SetThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   skillEvent:
     m_PersistentCalls:
       m_Calls: []
   skillEndEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5058329776480125379}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: EndThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _ArrowPrefab: {fileID: 9115162897217047785, guid: f68319a6f4d5bbc4dbd0566e69d3ab26, type: 3}
 --- !u!114 &2442742964246998859
 MonoBehaviour:
@@ -2745,11 +2639,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a62f9fe152bd4067a325a3b02ca5dae7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 6.5, y: 1, z: 6.5}
+  _verticalCheckBoxSize: {x: 3, y: 1, z: 3}
   _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
+  isMove: 0
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
   <skillImage>k__BackingField: {fileID: 21300000, guid: 1fe784c0346a64742a9ab94ab0dd7617, type: 3}
   damage: 0
@@ -2758,39 +2653,13 @@ MonoBehaviour:
   ownSkill: 0
   skillStartEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5058329776480125379}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: SetThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   skillEvent:
     m_PersistentCalls:
       m_Calls: []
   skillEndEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 5058329776480125379}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: EndThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   _ArrowPrefab: {fileID: 9115162897217047785, guid: 40681ef34cf38bc43bb30e622f0a31cb, type: 3}
 --- !u!1 &6793596474031118395
 GameObject:
@@ -3279,6 +3148,60 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.00031781197, y: -0.20200256, z: -0.059042916}
     m_Extent: {x: 0.7187168, y: 0.95933247, z: 0.24650945}
   m_DirtyAABB: 0
+--- !u!1 &7488819803652951065
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 77579645504495796}
+  - component: {fileID: 8324561617133896265}
+  m_Layer: 7
+  m_Name: Behavior
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &77579645504495796
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7488819803652951065}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2773054132212776123}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8324561617133896265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7488819803652951065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45deec369a844ea6b4a5206bd9235956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalCheckBoxSize: {x: 2.5, y: 1, z: 2.5}
+  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 64
+  isMove: 1
+  animationCompo: {fileID: 1091717516924593186}
+  rotationCompo: {fileID: 1970335402761181577}
+  triggerCompo: {fileID: 2692279809152063950}
+  _visualPrefabs: {fileID: 8798863749719068622}
 --- !u!1 &7498724248765007469
 GameObject:
   m_ObjectHideFlags: 0

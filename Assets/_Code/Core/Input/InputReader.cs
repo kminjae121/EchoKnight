@@ -25,6 +25,7 @@ namespace Input
 
         public event Action OnClickEvent;
 
+        public Vector2 MovementKey { get; private set; }
         public event Action OnSelectUnitEvent;
         
         private Vector3 _gridPosition;
@@ -135,7 +136,13 @@ namespace Input
         {
             _screenPosition = context.ReadValue<Vector2>();
         }
-        
+
+        public void OnCamMove(InputAction.CallbackContext context)
+        {
+            Vector2 movementKey = context.ReadValue<Vector2>();
+            MovementKey = movementKey;
+        }
+
         public void SetActive(bool isActive)
         {
             if (isActive)

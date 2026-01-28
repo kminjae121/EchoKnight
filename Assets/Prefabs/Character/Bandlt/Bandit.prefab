@@ -601,8 +601,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3294a67faafa4b7dbc3b09d5551baf20, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 3.5, y: 1, z: 0.1}
-  _horizontalCheckBoxSize: {x: 0.1, y: 1, z: 3.5}
+  _verticalCheckBoxSize: {x: 3, y: 1, z: 3}
+  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 64
@@ -904,7 +904,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af5b53915b144beb9d959b0f01608f1b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  atkCompo: {fileID: 2105293790733927659}
+  atkCompo: {fileID: 0}
   atkMoveSpeed: 2
   animator: {fileID: 5930818674794191497}
   animtionCompo: {fileID: 1243646029168592352}
@@ -2243,7 +2243,6 @@ MonoBehaviour:
   atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
   rotationCompo: {fileID: 3966720720610224676}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
-  _atkDamage: 4
   triggerCompo: {fileID: 4102828035171866210}
   attackEvent:
     m_PersistentCalls:

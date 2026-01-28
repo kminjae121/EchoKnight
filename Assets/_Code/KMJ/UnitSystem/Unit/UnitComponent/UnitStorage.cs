@@ -10,12 +10,14 @@ namespace Code.UnitSystem
         [SerializeField] private UnitStorageSO _storage;
         
         public Dictionary<string, UnitInfoSO> units = new Dictionary<string, UnitInfoSO>();
+        
+        public List<UnitInfoSO> unitInfos = new List<UnitInfoSO>();
 
         private void Awake()
         {
             _storage.units.ForEach(unit =>
             {
-                units.Add(unit.UnitName, unit);
+                unitInfos.Add(unit);
             });    
         }
 

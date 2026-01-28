@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
 using Unity.Cinemachine;
@@ -49,7 +51,9 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
-            yield return new WaitForSeconds(2.2f);
+            
+            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
             
             animtionCompo.PlaySelectAnimation("MOVE");
             
@@ -95,7 +99,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
                 );
                 yield return null;
             }
-            
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
             animtionCompo.PlaySelectAnimation("IDLE");
             atkCompo.attackEndEvent?.Invoke();
         }

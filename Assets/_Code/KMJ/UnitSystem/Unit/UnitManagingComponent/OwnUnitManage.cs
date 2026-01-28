@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Code.Core.Managers;
 using Code.Core;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.UnitSystem;
 using GameEventChannel;
-
+using UnitSystem;
 using UnityEngine;
 
 
@@ -36,19 +38,38 @@ namespace Code.UnitManaging
         {
             if (_selectedUnits.Count == 0)
                 return;
+
+            int count = -1;
             
             for (int i = 0; i < _selectedUnits.Count; i++)
             {
+                if (i >= 3)
+                {
+                    return;
+                }
                 GameObject spawnUnit = Instantiate(_selectedUnits[i].UnitPrefab,
                     startingTrm[i].position, Quaternion.identity);
-        
-        
-                Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(spawnUnit.GetComponent<Unit>()));
-                _myOwnUnitList.Add(spawnUnit.GetComponent<Unit>());
+
+                startingTrm[i].GetComponent<IMapTile>().SetObstacle(true);
                 
+                Unit unit = spawnUnit.GetComponent<Unit>();
+        
+                Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(unit));
+                _myOwnUnitList.Add(unit);
+
+                BasicUnit basicUnit = unit as BasicUnit;
+
+                basicUnit._startTile = startingTrm[i].gameObject;
+
+                count += 1;
+                
+                basicUnit.PlayableUnitID = count;
+                
+                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,
+                    1,1,basicUnit.UnitImage));
+                
+                StageManager.Instance.AddPlayerCnt();
             }
-            
-            //_myOwnUnitList[0].SetThisUnit(true);
         }
         
         /// <summary>
@@ -62,16 +83,5 @@ namespace Code.UnitManaging
                 _selectedUnits.Add(unit);
             });
         }
-        
-        //private void RemoveDeadUnit(UnitDeadEvent evt)
-        //{
-        //    Unit unit = _myOwnUnitList.Find(unit => unit.gameObject.name == evt.DeadUnitName);
-        //   
-        //    if (unit != null)
-        //    {
-        //        _myOwnUnitList.Remove(unit);
-        //    }
-        //}
-
     }
 }

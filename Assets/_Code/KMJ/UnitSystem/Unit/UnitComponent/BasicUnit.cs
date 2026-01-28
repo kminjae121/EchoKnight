@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
+using _Code.Core.Managers;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.Managers;
 using Code.UI;
 using Code.UnitSystem;
@@ -20,19 +22,29 @@ namespace  UnitSystem
         
         [SerializeField] private GameEventChannelSO unitDeadChannel;
 
+        [SerializeField] private LayerMask whatIsGround;
+
         public SkillComponent skillCompo { get; private set; }
         public UnitAnimation animationComponent { get; private set; }
+        
+        public UnitAnimationTrigger triggerCompo { get; private set; }
 
         public int maxUsingCost = 100;
 
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
-        
-        public float CurrentCost { get; private set; }
+
+        public float CurrentCost { get; private set; } = 100;
         
 
         [SerializeField] private Image unitImage;
+
+        public int PlayableUnitID { get; set; } = -1;
+
+        private UnitMovement movementCompo;
+
+        public GameObject _startTile = null;
         
         
         private void Start()
@@ -42,13 +54,22 @@ namespace  UnitSystem
             endTurnBtn = GameObject.Find("TurnEndBtn").GetComponent<Button>();
 
             skillCompo = GetUnitCompo<SkillComponent>();
+            triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
+            movementCompo = GetUnitCompo<UnitMovement>();
             
             animationComponent = GetUnitCompo<UnitAnimation>();
+
+            triggerCompo.OnDeadEvent += LastDie;
+
+            CurrentCost = 100;
+
+            movementCompo._currentMapTile = _startTile;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
+            triggerCompo.OnDeadEvent -= LastDie;
         }
 
         public override void OnTurnStart()
@@ -89,6 +110,7 @@ namespace  UnitSystem
 
         protected override void Hit()
         {
+            animationComponent.RestartFromEntry();
             animationComponent.PlaySelectAnimation("HIT");
             base.Hit();
         }
@@ -165,6 +187,12 @@ namespace  UnitSystem
         public void Die()
         {
             animationComponent.PlaySelectAnimation("DEAD");
+        }
+
+        public void LastDie()
+        {
+            gameObject.SetActive(false);
+            StageManager.Instance.PlayerDie();
         }
     }
 }

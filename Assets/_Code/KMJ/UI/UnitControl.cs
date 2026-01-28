@@ -43,6 +43,7 @@ namespace Code.UI
             else
             {
                 Bus<UnitMoveEvent>.Raise(new UnitMoveEvent(false));
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 isMoveing = true;
             }
         }
@@ -68,6 +69,7 @@ namespace Code.UI
             }
             else
             {
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(false));
                 isAttacking = true;
             }

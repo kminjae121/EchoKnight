@@ -1,8 +1,12 @@
-﻿using Code.UI;
+﻿using System;
+using Code.Core.Events.Bus;
+using Code.UI;
 using Code.UnitSystem;
 using EntityComponent;
 using GameEventChannel;
+using UnitSystem;
 using UnityEngine;
+using UnityEngine.PlayerLoop;
 
 namespace Code.EntityComponent
 {
@@ -39,6 +43,19 @@ namespace Code.EntityComponent
                 hpStat, HandleMaxHPChanged, 10f);
         }
 
+        private void Update()
+        {
+            //if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
+            //{
+            //    DamageData data = new DamageData();
+            //    data.damage = 10;
+            //    AttackDataSO dataso = new AttackDataSO();
+            //    
+            //    ApplyDamage(data,transform.position, transform.position, dataso, null);
+            //
+            //}
+        }
+
         private void OnDestroy()
         {
             _statCompo.UnSubscribeStat(hpStat, HandleMaxHPChanged);
@@ -51,6 +68,13 @@ namespace Code.EntityComponent
             if (currentHealth > maxHealth)
             {
                 currentHealth = maxHealth;
+            }
+            
+            if (_entity as BasicUnit)
+            {
+                BasicUnit basicUnit = _entity as BasicUnit;
+               
+                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
             }
         }
         
@@ -83,12 +107,20 @@ namespace Code.EntityComponent
                 , position, 0.5f);  
             
             textEventChannel.RaiseEvent(textEvt);
+           
+           if (_entity as BasicUnit)
+           {
+               BasicUnit basicUnit = _entity as BasicUnit;
+               
+               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
+           }
+           
            if (currentHealth <= 0)
            {
                _entity.OnDeathEvent?.Invoke();
                return;
            }
-           
+
            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
         }
 

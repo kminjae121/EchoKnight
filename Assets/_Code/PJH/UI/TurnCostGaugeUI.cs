@@ -9,8 +9,7 @@ namespace Code.UI
     public class TurnCostGaugeUI : MonoBehaviour
     {
         [SerializeField] private Image turnCostGaugeImage;
-        [SerializeField] private TextMeshProUGUI currentCostText;
-        [SerializeField] private TextMeshProUGUI maxCostText;
+        [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private TurnCostGaugeManager gaugeManager;
         [SerializeField] private float gaugeTweenTime = 0.3f;
 
@@ -28,7 +27,7 @@ namespace Code.UI
 
         private void Start()
         {
-            ReflashGauge(0);
+            ReflashGauge(100);
         }
 
         private void HandleCurrentGaugeValueChanged(int prev, int next)
@@ -38,13 +37,11 @@ namespace Code.UI
 
         private void ReflashGauge(int value)
         {
-            currentCostText.text = value.ToString();
-            maxCostText.text = gaugeManager.maxGaugeValue.ToString();
+            costText.text = $"{value} / {gaugeManager.maxGaugeValue}";
 
             float targetFill = gaugeManager.currentGaugeValue.Value / (float)gaugeManager.maxGaugeValue;
             
             gaugeTween?.Kill();
-
             gaugeTween = turnCostGaugeImage
                 .DOFillAmount(targetFill, gaugeTweenTime)
                 .SetEase(Ease.OutCubic);

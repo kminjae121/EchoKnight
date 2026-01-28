@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Code.Core.Events.Bus;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,11 +10,23 @@ namespace Code.UI
     {
         [SerializeField] private List<Slider> healthSliders;
 
-        [SerializeField] private List<Sprite> unitCharacterImages;
+        [SerializeField] private List<Image> unitCharacterImages;
 
         private void Awake()
         {
+            Bus<SetUpUnitHealthBar>.Subscribe(HandleUnitHealthBar);
+        }
+
+        private void OnDestroy()
+        {
+            Bus<SetUpUnitHealthBar>.Unsubscribe(HandleUnitHealthBar);
             
+        }
+
+        private void HandleUnitHealthBar(SetUpUnitHealthBar evt)
+        {
+            healthSliders[evt.unitCount].value = evt.finalValue;
+            unitCharacterImages[evt.unitCount].sprite = evt.unitImage;
         }
     }
 }

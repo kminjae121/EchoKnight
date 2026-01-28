@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using UnitSystem;
 using UnityEngine;
@@ -88,6 +89,8 @@ namespace Code.UnitSystem
         protected void FindObjectInRange()
         {
             _rangeComponent.RemoveAllRange();
+            
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
             
             _verticalCollider = Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsTarget);
             _horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsTarget);

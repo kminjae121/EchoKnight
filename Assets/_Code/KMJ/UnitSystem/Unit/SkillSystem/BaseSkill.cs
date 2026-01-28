@@ -4,8 +4,10 @@ using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.EntityComponent;
+using EnemySystem;
 using Input;
 using UnitSystem;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -22,6 +24,7 @@ namespace Code.UnitSystem.SkillSystem
             protected UnitAnimationTrigger triggerCompo;
         #endregion
 
+        protected CinemachineImpulseSource impulseSource;
         [field: SerializeField] public Sprite skillImage { get; set; }
         
         private InputReader _inputReader;
@@ -69,12 +72,21 @@ namespace Code.UnitSystem.SkillSystem
             _skillCompo = _unit.GetUnitCompo<SkillComponent>();
 
             _damageData.damage = damage;
+            
+            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
 
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
 
             skillEndEvent.AddListener(CanUseSkillTrue);
+            
+            skillEvent.AddListener(StartSkill);
             ResetTileEvent += skillEnd;
+        }
+
+        private void StartSkill(GameObject arg0)
+        {
+            
         }
 
         protected override void Start()
@@ -93,6 +105,7 @@ namespace Code.UnitSystem.SkillSystem
 
         private void CanUseSkillTrue()
         {
+            Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(false));
             Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
         }
 
@@ -104,17 +117,48 @@ namespace Code.UnitSystem.SkillSystem
                 {
                     _unit.gaugeManager.UseSkill(useSkillPoint);
                     skillEvent?.Invoke(null);
+                    Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
                 }
                 else
                 {
+                    Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
                     CheckCanAttack();
                     CanUseThisSkill();
                 }
             }
             else
+            {
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                 return;
+            }
         }
-        
+
+        private void Update()
+        {
+            if (_unit.isMyTurn && _isAct)
+            {
+                GameObject enemy = _inputReader.GetEnemy();
+
+                if(enemy == null && _targetEnemy != null)
+                {
+                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                }
+                else if (enemy != null)
+                {
+                    FindEnemyIsThere(enemy);
+                    _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                }
+            }
+            else
+            {
+                if (_targetEnemy != null)
+                {
+                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                }
+            }
+        }
+
         private void FindEnemyIsThere(GameObject enemy)
         {
             _verticalCollider.ToList().ForEach(obj =>
@@ -166,8 +210,10 @@ namespace Code.UnitSystem.SkillSystem
             
                 rotationCompo.SetDir(enemy.transform.position);
             
-                skillEvent?.Invoke(_targetEnemy);        
-                
+                skillEvent?.Invoke(_targetEnemy);
+                    
+                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                _targetEnemy = null;
                 _unit.gaugeManager.UseSkill(useSkillPoint);
             }
             skillEnd();   

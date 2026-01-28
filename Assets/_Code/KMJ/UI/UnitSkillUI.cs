@@ -13,6 +13,8 @@ namespace Code.UI
     {
         private SkillComponent skillCompnent;
 
+        [SerializeField] private GameObject skillUI;
+
         [SerializeField] private Sprite basicSprite;
 
         [SerializeField] private List<Image> skillImage;
@@ -26,6 +28,9 @@ namespace Code.UI
         private void Awake()
         {
             Bus<SkillUIEvent>.Subscribe(HandleSkillUIEvent);
+            
+            Bus<UnitSkilStartEvent>.Subscribe(HandleSkillBool);
+            Bus<UnitSkilStartEvent>.Subscribe(HandleSkillUIObject);
         }
 
         private void OnDestroy()
@@ -40,13 +45,53 @@ namespace Code.UI
         {
             if (isCanSkill[idx])
             {
-                skillCompnent.StartSkill(thisSkillName[idx]);
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+                skillCompnent.CancelAllSkill();
+                
+                for (int i = 0; i < isCanSkill.Count; i++)
+                {
+                    isCanSkill[i] = true;
+                }
+
                 isCanSkill[idx] = false;
+                
+                skillCompnent.StartSkill(thisSkillName[idx]);
+
             }
             else
             {
-                skillCompnent.CancelSkill(thisSkillName[idx]);
-                isCanSkill[idx] = true;
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+                
+                skillCompnent.CancelAllSkill();
+                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+                
+                for (int i = 0; i < isCanSkill.Count; i++)
+                {
+                    isCanSkill[i] = true;
+                }
+            }
+        }
+
+        private void HandleSkillBool(UnitSkilStartEvent evt)
+        {
+            if (evt.isStart == true)
+            {
+                for (int i = 0; i < isCanSkill.Count; i++)
+                {
+                    isCanSkill[i] = true;
+                } 
+            }
+        }
+
+        private void HandleSkillUIObject(UnitSkilStartEvent evt)
+        {
+            if (evt.isStart == true)
+            {
+                skillUI.SetActive(false);
+            }
+            else
+            {
+                skillUI.SetActive(true);
             }
         }
 
@@ -72,6 +117,8 @@ namespace Code.UI
             {
                 skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
             }
+            
+            isCanSkill[evt.skillIdx] = true;
         }
     }
 }

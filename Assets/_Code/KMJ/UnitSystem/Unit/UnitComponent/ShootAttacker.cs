@@ -74,8 +74,11 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             GameObject shootItem = Instantiate(shootPrefabs, pos, Quaternion.identity);
 
             Vector3 slashRot = transform.rotation.eulerAngles;
+
+            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
+            shootItemCompo.SetTarget(_target);
+            shootItemCompo.SetDamageData(atkCompo._damageData);
             
-            shootItem.GetComponent<ShootItem>().SetTarget(_target);
             shootItem.transform.rotation = Quaternion.Euler(slashRot);
             impulseSource.GenerateImpulse(0.3f);
         }

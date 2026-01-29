@@ -60,6 +60,7 @@ namespace Code.UI
             }
             else
             {
+                Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
                 Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 
                 skillCompnent.CancelAllSkill();

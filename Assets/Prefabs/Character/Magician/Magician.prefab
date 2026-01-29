@@ -2615,7 +2615,7 @@ MonoBehaviour:
     overrideBaseValue: 100
   - stat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
     isUseOverride: 1
-    overrideBaseValue: 10
+    overrideBaseValue: 5
 --- !u!1 &4129508997325095659
 GameObject:
   m_ObjectHideFlags: 0
@@ -2852,6 +2852,7 @@ MonoBehaviour:
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 192
+  isMove: 0
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
   <skillImage>k__BackingField: {fileID: 21300000, guid: d98b775a6f3c03e43ba95a50dd259d3f, type: 3}
   damage: 0
@@ -2911,9 +2912,10 @@ MonoBehaviour:
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
+  isMove: 0
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
   <skillImage>k__BackingField: {fileID: 21300000, guid: 04841b8a9cae96b42aa2a2689b689515, type: 3}
-  damage: 0
+  damage: 8
   useSkillPoint: 16
   isCanUseSkill: 0
   ownSkill: 0
@@ -4081,9 +4083,9 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 2033871814734169854}
   - {fileID: 876221767772993202}
   - {fileID: 7266299141954472063}
-  - {fileID: 4896287297784704087}
   - {fileID: 8813400249751240388}
   - {fileID: 6547914116936946141}
   - {fileID: 5553305412821377374}
@@ -4215,7 +4217,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd75bd9b3e191364f818ba559acd369b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  atkCompo: {fileID: 0}
+  atkCompo: {fileID: 3897272450828838402}
   atkMoveSpeed: 0
   animator: {fileID: 3714268487380351643}
   animtionCompo: {fileID: 9210414855985427840}
@@ -5138,6 +5140,60 @@ Transform:
   - {fileID: 1895619195999318142}
   m_Father: {fileID: 8970321665819781876}
   m_LocalEulerAnglesHint: {x: -33.74145, y: -25.04083, z: 167.90594}
+--- !u!1 &7366538928604377655
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2033871814734169854}
+  - component: {fileID: 346073034446612595}
+  m_Layer: 7
+  m_Name: BehaveCompo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2033871814734169854
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7366538928604377655}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5312050881103246690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &346073034446612595
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7366538928604377655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45deec369a844ea6b4a5206bd9235956, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalCheckBoxSize: {x: 2, y: 1, z: 2}
+  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
+  _whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 64
+  isMove: 1
+  animationCompo: {fileID: 9210414855985427840}
+  rotationCompo: {fileID: 5137460681628610011}
+  triggerCompo: {fileID: 4797563246136007047}
+  _visualPrefabs: {fileID: 1076769704966724244}
 --- !u!1 &7472164531317434426
 GameObject:
   m_ObjectHideFlags: 0
@@ -5169,61 +5225,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 783272536431597519}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &7495478161301753435
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 4896287297784704087}
-  - component: {fileID: 5493419597248128974}
-  m_Layer: 0
-  m_Name: Movement
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &4896287297784704087
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7495478161301753435}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5312050881103246690}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5493419597248128974
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7495478161301753435}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3294a67faafa4b7dbc3b09d5551baf20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 3, y: 1, z: 3}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 64
-  moveEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  animationCompo: {fileID: 9210414855985427840}
-  rotationCompo: {fileID: 5137460681628610011}
-  _visualPrefabs: {fileID: 1076769704966724244}
 --- !u!1 &7567533535656725142
 GameObject:
   m_ObjectHideFlags: 0
@@ -5368,6 +5369,7 @@ MonoBehaviour:
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
+  isMove: 0
   atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
   rotationCompo: {fileID: 5137460681628610011}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}

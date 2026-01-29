@@ -65,7 +65,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                     _visualPrefabs.transform.position = tileTrm.transform.position;
                 }   
             }
-            else
+            else if(!_isAct)
             {
                 _visualPrefabs.SetActive(false);
             }
@@ -98,6 +98,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             });
             
         }
+        
+        
         
         
         
@@ -142,6 +144,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
             _isAct = false;
             
@@ -178,9 +181,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             tile.transform.TryGetComponent(out IMapTile EndMapTile);
 
             EndMapTile.SetObstacle(true);
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             _visualPrefabs.SetActive(false);
             
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             _isAct = true;
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
             

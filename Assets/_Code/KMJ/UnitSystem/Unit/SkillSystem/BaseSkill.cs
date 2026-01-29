@@ -24,6 +24,8 @@ namespace Code.UnitSystem.SkillSystem
             protected UnitAnimationTrigger triggerCompo;
         #endregion
 
+        private EnemyTargeting _targetingCompo = null;
+        
         protected CinemachineImpulseSource impulseSource;
         [field: SerializeField] public Sprite skillImage { get; set; }
         
@@ -143,22 +145,40 @@ namespace Code.UnitSystem.SkillSystem
 
                 if(enemy == null && _targetEnemy != null)
                 {
-                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    
+                    _targetingCompo.OffTargeting();
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+
+                    _targetingCompo = null;
                 }
                 else if (enemy != null)
                 {
                     FindEnemyIsThere(enemy);
-                    if (_targetEnemy != null)
+                    
+                    if (_targetEnemy != null && _targetingCompo == null)
                     {
-                        _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                        EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
+                        
+                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                        _targetingCompo.Targeting();
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,health.CurrentHealth, 
+                            health.MaxHealth,_damageData.damage, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
                     }
                 }
             }
             else
             {
-                if (_targetEnemy != null)
+                if (_targetEnemy != null && _targetingCompo != null) 
                 {
-                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    _targetingCompo.OffTargeting();
+                    
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+                    _targetingCompo = null;
                 }
             }
         }

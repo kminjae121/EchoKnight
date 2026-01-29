@@ -105,6 +105,7 @@ namespace  UnitSystem
             OnStartTurnEvent?.Invoke();
             base.OnTurnStart();
             behaveCompo.FindObjectInRange();
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             isMyTurn = true;
         }
 
@@ -118,7 +119,10 @@ namespace  UnitSystem
 
         public void StartWalk(UnitSetMoveEvent evt)
         {
-            behaveCompo.ReCheckInRange();
+            if (isMyTurn)
+            {
+                behaveCompo.ReCheckInRange();
+            }
         }
 
         protected override void Hit()

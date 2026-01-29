@@ -8,7 +8,6 @@ using UnityEngine;
     public class FireBallSkill : BaseSkill
     {
         [SerializeField] private GameObject fireBallPrefab;
-        
         private UnitAnimation animtionCompo;
 
         private GameObject _target = null;
@@ -64,7 +63,9 @@ using UnityEngine;
             fireBallPrefab.transform.position = pos;
             fireBallPrefab.SetActive(true);
             
-            fireBallPrefab.GetComponent<ShootItem>().SetTarget(_target);
+            ShootItem shootItemCompo = fireBallPrefab.GetComponent<ShootItem>();
+            shootItemCompo.SetTarget(_target);
+            shootItemCompo.SetDamageData(_damageData);
 
 
             Vector3 slashRot = transform.rotation.eulerAngles;

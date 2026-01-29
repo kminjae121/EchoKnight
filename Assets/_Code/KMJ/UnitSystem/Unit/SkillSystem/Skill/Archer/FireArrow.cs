@@ -64,7 +64,9 @@ using UnityEngine;
 
             Vector3 slashRot = transform.rotation.eulerAngles;
         
-            shootItem.GetComponent<ShootItem>().SetTarget(_target);
+            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
+            shootItemCompo.SetTarget(_target);
+            shootItemCompo.SetDamageData(_damageData);
             shootItem.transform.rotation = Quaternion.Euler(slashRot);
         }
     }

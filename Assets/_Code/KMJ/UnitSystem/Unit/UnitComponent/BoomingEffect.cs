@@ -32,6 +32,11 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             StartCoroutine(StartEffect());
         }
 
+        public void SetDamageData(DamageData damageData)
+        {
+            _damageData = damageData;
+        }
+
         private IEnumerator StartEffect()
         {
             yield return new WaitForSeconds(1.13f);

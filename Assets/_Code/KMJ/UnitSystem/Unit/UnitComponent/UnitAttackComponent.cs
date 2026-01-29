@@ -26,11 +26,16 @@ namespace Code.UnitSystem
         
         [SerializeField] private UnitRotation rotationCompo; 
         [SerializeField] private AttackDataSO attackData; 
-        private float _atkDamage; 
-        
-        private DamageData _damageData;
+        private float _atkDamage;
+
+        public DamageData _damageData;
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
+
+
+        private EnemyTargeting _targetingCompo = null;
+
+        private float addDamage = 0;
 
         
         private InputReader _inputReader;
@@ -75,7 +80,7 @@ namespace Code.UnitSystem
             target.OnValueChanged += HandleAtkDamageChanged;
             _atkDamage = target.Value;
 
-            _atkDamage = _basicUnit.unitSO.atkDamage;
+            _basicUnit.unitSO.atkDamage = _atkDamage;
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
 
@@ -178,23 +183,40 @@ namespace Code.UnitSystem
 
                 if(enemy == null && _targetEnemy != null)
                 {
-                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    
+                    _targetingCompo.OffTargeting();
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+
+                    _targetingCompo = null;
                 }
                 else if (enemy != null)
                 {
                     FindEnemyIsThere(enemy);
                     
-                    if (_targetEnemy != null)
+                    if (_targetEnemy != null && _targetingCompo == null)
                     {
-                        _targetEnemy.GetComponent<EnemyTargeting>().Targeting();
+                        EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
+                        
+                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                        _targetingCompo.Targeting();
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage,health.CurrentHealth, 
+                            health.MaxHealth,_damageData.damage, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
                     }
                 }
             }
             else
             {
-                if (_targetEnemy != null)
+                if (_targetEnemy != null && _targetingCompo != null) 
                 {
-                    _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    _targetingCompo.OffTargeting();
+                    
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+                    _targetingCompo = null;
                 }
             }
         }
@@ -230,6 +252,8 @@ namespace Code.UnitSystem
                 rotationCompo.SetDir(_targetEnemy.transform.position);
                 
                 attackEvent?.Invoke(_targetEnemy);
+                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                    0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
                 _basicUnit.RemoveCost(25f);   
             }

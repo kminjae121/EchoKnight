@@ -12,8 +12,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         [SerializeField] private float _moveSpeed = 5f;
 
         private DamageData _damageData;
-        
-        [SerializeField] private float _atkDamage;
 
         [SerializeField] private AttackDataSO atkData;
 
@@ -23,13 +21,17 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         private void Awake()
         {
-            _damageData.damage = _atkDamage;
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
         }
 
         private void FixedUpdate()
         {
             transform.position += transform.forward * _moveSpeed * Time.fixedDeltaTime;
+        }
+
+        public void SetDamageData(DamageData damageData)
+        {
+            _damageData = damageData;
         }
 
         public void SetTarget(GameObject target)

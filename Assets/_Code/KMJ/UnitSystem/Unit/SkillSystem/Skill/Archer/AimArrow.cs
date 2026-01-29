@@ -59,7 +59,9 @@ using UnityEngine;
             pos.y += 0.5f;
         
             GameObject shootItem = Instantiate(_ArrowPrefab, pos, Quaternion.identity);
-            shootItem.GetComponent<ShootItem>().SetTarget(_target);
+            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
+            shootItemCompo.SetTarget(_target);
+            shootItemCompo.SetDamageData(_damageData);
             Vector3 slashRot = transform.rotation.eulerAngles;
         
             shootItem.transform.rotation = Quaternion.Euler(slashRot);

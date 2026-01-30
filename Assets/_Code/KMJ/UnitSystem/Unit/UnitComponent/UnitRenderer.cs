@@ -15,9 +15,6 @@ namespace Code.UnitSystem
         public void Initialize(Unit owner)
         {
             _owner = owner;
-            
-            if(thisAnimator.runtimeAnimatorController == null)
-                thisAnimator.runtimeAnimatorController = _owner.unitSO.animationController;
         }
 
     }

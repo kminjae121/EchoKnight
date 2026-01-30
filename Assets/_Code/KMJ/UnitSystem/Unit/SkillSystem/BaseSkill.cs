@@ -237,7 +237,9 @@ namespace Code.UnitSystem.SkillSystem
                 skillEvent?.Invoke(_targetEnemy);
                     
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true));
-                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                _targetingCompo.OffTargeting();
+                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                    0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
                 _targetEnemy = null;
                 _unit.gaugeManager.UseSkill(useSkillPoint);
             }

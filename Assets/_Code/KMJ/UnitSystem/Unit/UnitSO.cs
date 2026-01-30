@@ -9,6 +9,16 @@ public enum EntityType
     LongRanger,
     MeleeAttacker,
 }
+
+public enum UnitType
+{
+    None,
+    Archer,
+    Bandlt,
+    Knight,
+    Magician,
+}
+
 [CreateAssetMenu (fileName = "Unit", menuName = "UnitSO")]
 public class UnitSO : ScriptableObject
 {
@@ -23,9 +33,6 @@ public class UnitSO : ScriptableObject
     
     [Header("OwnUnitCards")]
     public List<SkillSO> unitSkillCards;
-
-    [Header("CharacterAnimationController")]
-    public RuntimeAnimatorController animationController;
 
     [Space(4)]
     [Header("CharacterOwnCost")]
@@ -47,6 +54,8 @@ public class UnitSO : ScriptableObject
 
     [Header("UnitType")]
     public EntityType entityType = EntityType.MeleeAttacker;
+
+    public UnitType unitType = UnitType.None;
 
 
     private void OnValidate()

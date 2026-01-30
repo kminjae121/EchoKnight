@@ -26,6 +26,13 @@ namespace Code.Expedition
             InitializeLogics();
         }
 
+        [ContextMenu("Force Start Expedition")]
+        public void ForceStartExpedition()
+        {
+            Debug.Log("강제로 원정을 시작합니다...");
+            StartNewExpedition();
+        }
+        
         private void InitializeLogics()
         {
             _nodeLogics = new Dictionary<ExpeditionNodeType, INodeLogic>

@@ -57,13 +57,22 @@ namespace _Code.KMJ.Cam
 
             camForward.y = 0f;
             camRight.y   = 0f;
-
+            
             camForward.Normalize();
             camRight.Normalize();
             
             Vector3 moveDir = (camRight * inputReader.MovementKey.x + camForward * inputReader.MovementKey.y);
-            
+
             if (moveDir.sqrMagnitude > 1f) moveDir.Normalize();
+
+            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.FieldOfView <= 85)
+            {
+                battleCam.Lens.FieldOfView += 100 * Time.deltaTime;
+            }
+            else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.FieldOfView >= 45)
+            {
+                battleCam.Lens.FieldOfView -= 100 * Time.deltaTime;
+            }
 
             if (inputReader.MovementKey.x != 0 || inputReader.MovementKey.y != 0)
             {

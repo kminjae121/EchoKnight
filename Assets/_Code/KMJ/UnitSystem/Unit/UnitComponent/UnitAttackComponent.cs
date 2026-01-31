@@ -128,6 +128,11 @@ namespace Code.UnitSystem
 
         private void FindEnemyIsThere(GameObject enemy)
         {
+            if (_targetEnemy != null && _targetEnemy != enemy)
+            {
+                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+            }
+            
             _targetEnemy = null;
             _verticalCollider.ToList().ForEach(obj =>
             {

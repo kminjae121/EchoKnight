@@ -43,7 +43,7 @@ namespace Code.UnitSystem.SkillSystem
 
         private SetUnitCamera unitCam;
         
-        private BasicUnit _unit;
+        private BasicUnit _unit;    
 
         [SerializeField] private bool ownSkill = false;
         

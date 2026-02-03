@@ -157,7 +157,7 @@ namespace Code.UnitSystem
             {
                 if (_basicUnit.isMyTurn)
                 {
-                    if (_basicUnit.GetCurrentCost() - 25 < 0)
+                    if (_basicUnit.GetCurrentCost() - 15 < 0)
                     {
                         Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
                         return;
@@ -260,7 +260,7 @@ namespace Code.UnitSystem
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
                     0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
-                _basicUnit.RemoveCost(25f);   
+                _basicUnit.RemoveCost(15f);   
             }
         }
 

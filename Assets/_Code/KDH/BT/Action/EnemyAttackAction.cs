@@ -36,6 +36,7 @@ public partial class EnemyAttackAction : Action
         _attacker.attackEndEvent.AddListener(OnDone);
         
         if (_rotator != null) _rotator.SetDir(Target.Value.transform.position);
+        Debug.Log("공격!");
         _attacker.attackEvent?.Invoke(Target.Value);
 
         _isAttacking = true;

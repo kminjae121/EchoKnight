@@ -68,7 +68,7 @@ namespace Code.UI
             foreach (var unit in _partyUnits)
                 unitStorage.units.Add(unit.UnitInfo);
             
-            SceneManager.LoadScene("KMJ");
+            SceneManager.LoadScene("ExpeditionMapScene");
         }
     }
 }

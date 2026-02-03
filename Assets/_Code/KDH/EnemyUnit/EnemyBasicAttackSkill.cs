@@ -19,6 +19,8 @@ namespace Code.UnitSystem.SkillSystem
         
         private readonly int _animIDAttack = Animator.StringToHash("Attack");
 
+        private Coroutine _safetyCoroutine; // 세이프티 코루틴
+
         public override void InitializeSkill()
         {
             base.InitializeSkill();
@@ -42,7 +44,7 @@ namespace Code.UnitSystem.SkillSystem
                     _damageData.damage = _currentAtkDamage;
                 }
             }
-            
+
             if (triggerCompo != null)
             {
                 triggerCompo.OnAttackTrigger += ApplyDamageToTarget;
@@ -75,9 +77,15 @@ namespace Code.UnitSystem.SkillSystem
             _currentAtkDamage += currentValue;
             _damageData.damage = _currentAtkDamage;
         }
-        
+
         private void ExecuteAttackSequence(GameObject target)
         {
+            Debug.Log($"[Check] 스킬 실행 명령 도착! 타겟: {target?.name}");
+
+            // [안전장치] 3초 뒤에 강제 종료하는 타이머 시작
+            if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
+            _safetyCoroutine = StartCoroutine(ForceEndTimer(3.0f));
+
             if (_animator != null)
             {
                 _animator.SetBool(_animIDAttack, true);
@@ -90,28 +98,42 @@ namespace Code.UnitSystem.SkillSystem
 
         public void ApplyDamageToTarget()
         {
+            if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
+
             if (_animator != null)
             {
                 _animator.SetBool(_animIDAttack, false);
             }
 
-            if (_targetEnemy == null) return;
-
-            Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f, 0.25f));
-            if (impulseSource != null) 
-                impulseSource.GenerateImpulse(0.6f);
-
-            var targetHealth = _targetEnemy.GetComponent<EntityHealth>();
-            if (targetHealth != null)
+            if (_targetEnemy != null) 
             {
-                targetHealth.ApplyDamage(_damageData, 
-                    _targetEnemy.transform.position, 
-                    transform.position, 
-                    attackData, 
-                    _unitBase);
+                Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f, 0.25f));
+                if (impulseSource != null) 
+                    impulseSource.GenerateImpulse(0.6f);
+
+                var targetHealth = _targetEnemy.GetComponent<EntityHealth>();
+                if (targetHealth != null)
+                {
+                    targetHealth.ApplyDamage(_damageData, 
+                        _targetEnemy.transform.position, 
+                        transform.position, 
+                        attackData, 
+                        _unitBase);
+                }
             }
 
-            skillEnd();
+            Debug.Log("[Check] 데미지 적용 완료. 스킬 종료 이벤트 발송.");
+            
+            skillEnd(); 
+            
+            skillEndEvent?.Invoke(); 
+        }
+        
+        private IEnumerator ForceEndTimer(float time)
+        {
+            yield return new WaitForSeconds(time);
+            Debug.LogWarning("[Warning] 애니메이션 이벤트 미발생 -> 강제 종료 및 턴 넘김");
+            ApplyDamageToTarget(); 
         }
     }
 }

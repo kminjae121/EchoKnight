@@ -479,6 +479,7 @@ GameObject:
   - component: {fileID: 1798265536912207056}
   - component: {fileID: 5212786461650031543}
   - component: {fileID: 7088170391623219240}
+  - component: {fileID: 3592431627684785612}
   m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
@@ -701,6 +702,40 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 13febbdf3a5be0f4492eca9203e8e1bb, type: 2}
   currentSkillCost: 10
   storageSO: {fileID: 0}
+--- !u!114 &3592431627684785612
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1506547141851097540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2af12f64ded84ec3aa038eebe0a59ed0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _verticalCheckBoxSize: {x: 1, y: 1, z: 1}
+  _horizontalCheckBoxSize: {x: 1, y: 1, z: 1}
+  _whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 128
+  isMove: 0
+  attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
+  <skillImage>k__BackingField: {fileID: 0}
+  damage: 0
+  useSkillPoint: 0
+  ownSkill: 0
+  isCanUseSkill: 0
+  skillStartEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  skillEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
 --- !u!1 &1532530410968089591
 GameObject:
   m_ObjectHideFlags: 0
@@ -1824,7 +1859,6 @@ GameObject:
   - component: {fileID: 7841771292029286234}
   - component: {fileID: 8503053869134199577}
   - component: {fileID: 3416386629718883097}
-  - component: {fileID: 1544978307776043590}
   m_Layer: 8
   m_Name: Render
   m_TagString: Untagged
@@ -1896,40 +1930,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _animator: {fileID: 7841771292029286234}
---- !u!114 &1544978307776043590
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4123982208127572328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2af12f64ded84ec3aa038eebe0a59ed0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 1, y: 1, z: 1}
-  _horizontalCheckBoxSize: {x: 1, y: 1, z: 1}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 128
-  isMove: 0
-  attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
-  <skillImage>k__BackingField: {fileID: 0}
-  damage: 0
-  useSkillPoint: 0
-  ownSkill: 0
-  isCanUseSkill: 0
-  skillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  skillEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  skillEndEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
 --- !u!1 &4221341067046482522
 GameObject:
   m_ObjectHideFlags: 0

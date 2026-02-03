@@ -19,7 +19,7 @@ MonoBehaviour:
   - rid: 9157396298433823326
   - rid: 9157396298433823339
   - rid: 9157396298433823386
-  m_VersionTimestamp: 639057386639648780
+  m_VersionTimestamp: 639057402387362420
   m_SerializedVersion: 1
   m_DebugInfo: {fileID: 5306896201340797729}
   m_RuntimeGraph: {fileID: 2265891440868457912}
@@ -499,14 +499,14 @@ MonoBehaviour:
           rid: 9157396298433823268
         BlackboardGroupReferences: []
         Root:
-          rid: 9157396486568018612
+          rid: 9157396486568018658
         m_ActiveNodes: []
         m_NodesToTick: []
         m_NodesToEnd:
           rid: 9157396298433823270
         m_EndedNodes:
           rid: 9157396298433823271
-        m_VersionTimestamp: 639057386639648780
+        m_VersionTimestamp: 639057402387362420
     - rid: 9157396298433823268
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -523,19 +523,11 @@ MonoBehaviour:
       type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         m_Variables:
-        - rid: 9157396486568018614
-        - rid: 9157396486568018615
-        - rid: 9157396486568018616
-        - rid: 9157396486568018617
-    - rid: 9157396486568018580
-      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: BasicAttackSkill
-    - rid: 9157396486568018612
+        - rid: 9157396486568018660
+        - rid: 9157396486568018661
+        - rid: 9157396486568018662
+        - rid: 9157396486568018663
+    - rid: 9157396486568018658
       type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -546,10 +538,10 @@ MonoBehaviour:
         m_Parent:
           rid: -2
         m_Child:
-          rid: 9157396486568018613
+          rid: 9157396486568018659
         Repeat: 0
         AllowMultipleRepeatsPerTick: 0
-    - rid: 9157396486568018613
+    - rid: 9157396486568018659
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -558,10 +550,10 @@ MonoBehaviour:
         Graph:
           rid: 9157396298433823267
         m_Parent:
-          rid: 9157396486568018612
+          rid: 9157396486568018658
         m_Children:
-        - rid: 9157396486568018618
-    - rid: 9157396486568018614
+        - rid: 9157396486568018664
+    - rid: 9157396486568018660
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -569,7 +561,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 0}
-    - rid: 9157396486568018615
+    - rid: 9157396486568018661
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -577,7 +569,7 @@ MonoBehaviour:
           m_Value1: 6107562326710686387
         Name: Target
         m_Value: {fileID: 0}
-    - rid: 9157396486568018616
+    - rid: 9157396486568018662
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -585,7 +577,7 @@ MonoBehaviour:
           m_Value1: 3500521484963869510
         Name: Agent
         m_Value: {fileID: 0}
-    - rid: 9157396486568018617
+    - rid: 9157396486568018663
       type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -593,7 +585,7 @@ MonoBehaviour:
           m_Value1: 2780924914002514671
         Name: AttackRange
         m_Value: 0
-    - rid: 9157396486568018618
+    - rid: 9157396486568018664
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -602,11 +594,11 @@ MonoBehaviour:
         Graph:
           rid: 9157396298433823267
         m_Parent:
-          rid: 9157396486568018613
+          rid: 9157396486568018659
         m_Children:
-        - rid: 9157396486568018619
-        - rid: 9157396486568018620
-    - rid: 9157396486568018619
+        - rid: 9157396486568018665
+        - rid: 9157396486568018666
+    - rid: 9157396486568018665
       type: {class: ConditionalGuardAction, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -615,11 +607,11 @@ MonoBehaviour:
         Graph:
           rid: 9157396298433823267
         m_Parent:
-          rid: 9157396486568018618
+          rid: 9157396486568018664
         m_Conditions:
-        - rid: 9157396486568018621
+        - rid: 9157396486568018667
         m_RequiresAllConditions: 0
-    - rid: 9157396486568018620
+    - rid: 9157396486568018666
       type: {class: EnemyAttackAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -628,24 +620,32 @@ MonoBehaviour:
         Graph:
           rid: 9157396298433823267
         m_Parent:
-          rid: 9157396486568018618
+          rid: 9157396486568018664
         Agent:
-          rid: 9157396486568018616
+          rid: 9157396486568018662
         Target:
-          rid: 9157396486568018615
+          rid: 9157396486568018661
         SkillName:
-          rid: 9157396486568018580
-    - rid: 9157396486568018621
+          rid: 9157396486568018668
+    - rid: 9157396486568018667
       type: {class: IsTargetInRangeCondition, ns: , asm: Assembly-CSharp}
       data:
         Graph:
           rid: 9157396298433823267
         Target:
-          rid: 9157396486568018615
+          rid: 9157396486568018661
         Range:
-          rid: 9157396486568018617
+          rid: 9157396486568018663
         Agent:
-          rid: 9157396486568018616
+          rid: 9157396486568018662
+    - rid: 9157396486568018668
+      type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: BasicAttackSkill
 --- !u!114 &5306896201340797729
 MonoBehaviour:
   m_ObjectHideFlags: 0

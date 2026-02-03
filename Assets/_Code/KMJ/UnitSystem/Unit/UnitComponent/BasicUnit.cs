@@ -6,6 +6,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
 using Code.UI;
+using Code.UnitManaging;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using GameEventChannel;
@@ -31,13 +32,13 @@ namespace  UnitSystem
         
         public UnitAnimationTrigger triggerCompo { get; private set; }
 
-        public int maxUsingCost = 100;
+        //public int maxUsingCost = 100;
 
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
 
-        public float CurrentCost { get; private set; } = 100;
+        //public static float CurrentCost { get; private set; } = 100;
         
 
         [SerializeField] private Image unitImage;
@@ -66,8 +67,6 @@ namespace  UnitSystem
 
             triggerCompo.OnDeadEvent += LastDie;
 
-            CurrentCost = 100;
-
             //movementCompo._currentMapTile = _startTile;
         }
 
@@ -80,9 +79,9 @@ namespace  UnitSystem
         public override void OnTurnStart()
         {
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
-            CurrentCost = maxUsingCost;
+            OwnUnitManage.Instance.currentCost += 20;
 
-            float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
 
             int idx = -1;
 
@@ -171,11 +170,11 @@ namespace  UnitSystem
 
         public bool GetCost(int cost)
         {
-            if (CurrentCost >= maxUsingCost || CurrentCost + cost >= maxUsingCost)
+            if (OwnUnitManage.Instance.currentCost >= 100 || OwnUnitManage.Instance.currentCost + cost >= 100)
                 return false;
             
-            CurrentCost += cost;
-            float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+            OwnUnitManage.Instance.currentCost += cost;
+            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
             
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
             return true;
@@ -184,20 +183,20 @@ namespace  UnitSystem
 
         public float GetCurrentCost()
         {
-            return CurrentCost;
+            return OwnUnitManage.Instance.currentCost;
         }
 
         public void RemoveCost(float cost)
         {
-            CurrentCost -= cost;
+            OwnUnitManage.Instance.currentCost -= cost;
             
-            if (CurrentCost <= 0)
+            if (OwnUnitManage.Instance.currentCost <= 0)
             {
-                CurrentCost = 0;
+                OwnUnitManage.Instance.currentCost = 0;
             }
             //코스트 줄어드는중
             
-            float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
             
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
         }

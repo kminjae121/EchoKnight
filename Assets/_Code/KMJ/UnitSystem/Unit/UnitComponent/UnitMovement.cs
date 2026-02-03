@@ -195,7 +195,7 @@ namespace Code.UnitSystem
                 animationCompo.PlaySelectAnimation("MOVE");   
                 while (Vector3.Distance(_unit.transform.position, tile.transform.position) > 0.01f)
                 {
-                    _unit.RemoveCost(0.07f);
+                    _unit.RemoveCost(0.03f);
                     _unit.transform.position = Vector3.MoveTowards(
                         _unit.transform.position,
                         tile.transform.position,

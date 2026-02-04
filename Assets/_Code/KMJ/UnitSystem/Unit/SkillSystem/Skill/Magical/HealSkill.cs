@@ -7,7 +7,7 @@ using UnitSystem;
 using UnityEngine;
 
 
-    public class HealSkill : BaseSkill
+    public class HealSkill : BasicUnitSkill
     {
         [SerializeField] private GameObject healPrefab;
         

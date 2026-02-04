@@ -65,7 +65,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                     _visualPrefabs.transform.position = tileTrm.transform.position;
                 }   
             }
-            else if(!_isAct)
+            else if(_isAct == false)
             {
                 _visualPrefabs.SetActive(false);
             }

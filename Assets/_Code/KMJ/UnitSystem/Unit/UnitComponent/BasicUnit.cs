@@ -160,7 +160,7 @@ namespace  UnitSystem
                 else if (enemy != null)
                 {
                     _targetEnemy = enemy;
-                    if (_targetEnemy != null && _targetingCompo == null)
+                    if (_targetEnemy != null)
                     {
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         

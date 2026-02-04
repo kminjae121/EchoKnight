@@ -201,8 +201,10 @@ namespace Code.UnitSystem
                 {
                     FindEnemyIsThere(enemy);
                     
+                    
                     if (_targetEnemy != null && _targetingCompo == null)
                     {
+                        rotationCompo.SetDir(_targetEnemy.transform.position);
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();

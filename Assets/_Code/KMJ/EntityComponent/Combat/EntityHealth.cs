@@ -114,6 +114,7 @@ namespace Code.EntityComponent
                
                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
            }
+           _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
            
            if (currentHealth <= 0)
            {
@@ -121,7 +122,6 @@ namespace Code.EntityComponent
                return;
            }
 
-           _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
         }
 
     }

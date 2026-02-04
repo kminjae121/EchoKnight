@@ -1,63 +1,107 @@
+using System;
 using System.Collections;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Interfaces;
 using Code.UnitSystem;
 using UnitSystem;
 using UnityEngine;
 using UnityEngine.Events;
 using Unit = Code.UnitSystem.Unit;
+using Random = UnityEngine.Random;
 
 namespace EnemySystem
 {
     public class EnemyGridMovingSystem : MonoBehaviour
     {
-        private bool _isMoveToTarget = false;
+        [Header("References")]
         [SerializeField] private UnitRotation rotationCompo;
         [SerializeField] private UnitAnimation animationCompo;
-
-        [SerializeField] private LayerMask whatIsGround;
-
         [SerializeField] private Transform owner;
+
+        [Header("Settings")]
+        [SerializeField] private LayerMask whatIsGround;
 
         public UnityEvent OnMoveEndEvent = new UnityEvent();
 
         private GameObject _ownTrm;
+        private Animator _animator;
         
+        private readonly int _animIDMove = Animator.StringToHash("Move");
+
         private void Awake()
         {
             if (OnMoveEndEvent == null)
                 OnMoveEndEvent = new UnityEvent();
         }
+
+        private void Start()
+        {
+            _animator = GetComponentInChildren<Animator>();
+        }
     
         public void Initialize(Unit owner)
         {
-            
         }
         
+        private void SetMoveAnim(bool isMoving)
+        {
+            if (_animator != null)
+            {
+                _animator.SetBool(_animIDMove, isMoving);
+            }
+        }
+
         public void Move()
         {
             MoveToRandomGrid();
         }
 
-
         private void MoveToRandomGrid()
         {
             int randomDir = Random.Range(1, 5);
-            
             Moveing(randomDir);
         }
         
         public void MoveTowardsTarget(Vector3 targetPos)
         {
             Vector3 dir = (targetPos - transform.position).normalized;
-            Vector3 step = Vector3.zero;
+            Vector3 step = CalculateStep(dir);
             
-            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
-                step = new Vector3(Mathf.Sign(dir.x), 0, 0);
-            else
-                step = new Vector3(0, 0, Mathf.Sign(dir.z));
+            SetMoveAnim(true);
+            StartCoroutine(MoveRoutine(step, true, true, (success) => SetMoveAnim(false)));
+        }
 
-            StartCoroutine(Move(step));
+        public void RetreatFromTarget(Vector3 targetPos, int steps)
+        {
+            StartCoroutine(RetreatSequence(targetPos, steps));
+        }
+
+        private IEnumerator RetreatSequence(Vector3 targetPos, int steps)
+        {
+            SetMoveAnim(true); 
+
+            for (int i = 0; i < steps; i++)
+            {
+                Vector3 dir = (transform.position - targetPos).normalized;
+                Vector3 step = CalculateStep(dir);
+
+                bool moveSuccess = false;
+
+                yield return StartCoroutine(MoveRoutine(step, false, false, (success) => moveSuccess = success));
+
+                if (!moveSuccess) break;
+            }
+
+            SetMoveAnim(false);
+            
+            OnMoveEndEvent?.Invoke();
+        }
+
+        private Vector3 CalculateStep(Vector3 dir)
+        {
+            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
+                return new Vector3(Mathf.Sign(dir.x), 0, 0);
+            else
+                return new Vector3(0, 0, Mathf.Sign(dir.z));
         }
 
         private void Moveing(int dir)
@@ -77,13 +121,15 @@ namespace EnemySystem
             };
 
             if (step == Vector3.zero) return;
-            
-            StartCoroutine(Move(step));
+
+            SetMoveAnim(true);
+            StartCoroutine(MoveRoutine(step, true, true, (success) => SetMoveAnim(false)));
         }
 
-        private IEnumerator Move(Vector3 step)
+        private IEnumerator MoveRoutine(Vector3 step, bool fireEvent, bool shouldRotate, Action<bool> onComplete = null)
         {
             Vector3 target = owner.position + step;
+            bool isSuccess = false;
             
             if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, whatIsGround))
             {
@@ -91,7 +137,8 @@ namespace EnemySystem
                 {
                     if (checkTile.HasObstacle)
                     {
-                        OnMoveEndEvent?.Invoke();
+                        if (fireEvent) OnMoveEndEvent?.Invoke();
+                        onComplete?.Invoke(false);
                         yield break; 
                     }
                 }
@@ -101,7 +148,9 @@ namespace EnemySystem
                     _ownTrm.GetComponent<IMapTile>().SetObstacle(false);
                 }
             
-                rotationCompo.SetDir(target);
+                if (shouldRotate && rotationCompo != null)
+                    rotationCompo.SetDir(target);
+
                 while ((owner.position - target).sqrMagnitude > 0.0001f)
                 {
                     owner.position = Vector3.MoveTowards(owner.position, target, 2 * Time.deltaTime);
@@ -115,13 +164,11 @@ namespace EnemySystem
                     _ownTrm = hit.transform.gameObject;
                 }
     
-                OnMoveEndEvent?.Invoke();   
+                isSuccess = true;
             }
-            else
-            {
-                OnMoveEndEvent?.Invoke();
-                yield break; 
-            }
+            
+            if (fireEvent) OnMoveEndEvent?.Invoke();
+            onComplete?.Invoke(isSuccess);
         }
     }
 }

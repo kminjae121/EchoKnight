@@ -26,6 +26,8 @@ namespace Input
         public event Action OnClickEvent;
 
         public Vector2 MovementKey { get; private set; }
+        
+        public Vector2 MouseUpDownValue { get; private set; }
         public event Action OnSelectUnitEvent;
         
         private Vector3 _gridPosition;
@@ -141,6 +143,11 @@ namespace Input
         {
             Vector2 movementKey = context.ReadValue<Vector2>();
             MovementKey = movementKey;
+        }
+
+        public void OnMouseUpDown(InputAction.CallbackContext context)
+        {
+            MouseUpDownValue = context.ReadValue<Vector2>();
         }
 
         public void SetActive(bool isActive)

@@ -32,6 +32,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "MouseUpDown",
+                    "type": "Value",
+                    "id": "b6c6e643-15e0-4646-ab48-b0755cb5d053",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -111,6 +120,17 @@
                     "action": "CamMove",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "3adda94e-f4e1-47d3-80ef-6c1eac273c70",
+                    "path": "<Mouse>/scroll",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseUpDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },

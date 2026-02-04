@@ -5,7 +5,7 @@ using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
 
-    public class FireBallSkill : BaseSkill
+    public class FireBallSkill : BasicUnitSkill
     {
         [SerializeField] private GameObject fireBallPrefab;
         private UnitAnimation animtionCompo;

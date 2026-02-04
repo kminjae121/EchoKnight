@@ -4,10 +4,13 @@ using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.EntityComponent;
 using Code.Managers;
 using Code.UI;
+using Code.UnitManaging;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
+using EnemySystem;
 using GameEventChannel;
 using Input;
 using UnityEngine;
@@ -30,14 +33,12 @@ namespace  UnitSystem
         public UnitAnimation animationComponent { get; private set; }
         
         public UnitAnimationTrigger triggerCompo { get; private set; }
-
-        public int maxUsingCost = 100;
+        
+        public UnitAttackComponent atkCompo { get; private set; }
 
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
-
-        public float CurrentCost { get; private set; } = 100;
         
 
         [SerializeField] private Image unitImage;
@@ -47,6 +48,9 @@ namespace  UnitSystem
         private UnitMovement movementCompo;
 
         public GameObject _startTile = null;
+        
+        private GameObject _targetEnemy = null;
+        private EnemyTargeting _targetingCompo = null;
         
         
         private void Start()
@@ -59,14 +63,13 @@ namespace  UnitSystem
             triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
             //movementCompo = GetUnitCompo<UnitMovement>();
             behaveCompo = GetUnitCompo<UnitBehavaveCompo>();
+            atkCompo = GetUnitCompo<UnitAttackComponent>();
             
             animationComponent = GetUnitCompo<UnitAnimation>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
 
             triggerCompo.OnDeadEvent += LastDie;
-
-            CurrentCost = 100;
 
             //movementCompo._currentMapTile = _startTile;
         }
@@ -80,9 +83,9 @@ namespace  UnitSystem
         public override void OnTurnStart()
         {
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
-            CurrentCost = maxUsingCost;
+            OwnUnitManage.Instance.currentCost += 20;
 
-            float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
 
             int idx = -1;
 
@@ -116,6 +119,7 @@ namespace  UnitSystem
             behaveCompo.ResetTile();
             base.OnTurnEnd();
         }
+        
 
         public void StartWalk(UnitSetMoveEvent evt)
         {
@@ -137,6 +141,48 @@ namespace  UnitSystem
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
+            }
+
+            if (isMyTurn && !atkCompo._isAct)
+            {
+                GameObject enemy = inputSO.GetEnemy();
+
+                if(enemy == null && _targetEnemy != null)
+                {
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    
+                    _targetingCompo.OffTargeting();
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,0));
+
+                    _targetingCompo = null;
+                }
+                else if (enemy != null)
+                {
+                    _targetEnemy = enemy;
+                    if (_targetEnemy != null && _targetingCompo == null)
+                    {
+                        EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
+                        
+                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                        _targetingCompo.Targeting();
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,health.CurrentHealth,health.MaxHealth, 
+                            0, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,3));
+                    }
+                }
+            }
+            else
+            {
+                if (_targetEnemy != null && _targetingCompo != null) 
+                {
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    _targetingCompo.OffTargeting();
+                    
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,0));
+                    _targetingCompo = null;
+                }
             }
         }
 
@@ -171,11 +217,11 @@ namespace  UnitSystem
 
         public bool GetCost(int cost)
         {
-            if (CurrentCost >= maxUsingCost || CurrentCost + cost >= maxUsingCost)
+            if (OwnUnitManage.Instance.currentCost >= 100 || OwnUnitManage.Instance.currentCost + cost >= 100)
                 return false;
             
-            CurrentCost += cost;
-            float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+            OwnUnitManage.Instance.currentCost += cost;
+            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
             
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
             return true;
@@ -184,20 +230,20 @@ namespace  UnitSystem
 
         public float GetCurrentCost()
         {
-            return CurrentCost;
+            return OwnUnitManage.Instance.currentCost;
         }
 
         public void RemoveCost(float cost)
         {
-            CurrentCost -= cost;
+            OwnUnitManage.Instance.currentCost -= cost;
             
-            if (CurrentCost <= 0)
+            if (OwnUnitManage.Instance.currentCost <= 0)
             {
-                CurrentCost = 0;
+                OwnUnitManage.Instance.currentCost = 0;
             }
             //코스트 줄어드는중
             
-            float value = Mathf.Clamp01(CurrentCost / maxUsingCost);
+            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
             
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
         }

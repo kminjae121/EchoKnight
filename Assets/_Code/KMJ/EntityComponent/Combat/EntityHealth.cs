@@ -102,7 +102,7 @@ namespace Code.EntityComponent
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
             int typeHash = damageData.isCritical ? criticalText.nameHash : normalText.nameHash;
-            Vector3 position = hitPoint + new Vector3(0, 0.3f);
+            Vector3 position = hitPoint + new Vector3(0, 1.2f);
             PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damageData.damage.ToString(), typeHash
                 , position, 0.5f);  
             

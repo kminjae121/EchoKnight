@@ -15,7 +15,7 @@ namespace Code.UI
 
         public void ReturnHome()
         {
-            SceneManager.LoadScene("Lobby");
+            SceneManager.LoadScene("ExpeditionMapScene");
         }
     }
 }

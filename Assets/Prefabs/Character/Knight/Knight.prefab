@@ -651,7 +651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45deec369a844ea6b4a5206bd9235956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 2, y: 1, z: 2}
+  _verticalCheckBoxSize: {x: 4, y: 1, z: 4}
   _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
   _whatIsTarget:
     serializedVersion: 2
@@ -1599,7 +1599,6 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  maxUsingCost: 100
   unitImage: {fileID: 0}
   _startTile: {fileID: 0}
 --- !u!114 &5629794309468085115
@@ -3605,7 +3604,7 @@ MonoBehaviour:
   _skillList:
   - {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
   currentSkillCost: 99999
-  storageSO: {fileID: 0}
+  storageSO: {fileID: 11400000, guid: 07500c7574825104b8dcfe1ae8f8de0a, type: 2}
 --- !u!114 &6919555147147387208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3619,7 +3618,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _verticalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _horizontalCheckBoxSize: {x: 2, y: 1, z: 2}
+  _horizontalCheckBoxSize: {x: 3, y: 1, z: 3}
   _whatIsTarget:
     serializedVersion: 2
     m_Bits: 320
@@ -3628,8 +3627,8 @@ MonoBehaviour:
   <skillImage>k__BackingField: {fileID: 21300000, guid: 18b2b41b127ec2e48b64f05a7abafc11, type: 3}
   damage: 8
   useSkillPoint: 20
-  isCanUseSkill: 0
   ownSkill: 0
+  isCanUseSkill: 0
   skillStartEvent:
     m_PersistentCalls:
       m_Calls:

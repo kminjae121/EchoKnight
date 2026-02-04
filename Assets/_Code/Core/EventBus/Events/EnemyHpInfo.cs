@@ -5,6 +5,10 @@ namespace Code.Core.Events.Bus
     public struct EnemyHpInfo : IEvent
     {
         public bool isActive;
+
+        public bool isAttack;
+
+        public float atkDamage;
         
         public float hp;
 
@@ -18,7 +22,8 @@ namespace Code.Core.Events.Bus
 
         public Sprite sprite;
         
-        public EnemyHpInfo(float damageInfo, float hp,float maxHp, float damage , bool isActive , Sprite sprite)
+        public EnemyHpInfo(float damageInfo, float hp,float maxHp, float damage , bool isActive , Sprite sprite
+            , bool isAttack = true, float atkDamage = 0)
         {
             this.plusDamage = damageInfo;
             this.isActive = isActive;
@@ -26,6 +31,8 @@ namespace Code.Core.Events.Bus
             this.damage = damage;
             this.maxHp = maxHp;
             this.sprite = sprite;
+            this.isAttack = isAttack;
+            this.atkDamage = atkDamage;
             
             if (maxHp <= 0f)
             {

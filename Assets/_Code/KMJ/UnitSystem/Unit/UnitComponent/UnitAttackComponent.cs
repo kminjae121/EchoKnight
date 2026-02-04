@@ -33,7 +33,6 @@ namespace Code.UnitSystem
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
 
-        private EnemyTargeting _targetingCompo = null;
 
         private float addDamage = 0;
 
@@ -45,6 +44,7 @@ namespace Code.UnitSystem
         private BasicUnit _basicUnit;
 
         private GameObject _targetEnemy = null;
+        private EnemyTargeting _targetingCompo = null;
 
         private bool isAttack = false;
 
@@ -128,6 +128,11 @@ namespace Code.UnitSystem
 
         private void FindEnemyIsThere(GameObject enemy)
         {
+            if (_targetEnemy != null && _targetEnemy != enemy)
+            {
+                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+            }
+            
             _targetEnemy = null;
             _verticalCollider.ToList().ForEach(obj =>
             {
@@ -152,7 +157,7 @@ namespace Code.UnitSystem
             {
                 if (_basicUnit.isMyTurn)
                 {
-                    if (_basicUnit.GetCurrentCost() - 25 < 0)
+                    if (_basicUnit.GetCurrentCost() - 15 < 0)
                     {
                         Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
                         return;
@@ -179,6 +184,7 @@ namespace Code.UnitSystem
         {
             if (_basicUnit.isMyTurn && _isAct)
             {
+                _basicUnit.behaveCompo.ResetTile();
                 GameObject enemy = _inputReader.GetEnemy();
 
                 if(enemy == null && _targetEnemy != null)
@@ -187,7 +193,7 @@ namespace Code.UnitSystem
                     
                     _targetingCompo.OffTargeting();
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
 
                     _targetingCompo = null;
                 }
@@ -203,7 +209,7 @@ namespace Code.UnitSystem
                         _targetingCompo.Targeting();
                         
                         Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage,health.CurrentHealth, 
-                            health.MaxHealth,_damageData.damage, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+                            health.MaxHealth,_damageData.damage, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                     }
                 }
             }
@@ -215,7 +221,7 @@ namespace Code.UnitSystem
                     _targetingCompo.OffTargeting();
                     
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                     _targetingCompo = null;
                 }
             }
@@ -253,9 +259,9 @@ namespace Code.UnitSystem
                 
                 attackEvent?.Invoke(_targetEnemy);
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                    0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage));
+                    0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
-                _basicUnit.RemoveCost(25f);   
+                _basicUnit.RemoveCost(15f);   
             }
         }
 

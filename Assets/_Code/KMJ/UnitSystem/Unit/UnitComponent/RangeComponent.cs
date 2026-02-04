@@ -25,7 +25,7 @@ namespace Code.UnitSystem
 
         protected Action ResetTileEvent;
         
-        protected bool _isAct = false;
+        public bool _isAct { get; set; } = false;
 
         public bool isMove = false;
 
@@ -95,6 +95,7 @@ namespace Code.UnitSystem
                 }
             });
             
+            _isAct = false;
  
             _horizontalCollider.ToList().Clear();
             _verticalCollider.ToList().Clear();
@@ -104,7 +105,6 @@ namespace Code.UnitSystem
                 _verticalCollider = null;
             }
             ResetTileEvent?.Invoke();
-            _isAct = false;
         }
 
         public void ReCheckInRange()

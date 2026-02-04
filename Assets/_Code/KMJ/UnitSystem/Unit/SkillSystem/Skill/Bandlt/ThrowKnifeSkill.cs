@@ -7,7 +7,7 @@ using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-    public class ThrowKnifeSkill : BaseSkill
+    public class ThrowKnifeSkill : BasicUnitSkill
     {
         [SerializeField] private GameObject _knifePrefab;
         

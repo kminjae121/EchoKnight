@@ -29,7 +29,7 @@ public class UnitSO : ScriptableObject
     public Sprite UnitImage;
 
     [Header("WhatItIs")] 
-    public UnitInfoSO UnitInfo;
+    public UnitSpawnSO unitSpawn;
     
     [Header("OwnUnitCards")]
     public List<SkillSO> unitSkillCards;

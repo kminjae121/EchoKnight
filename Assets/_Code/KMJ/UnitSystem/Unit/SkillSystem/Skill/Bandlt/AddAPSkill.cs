@@ -6,7 +6,7 @@ using UnitSystem;
 using Unity.VisualScripting;
 using UnityEngine;
 
-    public class AddAPSkill : BaseSkill
+    public class AddAPSkill : BasicUnitSkill
     {
         [SerializeField] private GameObject effectPrefab;
         

@@ -4,11 +4,13 @@ using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.EntityComponent;
 using Code.Managers;
 using Code.UI;
 using Code.UnitManaging;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
+using EnemySystem;
 using GameEventChannel;
 using Input;
 using UnityEngine;
@@ -31,14 +33,12 @@ namespace  UnitSystem
         public UnitAnimation animationComponent { get; private set; }
         
         public UnitAnimationTrigger triggerCompo { get; private set; }
-
-        //public int maxUsingCost = 100;
+        
+        public UnitAttackComponent atkCompo { get; private set; }
 
         private UnitControl _controlUI;
 
         private Button endTurnBtn;
-
-        //public static float CurrentCost { get; private set; } = 100;
         
 
         [SerializeField] private Image unitImage;
@@ -48,6 +48,9 @@ namespace  UnitSystem
         private UnitMovement movementCompo;
 
         public GameObject _startTile = null;
+        
+        private GameObject _targetEnemy = null;
+        private EnemyTargeting _targetingCompo = null;
         
         
         private void Start()
@@ -60,6 +63,7 @@ namespace  UnitSystem
             triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
             //movementCompo = GetUnitCompo<UnitMovement>();
             behaveCompo = GetUnitCompo<UnitBehavaveCompo>();
+            atkCompo = GetUnitCompo<UnitAttackComponent>();
             
             animationComponent = GetUnitCompo<UnitAnimation>();
             
@@ -115,6 +119,7 @@ namespace  UnitSystem
             behaveCompo.ResetTile();
             base.OnTurnEnd();
         }
+        
 
         public void StartWalk(UnitSetMoveEvent evt)
         {
@@ -136,6 +141,48 @@ namespace  UnitSystem
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
+            }
+
+            if (isMyTurn && !atkCompo._isAct)
+            {
+                GameObject enemy = inputSO.GetEnemy();
+
+                if(enemy == null && _targetEnemy != null)
+                {
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    
+                    _targetingCompo.OffTargeting();
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,0));
+
+                    _targetingCompo = null;
+                }
+                else if (enemy != null)
+                {
+                    _targetEnemy = enemy;
+                    if (_targetEnemy != null && _targetingCompo == null)
+                    {
+                        EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
+                        
+                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                        _targetingCompo.Targeting();
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,health.CurrentHealth,health.MaxHealth, 
+                            0, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,3));
+                    }
+                }
+            }
+            else
+            {
+                if (_targetEnemy != null && _targetingCompo != null) 
+                {
+                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    _targetingCompo.OffTargeting();
+                    
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,0));
+                    _targetingCompo = null;
+                }
             }
         }
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Code.Expedition.Data;
 using Code.Expedition.Logic;
 using Code.Core;
@@ -9,8 +10,12 @@ namespace Code.Expedition
 {
     public class ExpeditionManager : MonoSingleton<ExpeditionManager>
     {
-        [SerializeField] private ExpeditionMapGenerator mapGenerator;
+        [Header("Settings")]
         [SerializeField] private string mapSceneName = "ExpeditionMapScene"; 
+        [SerializeField] private float nodeSelectionDelay = 1.5f;
+
+        [Header("Components")]
+        [SerializeField] private ExpeditionMapGenerator mapGenerator;
 
         private RuntimeExpeditionNode _currentNode;
         private Dictionary<ExpeditionNodeType, INodeLogic> _nodeLogics;
@@ -64,12 +69,20 @@ namespace Code.Expedition
             if (nextNode.IsLocked) return;
             if (!_currentNode.NextNodes.Contains(nextNode)) return;
 
+            StartCoroutine(ProcessNodeSelectionRoutine(nextNode));
+        }
+
+        private IEnumerator ProcessNodeSelectionRoutine(RuntimeExpeditionNode nextNode)
+        {
             _currentNode = nextNode;
             _currentNode.SetVisited();
 
             Debug.Log($"노드 선택됨: [{_currentNode.Data.nodeName}]");
-            Bus<ExpeditionNodeSelectEvent>.Raise(new ExpeditionNodeSelectEvent(_currentNode));
             
+            Bus<ExpeditionNodeSelectEvent>.Raise(new ExpeditionNodeSelectEvent(_currentNode));
+
+            yield return new WaitForSeconds(nodeSelectionDelay);
+
             if (_nodeLogics.TryGetValue(_currentNode.Data.nodeType, out INodeLogic logic))
             {
                 logic.Execute(_currentNode);

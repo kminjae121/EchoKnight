@@ -11,9 +11,14 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI damageTxt;
         [SerializeField] private TextMeshProUGUI damageInfoTxt;
         [SerializeField] private Slider hpSlider;
+        [SerializeField] private Slider hpSlider2;
         [SerializeField] private GameObject _enemyInfo;
+        [SerializeField] private GameObject _enemybasicInfo;
+        [SerializeField] private TextMeshProUGUI atkInfo;
+        [SerializeField] private TextMeshProUGUI currentHealhtxt;
 
         [SerializeField] private Image enemyImage;
+        [SerializeField] private Image enemyImage2;
         
         private void Awake()
         {
@@ -25,10 +30,12 @@ namespace Code.UI
             if (evt.isActive == false)
             {
                 _enemyInfo.SetActive(false);    
+                _enemybasicInfo.SetActive(false);
             }
-            else
+            else if(evt.isAttack)
             {
                 _enemyInfo.SetActive(true);
+                _enemybasicInfo.SetActive(false);
 
                 float hp = evt.hp - evt.damage - evt.plusDamage;
 
@@ -43,6 +50,18 @@ namespace Code.UI
                 damageInfoTxt.text = $"{evt.hp} - ({evt.damage} + {evt.plusDamage})";
 
                 hpSlider.value = evt.lastValue;   
+            }
+            else if(!evt.isAttack)
+            {
+                _enemybasicInfo.SetActive(true);
+                _enemyInfo.SetActive(false);
+
+                enemyImage2.sprite = evt.sprite;
+
+                atkInfo.text = $"{evt.atkDamage}";
+                currentHealhtxt.text = $"{evt.hp}";
+
+                hpSlider2.value = evt.lastValue;  
             }
         }
     }

@@ -5,7 +5,7 @@ using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
 
-    public class AimArrow : BaseSkill
+    public class AimArrow : BasicUnitSkill
     {
         [SerializeField] private GameObject _ArrowPrefab;
         

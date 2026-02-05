@@ -1,11 +1,25 @@
 ﻿using System.Collections.Generic;
+using Code.Core.Interfaces;
+using Code.Map;
 using UnityEngine;
 
 namespace _Code.Core.Managers
 {
     public class StageManager : MonoBehaviour
     {
-        [SerializeField] private List<GameObject> enemies;
+        [System.Serializable]
+        public struct EnemySpawnData
+        {
+            public GameObject enemyPrefab;
+            public Vector2Int spawnCoord;
+        }
+
+        [Header("Enemy Spawning")]
+        [SerializeField] private GridMap gridMap;
+        [SerializeField] private List<EnemySpawnData> enemySpawns = new List<EnemySpawnData>();
+
+        [Header("State")]
+        [SerializeField] private List<GameObject> enemies = new List<GameObject>();
 
         public int playerCount;
         public static StageManager Instance { get; private set; }
@@ -22,15 +36,50 @@ namespace _Code.Core.Managers
             }
 
             Instance = this;
+        }
+        
+        private void Start()
+        {
+            if (gridMap == null)
+                gridMap = FindObjectOfType<GridMap>();
 
+            SpawnEnemies();
+        }
+
+        private void SpawnEnemies()
+        {
+            if (gridMap == null) return;
+
+            foreach (var data in enemySpawns)
+            {
+                if (data.enemyPrefab == null) continue;
+
+                IMapTile tile = gridMap.GetTile(data.spawnCoord);
+                if (tile == null)
+                {
+                    Debug.LogWarning($"적 스폰 좌표 {data.spawnCoord}가 유효하지 않습니다.");
+                    continue;
+                }
+
+                Vector3 spawnPos = gridMap.GridToWorldPosition(data.spawnCoord.x, data.spawnCoord.y);
+                GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
+
+                tile.SetObstacle(true);
+
+                enemies.Add(enemyObj);
+            }
         }
 
         public void RemoveEnemy(GameObject enemy)
         {
-            enemies.Remove(enemy);
+            if (enemies.Contains(enemy))
+            {
+                enemies.Remove(enemy);
+            }
+            
             if (enemies.Count == 0)
             {
-                gameClearUI.SetActive(true);
+                if (gameClearUI != null) gameClearUI.SetActive(true);
             }
         }
 
@@ -45,10 +94,9 @@ namespace _Code.Core.Managers
 
             if (playerCount <= 0)
             {
-                gameOverUI.SetActive(true); 
+                if (gameOverUI != null) gameOverUI.SetActive(true); 
             }
         }
-        
 
         private void OnDestroy()
         {

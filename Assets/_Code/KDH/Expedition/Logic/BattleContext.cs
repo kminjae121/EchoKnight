@@ -8,7 +8,7 @@ namespace Code.Expedition.Logic
 {
     public class BattleContext : MonoSingleton<BattleContext>
     {
-        public List<UnitInfoSO> CurrentEnemies { get; private set; }
+        public List<UnitSpawnSO> CurrentEnemies { get; private set; }
         public StageSO CurrentStage { get; private set; }
 
         public void SetContext(BattleNodeSO data)

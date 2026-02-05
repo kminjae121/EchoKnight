@@ -19,7 +19,7 @@ namespace Code.UnitManaging
         
         public float currentCost { get; set; }
 
-        public List<UnitInfoSO> _selectedUnits { get; private set; } = new List<UnitInfoSO>();
+        public List<UnitSpawnSO> _selectedUnits { get; private set; } = new List<UnitSpawnSO>();
 
         private readonly List<Unit> _myOwnUnitList = new List<Unit>();
 

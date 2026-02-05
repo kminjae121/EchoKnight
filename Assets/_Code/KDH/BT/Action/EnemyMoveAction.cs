@@ -1,5 +1,4 @@
 using System;
-using EnemySystem;
 using Unity.Behavior;
 using UnityEngine;
 using Action = Unity.Behavior.Action;
@@ -12,28 +11,25 @@ public partial class EnemyMoveAction : Action
     [SerializeReference] public BlackboardVariable<GameObject> Agent;
     [SerializeReference] public BlackboardVariable<GameObject> Target;
 
-    private EnemyGridMovingSystem _mover;
+    private Enemy _enemy;
     private bool _isMoving;
 
     protected override Status OnStart()
     {
         if (Agent.Value == null || Target.Value == null) return Status.Failure;
         
-        _mover = Agent.Value.GetComponent<EnemyGridMovingSystem>();
-
-        if (_mover == null) 
+        _enemy = Agent.Value.GetComponent<Enemy>();
+        if (_enemy == null) 
         {
+            Debug.LogError($"[EnemyMoveAction] {Agent.Value.name}에 Enemy 컴포넌트 없음.");
             return Status.Failure;
         }
 
-        if (_mover.OnMoveEndEvent == null)
-        {
-            _mover.OnMoveEndEvent = new UnityEngine.Events.UnityEvent();
-        }
-        
-        _mover.MoveTowardsTarget(Target.Value.transform.position);
-        _mover.OnMoveEndEvent.AddListener(OnDone);
         _isMoving = true;
+        
+        // Enemy의 통합 메서드 호출
+        _enemy.MoveToTarget(Target.Value.transform.position, OnDone);
+        
         return Status.Running;
     }
 
@@ -41,11 +37,6 @@ public partial class EnemyMoveAction : Action
     {
         if (_isMoving) return Status.Running;
         return Status.Success;
-    }
-
-    protected override void OnEnd()
-    {
-        if (_mover != null) _mover.OnMoveEndEvent.RemoveListener(OnDone);
     }
 
     private void OnDone() { _isMoving = false; }

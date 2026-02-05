@@ -23,9 +23,6 @@ namespace EnemySystem
         public UnityEvent OnMoveEndEvent = new UnityEvent();
 
         private GameObject _ownTrm;
-        private Animator _animator;
-        
-        private readonly int _animIDMove = Animator.StringToHash("Move");
 
         private void Awake()
         {
@@ -33,20 +30,22 @@ namespace EnemySystem
                 OnMoveEndEvent = new UnityEvent();
         }
 
-        private void Start()
-        {
-            _animator = GetComponentInChildren<Animator>();
-        }
-    
         public void Initialize(Unit owner)
         {
         }
         
         private void SetMoveAnim(bool isMoving)
         {
-            if (_animator != null)
+            if (animationCompo != null)
             {
-                _animator.SetBool(_animIDMove, isMoving);
+                if (isMoving)
+                {
+                    animationCompo.PlaySelectAnimation("MOVE");
+                }
+                else
+                {
+                    animationCompo.PlaySelectAnimation("IDLE");
+                }
             }
         }
 

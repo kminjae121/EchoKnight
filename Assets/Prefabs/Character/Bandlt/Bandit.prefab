@@ -2016,7 +2016,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3976431972465331843}
-  - component: {fileID: 3486467479245156058}
+  - component: {fileID: 3173957803825689137}
   m_Layer: 7
   m_Name: StatCompo
   m_TagString: Untagged
@@ -2039,7 +2039,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 663893733135974173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3486467479245156058
+--- !u!114 &3173957803825689137
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2048,16 +2048,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6116429312070026492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7654bea12aa4a70b9929138914e9df3, type: 3}
+  m_Script: {fileID: 11500000, guid: 86877c1bb2584ed2a0e8fde4f5836125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statOverrides:
-  - stat: {fileID: 11400000, guid: 63387e3874071ca48bdeb9a8b73277ff, type: 2}
-    isUseOverride: 1
-    overrideBaseValue: 100
-  - stat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
-    isUseOverride: 1
-    overrideBaseValue: 10
 --- !u!1 &6165341922270277492
 GameObject:
   m_ObjectHideFlags: 0
@@ -2240,7 +2233,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   isMove: 0
-  atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
   rotationCompo: {fileID: 3966720720610224676}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   triggerCompo: {fileID: 4102828035171866210}

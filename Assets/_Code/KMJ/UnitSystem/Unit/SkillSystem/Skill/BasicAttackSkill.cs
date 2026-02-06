@@ -110,7 +110,9 @@ public class BasicAttackSkill : BasicUnitSkill
         animtionCompo.PlaySelectAnimation("IDLE");
         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
         skillEndEvent.Invoke();
+        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+        Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         _targetEnemy = null;
     }
 }

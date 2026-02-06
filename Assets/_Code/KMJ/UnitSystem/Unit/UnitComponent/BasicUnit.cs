@@ -27,6 +27,8 @@ namespace UnitSystem
         public UnitAnimationTrigger triggerCompo { get; private set; }
         public UnitAttackComponent atkCompo { get; private set; }
         
+        public UnitManageRangeCompo unitRangeCompo { get; private set; }
+
         public int PlayableUnitID { get; set; } = -1;
         public GameObject _startTile = null;
 
@@ -49,11 +51,12 @@ namespace UnitSystem
             skillCompo = GetUnitCompo<SkillComponent>();
             triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
             behaveCompo = GetUnitCompo<UnitBehavaveCompo>();
+            unitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             atkCompo = GetUnitCompo<UnitAttackComponent>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
             
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
             if (triggerCompo != null)
                 triggerCompo.OnDeadEvent += LastDie;
@@ -71,7 +74,7 @@ namespace UnitSystem
         public override void OnTurnStart()
         {
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             
             if (OwnUnitManage.Instance != null)
                 OwnUnitManage.Instance.currentCost += 20;
@@ -99,7 +102,7 @@ namespace UnitSystem
             
             if (behaveCompo != null)
                 behaveCompo.ResetTile();
-                
+            unitRangeCompo.RemoveAllRange();
             base.OnTurnEnd();
         }
 
@@ -242,14 +245,14 @@ namespace UnitSystem
 
         private void UpdateSkillUI()
         {
-            for (int i = 0; i <= 2; i++) Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null, null, null));
+            for (int i = 0; i <= 2; i++) Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,0, null, null));
             
             if (skillCompo != null && skillCompo.skills != null)
             {
                 int idx = 0;
                 foreach (var skill in skillCompo.skills)
                 {
-                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.skillImage, skillCompo));
+                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.useSkillPoint,skill.Value.skillImage, skillCompo));
                     idx++;
                 }
             }

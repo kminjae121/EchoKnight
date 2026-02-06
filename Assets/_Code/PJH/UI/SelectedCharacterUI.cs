@@ -66,7 +66,7 @@ namespace Code.UI
             unitStorage.units.Clear();
             
             foreach (var unit in _partyUnits)
-                unitStorage.units.Add(unit.unitSpawn);
+                unitStorage.units.Add(unit.UnitSpawn);
             
             SceneManager.LoadScene("ExpeditionMapScene");
         }

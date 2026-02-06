@@ -86,6 +86,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private void AttackEnd()
         {
             animtionCompo.PlaySelectAnimation("IDLE");
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
             atkCompo.attackEndEvent?.Invoke();
         }

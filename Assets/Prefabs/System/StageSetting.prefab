@@ -96,6 +96,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e7357a8d50f4402a888db39b67565b31, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gridMap: {fileID: 0}
+  enemySpawns: []
   enemies:
   - {fileID: 0}
   playerCount: 0
@@ -1814,6 +1816,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1285641367546068411, guid: c017293483a87444ba62af0cc58fc737, type: 3}
+      propertyPath: atkBtn
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 1906234920165150570, guid: c017293483a87444ba62af0cc58fc737, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -390
@@ -2087,7 +2093,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 21300000, guid: 4f033cdd2b09f9a43b139729d09d002c, type: 3}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 2776588066277438531, guid: c017293483a87444ba62af0cc58fc737, type: 3}
+    - {fileID: 6815399576976948845, guid: c017293483a87444ba62af0cc58fc737, type: 3}
+    - {fileID: 5902374710178478385, guid: c017293483a87444ba62af0cc58fc737, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 3492809559103838058, guid: c017293483a87444ba62af0cc58fc737, type: 3}
       insertIndex: -1

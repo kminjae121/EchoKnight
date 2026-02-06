@@ -29,14 +29,14 @@ public class UnitSO : ScriptableObject
     public Sprite UnitImage;
 
     [Header("WhatItIs")] 
-    public UnitSpawnSO unitSpawn;
+    public UnitSpawnSO UnitSpawn;
     
     [Header("OwnUnitCards")]
-    public List<SkillSO> unitSkillCards;
+    public List<SkillSO> UnitSkillCards;
 
     [Space(4)]
     [Header("CharacterOwnCost")]
-    public int cost;
+    public int Cost;
     
     [Space(4)]
     [Header("UnitSettings")]
@@ -46,23 +46,25 @@ public class UnitSO : ScriptableObject
 
     public bool isPlayerUnit = false;
     
-    public float moveSpeed;
+    public float MoveSpeed;
 
-    public float atkDamage;
+    public float Maxhealth;
+
+    public float AtkDamage;
     
-    public float attackDistance;
+    public float AttackDistance;
 
     [Header("UnitType")]
-    public EntityType entityType = EntityType.MeleeAttacker;
+    public EntityType EntityType = EntityType.MeleeAttacker;
 
-    public UnitType unitType = UnitType.None;
+    public UnitType UnitType = UnitType.None;
 
 
     private void OnValidate()
     {
         if (isLongRange)
-            entityType = EntityType.LongRanger;
+            EntityType = EntityType.LongRanger;
         else
-            entityType = EntityType.MeleeAttacker;
+            EntityType = EntityType.MeleeAttacker;
     }
 }

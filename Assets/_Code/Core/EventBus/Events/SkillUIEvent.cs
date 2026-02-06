@@ -10,13 +10,15 @@ namespace Code.Core.Events.Bus
         public int skillIdx;
         public string skillName;
         public Sprite skillImage;
+        public float skillCost;
 
-        public SkillUIEvent(int skillIdx, string skillName, Sprite skillImage, SkillComponent skillComponent)
+        public SkillUIEvent(int skillIdx, string skillName, float skillCost,Sprite skillImage, SkillComponent skillComponent)
         {
             this.skillIdx = skillIdx;
             this.skillComponent = skillComponent;
             this.skillName = skillName;
             this.skillImage = skillImage;
+            this.skillCost = skillCost;
         }
     }
 }

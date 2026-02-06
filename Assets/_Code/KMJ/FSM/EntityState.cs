@@ -7,7 +7,6 @@ namespace Blade.FSM
     {
         protected Unit _entity;
         protected int _animationHash;
-        protected UnitAnimator _entityAnimator;
         protected UnitAnimationTrigger _animatorTrigger; 
         protected bool _isTriggerCall;
 
@@ -15,13 +14,11 @@ namespace Blade.FSM
         {
             _entity = entity;
             _animationHash = animationHash;
-            _entityAnimator = entity.GetUnitCompo<UnitAnimator>();
             _animatorTrigger = entity.GetUnitCompo<UnitAnimationTrigger>(); 
         }
 
         public virtual void Enter()
         {
-            _entityAnimator.SetParam(_animationHash, true);
             _isTriggerCall = false;
             _animatorTrigger.OnAnimationEndTrigger += AnimationEndTrigger; 
         }
@@ -30,7 +27,6 @@ namespace Blade.FSM
 
         public virtual void Exit()
         {
-            _entityAnimator.SetParam(_animationHash, false);
             _animatorTrigger.OnAnimationEndTrigger -= AnimationEndTrigger;
         }
 

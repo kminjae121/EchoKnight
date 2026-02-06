@@ -157,6 +157,7 @@ namespace Code.UnitSystem
             {
                 if (_basicUnit.isMyTurn)
                 {
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
                     if (_basicUnit.GetCurrentCost() - 15 < 0)
                     {
                         Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
@@ -169,6 +170,7 @@ namespace Code.UnitSystem
             }
             else
             {
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
                 ResetTile();
                 EndAct();
             }
@@ -201,8 +203,10 @@ namespace Code.UnitSystem
                 {
                     FindEnemyIsThere(enemy);
                     
+                    
                     if (_targetEnemy != null && _targetingCompo == null)
                     {
+                        rotationCompo.SetDir(_targetEnemy.transform.position);
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
@@ -238,10 +242,10 @@ namespace Code.UnitSystem
 
                 if (_targetEnemy == null)
                 {
-                    //ResetTile();
                     return;
                 }
                 
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                 Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
                 
                 _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();

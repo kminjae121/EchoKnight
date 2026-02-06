@@ -10,7 +10,7 @@ using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class BasicAttackSkill : BaseSkill
+public class BasicAttackSkill : BasicUnitSkill
 {
     [SerializeField] private Animator animator;
     private UnitAnimation animtionCompo;

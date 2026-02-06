@@ -78,6 +78,7 @@ namespace Code.UnitSystem.SkillSystem
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
 
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                     _targetingCompo = null;
                 }
                 else if (enemy != null)
@@ -150,6 +151,8 @@ namespace Code.UnitSystem.SkillSystem
                     if (_basicUnit != null && _basicUnit.gaugeManager != null)
                         _basicUnit.gaugeManager.UseSkill(useSkillPoint);
                     
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+                    
                     _targetEnemy = null;
                 }
             }
@@ -179,6 +182,7 @@ namespace Code.UnitSystem.SkillSystem
                 {
                     if (ownSkill)
                     {
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
                         _basicUnit.gaugeManager.UseSkill(useSkillPoint);
                         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true));
                         skillEvent?.Invoke(null);
@@ -186,6 +190,8 @@ namespace Code.UnitSystem.SkillSystem
                     }
                     else
                     {
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+
                         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
                         CheckCanAttack();
                         CanUseThisSkill();
@@ -193,6 +199,8 @@ namespace Code.UnitSystem.SkillSystem
                 }
                 else
                 {
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
+
                     Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                     Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                     return;

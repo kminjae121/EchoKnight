@@ -128,6 +128,7 @@ namespace Code.UnitSystem
                 
                 if (_movingtiles.Contains(tileTrm))
                 {
+                    rotationCompo.SetDir(_visualPrefabs.transform.position);
                     _visualPrefabs.SetActive(true);
                     _visualPrefabs.transform.position = tileTrm.transform.position;
                 }

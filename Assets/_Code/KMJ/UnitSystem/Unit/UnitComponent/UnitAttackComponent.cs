@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.EntityComponent;
@@ -19,10 +20,6 @@ namespace Code.UnitSystem
     public class UnitAttackComponent : RangeComponent
     {
         private CinemachineImpulseSource impulseSource;
-        
-        private EntityStatCompo _statCompo;
-        
-        [SerializeField] private StatSO atkDamageStat;
         
         [SerializeField] private UnitRotation rotationCompo; 
         [SerializeField] private AttackDataSO attackData; 
@@ -68,19 +65,13 @@ namespace Code.UnitSystem
             base.Start();
             
             _basicUnit = _owner as BasicUnit;
-
-            _statCompo = _basicUnit.GetUnitCompo<EntityStatCompo>();
+            
             
             _inputReader = _basicUnit.inputSO;
             
             _unitSO = _basicUnit.unitSO;
-            
-            StatSO target = _statCompo.GetStat(atkDamageStat);
-            Debug.Assert(target != null, $"{atkDamageStat.statName} does not exist");
-            target.OnValueChanged += HandleAtkDamageChanged;
-            _atkDamage = target.Value;
 
-            _basicUnit.unitSO.AtkDamage = _atkDamage;
+            _atkDamage = _basicUnit.unitStatCompo.GetStat<float>(StatInfo.AtkDamage);
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
 
@@ -105,18 +96,7 @@ namespace Code.UnitSystem
             _inputReader.OnAttackEvent -= AttackEnemy;
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
-            
-            StatSO target = _statCompo.GetStat(atkDamageStat);
-            Debug.Assert(target != null, $"{atkDamageStat.statName} does not exist");
-            target.OnValueChanged -= HandleAtkDamageChanged;
             ResetTileEvent -= EndUnit;
-        }
-        
-        private void HandleAtkDamageChanged(StatSO stat, float currentvalue, float previousvalue)
-        {
-            _atkDamage = _atkDamage + currentvalue;
-            
-            _basicUnit.unitSO.AtkDamage = _atkDamage;
         }
 
         private void AttackEnded()

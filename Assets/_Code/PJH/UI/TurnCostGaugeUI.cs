@@ -13,7 +13,7 @@ namespace Code.UI
         [SerializeField] private TurnCostGaugeManager gaugeManager;
         [SerializeField] private float gaugeTweenTime = 0.3f;
 
-        private Tween gaugeTween;
+        private Tween _gaugeTween; 
 
         private void OnEnable()
         {
@@ -27,22 +27,22 @@ namespace Code.UI
 
         private void Start()
         {
-            ReflashGauge(100);
+            RefreshGauge(100);
         }
 
         private void HandleCurrentGaugeValueChanged(int prev, int next)
         {
-            ReflashGauge(next);
+            RefreshGauge(next);
         }
 
-        private void ReflashGauge(int value)
+        private void RefreshGauge(int value)
         {
             costText.text = $"{value} / {gaugeManager.maxGaugeValue}";
 
             float targetFill = gaugeManager.currentGaugeValue.Value / (float)gaugeManager.maxGaugeValue;
             
-            gaugeTween?.Kill();
-            gaugeTween = turnCostGaugeImage
+            _gaugeTween?.Kill();
+            _gaugeTween = turnCostGaugeImage
                 .DOFillAmount(targetFill, gaugeTweenTime)
                 .SetEase(Ease.OutCubic);
         }

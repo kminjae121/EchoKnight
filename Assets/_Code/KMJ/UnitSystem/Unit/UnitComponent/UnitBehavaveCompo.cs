@@ -30,7 +30,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         [SerializeField] private GameObject _visualPrefabs;
 
         private bool isMoving = false;
-        private float _moveSpeed => _unit.unitSO.MoveSpeed;
+        private float _moveSpeed;
         public GameObject _currentMapTile { get; set; }= null;
 
         private List<GameObject> _movingtiles =  new List<GameObject>();
@@ -42,6 +42,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             _unit = _owner as BasicUnit;
             
             _unit.inputSO.OnClickMoveEvent += Move;
+
+            _moveSpeed = _unit.unitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
         }

@@ -28,6 +28,8 @@ namespace UnitSystem
         public UnitAttackComponent atkCompo { get; private set; }
         
         public UnitManageRangeCompo unitRangeCompo { get; private set; }
+        
+        public UnitStatCompo unitStatCompo { get; private set; }
 
         public int PlayableUnitID { get; set; } = -1;
         public GameObject _startTile = null;
@@ -53,6 +55,7 @@ namespace UnitSystem
             behaveCompo = GetUnitCompo<UnitBehavaveCompo>();
             unitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             atkCompo = GetUnitCompo<UnitAttackComponent>();
+            unitStatCompo = GetUnitCompo<UnitStatCompo>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
             

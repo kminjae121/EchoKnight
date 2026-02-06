@@ -56,14 +56,6 @@ namespace Code.UI
         private void HandleSkillUIEvent(SkillUIEvent evt)
         {
             skillCompnent = evt.skillComponent;
-            if (evt.skillImage == null)
-            {
-                skillImage[evt.skillIdx].sprite = basicSprite;
-            }
-            else
-            {
-                skillImage[evt.skillIdx].sprite = evt.skillImage;
-            }
             thisSkillName[evt.skillIdx] = evt.skillName;
             
             

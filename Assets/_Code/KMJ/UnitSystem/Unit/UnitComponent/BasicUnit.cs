@@ -52,6 +52,8 @@ namespace UnitSystem
             atkCompo = GetUnitCompo<UnitAttackComponent>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
+            
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
 
             if (triggerCompo != null)
                 triggerCompo.OnDeadEvent += LastDie;
@@ -69,6 +71,7 @@ namespace UnitSystem
         public override void OnTurnStart()
         {
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
             
             if (OwnUnitManage.Instance != null)
                 OwnUnitManage.Instance.currentCost += 20;

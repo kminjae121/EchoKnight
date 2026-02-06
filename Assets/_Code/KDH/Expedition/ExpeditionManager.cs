@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Code.Expedition.Data;
 using Code.Expedition.Logic;
@@ -31,13 +32,12 @@ namespace Code.Expedition
             InitializeLogics();
         }
 
-        [ContextMenu("Force Start Expedition")]
-        public void ForceStartExpedition()
+
+        private void Start()
         {
-            Debug.Log("강제로 원정을 시작합니다...");
             StartNewExpedition();
         }
-        
+
         private void InitializeLogics()
         {
             _nodeLogics = new Dictionary<ExpeditionNodeType, INodeLogic>

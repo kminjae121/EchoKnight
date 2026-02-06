@@ -20,6 +20,7 @@ namespace Code.UnitSystem
         public void SetDir(Vector3 dir)
         {
             _targetRotation = dir;
+            
         }
         
         public void RotationUnit()
@@ -32,7 +33,7 @@ namespace Code.UnitSystem
             {
                 Quaternion targetRotation = Quaternion.LookRotation(direction);
                 
-                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+                transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 8f);
             }
         }
 

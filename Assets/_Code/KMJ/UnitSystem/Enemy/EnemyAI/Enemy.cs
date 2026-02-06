@@ -173,7 +173,7 @@ public class Enemy : Unit
         SetBlackboardVariable("IsMyTurn", true);
         
         for (int i = 0; i <= 2; i++)
-            Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null, null, null));
+            Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,0, null, null));
     }
 
     public void TurnEnd()

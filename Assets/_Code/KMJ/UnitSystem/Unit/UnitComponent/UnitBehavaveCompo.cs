@@ -28,8 +28,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         [SerializeField] private UnitRotation rotationCompo;
         [SerializeField] private UnitAnimationTrigger triggerCompo;
         [SerializeField] private GameObject _visualPrefabs;
-        
-        private float _moveSpeed => _unit.unitSO.moveSpeed;
+
+        private bool isMoving = false;
+        private float _moveSpeed => _unit.unitSO.MoveSpeed;
         public GameObject _currentMapTile { get; set; }= null;
 
         private List<GameObject> _movingtiles =  new List<GameObject>();
@@ -54,16 +55,21 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private void Update()
         {
-            if (_unit.isMyTurn && _isAct)
+            if (_unit.isMyTurn && _isAct && !isMoving)
             {
                 CheckTilesCanMoving();
                 GameObject tileTrm = _unit.inputSO.GetWorldPosition();
             
                 if (_movingtiles.Contains(tileTrm))
                 {
+                    rotationCompo.SetDir(_visualPrefabs.transform.position);
                     _visualPrefabs.SetActive(true);
                     _visualPrefabs.transform.position = tileTrm.transform.position;
-                }   
+                }
+                else
+                {
+                    _visualPrefabs.SetActive(false);
+                }
             }
             else if(_isAct == false)
             {
@@ -109,6 +115,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 return;
             if (!_isAct)
                 return;
+
+            if (isMoving)
+                return;
             
             if (_unit.GetCurrentCost() <= 0)
             {
@@ -126,6 +135,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 _visualPrefabs.SetActive(false);
                 return;
             }
+            
 
             if (tile == null)
             {
@@ -144,9 +154,11 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
+            _visualPrefabs.SetActive(false);
             _isAct = false;
+            isMoving = true;
             
             if (tile == null) 
                 yield break;
@@ -161,6 +173,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             yield return new WaitForSeconds(0.3f);
             
             rotationCompo.SetDir(tile.transform.position);
+            
             if (tileInfo.IsWalkable)
             {
                 animationCompo.PlaySelectAnimation("MOVE");   
@@ -181,11 +194,13 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             tile.transform.TryGetComponent(out IMapTile EndMapTile);
 
             EndMapTile.SetObstacle(true);
-            _visualPrefabs.SetActive(false);
+            _visualPrefabs.SetActive(true);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            isMoving = false;
             _isAct = true;
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             
             animationCompo.PlaySelectAnimation("IDLE");   
         }

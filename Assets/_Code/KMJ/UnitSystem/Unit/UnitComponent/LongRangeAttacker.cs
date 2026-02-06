@@ -81,6 +81,7 @@ public class LongRangeAttacker : MonoBehaviour
         {
             animtionCompo.PlaySelectAnimation("IDLE");
             atkCompo.attackEndEvent?.Invoke();
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
         }
 }

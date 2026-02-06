@@ -4,11 +4,11 @@ namespace Code.Core.Events.Bus
 {
     public struct SetAtkUIEvent : IEvent
     {
-        public GameObject Object;
+        public bool isLock;
         
-        public SetAtkUIEvent(GameObject obj)
+        public SetAtkUIEvent(bool isLock)
         {
-            Object = obj;
+            this.isLock = isLock;
         }
     }
 }

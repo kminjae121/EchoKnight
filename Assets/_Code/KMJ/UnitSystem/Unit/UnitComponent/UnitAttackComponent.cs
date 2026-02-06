@@ -80,7 +80,7 @@ namespace Code.UnitSystem
             target.OnValueChanged += HandleAtkDamageChanged;
             _atkDamage = target.Value;
 
-            _basicUnit.unitSO.atkDamage = _atkDamage;
+            _basicUnit.unitSO.AtkDamage = _atkDamage;
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
 
@@ -116,7 +116,7 @@ namespace Code.UnitSystem
         {
             _atkDamage = _atkDamage + currentvalue;
             
-            _basicUnit.unitSO.atkDamage = _atkDamage;
+            _basicUnit.unitSO.AtkDamage = _atkDamage;
         }
 
         private void AttackEnded()
@@ -157,7 +157,7 @@ namespace Code.UnitSystem
             {
                 if (_basicUnit.isMyTurn)
                 {
-                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                     if (_basicUnit.GetCurrentCost() - 15 < 0)
                     {
                         Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
@@ -170,7 +170,7 @@ namespace Code.UnitSystem
             }
             else
             {
-                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
                 ResetTile();
                 EndAct();
             }

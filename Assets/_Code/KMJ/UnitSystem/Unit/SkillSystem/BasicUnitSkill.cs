@@ -182,7 +182,7 @@ namespace Code.UnitSystem.SkillSystem
                 {
                     if (ownSkill)
                     {
-                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         _basicUnit.gaugeManager.UseSkill(useSkillPoint);
                         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true));
                         skillEvent?.Invoke(null);
@@ -199,7 +199,7 @@ namespace Code.UnitSystem.SkillSystem
                 }
                 else
                 {
-                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(null));
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
                     Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                     Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));

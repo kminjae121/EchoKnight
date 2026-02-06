@@ -127,6 +127,15 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""SelectBtn"",
+                    ""type"": ""Button"",
+                    ""id"": ""47f625d6-326d-4aa1-938f-3d22b44ad7d5"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -215,6 +224,17 @@ public partial class @Controls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""MouseUpDown"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f60e6d4a-07af-4465-904d-1ba63290227d"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""SelectBtn"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -806,6 +826,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         m_Player_Pointer = m_Player.FindAction("Pointer", throwIfNotFound: true);
         m_Player_CamMove = m_Player.FindAction("CamMove", throwIfNotFound: true);
         m_Player_MouseUpDown = m_Player.FindAction("MouseUpDown", throwIfNotFound: true);
+        m_Player_SelectBtn = m_Player.FindAction("SelectBtn", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -903,6 +924,7 @@ public partial class @Controls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Pointer;
     private readonly InputAction m_Player_CamMove;
     private readonly InputAction m_Player_MouseUpDown;
+    private readonly InputAction m_Player_SelectBtn;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -930,6 +952,10 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/MouseUpDown".
         /// </summary>
         public InputAction @MouseUpDown => m_Wrapper.m_Player_MouseUpDown;
+        /// <summary>
+        /// Provides access to the underlying input action "Player/SelectBtn".
+        /// </summary>
+        public InputAction @SelectBtn => m_Wrapper.m_Player_SelectBtn;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -968,6 +994,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @MouseUpDown.started += instance.OnMouseUpDown;
             @MouseUpDown.performed += instance.OnMouseUpDown;
             @MouseUpDown.canceled += instance.OnMouseUpDown;
+            @SelectBtn.started += instance.OnSelectBtn;
+            @SelectBtn.performed += instance.OnSelectBtn;
+            @SelectBtn.canceled += instance.OnSelectBtn;
         }
 
         /// <summary>
@@ -991,6 +1020,9 @@ public partial class @Controls: IInputActionCollection2, IDisposable
             @MouseUpDown.started -= instance.OnMouseUpDown;
             @MouseUpDown.performed -= instance.OnMouseUpDown;
             @MouseUpDown.canceled -= instance.OnMouseUpDown;
+            @SelectBtn.started -= instance.OnSelectBtn;
+            @SelectBtn.performed -= instance.OnSelectBtn;
+            @SelectBtn.canceled -= instance.OnSelectBtn;
         }
 
         /// <summary>
@@ -1319,6 +1351,13 @@ public partial class @Controls: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnMouseUpDown(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "SelectBtn" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSelectBtn(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

@@ -1,9 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Core.Events.Bus;
+using Input;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Code.UI
 {
@@ -17,6 +18,16 @@ namespace Code.UI
         
         [SerializeField] private List<RectTransform> items;
 
+        [SerializeField] private List<Button> itemBtns;
+
+        [SerializeField] private List<GameObject> selectItem;
+
+        [SerializeField] private InputReader inputSO;
+
+        private bool _isCanOpen = true;
+
+        private bool _isActive = false;
+
         private float _xValue = 0;
 
         private int _itemIdx = 0;
@@ -25,6 +36,8 @@ namespace Code.UI
         {
             Bus<SetAtkUIEvent>.Subscribe(SetAtkUI);
             Bus<SkillUIEvent>.Subscribe(SetSkillUIName);
+            inputSO.OnSelectEvent += SelectItem;
+            _isActive = false;
         }
 
 
@@ -32,25 +45,26 @@ namespace Code.UI
         {
             Bus<SkillUIEvent>.Unsubscribe(SetSkillUIName);
             Bus<SetAtkUIEvent>.Unsubscribe(SetAtkUI);
+            inputSO.OnSelectEvent -= SelectItem;
         }
 
         private void Update()
         {
-            if (UnityEngine.Input.GetMouseButton(1))
+            
+            if (UnityEngine.Input.GetKeyDown(KeyCode.R) && !_isActive && _isCanOpen)
             {
                 StartAttack();
             }
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.R) && _isActive)
             {
                 EndAttack();
             }
 
-            if (UnityEngine.Input.GetKeyDown(KeyCode.DownArrow))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.E))
             {
                 DownItem();
             }
-            else if (UnityEngine.Input.GetKeyDown(KeyCode.UpArrow))
+            else if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
             {
                 UpItem();
             }
@@ -58,22 +72,61 @@ namespace Code.UI
             selectArrow.transform.rotation = Quaternion.Euler(_xValue += 1f,0,90);
         }
 
+        private void SelectItem()
+        {
+            if (_isActive == true)
+            {
+                itemBtns[_itemIdx].onClick?.Invoke();
+            }
+        }
+
         private void StartAttack()
         {
-            atkUI.SetActive(true);
-            selectArrow.gameObject.SetActive(true);
-            selectArrow.transform.rotation = Quaternion.Euler(0,0,90);
+            InitializeUI();
             _itemIdx = 0;
             _xValue = 0;
+            atkUI.SetActive(true);
+            selectArrow.gameObject.SetActive(true);
+            _isActive = true;
+            
+            
+            skillsName.ToList().ForEach(txt =>
+            {
+                txt.color = Color.white;
+            });
+            
+            Image img = selectItem[_itemIdx].GetComponent<Image>();
+            
+            skillsName[_itemIdx].color = img.color;
+            selectArrow.GetComponent<Image>().color = img.color;
+            
+            selectItem.ToList().ForEach(obj =>
+            {
+                obj.SetActive(false);
+            });
+            
+            selectItem[_itemIdx].SetActive(true);
         }
 
         private void EndAttack()
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             skillUI.CancelSkill();
             Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(false));
+            selectArrow.transform.rotation = Quaternion.Euler(0,0,90);
+            InitializeUI();
+        }
+
+        private void InitializeUI()
+        {
+            Vector3 pos = new Vector3(80, 186.5f, 0);
+            selectArrow.anchoredPosition = pos;
+            _itemIdx = 0;
+            _xValue = 0;
             atkUI.SetActive(false);
             selectArrow.gameObject.SetActive(false);
+            _isActive = false;
         }
 
         private void UpItem()
@@ -85,10 +138,8 @@ namespace Code.UI
             }
             if (_itemIdx >= 1)
             {
-                for (int i = _itemIdx - 1; i >= 0; i--)
+                for (int i = _itemIdx; i >= 0; i--)
                 {
-                    Debug.Log(i);
-                    Debug.Log(skillsName[i].text);
                     if (skillsName[i].text == null)
                     {
                         _itemIdx -= 1;
@@ -97,15 +148,28 @@ namespace Code.UI
                         break;
                 }
             }
-            
-
-            
-            Debug.Log(_itemIdx);
 
             Vector3 pos = items[_itemIdx].localPosition;
             pos.x = 80;
             pos.z = 0;
             selectArrow.localPosition = pos;
+            
+            skillsName.ToList().ForEach(txt =>
+            {
+                txt.color = Color.white;
+            });
+            
+            Image img = selectItem[_itemIdx].GetComponent<Image>();
+            
+            skillsName[_itemIdx].color = img.color;
+            selectArrow.GetComponent<Image>().color = img.color;
+            
+            selectItem.ToList().ForEach(obj =>
+            {
+                obj.SetActive(false);
+            });
+            
+            selectItem[_itemIdx].SetActive(true);
         }
 
         private void DownItem()
@@ -117,9 +181,8 @@ namespace Code.UI
             }
             if (_itemIdx >= 1)
             {
-                if (skillsName[_itemIdx - 1].text == null)
+                if (skillsName[_itemIdx].text == null)
                 {
-                    Debug.Log(skillsName[_itemIdx -1].text);
                     _itemIdx = 0;
                 }
             }
@@ -128,15 +191,49 @@ namespace Code.UI
             pos.x = 80;
             pos.z = 0;
             selectArrow.localPosition = pos;
+            
+            skillsName.ToList().ForEach(txt =>
+            {
+                txt.color = Color.white;
+            });
+            
+            
+            skillsName.ToList().ForEach(txt =>
+            {
+                txt.color = Color.white;
+            });
+            
+            Image img = selectItem[_itemIdx].GetComponent<Image>();
+            
+            skillsName[_itemIdx].color = img.color;
+            selectArrow.GetComponent<Image>().color = img.color;
+            
+            selectItem.ToList().ForEach(obj =>
+            {
+                obj.SetActive(false);
+            });
+            
+            selectItem[_itemIdx].SetActive(true);
+            
         }
 
         public void SetSkillUIName(SkillUIEvent evt)
         {
-            skillsName[evt.skillIdx].text = evt.skillName;
+            skillsName[evt.skillIdx + 1].text = evt.skillName;
         }
 
         public void SetAtkUI(SetAtkUIEvent evt)
         {
+            if (evt.isLock)
+            {
+                _isCanOpen = false;
+            }
+            else if(evt.isLock == false)
+            {
+                _isCanOpen = true;
+            }
+            
+            InitializeUI();
             atkUI.SetActive(false);
             selectArrow.gameObject.SetActive(false);
         }

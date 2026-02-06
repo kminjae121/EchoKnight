@@ -9,9 +9,9 @@ namespace Code.UnitSystem
     { 
         [SerializeField] private UnitStorageSO _storage;
         
-        public Dictionary<string, UnitInfoSO> units = new Dictionary<string, UnitInfoSO>();
+        public Dictionary<string, UnitSpawnSO> units = new Dictionary<string, UnitSpawnSO>();
         
-        public List<UnitInfoSO> unitInfos = new List<UnitInfoSO>();
+        public List<UnitSpawnSO> unitInfos = new List<UnitSpawnSO>();
 
         private void Awake()
         {
@@ -26,7 +26,7 @@ namespace Code.UnitSystem
         /// </summary>
         /// <param name="unitName">찾을 유닛 이름</param>
         /// <returns></returns>
-        public UnitInfoSO GetUnitInfo(string unitName)
+        public UnitSpawnSO GetUnitInfo(string unitName)
         {
             return units.GetValueOrDefault(unitName);
         }

@@ -43,7 +43,7 @@ namespace Code.Managers
 
             for (int i = 0; i < enemies.Count; i++)
             {
-                UnitInfoSO enemyData = enemies[i];
+                UnitSpawnSO enemyData = enemies[i];
                 
                 if (enemyData.UnitPrefab != null) 
                 {

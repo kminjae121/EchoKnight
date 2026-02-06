@@ -1,9 +1,6 @@
-using System;
-using System.Linq;
 using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
-using Code.Core.Interfaces;
 using Code.EntityComponent;
 using Code.Managers;
 using Code.UI;
@@ -11,103 +8,83 @@ using Code.UnitManaging;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using EnemySystem;
-using GameEventChannel;
 using Input;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace  UnitSystem
+namespace UnitSystem
 {
     public class BasicUnit : Unit
     {
-        public UnitBehavaveCompo behaveCompo { get; set; }
-        public TurnCostGaugeManager gaugeManager { get; set; }
+        [Header("Basic Unit Refs")]
         [field: SerializeField] public InputReader inputSO { get; private set; }
-        
-        [SerializeField] private GameEventChannelSO unitDeadChannel;
-
         [SerializeField] private LayerMask whatIsGround;
-
-        public SkillComponent skillCompo { get; private set; }
-        public UnitAnimation animationComponent { get; private set; }
-        
-        public UnitAnimationTrigger triggerCompo { get; private set; }
-        
-        public UnitAttackComponent atkCompo { get; private set; }
-
-        private UnitControl _controlUI;
-
-        private Button endTurnBtn;
-        
-
         [SerializeField] private Image unitImage;
 
-        public int PlayableUnitID { get; set; } = -1;
-
-        private UnitMovement movementCompo;
-
-        public GameObject _startTile = null;
+        public UnitBehavaveCompo behaveCompo { get; set; }
+        public TurnCostGaugeManager gaugeManager { get; set; }
+        public SkillComponent skillCompo { get; private set; }
+        public UnitAnimationTrigger triggerCompo { get; private set; }
+        public UnitAttackComponent atkCompo { get; private set; }
         
+        public int PlayableUnitID { get; set; } = -1;
+        public GameObject _startTile = null;
+
+        private Button endTurnBtn;
+        private UnitControl _controlUI;
         private GameObject _targetEnemy = null;
         private EnemyTargeting _targetingCompo = null;
-        
-        
+
         private void Start()
         {
-            gaugeManager = GameObject.Find("TurnManager").GetComponent<TurnCostGaugeManager>();
-            _controlUI = GameObject.Find("BaseButton").GetComponent<UnitControl>();
-            endTurnBtn = GameObject.Find("TurnEndBtn").GetComponent<Button>();
+            var turnManagerObj = GameObject.Find("TurnManager");
+            if (turnManagerObj) gaugeManager = turnManagerObj.GetComponent<TurnCostGaugeManager>();
+
+            var baseBtnObj = GameObject.Find("BaseButton");
+            if (baseBtnObj) _controlUI = baseBtnObj.GetComponent<UnitControl>();
+
+            var endTurnBtnObj = GameObject.Find("TurnEndBtn");
+            if (endTurnBtnObj) endTurnBtn = endTurnBtnObj.GetComponent<Button>();
 
             skillCompo = GetUnitCompo<SkillComponent>();
             triggerCompo = GetUnitCompo<UnitAnimationTrigger>();
-            //movementCompo = GetUnitCompo<UnitMovement>();
             behaveCompo = GetUnitCompo<UnitBehavaveCompo>();
             atkCompo = GetUnitCompo<UnitAttackComponent>();
             
-            animationComponent = GetUnitCompo<UnitAnimation>();
-            
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
 
-            triggerCompo.OnDeadEvent += LastDie;
-
-            //movementCompo._currentMapTile = _startTile;
+            if (triggerCompo != null)
+                triggerCompo.OnDeadEvent += LastDie;
         }
 
         protected override void OnDestroy()
         {
+            if (triggerCompo != null)
+                triggerCompo.OnDeadEvent -= LastDie;
+            
+            Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
             base.OnDestroy();
-            triggerCompo.OnDeadEvent -= LastDie;
         }
 
         public override void OnTurnStart()
         {
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
-            OwnUnitManage.Instance.currentCost += 20;
-
-            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
-
-            int idx = -1;
-
-            for (int i = 0; i <= 2; i++)
-            {
-                Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,null,null));
-            }
-            if (skillCompo.skills != null)
-            {
-                 skillCompo.skills.ToList().ForEach(skill =>
-                 {
-                     idx += 1;
-                     Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key,skill.Value.skillImage,skillCompo));
-                 });  
-            }
             
-            endTurnBtn.onClick.AddListener(TurnEnd);
+            if (OwnUnitManage.Instance != null)
+                OwnUnitManage.Instance.currentCost += 20;
+
+            UpdateAPGauge();
+            UpdateSkillUI();
+
+            if (endTurnBtn != null)
+                endTurnBtn.onClick.AddListener(TurnEnd);
             
-            Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
             OnStartTurnEvent?.Invoke();
             base.OnTurnStart();
-            behaveCompo.FindObjectInRange();
+            
+            if (behaveCompo != null)
+                behaveCompo.FindObjectInRange();
+                
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             isMyTurn = true;
         }
@@ -116,14 +93,16 @@ namespace  UnitSystem
         {
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
-            behaveCompo.ResetTile();
+            
+            if (behaveCompo != null)
+                behaveCompo.ResetTile();
+                
             base.OnTurnEnd();
         }
-        
 
         public void StartWalk(UnitSetMoveEvent evt)
         {
-            if (isMyTurn)
+            if (isMyTurn && behaveCompo != null)
             {
                 behaveCompo.ReCheckInRange();
             }
@@ -131,8 +110,11 @@ namespace  UnitSystem
 
         protected override void Hit()
         {
-            animationComponent.RestartFromEntry();
-            animationComponent.PlaySelectAnimation("HIT");
+            if (AnimationCompo != null)
+            {
+                AnimationCompo.RestartFromEntry();
+                AnimationCompo.PlaySelectAnimation("HIT");
+            }
             base.Hit();
         }
 
@@ -143,57 +125,72 @@ namespace  UnitSystem
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
             }
 
-            if (isMyTurn && !atkCompo._isAct)
-            {
-                GameObject enemy = inputSO.GetEnemy();
+            HandleTargeting();
+        }
 
-                if(enemy == null && _targetEnemy != null)
-                {
-                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                    
-                    _targetingCompo.OffTargeting();
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,0));
+        private void HandleTargeting()
+        {
+            if (!isMyTurn || inputSO == null) return;
+            if (atkCompo != null && atkCompo._isAct) return;
 
-                    _targetingCompo = null;
-                }
-                else if (enemy != null)
-                {
-                    _targetEnemy = enemy;
-                    if (_targetEnemy != null)
-                    {
-                        EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
-                        
-                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                        _targetingCompo.Targeting();
-                        
-                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,health.CurrentHealth,health.MaxHealth, 
-                            0, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,3));
-                    }
-                }
-            }
-            else
+            GameObject enemy = inputSO.GetEnemy();
+
+            if (enemy == null && _targetEnemy != null)
             {
-                if (_targetEnemy != null && _targetingCompo != null) 
-                {
-                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                    _targetingCompo.OffTargeting();
-                    
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,false,0));
-                    _targetingCompo = null;
-                }
+                ClearTarget();
             }
+            else if (enemy != null)
+            {
+                SetTarget(enemy);
+            }
+        }
+
+        private void SetTarget(GameObject enemy)
+        {
+            _targetEnemy = enemy;
+            if (_targetEnemy == null) return;
+
+            if (_targetingCompo == null)
+            {
+                _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                if (_targetingCompo != null) _targetingCompo.Targeting();
+
+                var health = _targetEnemy.GetComponent<EntityHealth>();
+                var unit = _targetEnemy.GetComponent<Unit>();
+                
+                Sprite img = (unit != null && unit.unitSO != null) ? unit.unitSO.UnitImage : null;
+                float currentHp = health != null ? health.CurrentHealth : 0;
+                float maxHp = health != null ? health.MaxHealth : 0;
+
+                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, currentHp, maxHp, 0, true, img, false, 3));
+            }
+        }
+
+        private void ClearTarget()
+        {
+            if (_targetEnemy != null)
+            {
+                if (_targetingCompo == null) _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                if (_targetingCompo != null) _targetingCompo.OffTargeting();
+
+                Sprite img = null;
+                var unit = _targetEnemy.GetComponent<Unit>();
+                if (unit != null && unit.unitSO != null) img = unit.unitSO.UnitImage;
+
+                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, img, false, 0));
+            }
+            _targetEnemy = null;
+            _targetingCompo = null;
         }
 
         public void TurnEnd()
         {
-            if (isMyTurn == true)
+            if (isMyTurn)
             {
-                endTurnBtn.onClick.RemoveListener(TurnEnd);
+                if (endTurnBtn != null)
+                    endTurnBtn.onClick.RemoveListener(TurnEnd);
                 Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             }
-
         }
 
         protected override void Dead()
@@ -202,67 +199,72 @@ namespace  UnitSystem
             Die();
         }
 
-        protected override void OnEnable()
-        {
-            base.OnEnable();
-        }
-
         private void OnValidate()
         {
-            if (unitSO != null)
-            {
-                gameObject.name = unitSO.UnitName;
-            }
+            if (unitSO != null) gameObject.name = unitSO.UnitName;
         }
 
         public bool GetCost(int cost)
         {
+            if (OwnUnitManage.Instance == null) return false;
             if (OwnUnitManage.Instance.currentCost >= 100 || OwnUnitManage.Instance.currentCost + cost >= 100)
                 return false;
-            
+
             OwnUnitManage.Instance.currentCost += cost;
-            float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
-            
-            Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
+            UpdateAPGauge();
             return true;
         }
 
-
         public float GetCurrentCost()
         {
-            return OwnUnitManage.Instance.currentCost;
+            return OwnUnitManage.Instance != null ? OwnUnitManage.Instance.currentCost : 0;
         }
 
         public void RemoveCost(float cost)
         {
+            if (OwnUnitManage.Instance == null) return;
+
             OwnUnitManage.Instance.currentCost -= cost;
+            if (OwnUnitManage.Instance.currentCost <= 0) OwnUnitManage.Instance.currentCost = 0;
             
-            if (OwnUnitManage.Instance.currentCost <= 0)
-            {
-                OwnUnitManage.Instance.currentCost = 0;
-            }
-            //코스트 줄어드는중
-            
+            UpdateAPGauge();
+        }
+
+        private void UpdateAPGauge()
+        {
+            if (OwnUnitManage.Instance == null) return;
             float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
-            
             Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
         }
 
-
-        public void SelectThisUnit(bool isSelected)
+        private void UpdateSkillUI()
         {
+            for (int i = 0; i <= 2; i++) Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null, null, null));
             
+            if (skillCompo != null && skillCompo.skills != null)
+            {
+                int idx = 0;
+                foreach (var skill in skillCompo.skills)
+                {
+                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.skillImage, skillCompo));
+                    idx++;
+                }
+            }
         }
+
+        public void SelectThisUnit(bool isSelected) { }
 
         public void Die()
         {
-            animationComponent.PlaySelectAnimation("DEAD");
+            if (AnimationCompo != null)
+                AnimationCompo.PlaySelectAnimation("DEAD");
         }
 
         public void LastDie()
         {
             gameObject.SetActive(false);
-            StageManager.Instance.PlayerDie();
+            if (StageManager.Instance != null)
+                StageManager.Instance.PlayerDie();
         }
     }
 }

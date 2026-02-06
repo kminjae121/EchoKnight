@@ -570,8 +570,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a8757798ccbd8a94f943765460e4c5f6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <TurnGauge>k__BackingField: 0
   <unitSO>k__BackingField: {fileID: 11400000, guid: 32ce4e1858963fe44b740451ca0d6f12, type: 2}
+  <TurnGauge>k__BackingField: 0
   OnStartTurnEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -579,9 +579,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   behaviorAgent: {fileID: 2758450560571051843}
-  animationCompo: {fileID: 3416386629718883097}
   triggerCompo: {fileID: 8503053869134199577}
   moveCompo: {fileID: 1798265536912207056}
+  skillCompo: {fileID: 7088170391623219240}
   bloodParticles: {fileID: 5722484335888396339}
 --- !u!114 &2077853977420060766
 MonoBehaviour:
@@ -654,10 +654,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rotationCompo: {fileID: 6199149649704210913}
   animationCompo: {fileID: 3416386629718883097}
+  owner: {fileID: 6855447029533052954}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  owner: {fileID: 6855447029533052954}
   OnMoveEndEvent:
     m_PersistentCalls:
       m_Calls:

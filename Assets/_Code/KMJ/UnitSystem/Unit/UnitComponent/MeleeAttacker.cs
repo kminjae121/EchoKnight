@@ -100,7 +100,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
                 yield return null;
             }
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             animtionCompo.PlaySelectAnimation("IDLE");
             atkCompo.attackEndEvent?.Invoke();
         }

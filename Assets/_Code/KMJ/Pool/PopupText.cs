@@ -41,15 +41,15 @@ namespace Code.Pool
             transform.position = position;
 
             float scaleTime = 0.2f;
-            float fdeTime = 1.2f;
+            float fdeTime = 0.8f;
 
             Sequence seq = DOTween.Sequence();
             seq.Append(transform.DOScale(2.5f, scaleTime));
             seq.Append(transform.DOScale(1.2f, scaleTime));
             seq.AppendInterval(showDuration);
-            seq.Append(transform.DOScale(0.3f, fdeTime));
+            //seq.Append(transform.DOScale(0.3f, fdeTime));
             seq.Join(popUpText.DOFade(0, fdeTime));
-            seq.Join(transform.DOLocalMoveX(position.y + 2f, fdeTime));
+           // seq.Join(transform.DOLocalMoveX(position.y + 2f, fdeTime));
             seq.AppendCallback(() => { _myPool.Push(this); });
         }
     }

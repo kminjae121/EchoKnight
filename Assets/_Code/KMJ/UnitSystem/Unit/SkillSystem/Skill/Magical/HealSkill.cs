@@ -52,7 +52,7 @@ using UnityEngine;
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
         }
 
         public void Heal()

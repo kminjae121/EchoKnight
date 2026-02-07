@@ -76,7 +76,7 @@ namespace UnitSystem
 
         public override void OnTurnStart()
         {
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             
             if (OwnUnitManage.Instance != null)
@@ -131,7 +131,7 @@ namespace UnitSystem
         {
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {
-                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false));
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
             }
 
             HandleTargeting();

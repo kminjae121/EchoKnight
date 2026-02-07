@@ -43,7 +43,7 @@ namespace _Code.KMJ.Cam
             else
             {
                 positionCompoer.enabled = true;
-                positionCompoer.Damping = new Vector3(0.1f, 0.1f, 0.1f);
+                positionCompoer.Damping = evt.dampingSpeed;
                 battleCam.Target.TrackingTarget = evt.target.transform;
             }
         }

@@ -472,6 +472,7 @@ GameObject:
   - component: {fileID: 6855447029533052954}
   - component: {fileID: 2758450560571051843}
   - component: {fileID: 4451848573596077764}
+  - component: {fileID: 5425479551185800770}
   - component: {fileID: 1434327849355395122}
   - component: {fileID: 2077853977420060766}
   - component: {fileID: 6199149649704210913}
@@ -558,6 +559,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5425479551185800770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1506547141851097540}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a3df360a4d44894ae340313d9d462fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _agent: {fileID: 2758450560571051843}
 --- !u!114 &1434327849355395122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,11 +592,11 @@ MonoBehaviour:
   OnEndTurnEvent:
     m_PersistentCalls:
       m_Calls: []
-  behaviorAgent: {fileID: 2758450560571051843}
-  triggerCompo: {fileID: 8503053869134199577}
-  moveCompo: {fileID: 1798265536912207056}
-  skillCompo: {fileID: 7088170391623219240}
-  bloodParticles: {fileID: 5722484335888396339}
+  _ai: {fileID: 5425479551185800770}
+  _mover: {fileID: 1798265536912207056}
+  _skillCompo: {fileID: 7088170391623219240}
+  _animTrigger: {fileID: 8503053869134199577}
+  _bloodEffect: {fileID: 0}
 --- !u!114 &2077853977420060766
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -652,27 +666,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 412b4fa01377f0b45b38cec44b96324d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationCompo: {fileID: 6199149649704210913}
-  animationCompo: {fileID: 3416386629718883097}
-  owner: {fileID: 6855447029533052954}
-  whatIsGround:
+  _whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  OnMoveEndEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1434327849355395122}
-        m_TargetAssemblyTypeName: Enemy, Assembly-CSharp
-        m_MethodName: TurnEnd
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  _moveSpeed: 2
+  _rotationCompo: {fileID: 6199149649704210913}
 --- !u!114 &5212786461650031543
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -735,7 +733,6 @@ MonoBehaviour:
   skillEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
 --- !u!1 &1532530410968089591
 GameObject:
   m_ObjectHideFlags: 0
@@ -4011,10 +4008,5 @@ PrefabInstance:
 --- !u!4 &4681602716368828180 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4402744080923607039, guid: 171dda363e9efd94ca9bc63e38ca9658, type: 3}
-  m_PrefabInstance: {fileID: 9070765011186305259}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &5722484335888396339 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 3642160410948286680, guid: 171dda363e9efd94ca9bc63e38ca9658, type: 3}
   m_PrefabInstance: {fileID: 9070765011186305259}
   m_PrefabAsset: {fileID: 0}

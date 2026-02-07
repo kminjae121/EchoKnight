@@ -43,6 +43,7 @@ namespace Code.Managers
         {
             if (_currentTurnUnit == null)
                 return;
+            
             _currentTurnUnit.OnTurnEnd();
             _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
             _currentTurnUnit = null;
@@ -55,11 +56,7 @@ namespace Code.Managers
             RefreshUnits();
             
             _currentTurnUnit = GetNextUnit();
-
             AdvanceTime(_currentTurnUnit);
-
-            // 사실 필요 없지만 가독성을 위해
-            _currentTurnUnit.TurnGauge = 0f;
             _currentTurnUnit.OnTurnStart();
 
             UpdateCurrentTurnUI();
@@ -122,7 +119,6 @@ namespace Code.Managers
         public List<ITurnable> GetTimelineUnits(int count)
         {
             return _units
-                //.Where(u => u != _currentTurnUnit)
                 .OrderBy(u => u.TurnGauge)
                 .Take(count)
                 .ToList();

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.EntityComponent;
@@ -13,17 +14,14 @@ using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering.UI;
 
 namespace Code.UnitSystem
 {
     public class UnitAttackComponent : RangeComponent
     {
         private CinemachineImpulseSource impulseSource;
-        
-        private EntityStatCompo _statCompo;
-        
-        [SerializeField] private StatSO atkDamageStat;
-        
+        [SerializeField] private LayerMask whatIsBody;
         [SerializeField] private UnitRotation rotationCompo; 
         [SerializeField] private AttackDataSO attackData; 
         private float _atkDamage;
@@ -31,8 +29,6 @@ namespace Code.UnitSystem
         public DamageData _damageData;
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
-
-
 
         private float addDamage = 0;
 
@@ -68,19 +64,13 @@ namespace Code.UnitSystem
             base.Start();
             
             _basicUnit = _owner as BasicUnit;
-
-            _statCompo = _basicUnit.GetUnitCompo<EntityStatCompo>();
+            
             
             _inputReader = _basicUnit.inputSO;
             
             _unitSO = _basicUnit.unitSO;
-            
-            StatSO target = _statCompo.GetStat(atkDamageStat);
-            Debug.Assert(target != null, $"{atkDamageStat.statName} does not exist");
-            target.OnValueChanged += HandleAtkDamageChanged;
-            _atkDamage = target.Value;
 
-            _basicUnit.unitSO.AtkDamage = _atkDamage;
+            _atkDamage = _basicUnit.unitStatCompo.GetStat<float>(StatInfo.AtkDamage);
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
 
@@ -105,18 +95,7 @@ namespace Code.UnitSystem
             _inputReader.OnAttackEvent -= AttackEnemy;
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
-            
-            StatSO target = _statCompo.GetStat(atkDamageStat);
-            Debug.Assert(target != null, $"{atkDamageStat.statName} does not exist");
-            target.OnValueChanged -= HandleAtkDamageChanged;
             ResetTileEvent -= EndUnit;
-        }
-        
-        private void HandleAtkDamageChanged(StatSO stat, float currentvalue, float previousvalue)
-        {
-            _atkDamage = _atkDamage + currentvalue;
-            
-            _basicUnit.unitSO.AtkDamage = _atkDamage;
         }
 
         private void AttackEnded()
@@ -207,11 +186,13 @@ namespace Code.UnitSystem
                     if (_targetEnemy != null && _targetingCompo == null)
                     {
                         rotationCompo.SetDir(_targetEnemy.transform.position);
+                        
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
                         _targetingCompo.Targeting();
                         
+                        CheckEnemyBody(_targetEnemy);
                         Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage,health.CurrentHealth, 
                             health.MaxHealth,_damageData.damage, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                     }
@@ -230,15 +211,51 @@ namespace Code.UnitSystem
                 }
             }
         }
+        
+
+        private void CheckEnemyBody(GameObject target)
+        {
+            _damageData.damage = _atkDamage;
+            addDamage = 0;
+            
+            Vector3 toAttacker = _basicUnit.transform.position - target.transform.position;
+            toAttacker.y = 0f;
+
+            Vector3 enemyForward = target.transform.forward;
+            enemyForward.y = 0f;
+
+            toAttacker.Normalize();
+            enemyForward.Normalize();
+
+            float dot = Vector3.Dot(enemyForward, toAttacker);
+            
+            float deadZone = 0.2f;
+
+            BodyType type =
+                dot > deadZone ? BodyType.Head :
+                dot < -deadZone ? BodyType.Back :
+                BodyType.None;
+            
+            if (_unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
+                addDamage = _damageData.damage * 0.4f;
+            else if (_unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
+                addDamage = _damageData.damage * 0.4f;
+            else
+                addDamage = 0f;
+        }
+
+
 
 
         public void AttackEnemy()
         {
             if (_basicUnit.isMyTurn && _isAct)
             {
+                _damageData.damage += addDamage;
                 GameObject enemy = _inputReader.GetEnemy();
 
                 FindEnemyIsThere(enemy);
+                
 
                 if (_targetEnemy == null)
                 {

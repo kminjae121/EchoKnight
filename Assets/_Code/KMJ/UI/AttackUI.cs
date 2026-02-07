@@ -20,6 +20,8 @@ namespace Code.UI
 
         [SerializeField] private List<Button> itemBtns;
 
+        [SerializeField] private List<TextMeshProUGUI> explainTxt;
+        
         [SerializeField] private List<GameObject> selectItem;
 
         [SerializeField] private InputReader inputSO;
@@ -104,6 +106,11 @@ namespace Code.UI
             {
                 obj.SetActive(false);
             });
+            explainTxt.ToList().ForEach(txt =>
+            {
+                txt.gameObject.SetActive(false);
+            });
+            explainTxt[_itemIdx].gameObject.SetActive(true);
             
             selectItem[_itemIdx].SetActive(true);
         }
@@ -149,27 +156,7 @@ namespace Code.UI
                 }
             }
 
-            Vector3 pos = items[_itemIdx].localPosition;
-            pos.x = 80;
-            pos.z = 0;
-            selectArrow.localPosition = pos;
-            
-            skillsName.ToList().ForEach(txt =>
-            {
-                txt.color = Color.white;
-            });
-            
-            Image img = selectItem[_itemIdx].GetComponent<Image>();
-            
-            skillsName[_itemIdx].color = img.color;
-            selectArrow.GetComponent<Image>().color = img.color;
-            
-            selectItem.ToList().ForEach(obj =>
-            {
-                obj.SetActive(false);
-            });
-            
-            selectItem[_itemIdx].SetActive(true);
+            SetAtkUI();
         }
 
         private void DownItem()
@@ -187,6 +174,11 @@ namespace Code.UI
                 }
             }
                 
+            SetAtkUI();
+        }
+
+        private void SetAtkUI()
+        {
             Vector3 pos = items[_itemIdx].localPosition;
             pos.x = 80;
             pos.z = 0;
@@ -208,18 +200,24 @@ namespace Code.UI
             skillsName[_itemIdx].color = img.color;
             selectArrow.GetComponent<Image>().color = img.color;
             
+            explainTxt.ToList().ForEach(txt =>
+            {
+                txt.gameObject.SetActive(false);
+            });
+            explainTxt[_itemIdx].gameObject.SetActive(true);
+            
             selectItem.ToList().ForEach(obj =>
             {
                 obj.SetActive(false);
             });
             
             selectItem[_itemIdx].SetActive(true);
-            
         }
 
         public void SetSkillUIName(SkillUIEvent evt)
         {
             skillsName[evt.skillIdx + 1].text = evt.skillName;
+            explainTxt[evt.skillIdx + 1].text = $"코스트 - {evt.skillCost}";
         }
 
         public void SetAtkUI(SetAtkUIEvent evt)

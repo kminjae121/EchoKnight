@@ -64,10 +64,14 @@ namespace Code.UI
             }
 
             unitStorage.units.Clear();
+            unitStorage.unitStates.Clear();
             
             foreach (var unit in _partyUnits)
+            {
                 unitStorage.units.Add(unit.UnitSpawn);
-            
+                unitStorage.unitStates.Add(new UnitState(unit));
+            }
+
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

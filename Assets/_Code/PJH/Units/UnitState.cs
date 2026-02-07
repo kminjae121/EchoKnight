@@ -7,14 +7,15 @@ namespace Code.UnitSystem
     [Serializable]
     public class UnitState
     {
-        public UnitSO Data { get; private set; }
+        [field: SerializeField] public UnitSO Data { get; private set; }
+        
         public NotifyValue<float> CurrentHp { get; private set; }
         public bool IsDead => CurrentHp.Value <= 0;
 
         public UnitState(UnitSO data)
         {
             Data = data;
-            //CurrentHp
+            CurrentHp.Value = Data.Maxhealth;
         }
         
         public void TakeDamage(float value)

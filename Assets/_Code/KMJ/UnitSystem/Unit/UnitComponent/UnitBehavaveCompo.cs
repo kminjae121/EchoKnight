@@ -157,7 +157,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
             _visualPrefabs.SetActive(false);
             _isAct = false;
             isMoving = true;
@@ -201,7 +201,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             isMoving = false;
             _isAct = true;
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             
             animationCompo.PlaySelectAnimation("IDLE");   

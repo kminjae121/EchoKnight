@@ -281,7 +281,7 @@ namespace Code.UnitSystem
                 attackEvent?.Invoke(_targetEnemy);
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
                     0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
-                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true));
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                 _basicUnit.RemoveCost(15f);   
             }
         }

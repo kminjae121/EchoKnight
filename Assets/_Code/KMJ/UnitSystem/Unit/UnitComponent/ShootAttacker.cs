@@ -87,7 +87,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             animtionCompo.PlaySelectAnimation("IDLE");
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             atkCompo.attackEndEvent?.Invoke();
         }
     }

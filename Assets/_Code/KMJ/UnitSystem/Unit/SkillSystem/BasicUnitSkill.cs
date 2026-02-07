@@ -146,7 +146,7 @@ namespace Code.UnitSystem.SkillSystem
                     skillEvent?.Invoke(_targetEnemy);
 
                     if (_unitBase != null)
-                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true));
+                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                     
                     if (_targetingCompo != null) _targetingCompo.OffTargeting();
                     
@@ -189,7 +189,7 @@ namespace Code.UnitSystem.SkillSystem
                     {
                         Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         _basicUnit.gaugeManager.UseSkill(useSkillPoint);
-                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true));
+                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                         skillEvent?.Invoke(null);
                         Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
                     }

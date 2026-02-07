@@ -91,11 +91,12 @@ namespace Code.UnitSystem.SkillSystem
 
                     if (_targetEnemy != null && _targetingCompo == null)
                     {
+                        CheckEnemyBody(_targetEnemy);
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
                         if (_targetingCompo != null) _targetingCompo.Targeting();
-
-                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, health.CurrentHealth,
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage, health.CurrentHealth,
                             health.MaxHealth, _damageData.damage, true, 
                             _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                     }

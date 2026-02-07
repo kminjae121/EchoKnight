@@ -30,9 +30,6 @@ public class UnitSO : ScriptableObject
 
     [Header("WhatItIs")] 
     public UnitSpawnSO UnitSpawn;
-    
-    [Header("OwnUnitCards")]
-    public List<SkillSO> UnitSkillCards;
 
     [Space(4)]
     [Header("CharacterOwnCost")]

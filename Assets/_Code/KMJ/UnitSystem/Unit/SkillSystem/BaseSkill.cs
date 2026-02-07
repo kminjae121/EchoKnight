@@ -33,6 +33,8 @@ namespace Code.UnitSystem.SkillSystem
         
         protected DamageData _damageData;
         
+        public float addDamage { get; private set; }
+        
         protected Unit _unitBase; 
         
         public bool isCanUseSkill = false;
@@ -97,6 +99,37 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void ShowSkillRange()
         {
             
+        }
+        
+        public void CheckEnemyBody(GameObject target)
+        {
+            _damageData.damage = damage;
+            addDamage = 0;
+            
+            Vector3 toAttacker = _unitBase.transform.position - target.transform.position;
+            toAttacker.y = 0f;
+
+            Vector3 enemyForward = target.transform.forward;
+            enemyForward.y = 0f;
+
+            toAttacker.Normalize();
+            enemyForward.Normalize();
+
+            float dot = Vector3.Dot(enemyForward, toAttacker);
+            
+            float deadZone = 0.2f;
+
+            BodyType type =
+                dot > deadZone ? BodyType.Head :
+                dot < -deadZone ? BodyType.Back :
+                BodyType.None;
+            
+            if (_unitBase.unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
+                addDamage = _damageData.damage * 0.4f;
+            else if (_unitBase.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
+                addDamage = _damageData.damage * 0.4f;
+            else
+                addDamage = 0f;
         }
         
 

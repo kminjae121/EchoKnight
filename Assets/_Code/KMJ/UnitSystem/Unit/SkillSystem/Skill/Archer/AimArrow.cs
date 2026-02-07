@@ -13,8 +13,9 @@ using UnityEngine;
 
         private GameObject _target;
         
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             triggerCompo.OnAimArrowTrigger += MakeArrow;
             triggerCompo.OnAimArrowEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);

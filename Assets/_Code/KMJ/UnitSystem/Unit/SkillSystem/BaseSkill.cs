@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.EntityComponent;
@@ -19,7 +20,8 @@ namespace Code.UnitSystem.SkillSystem
         [Header("Base Settings")]
         [SerializeField] protected AttackDataSO attackData;
         [field: SerializeField] public Sprite skillImage { get; set; }
-        public float damage;
+        [SerializeField] private float basicSkillDamage;
+        protected float damage;
         public int useSkillPoint;
         [SerializeField] protected bool ownSkill = false;
 
@@ -30,6 +32,8 @@ namespace Code.UnitSystem.SkillSystem
         #endregion
         
         protected DamageData _damageData;
+        
+        public float addDamage { get; private set; }
         
         protected Unit _unitBase; 
         
@@ -50,10 +54,26 @@ namespace Code.UnitSystem.SkillSystem
             base.Awake();
 
             _unitBase = _owner as Unit;
+            
 
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
             ResetTileEvent += skillEnd;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            UnitStatCompo statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
+            
+            float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
+            
+            float floatdamage = basicSkillDamage *= skillDamageValue;
+            
+            damage = (int)floatdamage;
+
+            
+            _damageData.damage = damage;
         }
 
         public virtual void InitializeSkill()
@@ -79,6 +99,37 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void ShowSkillRange()
         {
             
+        }
+        
+        public void CheckEnemyBody(GameObject target)
+        {
+            _damageData.damage = damage;
+            addDamage = 0;
+            
+            Vector3 toAttacker = _unitBase.transform.position - target.transform.position;
+            toAttacker.y = 0f;
+
+            Vector3 enemyForward = target.transform.forward;
+            enemyForward.y = 0f;
+
+            toAttacker.Normalize();
+            enemyForward.Normalize();
+
+            float dot = Vector3.Dot(enemyForward, toAttacker);
+            
+            float deadZone = 0.2f;
+
+            BodyType type =
+                dot > deadZone ? BodyType.Head :
+                dot < -deadZone ? BodyType.Back :
+                BodyType.None;
+            
+            if (_unitBase.unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
+                addDamage = _damageData.damage * 0.4f;
+            else if (_unitBase.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
+                addDamage = _damageData.damage * 0.4f;
+            else
+                addDamage = 0f;
         }
         
 

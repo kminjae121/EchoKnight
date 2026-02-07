@@ -6,19 +6,22 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 {
     public enum StatInfo
     {
-        MoveSpeed,
+        MoveSpeed, 
         AtkDamage,
         MaxHealth,
+        SkillDamage,
     }
     public class UnitStatCompo : MonoBehaviour, IUnitComponent
     {
         private UnitSO unitSO;
 
-        public float MoveSpeed => unitSO.MoveSpeed;
+        private float MoveSpeed => unitSO.MoveSpeed;
 
-        public float AtkDamage => unitSO.AtkDamage;
+        private float AtkDamage => unitSO.AtkDamage;
 
-        public float MaxHealth => unitSO.Maxhealth;
+        private float MaxHealth => unitSO.Maxhealth;
+        
+        private float SkillDamage => unitSO.SkillDamage;
 
         public void Initialize(Code.UnitSystem.Unit owner)
         {
@@ -32,6 +35,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 StatInfo.MoveSpeed => MoveSpeed,
                 StatInfo.AtkDamage => AtkDamage,
                 StatInfo.MaxHealth => MaxHealth,
+                StatInfo.SkillDamage => SkillDamage,
                 _ => default(T)
             };
             

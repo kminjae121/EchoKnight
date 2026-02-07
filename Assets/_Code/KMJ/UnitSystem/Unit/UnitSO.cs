@@ -30,9 +30,6 @@ public class UnitSO : ScriptableObject
 
     [Header("WhatItIs")] 
     public UnitSpawnSO UnitSpawn;
-    
-    [Header("OwnUnitCards")]
-    public List<SkillSO> UnitSkillCards;
 
     [Space(4)]
     [Header("CharacterOwnCost")]
@@ -51,6 +48,9 @@ public class UnitSO : ScriptableObject
     public float Maxhealth;
 
     public float AtkDamage;
+
+    [Range(1, 3f)]
+    public float SkillDamage;
     
     public float AttackDistance;
 

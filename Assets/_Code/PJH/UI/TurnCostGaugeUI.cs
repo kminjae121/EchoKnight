@@ -13,7 +13,7 @@ namespace Code.UI
         [SerializeField] private TurnCostGaugeManager gaugeManager;
         [SerializeField] private float gaugeTweenTime = 0.3f;
 
-        private Tween _gaugeTween; 
+        private Tween _gaugeTween;
 
         private void OnEnable()
         {

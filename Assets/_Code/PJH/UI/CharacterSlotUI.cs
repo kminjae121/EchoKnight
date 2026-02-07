@@ -12,7 +12,7 @@ namespace Code.UI
         [SerializeField] private UnitSO characterInfo;
 
         private bool _isSelected;
-        
+
         private void Awake()
         {
             slotButton.onClick.AddListener(HandleSlotButton);
@@ -36,13 +36,13 @@ namespace Code.UI
             else
                 Bus<CharacterSelectEvent>.Raise(new CharacterSelectEvent(characterInfo));
         }
-        
+
         private void HandleCharacterSelected(CharacterSelectEvent evt)
         {
             if (evt.Unit == characterInfo)
                 _isSelected = true;
         }
-        
+
         private void HandleCharacterDeselected(CharacterDeselectEvent evt)
         {
             if (evt.Unit == characterInfo)
@@ -50,13 +50,9 @@ namespace Code.UI
         }
 
         public void OnPointerEnter(PointerEventData eventData)
-        {
-            Bus<CharacterHoverEvent>.Raise(new CharacterHoverEvent(characterInfo.UnitName));
-        }
+            => Bus<CharacterHoverEvent>.Raise(new CharacterHoverEvent(characterInfo.UnitName));
 
         public void OnPointerExit(PointerEventData eventData)
-        {
-            Bus<CharacterHoverEvent>.Raise(new CharacterHoverEvent(null));
-        }
+            => Bus<CharacterHoverEvent>.Raise(new CharacterHoverEvent(null));
     }
 }

@@ -217,7 +217,7 @@ namespace Code.UI
         public void SetSkillUIName(SkillUIEvent evt)
         {
             skillsName[evt.skillIdx + 1].text = evt.skillName;
-            explainTxt[evt.skillIdx + 1].text = $"코스트 : {evt.skillCost}";
+            explainTxt[evt.skillIdx + 1].text = $"코스트 - {evt.skillCost}";
         }
 
         public void SetAtkUI(SetAtkUIEvent evt)

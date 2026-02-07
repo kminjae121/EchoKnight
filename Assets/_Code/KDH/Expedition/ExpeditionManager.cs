@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using _00.Core._02.Scripts._01.Manager;
+using Code.Core;
 using Code.Expedition.Data;
 using Code.Expedition.Logic;
-using Code.Core;
 using Code.Core.Events.Bus;
 using UnityEngine;
 
@@ -14,6 +14,7 @@ namespace Code.Expedition
         [Header("Settings")]
         [SerializeField] private string mapSceneName = "ExpeditionMapScene"; 
         [SerializeField] private float nodeSelectionDelay = 1.5f;
+        [SerializeField] private float battleReturnDelay = 3.0f;
 
         [Header("Components")]
         [SerializeField] private ExpeditionMapGenerator mapGenerator;
@@ -26,16 +27,31 @@ namespace Code.Expedition
         protected override void Awake()
         {
             base.Awake();
+            
+            DontDestroyOnLoad(gameObject);
+
             if (mapGenerator == null)
                 mapGenerator = GetComponent<ExpeditionMapGenerator>();
 
             InitializeLogics();
         }
 
+        private void OnEnable()
+        {
+            Bus<StageClearEvent>.Subscribe(OnStageClear);
+        }
+
+        private void OnDisable()
+        {
+            Bus<StageClearEvent>.Unsubscribe(OnStageClear);
+        }
 
         private void Start()
         {
-            StartNewExpedition();
+            if (_currentNode == null)
+            {
+                StartNewExpedition();
+            }
         }
 
         private void InitializeLogics()
@@ -107,13 +123,26 @@ namespace Code.Expedition
         
         public RuntimeExpeditionNode GetCurrentNode() => _currentNode;
 
-        public void FailExpedition()
+        private void OnStageClear(StageClearEvent evt)
         {
-            Debug.Log("원정 실패. 데이터를 초기화합니다.");
-            _currentNode = null;
+            Debug.Log("전투 종료. 결과와 무관하게 맵으로 복귀합니다.");
+            StartCoroutine(ProcessBattleReturnRoutine());
+        }
+
+        private IEnumerator ProcessBattleReturnRoutine()
+        {
+            yield return new WaitForSeconds(battleReturnDelay);
             
-            if (BattleContext.Instance != null)
-                BattleContext.Instance.ClearContext();
+            CompleteCurrentNode();
+
+            if (SceneChangeManager.Instance != null)
+            {
+                SceneChangeManager.Instance.ChangeSelectScene(mapSceneName);
+            }
+            else
+            {
+                UnityEngine.SceneManagement.SceneManager.LoadScene(mapSceneName);
+            }
         }
     }
 }

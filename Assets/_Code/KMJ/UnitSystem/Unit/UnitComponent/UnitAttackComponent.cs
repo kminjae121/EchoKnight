@@ -28,11 +28,8 @@ namespace Code.UnitSystem
         public DamageData _damageData;
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
-
-
-
+        
         private float addDamage = 0;
-
         
         private InputReader _inputReader;
         

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.EntityComponent;
@@ -19,7 +20,8 @@ namespace Code.UnitSystem.SkillSystem
         [Header("Base Settings")]
         [SerializeField] protected AttackDataSO attackData;
         [field: SerializeField] public Sprite skillImage { get; set; }
-        public float damage;
+        [SerializeField] private float basicSkillDamage;
+        protected float damage;
         public int useSkillPoint;
         [SerializeField] protected bool ownSkill = false;
 
@@ -50,10 +52,26 @@ namespace Code.UnitSystem.SkillSystem
             base.Awake();
 
             _unitBase = _owner as Unit;
+            
 
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
             ResetTileEvent += skillEnd;
+        }
+
+        protected override void Start()
+        {
+            base.Start();
+            UnitStatCompo statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
+            
+            float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
+            
+            float floatdamage = basicSkillDamage *= skillDamageValue;
+            
+            damage = (int)floatdamage;
+
+            
+            _damageData.damage = damage;
         }
 
         public virtual void InitializeSkill()

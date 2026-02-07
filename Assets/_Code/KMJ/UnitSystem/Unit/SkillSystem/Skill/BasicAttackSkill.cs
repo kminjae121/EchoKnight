@@ -21,13 +21,13 @@ public class BasicAttackSkill : BasicUnitSkill
         
     private Vector3 _ownTrm;
     
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         skillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
         impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-        _damageData.damage = 7;
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
 

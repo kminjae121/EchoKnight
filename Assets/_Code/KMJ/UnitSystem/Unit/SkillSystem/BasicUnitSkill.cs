@@ -38,14 +38,18 @@ namespace Code.UnitSystem.SkillSystem
                 triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
                 _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
             }
-
-            _damageData.damage = damage;
+            
 
             var impulseObj = GameObject.Find("ImpulseSource");
             if (impulseObj) impulseSource = impulseObj.GetComponent<CinemachineImpulseSource>();
 
             var camObj = GameObject.Find("TopCam");
             if (camObj) unitCam = camObj.GetComponent<SetUnitCamera>();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
         }
 
         public override void OnDisable()

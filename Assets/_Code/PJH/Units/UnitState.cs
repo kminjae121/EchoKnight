@@ -1,4 +1,5 @@
 ﻿using System;
+using Code.Core;
 using UnityEngine;
 
 namespace Code.UnitSystem
@@ -6,14 +7,15 @@ namespace Code.UnitSystem
     [Serializable]
     public class UnitState
     {
-        public UnitSO Data { get; private set; }
-        public float CurrentHp { get; private set; }
-        public bool IsDead => CurrentHp <= 0;
+        [field: SerializeField] public UnitSO Data { get; private set; }
+        
+        public NotifyValue<float> CurrentHp { get; private set; }
+        public bool IsDead => CurrentHp.Value <= 0;
 
         public UnitState(UnitSO data)
         {
             Data = data;
-            //CurrentHp
+            CurrentHp.Value = Data.Maxhealth;
         }
         
         public void TakeDamage(float value)
@@ -21,15 +23,15 @@ namespace Code.UnitSystem
             if (IsDead)
                 return;
 
-            CurrentHp = Mathf.Max(0, CurrentHp - value);
+            CurrentHp.Value = Mathf.Max(0, CurrentHp.Value - value);
         }
 
         public void Heal(float value)
         {
             if (IsDead)
                 return;
-            
-            //CurrentHp = Mathf.Min()
+
+            CurrentHp.Value = Mathf.Min(Data.Maxhealth, CurrentHp.Value + value);
         }
     }
 }

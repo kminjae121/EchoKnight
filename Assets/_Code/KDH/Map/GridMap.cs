@@ -1,6 +1,6 @@
 ﻿using Code.Core.Interfaces;
 using UnityEngine;
-using UnityEngine. Rendering.Universal;
+using UnityEngine.Rendering.Universal;
 
 namespace Code.Map
 {
@@ -21,6 +21,7 @@ namespace Code.Map
         [SerializeField] private Material obstacleMaterial;
         [SerializeField] private float decalHeight = 1f;
         [SerializeField] private float projectionDepth = 1f;
+        [SerializeField] private uint decalRenderingLayerMask = 6;
 
         [SerializeField, HideInInspector] private MapTile[] serializedTiles;
 
@@ -104,16 +105,18 @@ namespace Code.Map
         private void CreateDecal(GameObject tileObject)
         {
             GameObject decalObject = new GameObject("Decal");
-            decalObject. transform.parent = tileObject.transform;
-            decalObject.transform. localPosition = Vector3.up * decalHeight;
-            decalObject.transform. localRotation = Quaternion. Euler(90f, 0f, 0f);
+            decalObject.transform.parent = tileObject.transform;
+            decalObject.transform.localPosition = Vector3.up * decalHeight;
+            decalObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
             DecalProjector projector = decalObject.AddComponent<DecalProjector>();
+
             projector.size = new Vector3(tileSize * 0.9f, tileSize * 0.9f, projectionDepth);
             projector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
 
-            MapTileVisual visual = decalObject. AddComponent<MapTileVisual>();
-            visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial, projectionDepth);
+            MapTileVisual visual = decalObject.AddComponent<MapTileVisual>();
+
+            visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial, projectionDepth, decalRenderingLayerMask);
         }
 
         private void ClearMap()
@@ -142,31 +145,31 @@ namespace Code.Map
         {
             Vector3 localPos = worldPosition - transform.position;
             int x = Mathf.RoundToInt(localPos.x / tileSize);
-            int y = Mathf.RoundToInt(localPos. z / tileSize);
+            int y = Mathf.RoundToInt(localPos.z / tileSize);
             return new Vector2Int(x, y);
         }
 
         public IMapTile GetTile(Vector2Int position)
         {
-            return GetTile(position. x, position.y);
+            return GetTile(position.x, position.y);
         }
 
         public IMapTile GetTile(int x, int y)
         {
-            if (! IsValidPosition(new Vector2Int(x, y))) return null;
+            if (!IsValidPosition(new Vector2Int(x, y))) return null;
             
             if (tiles == null)
             {
                 RebuildTileArray();
             }
             
-            return tiles? [x, y];
+            return tiles?[x, y];
         }
 
         public bool IsValidPosition(Vector2Int position)
         {
             return position.x >= 0 && position.x < width &&
-                   position. y >= 0 && position.y < height;
+                   position.y >= 0 && position.y < height;
         }
 
         public bool CanMoveTo(Vector2Int position)

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
-using UnityEngine. Rendering. Universal;
+using UnityEngine.Rendering.Universal;
 
-namespace Code. Map
+namespace Code.Map
 {
     [ExecuteAlways]
     [RequireComponent(typeof(DecalProjector))]
@@ -27,7 +27,13 @@ namespace Code. Map
             UpdateVisual();
         }
 
-        public void Initialize(Material walkable, Material nonWalkable, Material enemy, Material obstacle, float projectionDepth)
+        public void Initialize(
+            Material walkable, 
+            Material nonWalkable, 
+            Material enemy, 
+            Material obstacle, 
+            float projectionDepth,
+            uint renderingLayerMask)
         {
             walkableMaterial = walkable;
             nonWalkableMaterial = nonWalkable;
@@ -41,6 +47,8 @@ namespace Code. Map
             size.z = projectionDepth;
             decalProjector.size = size;
             decalProjector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
+
+            decalProjector.renderingLayerMask = renderingLayerMask;
             
             UpdateVisual();
         }
@@ -57,7 +65,7 @@ namespace Code. Map
             if (mapTile.HasEnemy)
                 return enemyMaterial;
             
-            if (mapTile. HasObstacle)
+            if (mapTile.HasObstacle)
                 return obstacleMaterial;
             
             if (!mapTile.IsWalkable)

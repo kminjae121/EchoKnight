@@ -13,7 +13,7 @@ namespace Code.UI
         [SerializeField] private GameObject atkUI;
         [SerializeField] private UnitSkillUI skillUI;
         [SerializeField] private List<TextMeshProUGUI> skillsName;
-
+        
         [SerializeField] private RectTransform selectArrow;
         
         [SerializeField] private List<RectTransform> items;
@@ -69,6 +69,11 @@ namespace Code.UI
             else if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
             {
                 UpItem();
+            }
+
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+            {
+                
             }
             
             selectArrow.transform.rotation = Quaternion.Euler(_xValue += 1f,0,90);

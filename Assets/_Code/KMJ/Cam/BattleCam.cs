@@ -15,6 +15,9 @@ namespace _Code.KMJ.Cam
         private Vector3 movement;
         [SerializeField] private float moveSpeed;
 
+        private float _basicSpeed;
+        private float _reduceSpeed;
+
         private bool isLocking = false;
 
         [SerializeField] private CinemachinePositionComposer positionCompoer;
@@ -24,6 +27,9 @@ namespace _Code.KMJ.Cam
             movement = Vector3.zero;
             
             Bus<UnitCamSettingEvent>.Subscribe(SetTarget);
+
+            _basicSpeed = moveSpeed;
+            _reduceSpeed = moveSpeed / 2;
         }
 
         private void Start()
@@ -74,6 +80,14 @@ namespace _Code.KMJ.Cam
                 battleCam.Lens.FieldOfView -= 100 * Time.deltaTime;
             }
 
+            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                moveSpeed = _reduceSpeed;
+            }
+            if (UnityEngine.Input.GetKeyUp(KeyCode.LeftShift))
+            {
+                moveSpeed = _basicSpeed;
+            }
             if (inputReader.MovementKey.x != 0 || inputReader.MovementKey.y != 0)
             {
                 if (!isLocking)

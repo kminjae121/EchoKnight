@@ -167,9 +167,13 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             if(tileInfo == null)
                 yield break;
-            
-            if(_currentMapTile != null)
-                _currentMapTile.GetComponent<IMapTile>().SetObstacle(false);
+
+            if (_currentMapTile != null)
+            {
+                IMapTile tileInfos = _currentMapTile.GetComponent<IMapTile>();
+                tileInfos.SetObstacle(false);
+                tileInfos.SetWalkable(true);
+            }
             
             
             yield return new WaitForSeconds(0.3f);

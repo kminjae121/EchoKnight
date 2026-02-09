@@ -467,6 +467,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  ownCircleMesh: {fileID: 3114693496072462871}
+  CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
+  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
   effectPrefab: {fileID: 1884208570772499433}
 --- !u!114 &7245421633850133361
 MonoBehaviour:
@@ -527,6 +530,9 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  ownCircleMesh: {fileID: 3114693496072462871}
+  CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
+  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
   _knifePrefab: {fileID: 9115162897217047785, guid: 9ba78afe5783aa647b95bd3c0c5c2af4, type: 3}
 --- !u!1 &1332530918749866966
 GameObject:
@@ -2239,6 +2245,9 @@ MonoBehaviour:
   rotationCompo: {fileID: 3966720720610224676}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   triggerCompo: {fileID: 4102828035171866210}
+  ownCircleMesh: {fileID: 3114693496072462871}
+  CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
+  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
   attackEvent:
     m_PersistentCalls:
       m_Calls:
@@ -2257,19 +2266,7 @@ MonoBehaviour:
         m_CallState: 2
   attackStartEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 8758395380733786865}
-        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
-        m_MethodName: SetActive
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   attackEndEvent:
     m_PersistentCalls:
       m_Calls:

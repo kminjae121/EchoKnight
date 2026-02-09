@@ -63,6 +63,8 @@ namespace UnitSystem
 
             if (triggerCompo != null)
                 triggerCompo.OnDeadEvent += LastDie;
+
+            behaveCompo._currentMapTile = _startTile;
         }
 
         protected override void OnDestroy()
@@ -132,6 +134,12 @@ namespace UnitSystem
             if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
             {
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
+            }
+
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
+            {
+                RangesCompo.RemoveAllRange();
+                Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             }
 
             HandleTargeting();

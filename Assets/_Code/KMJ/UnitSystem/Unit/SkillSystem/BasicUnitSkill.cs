@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using EnemySystem;
@@ -17,6 +18,7 @@ namespace Code.UnitSystem.SkillSystem
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo = null;
+        
 
         protected override void Awake()
         {
@@ -116,6 +118,7 @@ namespace Code.UnitSystem.SkillSystem
             }
         }
 
+
         protected override void CanUseSkillTrue()
         {
             base.CanUseSkillTrue();
@@ -144,6 +147,8 @@ namespace Code.UnitSystem.SkillSystem
                         rotationCompo.SetDir(enemy.transform.position);
 
                     skillEvent?.Invoke(_targetEnemy);
+                    
+                    ownCircleMesh.material = basicMaterial;
 
                     if (_unitBase != null)
                         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
@@ -195,8 +200,7 @@ namespace Code.UnitSystem.SkillSystem
                     }
                     else
                     {
-                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
-
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
                         CheckCanAttack();
                         CanUseThisSkill();

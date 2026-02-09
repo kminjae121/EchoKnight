@@ -24,11 +24,18 @@ namespace Code.UnitSystem
         [SerializeField] private LayerMask whatIsBody;
         [SerializeField] private UnitRotation rotationCompo; 
         [SerializeField] private AttackDataSO attackData; 
+        [SerializeField] private UnitAnimationTrigger triggerCompo;
+        [SerializeField] private MeshRenderer ownCircleMesh;
+
+
+
+        [SerializeField] private Material CriticalMaterial;
+        [SerializeField] private Material basicMaterial;
+        
         private float _atkDamage;
 
         public DamageData _damageData;
 
-        [SerializeField] private UnitAnimationTrigger triggerCompo;
 
         private float addDamage = 0;
 
@@ -235,13 +242,24 @@ namespace Code.UnitSystem
                 dot > deadZone ? BodyType.Head :
                 dot < -deadZone ? BodyType.Back :
                 BodyType.None;
-            
+
             if (_unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
+            {
                 addDamage = _damageData.damage * 0.4f;
+                ownCircleMesh.material = CriticalMaterial;
+            }
             else if (_unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
+            {
                 addDamage = _damageData.damage * 0.4f;
+                
+                ownCircleMesh.material = CriticalMaterial;
+            }
             else
+            {
                 addDamage = 0f;
+                
+                ownCircleMesh.material = basicMaterial;
+            }
         }
 
 
@@ -283,6 +301,7 @@ namespace Code.UnitSystem
                     0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                 _basicUnit.RemoveCost(15f);   
+                ownCircleMesh.material = basicMaterial;
             }
         }
 

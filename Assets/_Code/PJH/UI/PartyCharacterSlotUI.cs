@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class CharacterSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class PartyCharacterSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Image slotImage;
         [SerializeField] private Button slotButton;

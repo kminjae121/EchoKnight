@@ -2,7 +2,7 @@
 
 namespace Code.UI
 {
-    public class ReadyButton : MonoBehaviour
+    public class LobbyButton : MonoBehaviour
     {
         [SerializeField] private GameObject characterSelectUI;
 

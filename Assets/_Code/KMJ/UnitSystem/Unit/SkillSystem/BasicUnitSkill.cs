@@ -93,6 +93,7 @@ namespace Code.UnitSystem.SkillSystem
 
                     if (_targetEnemy != null && _targetingCompo == null)
                     {
+                        rotationCompo.SetDir(_targetEnemy.transform.position);
                         CheckEnemyBody(_targetEnemy);
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();

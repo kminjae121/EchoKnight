@@ -23,7 +23,7 @@ namespace Code.UI
 
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Tab))
             {
                 _btn.onClick?.Invoke();
             }

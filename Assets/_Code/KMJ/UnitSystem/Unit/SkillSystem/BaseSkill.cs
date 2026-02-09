@@ -33,7 +33,7 @@ namespace Code.UnitSystem.SkillSystem
         
         protected DamageData _damageData;
         
-        public float addDamage { get; private set; }
+        public float addDamage { get; set; }
         
         protected Unit _unitBase; 
         
@@ -48,6 +48,13 @@ namespace Code.UnitSystem.SkillSystem
 
         protected CinemachineImpulseSource impulseSource;
         protected SetUnitCamera unitCam;
+        
+        [SerializeField] protected MeshRenderer ownCircleMesh;
+
+
+
+        [SerializeField] protected Material CriticalMaterial;
+        [SerializeField] protected Material basicMaterial;
         
         protected override void Awake()
         {
@@ -123,13 +130,24 @@ namespace Code.UnitSystem.SkillSystem
                 dot > deadZone ? BodyType.Head :
                 dot < -deadZone ? BodyType.Back :
                 BodyType.None;
-            
+
             if (_unitBase.unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
+            {
                 addDamage = _damageData.damage * 0.4f;
+                ownCircleMesh.material = CriticalMaterial;
+            }
             else if (_unitBase.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
+            {
                 addDamage = _damageData.damage * 0.4f;
+                
+                ownCircleMesh.material = CriticalMaterial;
+            }
             else
+            {
                 addDamage = 0f;
+                
+                ownCircleMesh.material = basicMaterial;
+            }
         }
         
 

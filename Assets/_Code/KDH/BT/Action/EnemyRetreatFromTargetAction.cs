@@ -6,41 +6,33 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Enemy Retreat From Target", story: "[Agent] retreats from [Target]", category: "Action", id: "f577f05a03542ef3f525d069c7c53d56")]
+[NodeDescription(name: "Enemy Retreat From Target", story: "[Agent] retreats from [Target]", category: "Action", id: "EnemyRetreatAction")]
 public partial class EnemyRetreatFromTargetAction : Action
 {
     [SerializeReference] public BlackboardVariable<GameObject> Agent;
     [SerializeReference] public BlackboardVariable<GameObject> Target;
     [SerializeReference] public BlackboardVariable<int> RetreatSteps = new BlackboardVariable<int>(3);
 
-    private EnemyGridMovingSystem _mover;
+    private EnemyUnit _enemyUnit;
     private bool _isMoving;
 
     protected override Status OnStart()
     {
         if (Agent.Value == null || Target.Value == null) 
-        {
             return Status.Failure;
-        }
         
-        _mover = Agent.Value.GetComponent<EnemyGridMovingSystem>();
+        _enemyUnit = Agent.Value.GetComponent<EnemyUnit>();
 
-        if (_mover == null) 
+        if (_enemyUnit == null) 
         {
-            Debug.LogError("[EnemyRetreatAction] Agent에 EnemyGridMovingSystem 컴포넌트가 없습니다.");
+            Debug.LogError($"[EnemyRetreatAction] {Agent.Value.name}에 EnemyUnit 컴포넌트가 없습니다.");
             return Status.Failure;
         }
 
-        if (_mover.OnMoveEndEvent == null)
-        {
-            _mover.OnMoveEndEvent = new UnityEngine.Events.UnityEvent();
-        }
-        
-        _mover.OnMoveEndEvent.AddListener(OnDone);
-        
-        _mover.RetreatFromTarget(Target.Value.transform.position, RetreatSteps.Value);
-        
         _isMoving = true;
+        
+        _enemyUnit.OrderRetreat(Target.Value.transform.position, RetreatSteps.Value, OnDone);
+        
         return Status.Running;
     }
 
@@ -50,15 +42,8 @@ public partial class EnemyRetreatFromTargetAction : Action
         return Status.Success;
     }
 
-    protected override void OnEnd()
+    private void OnDone()
     {
-        if (_mover != null) 
-            _mover.OnMoveEndEvent.RemoveListener(OnDone);
-    }
-
-    private void OnDone() 
-    { 
-        _isMoving = false; 
+        _isMoving = false;
     }
 }
-

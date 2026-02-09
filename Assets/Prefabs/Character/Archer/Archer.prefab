@@ -1022,8 +1022,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04122b9d693b9694aa8442623c28c6bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <TurnGauge>k__BackingField: 0
   <unitSO>k__BackingField: {fileID: 11400000, guid: a410916a75384cb49974c8aafd0d7bb7, type: 2}
+  <TurnGauge>k__BackingField: 0
   OnStartTurnEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1068,7 +1068,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   <inputSO>k__BackingField: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
@@ -1626,7 +1625,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   isMove: 0
-  atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
+  whatIsBody:
+    serializedVersion: 2
+    m_Bits: 512
   rotationCompo: {fileID: 1970335402761181577}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   triggerCompo: {fileID: 2692279809152063950}
@@ -2612,7 +2613,7 @@ MonoBehaviour:
   isMove: 0
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
   <skillImage>k__BackingField: {fileID: 21300000, guid: e0d28137676e2ba428d9594922a7cfd3, type: 3}
-  damage: 8
+  basicSkillDamage: 6
   useSkillPoint: 18
   ownSkill: 0
   isCanUseSkill: 0
@@ -2646,7 +2647,7 @@ MonoBehaviour:
   isMove: 0
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
   <skillImage>k__BackingField: {fileID: 21300000, guid: 1fe784c0346a64742a9ab94ab0dd7617, type: 3}
-  damage: 3
+  basicSkillDamage: 3
   useSkillPoint: 20
   ownSkill: 0
   isCanUseSkill: 0
@@ -2669,7 +2670,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7329433671826857726}
-  - component: {fileID: 953989659871225942}
+  - component: {fileID: 1501015307250350184}
   m_Layer: 7
   m_Name: StatCompo
   m_TagString: Untagged
@@ -2692,7 +2693,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2773054132212776123}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &953989659871225942
+--- !u!114 &1501015307250350184
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2701,16 +2702,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6793596474031118395}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7654bea12aa4a70b9929138914e9df3, type: 3}
+  m_Script: {fileID: 11500000, guid: 86877c1bb2584ed2a0e8fde4f5836125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statOverrides:
-  - stat: {fileID: 11400000, guid: 63387e3874071ca48bdeb9a8b73277ff, type: 2}
-    isUseOverride: 1
-    overrideBaseValue: 120
-  - stat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
-    isUseOverride: 1
-    overrideBaseValue: 4
 --- !u!1 &6926012451801960857
 GameObject:
   m_ObjectHideFlags: 0

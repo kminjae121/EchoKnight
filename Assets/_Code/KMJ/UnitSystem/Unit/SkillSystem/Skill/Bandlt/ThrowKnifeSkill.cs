@@ -15,8 +15,9 @@ using UnityEngine;
 
         private GameObject _target;
         
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             triggerCompo.OnThrowKnifeTrigger += MakeThrowKnife;
             triggerCompo.OnThrowKnifeEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
@@ -69,7 +70,8 @@ using UnityEngine;
         {
             skillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }

@@ -1562,8 +1562,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04122b9d693b9694aa8442623c28c6bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <TurnGauge>k__BackingField: 100
   <unitSO>k__BackingField: {fileID: 11400000, guid: 13c742cd81754804786cc1e1241a0a8f, type: 2}
+  <TurnGauge>k__BackingField: 100
   OnStartTurnEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1595,7 +1595,6 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   <inputSO>k__BackingField: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  unitDeadChannel: {fileID: 11400000, guid: f9cb449ab5dcea649b609abb57a07560, type: 2}
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
@@ -3625,7 +3624,7 @@ MonoBehaviour:
   isMove: 0
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   <skillImage>k__BackingField: {fileID: 21300000, guid: 18b2b41b127ec2e48b64f05a7abafc11, type: 3}
-  damage: 8
+  basicSkillDamage: 7
   useSkillPoint: 20
   ownSkill: 0
   isCanUseSkill: 0
@@ -4056,7 +4055,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3976431972465331843}
-  - component: {fileID: 3486467479245156058}
+  - component: {fileID: 6435623573887263718}
   m_Layer: 7
   m_Name: StatCompo
   m_TagString: Untagged
@@ -4079,7 +4078,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 663893733135974173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3486467479245156058
+--- !u!114 &6435623573887263718
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4088,16 +4087,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6116429312070026492}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f7654bea12aa4a70b9929138914e9df3, type: 3}
+  m_Script: {fileID: 11500000, guid: 86877c1bb2584ed2a0e8fde4f5836125, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statOverrides:
-  - stat: {fileID: 11400000, guid: 63387e3874071ca48bdeb9a8b73277ff, type: 2}
-    isUseOverride: 1
-    overrideBaseValue: 100
-  - stat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
-    isUseOverride: 1
-    overrideBaseValue: 4
 --- !u!1 &6157718454696640387
 GameObject:
   m_ObjectHideFlags: 0
@@ -4529,7 +4521,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   isMove: 0
-  atkDamageStat: {fileID: 11400000, guid: 957a18a147626d94ba43421fd2982c77, type: 2}
+  whatIsBody:
+    serializedVersion: 2
+    m_Bits: 512
   rotationCompo: {fileID: 6429403500470982661}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   triggerCompo: {fileID: 126909229950184335}

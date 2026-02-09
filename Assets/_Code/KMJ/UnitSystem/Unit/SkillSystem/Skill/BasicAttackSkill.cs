@@ -10,7 +10,7 @@ using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class BasicAttackSkill : BaseSkill
+public class BasicAttackSkill : BasicUnitSkill
 {
     [SerializeField] private Animator animator;
     private UnitAnimation animtionCompo;
@@ -21,13 +21,13 @@ public class BasicAttackSkill : BaseSkill
         
     private Vector3 _ownTrm;
     
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         skillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
         impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-        _damageData.damage = 7;
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
 
@@ -110,7 +110,9 @@ public class BasicAttackSkill : BaseSkill
         animtionCompo.PlaySelectAnimation("IDLE");
         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
         skillEndEvent.Invoke();
-        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+        Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         _targetEnemy = null;
     }
 }

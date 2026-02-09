@@ -7,8 +7,6 @@ namespace UnitSystem
     {
         [SerializeField] private Animator _animator;
         
-        private const int BaseLayer = 0;
-        
         public void Initialize(Unit owner)
         {
             AnimationAllStop();
@@ -16,30 +14,26 @@ namespace UnitSystem
 
         public void PlaySelectAnimation(string animationName)
         {
-            AnimationAllStop();
+            if (_animator == null) return;
             
-            _animator.SetBool(animationName,true);
+            AnimationAllStop();
+            _animator.SetBool(animationName, true);
         }
 
         public void ReturnIdleAnimation()
         {
-            AnimationAllStop();
-
-            _animator.SetBool("IDLE", true);
+            PlaySelectAnimation("IDLE");
         }
 
         public void AnimationAllStop()
         {
             if (_animator == null) return;
 
-            var parameters = _animator.parameters;
-            for (int i = 0; i < parameters.Length; i++)
+            foreach (var param in _animator.parameters)
             {
-                var p = parameters[i];
-                
-                if (p.type == AnimatorControllerParameterType.Bool)
+                if (param.type == AnimatorControllerParameterType.Bool)
                 {
-                    _animator.SetBool(p.name, false);
+                    _animator.SetBool(param.name, false);
                 }
             }
         }
@@ -52,7 +46,6 @@ namespace UnitSystem
             ResetAllTriggers();
             
             _animator.Rebind();
-            
             _animator.Update(0f);
         }
         
@@ -60,13 +53,11 @@ namespace UnitSystem
         {
             if (_animator == null) return;
 
-            var parameters = _animator.parameters;
-            for (int i = 0; i < parameters.Length; i++)
+            foreach (var param in _animator.parameters)
             {
-                var p = parameters[i];
-                if (p.type == AnimatorControllerParameterType.Trigger)
+                if (param.type == AnimatorControllerParameterType.Trigger)
                 {
-                    _animator.ResetTrigger(p.name);
+                    _animator.ResetTrigger(param.name);
                 }
             }
         }

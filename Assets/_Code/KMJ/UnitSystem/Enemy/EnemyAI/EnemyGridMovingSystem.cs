@@ -2,99 +2,76 @@ using System;
 using System.Collections;
 using Code.Core.Interfaces;
 using Code.UnitSystem;
-using UnitSystem;
 using UnityEngine;
-using UnityEngine.Events;
 using Unit = Code.UnitSystem.Unit;
-using Random = UnityEngine.Random;
 
 namespace EnemySystem
 {
     public class EnemyGridMovingSystem : MonoBehaviour
     {
-        [Header("References")]
-        [SerializeField] private UnitRotation rotationCompo;
-        [SerializeField] private UnitAnimation animationCompo;
-        [SerializeField] private Transform owner;
-
         [Header("Settings")]
-        [SerializeField] private LayerMask whatIsGround;
+        [SerializeField] private LayerMask _whatIsGround;
+        [SerializeField] private float _moveSpeed = 2f;
 
-        public UnityEvent OnMoveEndEvent = new UnityEvent();
-
-        private GameObject _ownTrm;
-        private Animator _animator;
+        [Header("References")]
+        [SerializeField] private UnitRotation _rotationCompo;
         
-        private readonly int _animIDMove = Animator.StringToHash("Move");
+        private Transform _rootTransform;
+        private GameObject _currentTileObj;
+        
+        public void Initialize(Unit owner)
+        {
+            _rootTransform = owner.transform;
+            if (_rotationCompo == null) 
+                _rotationCompo = owner.GetComponent<UnitRotation>();
+        }
 
         private void Awake()
         {
-            if (OnMoveEndEvent == null)
-                OnMoveEndEvent = new UnityEvent();
+            if (_rootTransform == null) _rootTransform = transform;
         }
 
-        private void Start()
-        {
-            _animator = GetComponentInChildren<Animator>();
-        }
-    
-        public void Initialize(Unit owner)
-        {
-        }
-        
-        private void SetMoveAnim(bool isMoving)
-        {
-            if (_animator != null)
-            {
-                _animator.SetBool(_animIDMove, isMoving);
-            }
-        }
+        #region [Move]
 
-        public void Move()
+        public void MoveTo(Vector3 targetPos, Action onComplete)
         {
-            MoveToRandomGrid();
-        }
-
-        private void MoveToRandomGrid()
-        {
-            int randomDir = Random.Range(1, 5);
-            Moveing(randomDir);
-        }
-        
-        public void MoveTowardsTarget(Vector3 targetPos)
-        {
-            Vector3 dir = (targetPos - transform.position).normalized;
+            Vector3 dir = (targetPos - _rootTransform.position).normalized;
             Vector3 step = CalculateStep(dir);
-            
-            SetMoveAnim(true);
-            StartCoroutine(MoveRoutine(step, true, true, (success) => SetMoveAnim(false)));
+            Vector3 destination = _rootTransform.position + step;
+
+            StartCoroutine(MoveRoutine(destination, onComplete));
         }
 
-        public void RetreatFromTarget(Vector3 targetPos, int steps)
+        #endregion
+
+        #region [Retreat]
+
+        public void RetreatFromTarget(Vector3 targetPos, int steps, Action onComplete)
         {
-            StartCoroutine(RetreatSequence(targetPos, steps));
+            StartCoroutine(RetreatSequence(targetPos, steps, onComplete));
         }
 
-        private IEnumerator RetreatSequence(Vector3 targetPos, int steps)
+        private IEnumerator RetreatSequence(Vector3 targetPos, int steps, Action onComplete)
         {
-            SetMoveAnim(true); 
-
             for (int i = 0; i < steps; i++)
             {
-                Vector3 dir = (transform.position - targetPos).normalized;
+                Vector3 dir = (_rootTransform.position - targetPos).normalized;
                 Vector3 step = CalculateStep(dir);
+                Vector3 destination = _rootTransform.position + step;
 
                 bool moveSuccess = false;
 
-                yield return StartCoroutine(MoveRoutine(step, false, false, (success) => moveSuccess = success));
-
-                if (!moveSuccess) break;
+                yield return StartCoroutine(MoveRoutine(destination, () => moveSuccess = true, checkObstacle: true));
+                
+                if (!CheckDestination(destination)) break; 
             }
 
-            SetMoveAnim(false);
-            
-            OnMoveEndEvent?.Invoke();
+            onComplete?.Invoke();
         }
+
+        #endregion
+
+        #region [Internal Logic]
 
         private Vector3 CalculateStep(Vector3 dir)
         {
@@ -104,71 +81,60 @@ namespace EnemySystem
                 return new Vector3(0, 0, Mathf.Sign(dir.z));
         }
 
-        private void Moveing(int dir)
+        private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true)
         {
-            MoveTo(dir);
+            if (checkObstacle && !CheckDestination(targetPos))
+            {
+                onComplete?.Invoke();
+                yield break;
+            }
+
+            if (_currentTileObj != null)
+                _currentTileObj.GetComponent<IMapTile>().SetObstacle(false);
+
+            if (_rotationCompo != null)
+                _rotationCompo.SetDir(targetPos);
+
+            while ((_rootTransform.position - targetPos).sqrMagnitude > 0.0001f)
+            {
+                _rootTransform.position = Vector3.MoveTowards(
+                    _rootTransform.position, 
+                    targetPos, 
+                    _moveSpeed * Time.deltaTime
+                );
+                yield return null;
+            }
+            _rootTransform.position = targetPos;
+            
+            UpdateCurrentTile(targetPos);
+
+            onComplete?.Invoke();
         }
 
-        private void MoveTo(int dirInt)
+        private bool CheckDestination(Vector3 pos)
         {
-            Vector3 step = dirInt switch
+            if (Physics.Raycast(pos + Vector3.up * 2, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
             {
-                1 => new Vector3(-1f, 0f, 0f), 
-                2 => new Vector3( 1f, 0f, 0f), 
-                3 => new Vector3( 0f, 0f, 1f), 
-                4 => new Vector3( 0f, 0f,-1f), 
-                _ => Vector3.zero
-            };
-
-            if (step == Vector3.zero) return;
-
-            SetMoveAnim(true);
-            StartCoroutine(MoveRoutine(step, true, true, (success) => SetMoveAnim(false)));
+                if (hit.transform.TryGetComponent(out IMapTile tile))
+                {
+                    return !tile.HasObstacle;
+                }
+            }
+            return false;
         }
 
-        private IEnumerator MoveRoutine(Vector3 step, bool fireEvent, bool shouldRotate, Action<bool> onComplete = null)
+        private void UpdateCurrentTile(Vector3 pos)
         {
-            Vector3 target = owner.position + step;
-            bool isSuccess = false;
-            
-            if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, whatIsGround))
+            if (Physics.Raycast(pos + Vector3.up * 2, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
             {
-                if (hit.transform.TryGetComponent(out IMapTile checkTile))
-                {
-                    if (checkTile.HasObstacle)
-                    {
-                        if (fireEvent) OnMoveEndEvent?.Invoke();
-                        onComplete?.Invoke(false);
-                        yield break; 
-                    }
-                }
-                
-                if (_ownTrm != null)
-                {
-                    _ownTrm.GetComponent<IMapTile>().SetObstacle(false);
-                }
-            
-                if (shouldRotate && rotationCompo != null)
-                    rotationCompo.SetDir(target);
-
-                while ((owner.position - target).sqrMagnitude > 0.0001f)
-                {
-                    owner.position = Vector3.MoveTowards(owner.position, target, 2 * Time.deltaTime);
-                    yield return null;
-                }
-                owner.position = target;
-        
                 if (hit.transform.TryGetComponent(out IMapTile tile))
                 {
                     tile.SetObstacle(true);
-                    _ownTrm = hit.transform.gameObject;
+                    _currentTileObj = hit.transform.gameObject;
                 }
-    
-                isSuccess = true;
             }
-            
-            if (fireEvent) OnMoveEndEvent?.Invoke();
-            onComplete?.Invoke(isSuccess);
         }
+
+        #endregion
     }
 }

@@ -1,139 +1,97 @@
-﻿using System.Collections;
+﻿using System;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.EntityComponent;
-using EnemySystem;
-using EntityComponent;
-using GameEventChannel;
+using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace EnemySystem
 {
     public class EnemyBasicAttackSkill : BaseSkill
     {
-        [Header("Stat Settings")]
-        [SerializeField] private StatSO atkDamageStat;
-        
-        private EntityStatCompo _statCompo;
-        private Animator _animator;
-        private float _currentAtkDamage;
-        
-        private readonly int _animIDAttack = Animator.StringToHash("Attack");
-
-        private Coroutine _safetyCoroutine; // 세이프티 코루틴
-
-        public override void InitializeSkill()
+        protected override void Awake()
         {
-            base.InitializeSkill();
-
-            if (_unitBase != null)
-            {
-                _animator = _unitBase.GetComponentInChildren<Animator>();
-                _statCompo = _unitBase.GetComponentInChildren<EntityStatCompo>();
-            }
+            base.Awake();
             
-            if (_animator == null) 
-                _animator = GetComponentInChildren<Animator>();
-
-            if (_statCompo != null && atkDamageStat != null)
+            if (_owner != null)
             {
-                StatSO target = _statCompo.GetStat(atkDamageStat);
-                if (target != null)
-                {
-                    _currentAtkDamage = target.Value;
-                    target.OnValueChanged += HandleAtkDamageChanged;
-                    _damageData.damage = _currentAtkDamage;
-                }
+                if (triggerCompo == null) 
+                    triggerCompo = _owner.GetUnitCompo<UnitAnimationTrigger>();
+                
+                if (rotationCompo == null) 
+                    rotationCompo = _owner.GetUnitCompo<UnitRotation>();
+                
+                if (_skillCompo == null) 
+                    _skillCompo = _owner.GetUnitCompo<SkillComponent>();
             }
+        }
 
+        private void Start()
+        {
             if (triggerCompo != null)
             {
-                triggerCompo.OnAttackTrigger += ApplyDamageToTarget;
+                triggerCompo.OnBaseAttackSkillTrigger += AttackAction; 
+                triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
             }
-            
-            skillEvent.AddListener(ExecuteAttackSequence);
         }
 
         public override void OnDisable()
         {
             base.OnDisable();
             
-            if (_statCompo != null && atkDamageStat != null)
-            {
-                StatSO target = _statCompo.GetStat(atkDamageStat);
-                if (target != null)
-                    target.OnValueChanged -= HandleAtkDamageChanged;
-            }
-
             if (triggerCompo != null)
             {
-                triggerCompo.OnAttackTrigger -= ApplyDamageToTarget;
+                triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
+                triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
             }
+        }
+
+        public override void InitializeSkill()
+        {
+            base.InitializeSkill();
             
-            skillEvent.RemoveListener(ExecuteAttackSequence);
+            damage = 10f; 
+            useSkillPoint = 0; 
         }
 
-        private void HandleAtkDamageChanged(StatSO stat, float currentValue, float previousValue)
+        public override void ForceUseSkill(GameObject target)
         {
-            _currentAtkDamage += currentValue;
-            _damageData.damage = _currentAtkDamage;
-        }
+            base.ForceUseSkill(target);
 
-        private void ExecuteAttackSequence(GameObject target)
-        {
-            Debug.Log($"[Check] 스킬 실행 명령 도착! 타겟: {target?.name}");
-
-            // [안전장치] 3초 뒤에 강제 종료하는 타이머 시작
-            if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
-            _safetyCoroutine = StartCoroutine(ForceEndTimer(3.0f));
-
-            if (_animator != null)
+            if (_owner != null && _owner.AnimationCompo != null)
             {
-                _animator.SetBool(_animIDAttack, true);
-            }
-            else
-            {
-                ApplyDamageToTarget();
+                _owner.AnimationCompo.PlaySelectAnimation("ATTACK");
             }
         }
 
-        public void ApplyDamageToTarget()
+        private void AttackAction()
         {
-            if (_safetyCoroutine != null) StopCoroutine(_safetyCoroutine);
+            AttackEnemy();
+        }
 
-            if (_animator != null)
+        public override void AttackEnemy()
+        {
+            if (_targetEnemy != null)
             {
-                _animator.SetBool(_animIDAttack, false);
-            }
-
-            if (_targetEnemy != null) 
-            {
-                Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f, 0.25f));
-                if (impulseSource != null) 
-                    impulseSource.GenerateImpulse(0.6f);
-
-                var targetHealth = _targetEnemy.GetComponent<EntityHealth>();
+                var targetHealth = _targetEnemy.GetComponent<IDamageable>();
                 if (targetHealth != null)
                 {
-                    targetHealth.ApplyDamage(_damageData, 
-                        _targetEnemy.transform.position, 
-                        transform.position, 
-                        attackData, 
-                        _unitBase);
+                    DamageData damageData = new DamageData();
+                    damageData.damage = damage;
+                    damageData.isCritical = false;
+
+                    Vector3 hitPoint = _targetEnemy.transform.position;
+                    Vector3 hitNormal = (_targetEnemy.transform.position - _owner.transform.position).normalized;
+
+                    targetHealth.ApplyDamage(damageData, hitPoint, hitNormal, attackData, _owner);
                 }
             }
-
-            Debug.Log("[Check] 데미지 적용 완료. 스킬 종료 이벤트 발송.");
-            
-            skillEnd(); 
-            
-            skillEndEvent?.Invoke(); 
         }
-        
-        private IEnumerator ForceEndTimer(float time)
+
+        private void AttackEnd()
         {
-            yield return new WaitForSeconds(time);
-            Debug.LogWarning("[Warning] 애니메이션 이벤트 미발생 -> 강제 종료 및 턴 넘김");
-            ApplyDamageToTarget(); 
+            skillEnd();
         }
     }
 }

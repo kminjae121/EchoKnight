@@ -64,10 +64,15 @@ namespace Code.UI
             }
 
             unitStorage.units.Clear();
+            unitStorage.unitStates.Clear();
             
             foreach (var unit in _partyUnits)
-                unitStorage.units.Add(unit.UnitInfo);
-            
+            {
+                unitStorage.units.Add(unit.UnitSpawn);
+                unitStorage.unitStates.Add(new UnitState(unit));
+            }
+
+            // 나중에 수정 해야 함.
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

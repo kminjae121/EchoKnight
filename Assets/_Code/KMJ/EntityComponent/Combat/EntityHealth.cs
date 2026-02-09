@@ -1,4 +1,5 @@
 ﻿using System;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.UI;
 using Code.UnitSystem;
@@ -10,11 +11,11 @@ using UnityEngine.PlayerLoop;
 
 namespace Code.EntityComponent
 {
-    public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable, IAfterInitialize
+    public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable
     {
         private Unit _entity;
         private ActionData _actionData;
-        private EntityStatCompo _statCompo;
+        private UnitStatCompo _statCompo;
 
         [SerializeField] private StatSO hpStat;
         [SerializeField] private float maxHealth;
@@ -34,31 +35,13 @@ namespace Code.EntityComponent
         {
             _entity = owner;
             _actionData = owner.GetUnitCompo<ActionData>();
-            _statCompo = owner.GetUnitCompo<EntityStatCompo>();
+            _statCompo = owner.GetUnitCompo<UnitStatCompo>();
         }
+        
 
-        public void AfterInitialize()
+        private void Start()
         {
-            maxHealth = currentHealth = _statCompo.SubscribeStat(
-                hpStat, HandleMaxHPChanged, 10f);
-        }
-
-        private void Update()
-        {
-            //if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1))
-            //{
-            //    DamageData data = new DamageData();
-            //    data.damage = 10;
-            //    AttackDataSO dataso = new AttackDataSO();
-            //    
-            //    ApplyDamage(data,transform.position, transform.position, dataso, null);
-            //
-            //}
-        }
-
-        private void OnDestroy()
-        {
-            _statCompo.UnSubscribeStat(hpStat, HandleMaxHPChanged);
+            maxHealth = currentHealth = _statCompo.GetStat<float>(StatInfo.MaxHealth);
         }
 
         public void HealHp(float amount)
@@ -78,15 +61,6 @@ namespace Code.EntityComponent
             }
         }
         
-        private void HandleMaxHPChanged(StatSO stat, float currentvalue, float previousvalue)
-        {
-            float changed = currentvalue - previousvalue; 
-            maxHealth = currentvalue;
-            if (changed > 0)
-                currentHealth = Mathf.Clamp(currentHealth + changed, 0, maxHealth);
-            else
-                currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        }
 
         public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer)
         {
@@ -114,6 +88,7 @@ namespace Code.EntityComponent
                
                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
            }
+           _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
            
            if (currentHealth <= 0)
            {
@@ -121,7 +96,6 @@ namespace Code.EntityComponent
                return;
            }
 
-           _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
         }
 
     }

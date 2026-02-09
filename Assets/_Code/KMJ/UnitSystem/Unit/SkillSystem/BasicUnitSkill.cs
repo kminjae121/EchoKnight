@@ -38,14 +38,18 @@ namespace Code.UnitSystem.SkillSystem
                 triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
                 _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
             }
-
-            _damageData.damage = damage;
+            
 
             var impulseObj = GameObject.Find("ImpulseSource");
             if (impulseObj) impulseSource = impulseObj.GetComponent<CinemachineImpulseSource>();
 
             var camObj = GameObject.Find("TopCam");
             if (camObj) unitCam = camObj.GetComponent<SetUnitCamera>();
+        }
+
+        protected override void Start()
+        {
+            base.Start();
         }
 
         public override void OnDisable()
@@ -78,6 +82,7 @@ namespace Code.UnitSystem.SkillSystem
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
 
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                     _targetingCompo = null;
                 }
                 else if (enemy != null)
@@ -86,11 +91,12 @@ namespace Code.UnitSystem.SkillSystem
 
                     if (_targetEnemy != null && _targetingCompo == null)
                     {
+                        CheckEnemyBody(_targetEnemy);
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
                         if (_targetingCompo != null) _targetingCompo.Targeting();
-
-                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, health.CurrentHealth,
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage, health.CurrentHealth,
                             health.MaxHealth, _damageData.damage, true, 
                             _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                     }
@@ -140,7 +146,7 @@ namespace Code.UnitSystem.SkillSystem
                     skillEvent?.Invoke(_targetEnemy);
 
                     if (_unitBase != null)
-                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true));
+                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                     
                     if (_targetingCompo != null) _targetingCompo.OffTargeting();
                     
@@ -149,6 +155,8 @@ namespace Code.UnitSystem.SkillSystem
                     
                     if (_basicUnit != null && _basicUnit.gaugeManager != null)
                         _basicUnit.gaugeManager.UseSkill(useSkillPoint);
+                    
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                     
                     _targetEnemy = null;
                 }
@@ -179,13 +187,16 @@ namespace Code.UnitSystem.SkillSystem
                 {
                     if (ownSkill)
                     {
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         _basicUnit.gaugeManager.UseSkill(useSkillPoint);
-                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true));
+                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                         skillEvent?.Invoke(null);
                         Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
                     }
                     else
                     {
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+
                         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
                         CheckCanAttack();
                         CanUseThisSkill();
@@ -193,6 +204,8 @@ namespace Code.UnitSystem.SkillSystem
                 }
                 else
                 {
+                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+
                     Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                     Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                     return;

@@ -10,7 +10,7 @@ namespace Code.Expedition.Data
     {
         [Header("Battle Config")]
         public StageSO stageData;
-        public List<UnitInfoSO> enemiesToSpawn;
+        public List<UnitSpawnSO> enemiesToSpawn;
         public string battleSceneName = "BattleScene";
 
         private void OnEnable()

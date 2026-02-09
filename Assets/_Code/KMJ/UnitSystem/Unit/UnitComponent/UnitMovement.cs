@@ -22,7 +22,7 @@ namespace Code.UnitSystem
 
         private SetUnitCamera unitCam;
         
-        private float _moveSpeed => _unit.unitSO.moveSpeed;
+        private float _moveSpeed => _unit.unitSO.MoveSpeed;
         
         [SerializeField] private UnitAnimation animationCompo;
 
@@ -128,6 +128,7 @@ namespace Code.UnitSystem
                 
                 if (_movingtiles.Contains(tileTrm))
                 {
+                    rotationCompo.SetDir(_visualPrefabs.transform.position);
                     _visualPrefabs.SetActive(true);
                     _visualPrefabs.transform.position = tileTrm.transform.position;
                 }

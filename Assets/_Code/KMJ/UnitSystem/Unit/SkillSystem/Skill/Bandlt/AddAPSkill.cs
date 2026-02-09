@@ -56,9 +56,10 @@ using UnityEngine;
         private void SkillEnd()
         {
             skillEndEvent?.Invoke();
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }

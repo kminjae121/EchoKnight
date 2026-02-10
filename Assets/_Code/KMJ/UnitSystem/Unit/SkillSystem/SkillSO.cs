@@ -8,6 +8,7 @@ namespace Code.UnitSystem.SkillSystem
     {
         public UnitType unitType = UnitType.None;
         public string skillName;
+        public float SkillCost;
         public Image skillUIImage;
         public string className;
     }

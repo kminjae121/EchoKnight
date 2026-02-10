@@ -1,10 +1,10 @@
 ﻿namespace Code.Core.Events.Bus
 {
-    public struct CharacterSelectEvent : IEvent
+    public struct PartyCharacterSelectEvent : IEvent
     {
         public UnitSO Unit { get; }
 
-        public CharacterSelectEvent(UnitSO unit)
+        public PartyCharacterSelectEvent(UnitSO unit)
         {
             Unit = unit;
         }

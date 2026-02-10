@@ -10,15 +10,15 @@ namespace Code.UI
 
         private void Awake()
         {
-            Bus<CharacterHoverEvent>.Subscribe(HandleHover);
+            Bus<PartyCharacterHoverEvent>.Subscribe(HandleHover);
         }
 
         private void OnDestroy()
         {
-            Bus<CharacterHoverEvent>.Unsubscribe(HandleHover);
+            Bus<PartyCharacterHoverEvent>.Unsubscribe(HandleHover);
         }
 
-        private void HandleHover(CharacterHoverEvent evt)
+        private void HandleHover(PartyCharacterHoverEvent evt)
         {
             characterNameText.text = evt.CharacterName ?? string.Empty;
         }

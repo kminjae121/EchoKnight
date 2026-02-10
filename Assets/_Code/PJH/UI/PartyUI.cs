@@ -20,21 +20,21 @@ namespace Code.UI
         
         private void Awake()
         {
-            Bus<CharacterSelectEvent>.Subscribe(HandleCharacterSelected);
-            Bus<CharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
+            Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
+            Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
             
             startButton.onClick.AddListener(HandleStartButton);
         }
 
         private void OnDestroy()
         {
-            Bus<CharacterSelectEvent>.Unsubscribe(HandleCharacterSelected);
-            Bus<CharacterDeselectEvent>.Unsubscribe(HandleCharacterDeselected);
+            Bus<PartyCharacterSelectEvent>.Unsubscribe(HandleCharacterSelected);
+            Bus<PartyCharacterDeselectEvent>.Unsubscribe(HandleCharacterDeselected);
             
             startButton.onClick.RemoveListener(HandleStartButton);
         }
 
-        private void HandleCharacterSelected(CharacterSelectEvent evt)
+        private void HandleCharacterSelected(PartyCharacterSelectEvent evt)
         {
             if (_partyUnits.Count >= maxUnitCount || _partyUnits.Contains(evt.Unit))
                 return;
@@ -43,7 +43,7 @@ namespace Code.UI
             RefreshSlots();
         }
         
-        private void HandleCharacterDeselected(CharacterDeselectEvent evt)
+        private void HandleCharacterDeselected(PartyCharacterDeselectEvent evt)
         {
             if (_partyUnits.Remove(evt.Unit))
                 RefreshSlots();

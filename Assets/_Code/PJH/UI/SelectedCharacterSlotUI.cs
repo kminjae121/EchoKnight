@@ -47,7 +47,7 @@ namespace Code.UI
             characterInfo = null;
             slotImage.sprite = _defaultSprite;
             
-            Bus<CharacterDeselectEvent>.Raise(new CharacterDeselectEvent(removedInfo));
+            Bus<PartyCharacterDeselectEvent>.Raise(new PartyCharacterDeselectEvent(removedInfo));
         }
     }
 }

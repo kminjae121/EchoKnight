@@ -1,10 +1,10 @@
 ﻿namespace Code.Core.Events.Bus
 {
-    public struct CharacterHoverEvent : IEvent
+    public struct PartyCharacterHoverEvent : IEvent
     {
         public string CharacterName { get; }
         
-        public CharacterHoverEvent(string characterName)
+        public PartyCharacterHoverEvent(string characterName)
         {
             CharacterName = characterName;
         }

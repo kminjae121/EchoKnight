@@ -16,8 +16,8 @@ namespace Code.UI
         private void Awake()
         {
             slotButton.onClick.AddListener(HandleSlotButton);
-            Bus<CharacterSelectEvent>.Subscribe(HandleCharacterSelected);
-            Bus<CharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
+            Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
+            Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
 
             slotImage.sprite = characterInfo.UnitImage;
         }
@@ -25,34 +25,34 @@ namespace Code.UI
         private void OnDestroy()
         {
             slotButton.onClick.RemoveListener(HandleSlotButton);
-            Bus<CharacterSelectEvent>.Unsubscribe(HandleCharacterSelected);
-            Bus<CharacterDeselectEvent>.Unsubscribe(HandleCharacterDeselected);
+            Bus<PartyCharacterSelectEvent>.Unsubscribe(HandleCharacterSelected);
+            Bus<PartyCharacterDeselectEvent>.Unsubscribe(HandleCharacterDeselected);
         }
 
         private void HandleSlotButton()
         {
             if (_isSelected)
-                Bus<CharacterDeselectEvent>.Raise(new CharacterDeselectEvent(characterInfo));
+                Bus<PartyCharacterDeselectEvent>.Raise(new PartyCharacterDeselectEvent(characterInfo));
             else
-                Bus<CharacterSelectEvent>.Raise(new CharacterSelectEvent(characterInfo));
+                Bus<PartyCharacterSelectEvent>.Raise(new PartyCharacterSelectEvent(characterInfo));
         }
 
-        private void HandleCharacterSelected(CharacterSelectEvent evt)
+        private void HandleCharacterSelected(PartyCharacterSelectEvent evt)
         {
             if (evt.Unit == characterInfo)
                 _isSelected = true;
         }
 
-        private void HandleCharacterDeselected(CharacterDeselectEvent evt)
+        private void HandleCharacterDeselected(PartyCharacterDeselectEvent evt)
         {
             if (evt.Unit == characterInfo)
                 _isSelected = false;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
-            => Bus<CharacterHoverEvent>.Raise(new CharacterHoverEvent(characterInfo.UnitName));
+            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(characterInfo.UnitName));
 
         public void OnPointerExit(PointerEventData eventData)
-            => Bus<CharacterHoverEvent>.Raise(new CharacterHoverEvent(null));
+            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(null));
     }
 }

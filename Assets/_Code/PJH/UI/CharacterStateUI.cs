@@ -1,4 +1,5 @@
-﻿using Code.UnitSystem;
+﻿using Code.Core.Events.Bus;
+using Code.UnitSystem;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
@@ -26,6 +27,11 @@ namespace Code.UI
             _unit.CurrentHp.OnValueChanged += RefreshHealthBar;
             
             characterImage.sprite = _unit.Data.UnitImage;
+        }
+        
+        public void SendUnitState()
+        {
+            Bus<CharacterInfoEvent>.Raise(new CharacterInfoEvent(_unit));
         }
 
         private void RefreshHealthBar(float prev, float next)

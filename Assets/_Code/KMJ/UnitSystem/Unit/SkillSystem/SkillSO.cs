@@ -9,7 +9,7 @@ namespace Code.UnitSystem.SkillSystem
         public UnitType unitType = UnitType.None;
         public string skillName;
         public int SkillCost;
-        public Image skillUIImage;
+        public Sprite skillUIImage;
         public string className;
     }
 }

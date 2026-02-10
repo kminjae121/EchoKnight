@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class SelectedCharacterUI : MonoBehaviour
+    public class PartyUI : MonoBehaviour
     {
         [SerializeField] private Button startButton;
         [SerializeField] private List<SelectedCharacterSlotUI> characterSlots;

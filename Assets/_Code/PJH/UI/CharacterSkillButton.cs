@@ -19,7 +19,7 @@ namespace Code.UI
         public void SetSkill(SkillSO skill, bool isEquipped)
         {
             _skillInfo = skill;
-            skillImage.sprite = skill.skillUIImage.sprite;
+            skillImage.sprite = skill.skillUIImage;
             skillNameText.text = skill.skillName;
             _isEquipped = isEquipped;
 

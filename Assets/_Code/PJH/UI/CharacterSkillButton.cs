@@ -10,6 +10,8 @@ namespace Code.UI
     {
         [SerializeField] private TextMeshProUGUI skillNameText;
         [SerializeField] private Image skillImage;
+        [SerializeField] private Color equippedColor;
+        [SerializeField] private Color unequippedColor;
 
         private SkillSO _skillInfo;
         private bool _isEquipped;
@@ -20,6 +22,8 @@ namespace Code.UI
             skillImage.sprite = skill.skillUIImage.sprite;
             skillNameText.text = skill.skillName;
             _isEquipped = isEquipped;
+
+            RefreshColor();
         }
         
         public void HandleSkillButton()
@@ -27,11 +31,15 @@ namespace Code.UI
             if (_isEquipped)
                 Bus<SkillUnequipEvent>.Raise(new SkillUnequipEvent(_skillInfo));
             else
-            {
                 Bus<SkillEquipEvent>.Raise(new SkillEquipEvent(_skillInfo));
-            }
 
             _isEquipped = !_isEquipped;
+            RefreshColor();
+        }
+        
+        private void RefreshColor()
+        {
+            skillImage.color = _isEquipped ? equippedColor : unequippedColor;
         }
     }
 }

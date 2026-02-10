@@ -1,4 +1,5 @@
-﻿using Code.UnitSystem.SkillSystem;
+﻿using System.Collections.Generic;
+using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
 namespace _Code.KMJ.UnitSystem.involveUnitSO
@@ -7,6 +8,6 @@ namespace _Code.KMJ.UnitSystem.involveUnitSO
     public class UnitOwnSkillStorageSO : ScriptableObject
     {
         public UnitType uniType = UnitType.None;
-        public SkillSO[] skills = null;
+        public List<SkillSO> skills = null;
     }
 }

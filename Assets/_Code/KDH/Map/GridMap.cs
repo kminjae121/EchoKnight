@@ -9,7 +9,7 @@ namespace Code.Map
         [Header("Map Settings")]
         [SerializeField] private int width = 10;
         [SerializeField] private int height = 10;
-        [SerializeField] private float tileSize = 1f;
+        [SerializeField] private float tileSize = 30f;
         
         [Header("Tile Prefab")]
         [SerializeField] private GameObject tilePrefab;

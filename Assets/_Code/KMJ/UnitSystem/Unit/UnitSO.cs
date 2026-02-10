@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using Skill;
@@ -28,9 +29,13 @@ public class UnitSO : ScriptableObject
     [Header("UnitImage")]
     public Sprite UnitImage;
 
-    [Header("WhatItIs")] 
+    [Header("WhatItIs")]        
     public UnitSpawnSO UnitSpawn;
 
+    [Header("SkillStorage")] public UnitSkillStorageSO SkillStorage;
+    
+    [Header("OwnSkillStorage")]
+    public UnitOwnSkillStorageSO OwnSkillStorage;
     [Space(4)]
     [Header("CharacterOwnCost")]
     public int Cost;

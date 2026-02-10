@@ -71,11 +71,11 @@ namespace _Code.KMJ.Cam
 
             if (moveDir.sqrMagnitude > 1f) moveDir.Normalize();
 
-            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.FieldOfView <= 85)
+            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.FieldOfView <= 70)
             {
                 battleCam.Lens.FieldOfView += 100 * Time.deltaTime;
             }
-            else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.FieldOfView >= 45)
+            else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.FieldOfView >= 20)
             {
                 battleCam.Lens.FieldOfView -= 100 * Time.deltaTime;
             }

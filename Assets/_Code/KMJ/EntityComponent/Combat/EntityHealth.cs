@@ -7,7 +7,6 @@ using EntityComponent;
 using GameEventChannel;
 using UnitSystem;
 using UnityEngine;
-using UnityEngine.PlayerLoop;
 
 namespace Code.EntityComponent
 {
@@ -24,6 +23,8 @@ namespace Code.EntityComponent
         [SerializeField] private float currentHealth;
         [SerializeField] private TextInfo normalText, criticalText;
         [SerializeField] private GameEventChannelSO textEventChannel;
+        
+        private float _defensivePower;
 
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
@@ -45,6 +46,8 @@ namespace Code.EntityComponent
         private void Start()
         {
             maxHealth = currentHealth = _statCompo.GetStat<float>(StatInfo.MaxHealth);
+            _defensivePower =  _statCompo.GetStat<float>(StatInfo.DefensivePower);
+            
             unitStateCompo = new UnitState(_entity.unitSO);
         }
 
@@ -78,13 +81,21 @@ namespace Code.EntityComponent
             _actionData.LastDamageData = damageData; //데미지 데이터도 기록
             //넉백은 나중에 처리한다.
 
-            currentHealth = Mathf.Clamp(currentHealth - damageData.damage, 0, maxHealth);
+            float damage = damageData.damage;
+
+            float CalculateDamage = damage * (_defensivePower / 100);
+
+            damage = damage - CalculateDamage;
+            
+            
+
+            currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
 
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
             int typeHash = damageData.isCritical ? criticalText.nameHash : normalText.nameHash;
             Vector3 position = hitPoint + new Vector3(0, 1.2f);
-            PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damageData.damage.ToString(), typeHash
+            PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damage.ToString(), typeHash
                 , position, 0.5f);  
             
             textEventChannel.RaiseEvent(textEvt);
@@ -96,7 +107,7 @@ namespace Code.EntityComponent
                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,
                    MaxHealth, basicUnit.UnitImage));
 
-               unitStateCompo.TakeDamage(damageData.damage);
+               unitStateCompo.TakeDamage(damage);
            }
            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
            

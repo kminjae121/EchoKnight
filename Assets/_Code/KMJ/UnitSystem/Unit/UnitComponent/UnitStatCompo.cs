@@ -10,6 +10,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         AtkDamage,
         MaxHealth,
         SkillDamage,
+        DefensivePower,
     }
     public class UnitStatCompo : MonoBehaviour, IUnitComponent
     {
@@ -22,6 +23,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private float MaxHealth => unitSO.Maxhealth;
         
         private float SkillDamage => unitSO.SkillDamage;
+        
+        private float DefensivePower => unitSO.DefensivePower;
 
         public void Initialize(Code.UnitSystem.Unit owner)
         {
@@ -36,6 +39,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 StatInfo.AtkDamage => AtkDamage,
                 StatInfo.MaxHealth => MaxHealth,
                 StatInfo.SkillDamage => SkillDamage,
+                StatInfo.DefensivePower => DefensivePower,
                 _ => default(T)
             };
             

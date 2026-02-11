@@ -53,6 +53,7 @@ namespace Code.UnitSystem.SkillSystem
                         BaseSkill component = components[0] as BaseSkill;
 
                    
+                        component.useSkillPoint = skillSo.UsingSkillCost;
 
                         skills.Add(skillSo.skillName, component);
                     }

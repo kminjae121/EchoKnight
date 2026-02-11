@@ -15,6 +15,7 @@ namespace Code.UnitSystem
         public UnitState(UnitSO data)
         {
             Data = data;
+            CurrentHp = new NotifyValue<float>();
             CurrentHp.Value = Data.Maxhealth;
         }
         

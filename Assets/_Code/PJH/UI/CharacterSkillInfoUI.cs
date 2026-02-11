@@ -1,4 +1,6 @@
-﻿using Code.Core.Events.Bus;
+﻿using System.Linq;
+using Code.Core.Debugs;
+using Code.Core.Events.Bus;
 using TMPro;
 using UnityEngine;
 
@@ -45,27 +47,26 @@ namespace Code.UI
             foreach (Transform child in skillTrm)
                 Destroy(child.gameObject);
 
-            int skillCost = 0;
-
             foreach (var skill in _unit.OwnSkillStorage.skills)
             {
-                bool equipped = _unit.SkillStorage.skills.Contains(skill);
-
-                if (equipped)
-                    skillCost += skill.SkillCost;
-
                 var skillButton = Instantiate(SkillPrefab, skillTrm);
-                skillButton.SetSkill(skill, equipped);
+                skillButton.SetSkill(skill, _unit.SkillStorage.skills.Contains(skill));
             }
-
-            SkillCostText.text = $"{skillCost} / {_unit.Cost}";
+            
+            SkillCostText.text = $"{GetCurrentCost()} / {_unit.Cost}";
         }
         
         private void SkillEquip(SkillEquipEvent evt)
         {
             if (_unit.SkillStorage.skills.Contains(evt.Skill))
                 return;
-
+            
+            if (GetCurrentCost() + evt.Skill.SkillCost > _unit.Cost)
+            {
+                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("코스트를 초과하여 스킬을 장착할 수 없습니다."));
+                return;
+            }
+            
             _unit.SkillStorage.skills.Add(evt.Skill);
             RefreshUI();
         }
@@ -75,5 +76,8 @@ namespace Code.UI
             if (_unit.SkillStorage.skills.Remove(evt.Skill))
                 RefreshUI();
         }
+        
+        private int GetCurrentCost()
+            => _unit.SkillStorage.skills.Sum(skill => skill.SkillCost);
     }
 }

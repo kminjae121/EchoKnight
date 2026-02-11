@@ -1,5 +1,6 @@
 ﻿using System;
 using Code.Core;
+using Code.Core.Debugs;
 using UnityEngine;
 
 namespace Code.UnitSystem
@@ -14,8 +15,14 @@ namespace Code.UnitSystem
 
         public UnitState(UnitSO data)
         {
+            if (data == null)
+            {
+                UnityLogger.LogError("유닛 SO가 null 입니다.");
+                return;
+            }
+            
             Data = data;
-            CurrentHp.Value = Data.Maxhealth;
+            CurrentHp = new NotifyValue<float>(Data.Maxhealth);
         }
         
         public void TakeDamage(float value)

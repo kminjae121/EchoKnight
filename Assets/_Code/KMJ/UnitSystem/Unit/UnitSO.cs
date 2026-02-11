@@ -56,9 +56,9 @@ public class UnitSO : ScriptableObject
 
     [Range(1, 3f)]
     public float SkillDamage;
-    
-    public float AttackDistance;
 
+    public float DefensivePower;
+    
     [Header("UnitType")]
     public EntityType EntityType = EntityType.MeleeAttacker;
 

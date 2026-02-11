@@ -70,9 +70,10 @@ namespace EnemySystem
         public override void OnTurnEnd()
         {
             if (_ai != null) _ai.SetTurnState(false);
-            
-            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+    
             base.OnTurnEnd();
+
+            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
         }
 
         #region [Commands]

@@ -17,6 +17,8 @@ namespace Code.EntityComponent
         private ActionData _actionData;
         private UnitStatCompo _statCompo;
 
+        private UnitState unitStateCompo;
+
         [SerializeField] private StatSO hpStat;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currentHealth;
@@ -36,12 +38,14 @@ namespace Code.EntityComponent
             _entity = owner;
             _actionData = owner.GetUnitCompo<ActionData>();
             _statCompo = owner.GetUnitCompo<UnitStatCompo>();
+
         }
         
 
         private void Start()
         {
             maxHealth = currentHealth = _statCompo.GetStat<float>(StatInfo.MaxHealth);
+            unitStateCompo = new UnitState(_entity.unitSO);
         }
 
         public void HealHp(float amount)
@@ -57,7 +61,10 @@ namespace Code.EntityComponent
             {
                 BasicUnit basicUnit = _entity as BasicUnit;
                
-                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
+                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth
+                    ,MaxHealth, basicUnit.UnitImage));
+                
+                unitStateCompo.Heal(amount);
             }
         }
         
@@ -86,7 +93,10 @@ namespace Code.EntityComponent
            {
                BasicUnit basicUnit = _entity as BasicUnit;
                
-               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,MaxHealth, basicUnit.UnitImage));
+               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,
+                   MaxHealth, basicUnit.UnitImage));
+
+               unitStateCompo.TakeDamage(damageData.damage);
            }
            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
            

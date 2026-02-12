@@ -27,7 +27,7 @@ namespace EnemySystem
             }
         }
 
-        private void Start()
+        protected override void Start()
         {
             if (triggerCompo != null)
             {

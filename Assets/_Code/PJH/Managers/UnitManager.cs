@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Code.Core.Debugs;
 using Code.Core.Events.Bus;
-using Code.Expedition.Logic;
 using Code.UnitSystem;
 using UnityEngine;
 
@@ -18,39 +16,12 @@ namespace Code.Managers
             Bus<UnitDeadEvent>.Subscribe(RemoveUnit);
         }
 
-        private void Start()
-        {
-            if (BattleContext.Instance != null && BattleContext.Instance.CurrentEnemies != null)
-                SpawnEnemiesFromContext();
-        }
-
         private void OnDestroy()
         {
             Bus<UnitSpawnEvent>.Unsubscribe(RegisterUnit);
             Bus<UnitDeadEvent>.Unsubscribe(RemoveUnit);
         }
         
-        private void SpawnEnemiesFromContext()
-        {
-            var enemies = BattleContext.Instance.CurrentEnemies;
-
-            var startPosition = new Vector3(5, 0, 0);
-            const float spacing = 2.0f;
-
-            for (int i = 0; i < enemies.Count; ++i)
-            {
-                UnitSpawnSO enemyData = enemies[i];
-                
-                if (enemyData.UnitPrefab != null) 
-                {
-                    Vector3 spawnPos = startPosition + new Vector3(i * spacing, 0, 0);
-                    GameObject enemyObj = Instantiate(enemyData.UnitPrefab, spawnPos, Quaternion.identity);
-                }
-                else
-                    UnityLogger.LogError($"적 데이터({enemyData.name})에 프리팹이 연결되지 않았습니다.");
-            }
-        }
-
         #region Public Functions
 
         public IReadOnlyCollection<Unit> GetAllUnits()
@@ -65,9 +36,15 @@ namespace Code.Managers
         #endregion
         
         private void RegisterUnit(UnitSpawnEvent evt)
-            => activeUnits.Add(evt.Unit);
+        {
+            if (evt.Unit != null)
+                activeUnits.Add(evt.Unit);
+        }
 
         private void RemoveUnit(UnitDeadEvent evt)
-            => activeUnits.Remove(evt.Unit);
+        {
+            if (evt.Unit != null)
+                activeUnits.Remove(evt.Unit);
+        }
     }
 }

@@ -44,17 +44,25 @@ namespace Code.Map
         private void RebuildTileArray()
         {
             if (serializedTiles == null || serializedTiles.Length == 0) return;
-            if (serializedTiles.Length != width * height) return;
-
-            tiles = new MapTile[width, height];
             
-            for (int i = 0; i < serializedTiles.Length; i++)
+            if (tiles == null || tiles.GetLength(0) != width || tiles.GetLength(1) != height)
+            {
+                tiles = new MapTile[width, height];
+            }
+            
+            int count = Mathf.Min(serializedTiles.Length, width * height);
+            
+            for (int i = 0; i < count; i++)
             {
                 if (serializedTiles[i] == null) continue;
                 
                 int x = i % width;
                 int y = i / width;
-                tiles[x, y] = serializedTiles[i];
+                
+                if (x < width && y < height)
+                {
+                    tiles[x, y] = serializedTiles[i];
+                }
             }
         }
 
@@ -64,9 +72,9 @@ namespace Code.Map
             tiles = new MapTile[width, height];
             serializedTiles = new MapTile[width * height];
 
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
                     CreateTile(x, y);
                 }
@@ -80,7 +88,12 @@ namespace Code.Map
             GameObject tileObject;
             if (tilePrefab != null)
             {
+                #if UNITY_EDITOR
+                tileObject = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(tilePrefab, transform);
+                tileObject.transform.position = worldPosition;
+                #else
                 tileObject = Instantiate(tilePrefab, worldPosition, Quaternion.identity, transform);
+                #endif
             }
             else
             {
@@ -131,6 +144,13 @@ namespace Code.Map
                     }
                 }
             }
+            
+            // 자식 오브젝트가 남아있을 경우를 대비한 안전 장치
+            int childCount = transform.childCount;
+            for (int i = childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(transform.GetChild(i).gameObject);
+            }
 
             tiles = null;
             serializedTiles = null;
@@ -163,7 +183,10 @@ namespace Code.Map
                 RebuildTileArray();
             }
             
-            return tiles?[x, y];
+            // Rebuild 실패 시 방어 코드
+            if (tiles == null) return null;
+
+            return tiles[x, y];
         }
 
         public bool IsValidPosition(Vector2Int position)

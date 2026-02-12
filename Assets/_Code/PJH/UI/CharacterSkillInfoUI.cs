@@ -68,13 +68,18 @@ namespace Code.UI
             }
             
             _unit.SkillStorage.skills.Add(evt.Skill);
+            Bus<SkillEquippedEvent>.Raise(new SkillEquippedEvent(evt.Skill));
+            
             RefreshUI();
         }
 
         private void SkillUnequip(SkillUnequipEvent evt)
         {
             if (_unit.SkillStorage.skills.Remove(evt.Skill))
+            {
+                Bus<SkillUnequippedEvent>.Raise(new SkillUnequippedEvent(evt.Skill));
                 RefreshUI();
+            }
         }
         
         private int GetCurrentCost()

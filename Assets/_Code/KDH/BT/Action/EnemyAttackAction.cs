@@ -18,18 +18,24 @@ public partial class EnemyAttackAction : Action
 
     protected override Status OnStart()
     {
-        if (Agent.Value == null || Target.Value == null) return Status.Failure;
+        if (Agent.Value == null || Target.Value == null) 
+        {
+            return Status.Failure;
+        }
 
         _enemyUnit = Agent.Value.GetComponent<EnemyUnit>();
         if (_enemyUnit == null)
         {
-            Debug.LogError($"[EnemyAttackAction] {Agent.Value.name}에 Enemy 컴포넌트 없음.");
+            Debug.LogError($"[EnemyAttackAction] {Agent.Value.name}에 EnemyUnit 컴포넌트가 없습니다.");
             return Status.Failure;
         }
 
         _isAttacking = true;
         
-        _enemyUnit.OrderSkill(SkillName.Value, Target.Value, OnDone);
+        // 스킬 이름이 비어있을 경우에 대한 방어 로직은 EnemyUnit.OrderSkill 내부에서 처리됨
+        string skillToUse = SkillName.Value;
+        
+        _enemyUnit.OrderSkill(skillToUse, Target.Value, OnDone);
 
         return Status.Running;
     }

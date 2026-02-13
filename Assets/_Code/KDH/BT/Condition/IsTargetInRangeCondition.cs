@@ -13,7 +13,10 @@ public partial class IsTargetInRangeCondition : Condition
 
     public override bool IsTrue()
     {
-        if (Target.Value == null || Agent.Value == null) return false;
+        if (Target.Value == null || Agent.Value == null)
+        {
+            return false;
+        }
 
         float distance = Vector3.Distance(Agent.Value.transform.position, Target.Value.transform.position);
 

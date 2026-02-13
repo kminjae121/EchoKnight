@@ -1,7 +1,4 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using Code.Core.Interfaces;
-using Code.EntityComponent;
+﻿using Code.EntityComponent;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
@@ -27,7 +24,7 @@ namespace EnemySystem
             }
         }
 
-        protected override void Start()
+        private void OnEnable()
         {
             if (triggerCompo != null)
             {
@@ -62,6 +59,12 @@ namespace EnemySystem
             if (_owner != null && _owner.AnimationCompo != null)
             {
                 _owner.AnimationCompo.PlaySelectAnimation("ATTACK");
+            }
+            else
+            {
+                Debug.LogError($"[EnemyBasicAttackSkill] {_owner.name}의 AnimationCompo가 없어 공격 애니메이션을 재생할 수 없습니다.");
+                // 애니메이션이 없으면 즉시 종료 처리하여 멈춤 방지
+                skillEnd();
             }
         }
 

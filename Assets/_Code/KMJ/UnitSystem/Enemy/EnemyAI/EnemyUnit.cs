@@ -1,10 +1,8 @@
 using System;
 using System.Collections;
 using Code.Core.Events.Bus;
-using Code.Core.Interfaces;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
-using GameEventChannel;
 using UnityEngine;
 
 namespace EnemySystem
@@ -41,14 +39,16 @@ namespace EnemySystem
             }
         }
 
-        protected override void OnDestroy()
+        // [수정] 부모 클래스(Unit)에 OnDisable이 없으므로 override 제거
+        protected void OnDisable()
         {
             if (_animTrigger != null)
             {
                 _animTrigger.OnEnemyAnimationEndTrigger -= OnIdleRequested;
                 _animTrigger.OnEnemyDieEndTrigger -= OnDeathAnimationFinished;
             }
-            base.OnDestroy();
+            
+            // Unit.cs는 OnDisable을 정의하지 않았으므로 base.OnDisable() 호출 제거
         }
 
         private void Start()
@@ -62,9 +62,6 @@ namespace EnemySystem
             base.OnTurnStart();
             
             if (_ai != null) _ai.SetTurnState(true);
-
-            for (int i = 0; i <= 2; i++)
-                Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null, 0, null, null));
         }
 
         public override void OnTurnEnd()
@@ -82,6 +79,7 @@ namespace EnemySystem
         {
             if (_mover == null)
             {
+                Debug.LogWarning($"[EnemyUnit] {name}에게 EnemyGridMovingSystem이 없습니다.");
                 onComplete?.Invoke();
                 return;
             }
@@ -118,22 +116,36 @@ namespace EnemySystem
         {
             if (_skillCompo == null || _skillCompo.skills == null)
             {
+                Debug.LogError($"[EnemyUnit] {name}에게 SkillComponent가 없거나 스킬이 비어있습니다.");
                 onComplete?.Invoke();
                 return;
             }
 
-            if (!_skillCompo.skills.TryGetValue(skillName, out BaseSkill skill))
+            BaseSkill skillToUse = null;
+
+            // 1. 이름으로 스킬 찾기
+            if (!string.IsNullOrEmpty(skillName) && _skillCompo.skills.ContainsKey(skillName))
+            {
+                skillToUse = _skillCompo.skills[skillName];
+            }
+            else if (_skillCompo.skills.Count > 0)
             {
                 var enumerator = _skillCompo.skills.Values.GetEnumerator();
-                if (enumerator.MoveNext()) skill = enumerator.Current;
+                if (enumerator.MoveNext()) 
+                {
+                    skillToUse = enumerator.Current;
+                    if (!string.IsNullOrEmpty(skillName))
+                        Debug.LogWarning($"[EnemyUnit] '{skillName}' 스킬을 찾을 수 없어 '{skillToUse.GetType().Name}'(으)로 대체합니다.");
+                }
             }
 
-            if (skill != null)
+            if (skillToUse != null)
             {
-                StartCoroutine(ProcessSkillRoutine(skill, target, onComplete));
+                StartCoroutine(ProcessSkillRoutine(skillToUse, target, onComplete));
             }
             else
             {
+                Debug.LogError($"[EnemyUnit] {name}: 사용할 수 있는 스킬이 없습니다.");
                 onComplete?.Invoke();
             }
         }
@@ -143,16 +155,32 @@ namespace EnemySystem
             bool isSkillEnded = false;
             
             UnityEngine.Events.UnityAction endListener = () => isSkillEnded = true;
-            skill.skillEndEvent.AddListener(endListener);
+            
+            string debugSkillName = skill.GetType().Name;
+
+            if (skill.skillEndEvent != null)
+                skill.skillEndEvent.AddListener(endListener);
+            else
+                Debug.LogError($"[EnemyUnit] {debugSkillName}의 skillEndEvent가 null입니다.");
 
             skill.ForceUseSkill(target);
 
-            while (!isSkillEnded)
+            float timeout = 3.0f; 
+            float timer = 0f;
+
+            while (!isSkillEnded && timer < timeout)
             {
+                timer += Time.deltaTime;
                 yield return null;
             }
+            
+            if (timer >= timeout)
+            {
+                Debug.LogWarning($"[EnemyUnit] {name}의 스킬 '{debugSkillName}' 실행 시간이 초과되어 강제 종료합니다. (Animation Event 누락 확인 필요)");
+            }
 
-            skill.skillEndEvent.RemoveListener(endListener);
+            if (skill.skillEndEvent != null)
+                skill.skillEndEvent.RemoveListener(endListener);
             
             OnIdleRequested();
             onComplete?.Invoke();

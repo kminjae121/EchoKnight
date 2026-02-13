@@ -61,16 +61,38 @@ namespace Code.Expedition.Managers
         {
             if (_isMoving) return;
             if (mainCamera == null) return;
+            if (inputReader == null)
+            {
+                Debug.LogError("InputReader가 연결되지 않았습니다.");
+                return;
+            }
 
-            Ray ray = mainCamera.ScreenPointToRay(UnityEngine.Input.mousePosition);
+            Vector2 mousePos = inputReader.MousePosition;
+            Ray ray = mainCamera.ScreenPointToRay(mousePos);
+
+            // [디버그] 클릭 시 씬 뷰에 빨간색 레이저를 2초간 표시합니다.
+            Debug.DrawRay(ray.origin, ray.direction * 10000f, Color.red, 2f);
             
-            if (Physics.Raycast(ray, out RaycastHit hit, 100f, nodeLayer))
+            // [디버그] 마우스 좌표 확인 (만약 (0,0)만 나온다면 Input System 설정 문제)
+            // Debug.Log($"클릭 감지됨 - 마우스 위치: {mousePos}");
+
+            // 거리 제한을 100f -> Mathf.Infinity(무제한)으로 변경
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, nodeLayer))
             {
                 ExpeditionNode selectedNode = hit.collider.GetComponent<ExpeditionNode>();
+                
+                // [디버그] 감지된 오브젝트 이름 출력
+                Debug.Log($"Raycast Hit: {hit.collider.name}");
+
                 if (selectedNode != null)
                 {
                     TryMoveToNode(selectedNode);
                 }
+            }
+            else
+            {
+                // [디버그] 아무것도 맞지 않음
+                // Debug.Log("Raycast 실패: 아무것도 맞지 않았습니다.");
             }
         }
 
@@ -95,7 +117,7 @@ namespace Code.Expedition.Managers
             }
             else
             {
-                Debug.Log("이동할 수 없는 노드입니다 (연결되지 않음).");
+                Debug.Log($"이동 불가: [{_currentNode.name}]에서 [{targetNode.name}]로 연결된 경로가 없습니다.");
             }
         }
 
@@ -103,7 +125,7 @@ namespace Code.Expedition.Managers
         {
             if (string.IsNullOrEmpty(node.TargetSceneName))
             {
-                Debug.LogWarning("이동할 씬 이름이 설정되지 않았습니다.");
+                Debug.LogWarning($"[{node.name}] 노드에 이동할 씬 이름(TargetSceneName)이 설정되지 않았습니다.");
                 return;
             }
 

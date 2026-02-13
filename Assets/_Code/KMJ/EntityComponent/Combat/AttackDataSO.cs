@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Code.EntityComponent
 {
@@ -16,7 +15,7 @@ namespace Code.EntityComponent
         
         private void OnEnable()
         {
-            attackName = this.name;
+            attackName = name;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -9,22 +8,20 @@ namespace _Code.KMJ.Cam
     public class BattleCam : MonoBehaviour
     {
         [SerializeField] private InputReader inputReader;
-
         [SerializeField] private CinemachineCamera battleCam;
-        
-        private Vector3 movement;
         [SerializeField] private float moveSpeed;
+        [SerializeField] private CinemachinePositionComposer positionComposer;
 
         private float _basicSpeed;
         private float _reduceSpeed;
-
-        private bool isLocking = false;
-
-        [SerializeField] private CinemachinePositionComposer positionCompoer;
+        
+        private bool _isLocking;
+        
+        private Vector3 _movement;
 
         private void Awake()
         {
-            movement = Vector3.zero;
+            _movement = Vector3.zero;
             
             Bus<UnitCamSettingEvent>.Subscribe(SetTarget);
 
@@ -35,27 +32,26 @@ namespace _Code.KMJ.Cam
         private void Start()
         {
             battleCam.Target.TrackingTarget = null;
-            positionCompoer.enabled = false;
+            positionComposer.enabled = false;
         }
 
         public void SetTarget(UnitCamSettingEvent evt)
         {
-            isLocking = evt.isLocking;
+            _isLocking = evt.isLocking;
+            
             if (evt.target == null)
             {
-                positionCompoer.enabled = false;
+                positionComposer.enabled = false;
                 battleCam.Target.TrackingTarget = null;
             }
             else
             {
-                positionCompoer.enabled = true;
-                positionCompoer.Damping = evt.dampingSpeed;
+                positionComposer.enabled = true;
+                positionComposer.Damping = evt.dampingSpeed;
                 battleCam.Target.TrackingTarget = evt.target.transform;
             }
         }
         
-        
-
         private void Update()
         {
             Vector3 camForward = transform.forward;
@@ -69,36 +65,29 @@ namespace _Code.KMJ.Cam
             
             Vector3 moveDir = (camRight * inputReader.MovementKey.x + camForward * inputReader.MovementKey.y);
 
-            if (moveDir.sqrMagnitude > 1f) moveDir.Normalize();
+            if (moveDir.sqrMagnitude > 1f)
+                moveDir.Normalize();
 
             if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.FieldOfView <= 70)
-            {
                 battleCam.Lens.FieldOfView += 100 * Time.deltaTime;
-            }
             else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.FieldOfView >= 20)
-            {
                 battleCam.Lens.FieldOfView -= 100 * Time.deltaTime;
-            }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
-            {
                 moveSpeed = _reduceSpeed;
-            }
+            
             if (UnityEngine.Input.GetKeyUp(KeyCode.LeftShift))
-            {
                 moveSpeed = _basicSpeed;
-            }
+            
             if (inputReader.MovementKey.x != 0 || inputReader.MovementKey.y != 0)
-            {
-                if (!isLocking)
+                if (!_isLocking)
                 {
                     battleCam.Target.TrackingTarget = null;
                     
-                    movement = moveDir * moveSpeed;
+                    _movement = moveDir * moveSpeed;
 
-                    transform.position += movement * Time.deltaTime;
+                    transform.position += _movement * Time.deltaTime;
                 }
-            }
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using TMPro;
 using UnityEngine;

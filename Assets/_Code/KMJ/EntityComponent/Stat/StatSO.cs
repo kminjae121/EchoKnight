@@ -7,14 +7,15 @@ namespace EntityComponent
     [CreateAssetMenu(fileName = "Stat", menuName = "SO/StatSystem/Stat", order = 0)]
     public class StatSO : ScriptableObject, ICloneable
     {
+        [SerializeField] private Sprite icon;
+        [SerializeField] private string displayName;
+        [SerializeField] private float baseValue, minValue, maxValue;
+        
         public delegate void ValueChangeHandler(StatSO stat, float currentValue, float previousValue);
         public event ValueChangeHandler OnValueChanged;
 
         public string statName;
         public string description;
-        [SerializeField] private Sprite icon;
-        [SerializeField] private string displayName;
-        [SerializeField] private float baseValue, minValue, maxValue;
 
         public float incrementStep = 1f;
 
@@ -92,7 +93,6 @@ namespace EntityComponent
             _modifiedValue = 0;
             TryInvokeValueChangeEvent(Value, prevValue);
         }
-
 
         public object Clone()
         {

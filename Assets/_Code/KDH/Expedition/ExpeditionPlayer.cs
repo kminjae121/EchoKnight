@@ -12,13 +12,13 @@ namespace Code.Expedition.Components
         [SerializeField] private float rotationSpeed = 10f;
         [SerializeField] private Animator animator;
 
-        private static readonly int WalkHash = Animator.StringToHash("WALK");
-        private static readonly int RunHash = Animator.StringToHash("RUN");
+        private static readonly int MoveHash = Animator.StringToHash("MOVE");
+        private static readonly int IdleHash = Animator.StringToHash("IDLE");
 
         public void Initialize(Vector3 startPosition)
         {
             transform.position = startPosition;
-            SetIdle();
+            SetIdleState();
         }
 
         public void MoveAlongPath(List<Vector3> pathPoints, Action onComplete)
@@ -29,7 +29,7 @@ namespace Code.Expedition.Components
 
         private IEnumerator MoveRoutine(List<Vector3> pathPoints, Action onComplete)
         {
-            SetWalk(true);
+            SetMoveState(true);
 
             for (int i = 0; i < pathPoints.Count; i++)
             {
@@ -50,26 +50,26 @@ namespace Code.Expedition.Components
             }
 
             transform.position = pathPoints[pathPoints.Count - 1];
-            SetWalk(false);
+            SetMoveState(false);
             
             onComplete?.Invoke();
         }
 
-        private void SetWalk(bool isWalking)
+        private void SetMoveState(bool isMoving)
         {
             if (animator != null)
             {
-                animator.SetBool(WalkHash, isWalking);
-                animator.SetBool(RunHash, false); 
+                animator.SetBool(MoveHash, isMoving);
+                animator.SetBool(IdleHash, !isMoving);
             }
         }
 
-        private void SetIdle()
+        private void SetIdleState()
         {
             if (animator != null)
             {
-                animator.SetBool(WalkHash, false);
-                animator.SetBool(RunHash, false);
+                animator.SetBool(MoveHash, false);
+                animator.SetBool(IdleHash, true);
             }
         }
     }

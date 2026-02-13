@@ -15,7 +15,19 @@ namespace Code.UI
 
         private SkillSO _skillInfo;
         private bool _isEquipped;
-        
+
+        private void Awake()
+        {
+            Bus<SkillEquippedEvent>.Subscribe(HandleSkillEquipped);
+            Bus<SkillUnequippedEvent>.Subscribe(HandleSkillUnequipped);
+        }
+
+        private void OnDestroy()
+        {
+            Bus<SkillEquippedEvent>.Unsubscribe(HandleSkillEquipped);
+            Bus<SkillUnequippedEvent>.Unsubscribe(HandleSkillUnequipped);
+        }
+
         public void SetSkill(SkillSO skill, bool isEquipped)
         {
             _skillInfo = skill;
@@ -32,8 +44,23 @@ namespace Code.UI
                 Bus<SkillUnequipEvent>.Raise(new SkillUnequipEvent(_skillInfo));
             else
                 Bus<SkillEquipEvent>.Raise(new SkillEquipEvent(_skillInfo));
+        }
+        
+        private void HandleSkillEquipped(SkillEquippedEvent evt)
+        {
+            if (evt.Skill != _skillInfo)
+                return;
 
-            _isEquipped = !_isEquipped;
+            _isEquipped = true;
+            RefreshColor();
+        }
+        
+        private void HandleSkillUnequipped(SkillUnequippedEvent evt)
+        {
+            if (evt.Skill != _skillInfo)
+                return;
+
+            _isEquipped = false;
             RefreshColor();
         }
         

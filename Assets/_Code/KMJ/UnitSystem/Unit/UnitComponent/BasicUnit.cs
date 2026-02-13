@@ -206,6 +206,7 @@ namespace UnitSystem
             {
                 if (endTurnBtn != null)
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
+                OnTurnEnd();
                 Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             }
         }

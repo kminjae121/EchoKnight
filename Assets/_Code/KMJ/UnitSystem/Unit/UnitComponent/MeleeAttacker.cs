@@ -103,6 +103,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             animtionCompo.PlaySelectAnimation("IDLE");
             atkCompo.attackEndEvent?.Invoke();
+             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }
 }

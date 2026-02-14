@@ -3524,13 +3524,14 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1617682948123757803}
+  - component: {fileID: 7272575863451016865}
   m_Layer: 0
   m_Name: UnitRender (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1617682948123757803
 Transform:
   m_ObjectHideFlags: 0
@@ -3548,6 +3549,28 @@ Transform:
   - {fileID: 2317103606395231092}
   m_Father: {fileID: 5312050881103246690}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &7272575863451016865
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4028449547857436720}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: bed7a092d53e7c748bd65db98cebf9d6, type: 3}
+  m_Controller: {fileID: 9100000, guid: cc9ac5edc8df4e84c809939e48839ab9, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &4123560136666462501
 GameObject:
   m_ObjectHideFlags: 0
@@ -3866,6 +3889,7 @@ MonoBehaviour:
   basicSkillDamage: 0
   useSkillPoint: 14
   ownSkill: 1
+  statCompo: {fileID: 0}
   isCanUseSkill: 0
   skillStartEvent:
     m_PersistentCalls:
@@ -3929,6 +3953,7 @@ MonoBehaviour:
   basicSkillDamage: 6
   useSkillPoint: 16
   ownSkill: 0
+  statCompo: {fileID: 0}
   isCanUseSkill: 0
   skillStartEvent:
     m_PersistentCalls:

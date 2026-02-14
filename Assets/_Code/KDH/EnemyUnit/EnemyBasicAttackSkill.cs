@@ -23,6 +23,7 @@ namespace EnemySystem
                     _skillCompo = _owner.GetUnitCompo<SkillComponent>();
             }
         }
+        
 
         private void OnEnable()
         {

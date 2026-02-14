@@ -39,7 +39,7 @@ using UnityEngine;
         
         private IEnumerator FireBall()
         {
-            
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(false));
             yield return new WaitForSeconds(0.3f);
             yield return new WaitForSeconds(0.1f);
             animtionCompo.PlaySelectAnimation("HEAL");

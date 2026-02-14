@@ -51,8 +51,6 @@ namespace Code.UnitSystem.SkillSystem
         
         [SerializeField] protected MeshRenderer ownCircleMesh;
 
-
-
         [SerializeField] protected Material CriticalMaterial;
         [SerializeField] protected Material basicMaterial;
         
@@ -62,7 +60,6 @@ namespace Code.UnitSystem.SkillSystem
 
             _unitBase = _owner as Unit;
             
-
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
             ResetTileEvent += skillEnd;
@@ -71,16 +68,18 @@ namespace Code.UnitSystem.SkillSystem
         protected override void Start()
         {
             base.Start();
-            UnitStatCompo statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
-            
-            float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
-            
-            float floatdamage = basicSkillDamage *= skillDamageValue;
-            
-            damage = (int)floatdamage;
-
-            
-            _damageData.damage = damage;
+            // null 체크 추가
+            if (_unitBase != null)
+            {
+                UnitStatCompo statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
+                if (statCompo != null)
+                {
+                    float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
+                    float floatdamage = basicSkillDamage * skillDamageValue; // *= 제거
+                    damage = (int)floatdamage;
+                    _damageData.damage = damage;
+                }
+            }
         }
 
         public virtual void InitializeSkill()
@@ -94,7 +93,6 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void OnDisable()
         {
             skillEndEvent.RemoveListener(CanUseSkillTrue);
-                
             ResetTileEvent -= skillEnd;
         }
         
@@ -139,13 +137,11 @@ namespace Code.UnitSystem.SkillSystem
             else if (_unitBase.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
             {
                 addDamage = _damageData.damage * 0.4f;
-                
                 ownCircleMesh.material = CriticalMaterial;
             }
             else
             {
                 addDamage = 0f;
-                
                 ownCircleMesh.material = basicMaterial;
             }
         }
@@ -164,6 +160,8 @@ namespace Code.UnitSystem.SkillSystem
             BlockThisSkill();
             ResetTile();
             if (unitCam != null) unitCam.EndThisUnit();
+
+            skillEndEvent?.Invoke();
         }
         
 

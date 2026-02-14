@@ -32,14 +32,28 @@ namespace EnemySystem
         }
 
         #region [Move]
-
-        public void MoveTo(Vector3 targetPos, Action onComplete)
+        
+        public void MoveTo(Vector3 targetPos, int maxSteps, Action onComplete)
         {
-            Vector3 dir = (targetPos - _rootTransform.position).normalized;
-            Vector3 step = CalculateStep(dir);
-            Vector3 destination = _rootTransform.position + step;
+            StartCoroutine(MoveSequence(targetPos, maxSteps, onComplete));
+        }
+        
+        private IEnumerator MoveSequence(Vector3 targetPos, int maxSteps, Action onComplete)
+        {
+            for (int i = 0; i < maxSteps; i++)
+            {
+                if (Vector3.Distance(_rootTransform.position, targetPos) < 0.1f) break;
 
-            StartCoroutine(MoveRoutine(destination, onComplete));
+                Vector3 dir = (targetPos - _rootTransform.position).normalized;
+                Vector3 step = CalculateStep(dir);
+                Vector3 destination = _rootTransform.position + step;
+
+                if (!CheckDestination(destination)) break;
+                
+                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false));
+            }
+            
+            onComplete?.Invoke();
         }
 
         #endregion

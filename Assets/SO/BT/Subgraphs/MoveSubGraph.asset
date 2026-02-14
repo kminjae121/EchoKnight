@@ -21,6 +21,90 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
+    - rid: 4948318302538826192
+      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 11938576266197947861
+          m_Value1: 1913966962575640476
+        Graph:
+          rid: 9157396298433823275
+        m_Parent:
+          rid: -2
+        m_Child:
+          rid: 4948318302538826193
+        Repeat: 0
+        AllowMultipleRepeatsPerTick: 0
+    - rid: 4948318302538826193
+      type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        ID:
+          m_Value0: 9468484902744331797
+          m_Value1: 496300361393778720
+        Graph:
+          rid: 9157396298433823275
+        m_Parent:
+          rid: 4948318302538826192
+        m_Children:
+        - rid: 4948318302538826199
+    - rid: 4948318302538826194
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 1
+          m_Value1: 0
+        Name: Self
+        m_Value: {fileID: 0}
+    - rid: 4948318302538826195
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 8749091226963908317
+          m_Value1: 8775463345220762729
+        Name: Target
+        m_Value: {fileID: 0}
+    - rid: 4948318302538826196
+      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 4880054114255337395
+          m_Value1: 9848024598306161479
+        Name: Agent
+        m_Value: {fileID: 0}
+    - rid: 4948318302538826197
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2688864673558301174
+          m_Value1: 13241643668562056175
+        Name: MinMoveStep
+        m_Value: 1
+    - rid: 4948318302538826198
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 16754167564708877673
+          m_Value1: 3422334103230394182
+        Name: MaxMoveStep
+        m_Value: 3
+    - rid: 4948318302538826199
+      type: {class: EnemyMoveAction, ns: , asm: Assembly-CSharp}
+      data:
+        ID:
+          m_Value0: 13546202550670612838
+          m_Value1: 11120239725746194698
+        Graph:
+          rid: 9157396298433823275
+        m_Parent:
+          rid: 4948318302538826193
+        Agent:
+          rid: 4948318302538826196
+        Target:
+          rid: 4948318302538826195
+        MinMoveStep:
+          rid: 4948318302538826197
+        MaxMoveStep:
+          rid: 4948318302538826198
     - rid: 9157396298433823275
       type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -32,14 +116,14 @@ MonoBehaviour:
           rid: 9157396298433823276
         BlackboardGroupReferences: []
         Root:
-          rid: 9157396328792195461
+          rid: 4948318302538826192
         m_ActiveNodes: []
         m_NodesToTick: []
         m_NodesToEnd:
           rid: 9157396298433823278
         m_EndedNodes:
           rid: 9157396298433823279
-        m_VersionTimestamp: 639046274085546743
+        m_VersionTimestamp: 639067010471187009
     - rid: 9157396298433823276
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -56,73 +140,11 @@ MonoBehaviour:
       type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         m_Variables:
-        - rid: 9157396298433823418
-        - rid: 9157396298433823419
-        - rid: 9157396298433823420
-    - rid: 9157396298433823418
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 1
-          m_Value1: 0
-        Name: Self
-        m_Value: {fileID: 0}
-    - rid: 9157396298433823419
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 8749091226963908317
-          m_Value1: 8775463345220762729
-        Name: Target
-        m_Value: {fileID: 0}
-    - rid: 9157396298433823420
-      type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 4880054114255337395
-          m_Value1: 9848024598306161479
-        Name: Agent
-        m_Value: {fileID: 0}
-    - rid: 9157396328792195461
-      type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 11938576266197947861
-          m_Value1: 1913966962575640476
-        Graph:
-          rid: 9157396298433823275
-        m_Parent:
-          rid: -2
-        m_Child:
-          rid: 9157396328792195462
-        Repeat: 0
-        AllowMultipleRepeatsPerTick: 0
-    - rid: 9157396328792195462
-      type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        ID:
-          m_Value0: 9468484902744331797
-          m_Value1: 496300361393778720
-        Graph:
-          rid: 9157396298433823275
-        m_Parent:
-          rid: 9157396328792195461
-        m_Children:
-        - rid: 9157396328792195463
-    - rid: 9157396328792195463
-      type: {class: EnemyMoveAction, ns: , asm: Assembly-CSharp}
-      data:
-        ID:
-          m_Value0: 13546202550670612838
-          m_Value1: 11120239725746194698
-        Graph:
-          rid: 9157396298433823275
-        m_Parent:
-          rid: 9157396328792195462
-        Agent:
-          rid: 9157396298433823420
-        Target:
-          rid: 9157396298433823419
+        - rid: 4948318302538826194
+        - rid: 4948318302538826195
+        - rid: 4948318302538826196
+        - rid: 4948318302538826197
+        - rid: 4948318302538826198
 --- !u!114 &-3345951085311709074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,7 +157,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
   m_Name: MoveSubGraph Blackboard
   m_EditorClassIdentifier: 
-  VersionTimestamp: 639046265120524649
+  VersionTimestamp: 639067010462211139
   AssetID:
     m_Value0: 3767081116205063671
     m_Value1: 15745800759277452778
@@ -144,10 +166,28 @@ MonoBehaviour:
     - rid: 9157396298433823282
     - rid: 9157396298433823403
     - rid: 9157396298433823412
+    - rid: 4948318302538825876
+    - rid: 4948318302538826037
   m_SharedBlackboardVariableGuids: []
   references:
     version: 2
     RefIds:
+    - rid: 4948318302538825876
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 2688864673558301174
+          m_Value1: 13241643668562056175
+        Name: MinMoveStep
+        m_Value: 1
+    - rid: 4948318302538826037
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 16754167564708877673
+          m_Value1: 3422334103230394182
+        Name: MaxMoveStep
+        m_Value: 3
     - rid: 9157396298433823282
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -191,13 +231,35 @@ MonoBehaviour:
   - rid: 9157396298433823283
   - rid: 9157396298433823399
   - rid: 9157396298433823407
-  m_VersionTimestamp: 639046265120524649
+  - rid: 4948318302538825866
+  - rid: 4948318302538826028
+  m_VersionTimestamp: 639067010462211139
   m_CommandBuffer:
     m_Commands: []
   m_RuntimeBlackboardAsset: {fileID: -3345951085311709074}
   references:
     version: 2
     RefIds:
+    - rid: 4948318302538825866
+      type: {class: 'TypedVariableModel`1[[System.Int32, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2688864673558301174
+          m_Value1: 13241643668562056175
+        Name: MinMoveStep
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 1
+    - rid: 4948318302538826028
+      type: {class: 'TypedVariableModel`1[[System.Int32, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 16754167564708877673
+          m_Value1: 3422334103230394182
+        Name: MaxMoveStep
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 3
     - rid: 9157396298433823283
       type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -246,7 +308,7 @@ MonoBehaviour:
   - rid: 9157396298433823284
   - rid: 9157396298433823421
   - rid: 9157396298433823426
-  m_VersionTimestamp: 639046274085546743
+  m_VersionTimestamp: 639067010471187009
   m_SerializedVersion: 1
   m_DebugInfo: {fileID: 113526893399097511}
   m_RuntimeGraph: {fileID: -4355435923991856374}
@@ -279,7 +341,7 @@ MonoBehaviour:
     NamedChildren: []
     IsPlaceholder: 0
   - Name: Enemy Move To Target
-    Story: '[Agent] moves towards [Target]'
+    Story: '[Agent] moves [MinMoveStep] ~ [MaxMoveStep] steps towards [Target]'
     RuntimeTypeString: EnemyMoveAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
@@ -296,6 +358,16 @@ MonoBehaviour:
         m_SerializableType: UnityEngine.GameObject, UnityEngine.CoreModule, Version=0.0.0.0,
           Culture=neutral, PublicKeyToken=null
       Tooltip: 
+    - Name: MinMoveStep
+      Type:
+        m_SerializableType: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      Tooltip: 
+    - Name: MaxMoveStep
+      Type:
+        m_SerializableType: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+          PublicKeyToken=b77a5c561934e089
+      Tooltip: 
     NamedChildren: []
     IsPlaceholder: 0
   m_Blackboards: []
@@ -309,6 +381,64 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: 4948318302538825861
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: MinMoveStep
+        Type:
+          m_SerializableType: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4948318302538825863
+        LinkedVariable:
+          rid: 4948318302538826150
+    - rid: 4948318302538825862
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: MaxMoveStep
+        Type:
+          m_SerializableType: System.Int32, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4948318302538825864
+        LinkedVariable:
+          rid: 4948318302538826191
+    - rid: 4948318302538825863
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
+    - rid: 4948318302538825864
+      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 0
+    - rid: 4948318302538826150
+      type: {class: 'TypedVariableModel`1[[System.Int32, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 2688864673558301174
+          m_Value1: 13241643668562056175
+        Name: MinMoveStep
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 1
+    - rid: 4948318302538826191
+      type: {class: 'TypedVariableModel`1[[System.Int32, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
+      data:
+        ID:
+          m_Value0: 16754167564708877673
+          m_Value1: 3422334103230394182
+        Name: MaxMoveStep
+        IsExposed: 1
+        m_IsShared: 0
+        m_Value: 3
     - rid: 9157396298433823284
       type: {class: StartNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -396,6 +526,8 @@ MonoBehaviour:
         m_FieldValues:
         - rid: 9157396298433823429
         - rid: 9157396298433823430
+        - rid: 4948318302538825861
+        - rid: 4948318302538825862
     - rid: 9157396298433823427
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:

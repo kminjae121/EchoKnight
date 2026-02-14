@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Code.UnitSystem;
-using UnitSystem;
 using UnityEngine;
 
 namespace EntityComponent
@@ -22,13 +20,13 @@ namespace EntityComponent
 
         public StatSO GetStat(StatSO stat)
         {
-            Debug.Assert(stat != null, $"Stat: GetStat - stat can not be null");
+            Debug.Assert(stat != null, "Stat: GetStat - stat can not be null");
             return _stats.GetValueOrDefault(stat.statName);
         }
 
         public bool TryGetStat(StatSO stat, out StatSO outStat)
         {
-            Debug.Assert(stat != null, $"Stats: TryGetStat - stat cannot be null");
+            Debug.Assert(stat != null, "Stats: TryGetStat - stat cannot be null");
             outStat = _stats.GetValueOrDefault(stat.statName);
             return outStat != null;
         }
@@ -46,9 +44,7 @@ namespace EntityComponent
         public void ClearAllStatModifier()
         {
             foreach (StatSO stat in _stats.Values)
-            {
                 stat.ClearModifier();
-            }
         }
 
         public float SubscribeStat(StatSO stat, StatSO.ValueChangeHandler handler, float defaultValue)
@@ -65,6 +61,5 @@ namespace EntityComponent
             if (target == null) return;
             target.OnValueChanged -= handler;
         }
-
     }
 }

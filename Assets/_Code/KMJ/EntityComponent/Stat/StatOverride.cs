@@ -19,9 +19,7 @@ namespace EntityComponent
             Debug.Assert(newStat != null, $"{nameof(newStat)} stat clone failed");
 
             if (isUseOverride)
-            {
                 newStat.BaseValue = overrideBaseValue;
-            }
 
             return newStat;
         }

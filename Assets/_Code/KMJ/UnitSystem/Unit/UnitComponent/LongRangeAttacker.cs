@@ -68,7 +68,7 @@ public class LongRangeAttacker : MonoBehaviour
         {
             Vector3 dir = _target.transform.position;
 
-            dir.y += 0.4f;
+            dir.y += 1.4f;
             
             effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo._damageData);
             effectPrefab.transform.position = dir;

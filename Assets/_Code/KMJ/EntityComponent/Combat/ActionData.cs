@@ -1,5 +1,4 @@
 ﻿using Code.UnitSystem;
-using UnitSystem;
 using UnityEngine;
 
 namespace Code.EntityComponent

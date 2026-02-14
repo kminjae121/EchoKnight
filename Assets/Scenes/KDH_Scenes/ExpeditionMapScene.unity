@@ -7824,6 +7824,7 @@ GameObject:
   - component: {fileID: 620361333}
   - component: {fileID: 620361332}
   - component: {fileID: 620361336}
+  - component: {fileID: 620361337}
   m_Layer: 0
   m_Name: MainCam
   m_TagString: MainCamera
@@ -7930,7 +7931,7 @@ Camera:
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
@@ -7965,6 +7966,31 @@ MonoBehaviour:
   smoothSpeed: 10
   maintainInitialOffset: 1
   manualOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &620361337
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 620361331}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb42831ee5422f409e7f24f9e7488ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  stage: 1
+  renderingStrategy: 0
+  renderingMode: 0
+  outlineLayerMask: -1
+  primaryBufferSizeMode: 0
+  primaryRendererScale: 0.75
+  primarySizeReference: 800
+  blurShift: 1
+  dilateShift: 1
+  dilateIterations: 1
+  dilateQuality: 0
+  blurIterations: 1
+  blurType: 1
 --- !u!1 &630265420
 GameObject:
   m_ObjectHideFlags: 0
@@ -12434,6 +12460,8 @@ GameObject:
   - component: {fileID: 1074732897}
   - component: {fileID: 1074732896}
   - component: {fileID: 1074732900}
+  - component: {fileID: 1074732902}
+  - component: {fileID: 1074732901}
   m_Layer: 10
   m_Name: StageHolder01
   m_TagString: Untagged
@@ -12548,8 +12576,73 @@ MonoBehaviour:
   targetSceneName: BattleScene
   isUnlocked: 0
   isCleared: 0
+  outlinable: {fileID: 1074732902}
   connectedPaths:
   - {fileID: 70459566}
+--- !u!114 &1074732901
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074732895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1074732902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1074732895}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  complexMaskingMode: 0
+  drawingMode: 1
+  outlineLayer: 0
+  outlineTargets:
+  - CutoutMask: 8
+    renderer: {fileID: 1074732897}
+    SubmeshIndex: 0
+    BoundsMode: 0
+    Bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    CutoutThreshold: 0.5
+    CullMode: 2
+    cutoutTextureName: 
+    cutoutTextureIndex: 0
+  renderStyle: 1
+  outlineParameters:
+    enabled: 1
+    color: {r: 2.9960785, g: 2.9960785, b: 2.9960785, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  backParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  frontParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
 --- !u!1 &1077324215
 GameObject:
   m_ObjectHideFlags: 0
@@ -20042,6 +20135,8 @@ GameObject:
   - component: {fileID: 1644515880}
   - component: {fileID: 1644515879}
   - component: {fileID: 1644515883}
+  - component: {fileID: 1644515885}
+  - component: {fileID: 1644515884}
   m_Layer: 10
   m_Name: StageHolder02
   m_TagString: Untagged
@@ -20156,8 +20251,73 @@ MonoBehaviour:
   targetSceneName: BattleScene
   isUnlocked: 0
   isCleared: 0
+  outlinable: {fileID: 1644515885}
   connectedPaths:
   - {fileID: 100459835}
+--- !u!114 &1644515884
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644515878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1644515885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644515878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  complexMaskingMode: 0
+  drawingMode: 1
+  outlineLayer: 0
+  outlineTargets:
+  - CutoutMask: 8
+    renderer: {fileID: 1644515880}
+    SubmeshIndex: 0
+    BoundsMode: 0
+    Bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    CutoutThreshold: 0.5
+    CullMode: 2
+    cutoutTextureName: 
+    cutoutTextureIndex: 0
+  renderStyle: 1
+  outlineParameters:
+    enabled: 1
+    color: {r: 2.9960785, g: 2.9960785, b: 2.9960785, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  backParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  frontParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
 --- !u!1 &1653285442
 GameObject:
   m_ObjectHideFlags: 0
@@ -22217,7 +22377,7 @@ MonoBehaviour:
   - ExpeditionMapScene
   - BattleScene
   - Lobby
-  defaultTransitionEffect: {fileID: 11400000, guid: 800cf4f007f3e6a4d85d89ee6e2d175c, type: 2}
+  defaultTransitionEffect: {fileID: 11400000, guid: 18074b42923cc6e479c3916d7aa6bee7, type: 2}
 --- !u!1 &1806737070
 GameObject:
   m_ObjectHideFlags: 0
@@ -24093,6 +24253,7 @@ MonoBehaviour:
   targetSceneName: 
   isUnlocked: 0
   isCleared: 1
+  outlinable: {fileID: 0}
   connectedPaths: []
 --- !u!1 &1996161184
 GameObject:

@@ -38,9 +38,8 @@ namespace EnemySystem
                 _animTrigger.OnEnemyDieEndTrigger += OnDeathAnimationFinished;
             }
         }
-
-        // [수정] 부모 클래스(Unit)에 OnDisable이 없으므로 override 제거
-        protected void OnDisable()
+        
+        protected override void OnDisable()
         {
             if (_animTrigger != null)
             {
@@ -48,7 +47,7 @@ namespace EnemySystem
                 _animTrigger.OnEnemyDieEndTrigger -= OnDeathAnimationFinished;
             }
             
-            // Unit.cs는 OnDisable을 정의하지 않았으므로 base.OnDisable() 호출 제거
+            base.OnDisable();
         }
 
         private void Start()
@@ -123,7 +122,6 @@ namespace EnemySystem
 
             BaseSkill skillToUse = null;
 
-            // 1. 이름으로 스킬 찾기
             if (!string.IsNullOrEmpty(skillName) && _skillCompo.skills.ContainsKey(skillName))
             {
                 skillToUse = _skillCompo.skills[skillName];

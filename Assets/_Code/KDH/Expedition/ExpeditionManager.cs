@@ -18,6 +18,7 @@ namespace Code.Expedition.Managers
         [SerializeField] private Camera mainCamera;
 
         private ExpeditionNode _currentNode;
+        private ExpeditionNode _hoveredNode;
         private bool _isMoving;
 
         protected override void Awake()
@@ -41,6 +42,11 @@ namespace Code.Expedition.Managers
             }
         }
 
+        private void Update()
+        {
+            HandleHover();
+        }
+
         private void OnEnable()
         {
             if (inputReader != null)
@@ -57,6 +63,34 @@ namespace Code.Expedition.Managers
             }
         }
 
+        private void HandleHover()
+        {
+            if (mainCamera == null || inputReader == null) return;
+
+            Ray ray = mainCamera.ScreenPointToRay(inputReader.MousePosition);
+
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, nodeLayer))
+            {
+                ExpeditionNode hitNode = hit.collider.GetComponent<ExpeditionNode>();
+                
+                if (hitNode != _hoveredNode)
+                {
+                    if (_hoveredNode != null) _hoveredNode.SetOutline(false);
+
+                    _hoveredNode = hitNode;
+                    if (_hoveredNode != null) _hoveredNode.SetOutline(true);
+                }
+            }
+            else
+            {
+                if (_hoveredNode != null)
+                {
+                    _hoveredNode.SetOutline(false);
+                    _hoveredNode = null;
+                }
+            }
+        }
+
         private void HandleClick()
         {
             if (_isMoving) return;
@@ -69,30 +103,17 @@ namespace Code.Expedition.Managers
 
             Vector2 mousePos = inputReader.MousePosition;
             Ray ray = mainCamera.ScreenPointToRay(mousePos);
-
-            // [디버그] 클릭 시 씬 뷰에 빨간색 레이저를 2초간 표시합니다.
+            
             Debug.DrawRay(ray.origin, ray.direction * 10000f, Color.red, 2f);
             
-            // [디버그] 마우스 좌표 확인 (만약 (0,0)만 나온다면 Input System 설정 문제)
-            // Debug.Log($"클릭 감지됨 - 마우스 위치: {mousePos}");
-
-            // 거리 제한을 100f -> Mathf.Infinity(무제한)으로 변경
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, nodeLayer))
             {
                 ExpeditionNode selectedNode = hit.collider.GetComponent<ExpeditionNode>();
                 
-                // [디버그] 감지된 오브젝트 이름 출력
-                Debug.Log($"Raycast Hit: {hit.collider.name}");
-
                 if (selectedNode != null)
                 {
                     TryMoveToNode(selectedNode);
                 }
-            }
-            else
-            {
-                // [디버그] 아무것도 맞지 않음
-                // Debug.Log("Raycast 실패: 아무것도 맞지 않았습니다.");
             }
         }
 

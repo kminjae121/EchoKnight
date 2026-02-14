@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Code.Expedition.Data;
+using EPOOutline;
 using UnityEngine;
 
 namespace Code.Expedition.Components
@@ -12,6 +13,9 @@ namespace Code.Expedition.Components
         [SerializeField] private bool isUnlocked = false;
         [SerializeField] private bool isCleared = false;
 
+        [Header("Visual")]
+        [SerializeField] private Outlinable outlinable;
+
         [Header("Connections")]
         [SerializeField] private List<ExpeditionPath> connectedPaths = new List<ExpeditionPath>();
 
@@ -19,6 +23,14 @@ namespace Code.Expedition.Components
         public string TargetSceneName => targetSceneName;
         public bool IsUnlocked => isUnlocked;
         public List<ExpeditionPath> ConnectedPaths => connectedPaths;
+
+        private void Awake()
+        {
+            if (outlinable == null)
+                outlinable = GetComponent<Outlinable>();
+
+            SetOutline(false);
+        }
 
         public void SetUnlocked(bool unlocked)
         {
@@ -28,6 +40,15 @@ namespace Code.Expedition.Components
         public void SetCleared(bool cleared)
         {
             isCleared = cleared;
+        }
+
+        // [추가] 아웃라인 활성화/비활성화 함수
+        public void SetOutline(bool isActive)
+        {
+            if (outlinable != null)
+            {
+                outlinable.enabled = isActive;
+            }
         }
 
         public ExpeditionPath GetPathTo(ExpeditionNode targetNode)

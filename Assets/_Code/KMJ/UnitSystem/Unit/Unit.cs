@@ -43,10 +43,15 @@ namespace Code.UnitSystem
             
             RegisterEvents();
         }
+        
+        protected virtual void OnDisable()
+        {
+            UnregisterEvents();
+        }
 
         protected virtual void OnDestroy()
         {
-            UnregisterEvents();
+
         }
 
         private void InitializeData()
@@ -62,6 +67,9 @@ namespace Code.UnitSystem
 
         private void RegisterEvents()
         {
+            OnHitEvent -= Hit;
+            OnDeathEvent -= Dead;
+            
             OnHitEvent += Hit;
             OnDeathEvent += Dead;
         }

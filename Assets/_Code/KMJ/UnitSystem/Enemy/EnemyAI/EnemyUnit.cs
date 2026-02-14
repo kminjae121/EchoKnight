@@ -38,7 +38,7 @@ namespace EnemySystem
                 _animTrigger.OnEnemyDieEndTrigger += OnDeathAnimationFinished;
             }
         }
-        
+
         protected override void OnDisable()
         {
             if (_animTrigger != null)
@@ -73,8 +73,8 @@ namespace EnemySystem
         }
 
         #region [Commands]
-        
-        public void OrderMove(Vector3 targetPos, Action onComplete)
+
+        public void OrderMove(Vector3 targetPos, int maxSteps, Action onComplete)
         {
             if (_mover == null)
             {
@@ -85,8 +85,8 @@ namespace EnemySystem
 
             if (AnimationCompo != null) 
                 AnimationCompo.PlaySelectAnimation("MOVE");
-
-            _mover.MoveTo(targetPos, () =>
+            
+            _mover.MoveTo(targetPos, maxSteps, () =>
             {
                 OnIdleRequested();
                 onComplete?.Invoke();

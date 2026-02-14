@@ -6,11 +6,14 @@ using Action = Unity.Behavior.Action;
 using Unity.Properties;
 
 [Serializable, GeneratePropertyBag]
-[NodeDescription(name: "Enemy Move To Target", story: "[Agent] moves towards [Target]", category: "Action", id: "fae195f5aaf05b504e77f14d366dc7bc")]
+[NodeDescription(name: "Enemy Move To Target", story: "[Agent] moves [MinMoveStep] ~ [MaxMoveStep] steps towards [Target]", category: "Action", id: "fae195f5aaf05b504e77f14d366dc7bc")]
 public partial class EnemyMoveAction : Action
 {
     [SerializeReference] public BlackboardVariable<GameObject> Agent;
     [SerializeReference] public BlackboardVariable<GameObject> Target;
+    
+    [SerializeReference] public BlackboardVariable<int> MinMoveStep; 
+    [SerializeReference] public BlackboardVariable<int> MaxMoveStep;
 
     private EnemyUnit _enemyUnit;
     private bool _isMoving;
@@ -26,10 +29,13 @@ public partial class EnemyMoveAction : Action
             return Status.Failure;
         }
 
+        int min = MinMoveStep.Value > 0 ? MinMoveStep.Value : 1;
+        int max = MaxMoveStep.Value >= min ? MaxMoveStep.Value : min;
+        int steps = UnityEngine.Random.Range(min, max + 1);
+
         _isMoving = true;
-        
-        // Enemy의 통합 메서드 호출
-        _enemyUnit.OrderMove(Target.Value.transform.position, OnDone);
+
+        _enemyUnit.OrderMove(Target.Value.transform.position, steps, OnDone);
         
         return Status.Running;
     }
@@ -42,4 +48,3 @@ public partial class EnemyMoveAction : Action
 
     private void OnDone() { _isMoving = false; }
 }
-

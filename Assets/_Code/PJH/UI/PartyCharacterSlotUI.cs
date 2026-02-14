@@ -50,9 +50,9 @@ namespace Code.UI
         }
 
         public void OnPointerEnter(PointerEventData eventData)
-            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(characterInfo.UnitName));
+            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(characterInfo.UnitImage, characterInfo.UnitName, null));
 
         public void OnPointerExit(PointerEventData eventData)
-            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(null));
+            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(null, null, null));
     }
 }

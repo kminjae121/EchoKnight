@@ -29,6 +29,7 @@ namespace Code.UnitSystem.SkillSystem
         protected SkillComponent _skillCompo;
         protected UnitRotation rotationCompo;
         protected UnitAnimationTrigger triggerCompo;
+        [SerializeField] private UnitStatCompo statCompo;
         #endregion
         
         protected DamageData _damageData;
@@ -60,7 +61,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             base.Awake();
 
-            _unitBase = _owner as Unit;
+            _unitBase = _owner;
             
 
             skillEndEvent.AddListener(CanUseSkillTrue);
@@ -71,7 +72,12 @@ namespace Code.UnitSystem.SkillSystem
         protected override void Start()
         {
             base.Start();
-            UnitStatCompo statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
+
+            if (statCompo == null)
+            {
+                statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
+            }
+            
             
             float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
             

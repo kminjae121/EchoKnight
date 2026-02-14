@@ -320,7 +320,6 @@ namespace Code.UnitSystem
                 _targetEnemy.transform.position,transform.position,attackData,_owner);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }
 }

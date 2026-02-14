@@ -113,7 +113,11 @@ namespace UnitSystem
 
         public void StartWalk(UnitSetMoveEvent evt)
         {
-            if (isMyTurn && behaveCompo != null)
+            if (isMyTurn && behaveCompo != null && evt.isStart == false)
+            {
+                behaveCompo.ResetTile();
+            }
+            else if (isMyTurn && behaveCompo != null && evt.isStart == true)
             {
                 behaveCompo.ReCheckInRange();
             }

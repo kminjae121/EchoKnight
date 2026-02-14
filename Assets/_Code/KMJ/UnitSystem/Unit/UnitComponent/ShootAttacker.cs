@@ -69,7 +69,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             Vector3 pos = transform.position;
 
-            pos.y += 0.5f;
+            pos.y += 1.6f;
         
             GameObject shootItem = Instantiate(shootPrefabs, pos, Quaternion.identity);
 
@@ -88,6 +88,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             animtionCompo.PlaySelectAnimation("IDLE");
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             atkCompo.attackEndEvent?.Invoke();
         }
     }

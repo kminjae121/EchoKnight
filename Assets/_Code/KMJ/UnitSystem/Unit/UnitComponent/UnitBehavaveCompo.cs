@@ -65,7 +65,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 if (_movingtiles.Contains(tileTrm))
                 {
                     rotationCompo.SetDir(_visualPrefabs.transform.position);
+                    _visualPrefabs.transform.rotation = _unit.transform.rotation;
                     _visualPrefabs.SetActive(true);
+                    _visualPrefabs.transform.rotation = _unit.transform.rotation; 
                     _visualPrefabs.transform.position = tileTrm.transform.position;
                 }
                 else

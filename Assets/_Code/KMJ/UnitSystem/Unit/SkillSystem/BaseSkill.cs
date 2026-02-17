@@ -75,7 +75,7 @@ namespace Code.UnitSystem.SkillSystem
 
             if (statCompo == null)
             {
-                statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
+                    statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
             }
             
             

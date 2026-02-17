@@ -58,9 +58,9 @@ using UnityEngine;
         
         public void MakeArrow()
         {
-            Vector3 pos = transform.position;
+            Vector3 pos = _unitBase.transform.position;
 
-            pos.y += 0.5f;
+            pos.y += 2f;
         
             GameObject shootItem = Instantiate(_ArrowPrefab, pos, Quaternion.identity);
 

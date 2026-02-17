@@ -50,9 +50,9 @@ using UnityEngine;
         public void MakeThrowKnife()
         {
             impulseSource.GenerateImpulse(0.5f);  
-            Vector3 pos = transform.position;
+            Vector3 pos = _unitBase.transform.position;
 
-            pos.y += 0.5f;
+            pos.y += 2f;
         
             GameObject shootItem = Instantiate(_knifePrefab, pos, Quaternion.identity);
 

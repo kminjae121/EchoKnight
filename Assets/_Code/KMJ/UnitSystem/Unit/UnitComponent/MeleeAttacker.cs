@@ -57,7 +57,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             
             animtionCompo.PlaySelectAnimation("MOVE");
             
-            while (Vector3.Distance(gameObject.transform.position, target.transform.position) > attackMoveDistance)
+            while (Vector3.Distance(target.transform.position, gameObject.transform.position) > attackMoveDistance)
             {
                 Vector3 currentPos = gameObject.transform.position;
                 Vector3 targetPos = target.transform.position;

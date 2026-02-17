@@ -70,11 +70,6 @@ namespace Code.UI
             {
                 UpItem();
             }
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
-            {
-                
-            }
             
             selectArrow.transform.rotation = Quaternion.Euler(_xValue += 1f,0,90);
         }

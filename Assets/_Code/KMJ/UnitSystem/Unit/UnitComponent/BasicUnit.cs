@@ -144,6 +144,7 @@ namespace UnitSystem
             {
                 RangesCompo.RemoveAllRange();
                 Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             }
 
             HandleTargeting();

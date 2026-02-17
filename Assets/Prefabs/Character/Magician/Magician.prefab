@@ -5673,6 +5673,7 @@ GameObject:
   - component: {fileID: 5137460681628610011}
   - component: {fileID: 5156557718286775451}
   - component: {fileID: 5924939475976118562}
+  - component: {fileID: 2124457247866811024}
   m_Layer: 7
   m_Name: Magician
   m_TagString: Untagged
@@ -5835,6 +5836,28 @@ MonoBehaviour:
   effectPrefab: {fileID: 2544580028942621615}
   attackMoveDistance: 1.5
   isRunningAttack: 0
+--- !u!195 &2124457247866811024
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243688159485738314}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.5
+  m_Speed: 3.5
+  m_Acceleration: 8
+  avoidancePriority: 50
+  m_AngularSpeed: 120
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 1
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.9
+  m_BaseOffset: -0.25
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!1 &6248892654837155426
 GameObject:
   m_ObjectHideFlags: 0
@@ -7211,6 +7234,7 @@ MonoBehaviour:
   rotationCompo: {fileID: 5137460681628610011}
   triggerCompo: {fileID: 4918850842610012167}
   _visualPrefabs: {fileID: 4028449547857436720}
+  navMeshAgent: {fileID: 2124457247866811024}
 --- !u!1 &7424601978593636424
 GameObject:
   m_ObjectHideFlags: 0

@@ -91,6 +91,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
             if (isMoving && _unit.isMyTurn)
             {
+                navMeshAgent.enabled = true;
                 navMeshAgent.SetDestination(nextTile.transform.position);
             }
         }
@@ -212,19 +213,30 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             rotationCompo.SetDir(tile.transform.position);
             _unit.RemoveCost(25f);
             
-            while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 0.8f)
+            while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 1.5f)
             {
                 yield return null;
             }
+            
+            navMeshAgent.speed = 0;
+            navMeshAgent.ResetPath();
+
+            navMeshAgent.enabled = false;
+            
+            while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 0.01f)
+            {
+                _unit.transform.position = Vector3.MoveTowards(
+                    _unit.transform.position,
+                    tile.transform.position,
+                    _moveSpeed * Time.deltaTime);
+                yield return null;
+            }
+            
             
             isMoving = false;
             _isAct = true;
             
             _currentMapTile = tile;
-            navMeshAgent.speed = 0;
-            navMeshAgent.ResetPath();
-
-            navMeshAgent.enabled = false;
             tile.transform.TryGetComponent(out IMapTile EndMapTile);
 
             EndMapTile.SetObstacle(true);

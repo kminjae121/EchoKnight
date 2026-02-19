@@ -91,8 +91,10 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
             if (isMoving && _unit.isMyTurn)
             {
-                navMeshAgent.enabled = true;
-                navMeshAgent.SetDestination(nextTile.transform.position);
+                if (navMeshAgent.enabled == true)
+                {
+                    navMeshAgent.SetDestination(nextTile.transform.position);
+                }
             }
         }
         
@@ -216,20 +218,25 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 2f)
             {
+                Debug.Log(Vector3.Distance(tile.transform.position, _unit.transform.position));
                 yield return null;
             }
             
-            navMeshAgent.speed = 0;
             navMeshAgent.ResetPath();
+            navMeshAgent.speed = 0;
             navMeshAgent.enabled = false;
+            
 
             
             while (Vector2.Distance(new Vector2(tile.transform.position.x, tile.transform.position.z),
                        new Vector2(_unit.transform.position.x, _unit.transform.position.z)) >= 0.1f)
             {
+                Vector3 target = tile.transform.position;
+                target.y = _unit.transform.position.y;
+
                 _unit.transform.position = Vector3.MoveTowards(
                     _unit.transform.position,
-                    tile.transform.position,
+                    target,
                     _moveSpeed * Time.deltaTime
                 );
 

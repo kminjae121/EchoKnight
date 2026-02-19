@@ -177,6 +177,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
             navMeshAgent.enabled = true;
+            navMeshAgent.acceleration = 999f; 
             _visualPrefabs.SetActive(false);
             _isAct = false;
             isMoving = true;
@@ -211,24 +212,27 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             yield return new WaitForSeconds(0.3f);
             
             rotationCompo.SetDir(tile.transform.position);
-            _unit.RemoveCost(25f);
+            _unit.RemoveCost(15);
             
-            while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 1.5f)
+            while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 2f)
             {
                 yield return null;
             }
             
             navMeshAgent.speed = 0;
             navMeshAgent.ResetPath();
-
             navMeshAgent.enabled = false;
+
             
-            while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 0.01f)
+            while (Vector2.Distance(new Vector2(tile.transform.position.x, tile.transform.position.z),
+                       new Vector2(_unit.transform.position.x, _unit.transform.position.z)) >= 0.1f)
             {
                 _unit.transform.position = Vector3.MoveTowards(
                     _unit.transform.position,
                     tile.transform.position,
-                    _moveSpeed * Time.deltaTime);
+                    _moveSpeed * Time.deltaTime
+                );
+
                 yield return null;
             }
             

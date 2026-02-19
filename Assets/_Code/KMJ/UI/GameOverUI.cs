@@ -1,4 +1,5 @@
 ﻿using System;
+using Code.Core.Events.Bus;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -19,6 +20,7 @@ namespace Code.UI
         public void ReturnHome()
         {
             SceneManager.LoadScene("Lobby");
+            Bus<StageClearEvent>.Raise(new StageClearEvent(false));
         }
         public void RestartBtn()
         {

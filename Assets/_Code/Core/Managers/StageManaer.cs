@@ -16,12 +16,10 @@ namespace Code.Core
         
         private void Awake()
         {
-            Bus<EnemyDieEvent>.Subscribe(EndStage);
         }
 
         private void OnDestroy()
         {
-            Bus<EnemyDieEvent>.Unsubscribe(EndStage);
         }
 
         private void Start()
@@ -29,15 +27,5 @@ namespace Code.Core
             Bus<GageEvent>.Raise(new GageEvent(stageSO.behaviorCost));
         }
 
-        private void EndStage(EnemyDieEvent evt)
-        {
-            if (_stageClearCount <= _currentStageCount)
-            {
-                Bus<StageClearEvent>.Raise(new StageClearEvent(true));
-                return;
-            }
-
-            _currentStageCount+=1;
-        }
     }
 }

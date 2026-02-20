@@ -9499,7 +9499,7 @@ MonoBehaviour:
   inputReader: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   battleCam: {fileID: 176224304}
   moveSpeed: 18
-  positionCompoer: {fileID: 176224303}
+  positionComposer: {fileID: 176224303}
 --- !u!114 &176224301
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12861,7 +12861,7 @@ Transform:
   m_GameObject: {fileID: 231400713}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -158.5, y: 6.8, z: 63.1}
+  m_LocalPosition: {x: -160.47, y: 6.8, z: 61.59}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18787,7 +18787,7 @@ Transform:
   m_GameObject: {fileID: 349971963}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: -122.7, y: 6.8, z: 36.3}
+  m_LocalPosition: {x: -122.7, y: 6.77, z: 36.38}
   m_LocalScale: {x: 100, y: 100, z: 100}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -22470,6 +22470,7 @@ GameObject:
   - component: {fileID: 431245761}
   - component: {fileID: 431245760}
   - component: {fileID: 431245759}
+  - component: {fileID: 431245762}
   m_Layer: 0
   m_Name: GameObject (1)
   m_TagString: Untagged
@@ -22656,6 +22657,38 @@ Transform:
   - {fileID: 264491497}
   m_Father: {fileID: 16008435}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &431245762
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 431245758}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_AgentTypeID: 0
+  m_CollectObjects: 0
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_UseGeometry: 0
+  m_DefaultArea: 0
+  m_GenerateLinks: 1
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.083333336
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 4733febb6b60e7b48b81a1fb24c397b4, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &432513623
 GameObject:
   m_ObjectHideFlags: 0
@@ -35742,7 +35775,7 @@ MonoBehaviour:
   gridPosition: {x: 3, y: 1}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!4 &707053497
 Transform:
   m_ObjectHideFlags: 0
@@ -42870,7 +42903,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -57650,7 +57683,7 @@ MonoBehaviour:
   gridPosition: {x: 3, y: 0}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!4 &1156673086
 Transform:
   m_ObjectHideFlags: 0
@@ -70063,7 +70096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -101611,7 +101644,7 @@ MonoBehaviour:
   inputReader: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   battleCam: {fileID: 2006185653}
   moveSpeed: 9
-  positionCompoer: {fileID: 2006185652}
+  positionComposer: {fileID: 0}
 --- !u!114 &2006185650
 MonoBehaviour:
   m_ObjectHideFlags: 0

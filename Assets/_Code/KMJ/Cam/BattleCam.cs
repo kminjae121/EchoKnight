@@ -68,10 +68,10 @@ namespace _Code.KMJ.Cam
             if (moveDir.sqrMagnitude > 1f)
                 moveDir.Normalize();
 
-            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.FieldOfView <= 70)
-                battleCam.Lens.FieldOfView += 100 * Time.deltaTime;
-            else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.FieldOfView >= 20)
+            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.FieldOfView  >= 20)
                 battleCam.Lens.FieldOfView -= 100 * Time.deltaTime;
+            else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.FieldOfView <= 40)
+                battleCam.Lens.FieldOfView += 100 * Time.deltaTime;
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
                 moveSpeed = _reduceSpeed;

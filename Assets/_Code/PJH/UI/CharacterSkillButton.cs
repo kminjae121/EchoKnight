@@ -1,6 +1,5 @@
 ﻿using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
-using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -9,7 +8,6 @@ namespace Code.UI
 {
     public class CharacterSkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
-        [SerializeField] private TextMeshProUGUI skillNameText;
         [SerializeField] private Image skillImage;
         [SerializeField] private Color equippedColor;
         [SerializeField] private Color unequippedColor;
@@ -33,7 +31,6 @@ namespace Code.UI
         {
             _skillInfo = skill;
             skillImage.sprite = skill.skillUIImage;
-            skillNameText.text = skill.skillName;
             _isEquipped = isEquipped;
 
             RefreshColor();
@@ -72,12 +69,12 @@ namespace Code.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skillInfo));
+            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skillInfo, (RectTransform)transform));
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null));
+            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
         }
     }
 }

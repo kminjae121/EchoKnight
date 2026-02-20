@@ -523,14 +523,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Graph: {fileID: 7832622340241183954, guid: 5287372c09b88a445b01da6fb4d3324c, type: 2}
   m_BlackboardVariableOverridesList:
-  - rid: 9157396328792195491
+  - rid: 4948318438080381052
   m_OriginalGraph: {fileID: 0}
   m_IsInitialised: 0
   m_IsStarted: 0
   references:
     version: 2
     RefIds:
-    - rid: 9157396328792195491
+    - rid: 4948318438080381052
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -720,10 +720,11 @@ MonoBehaviour:
   isMove: 0
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   <skillImage>k__BackingField: {fileID: 0}
-  damage: 0
+  basicSkillDamage: 0
   useSkillPoint: 0
   ownSkill: 0
   isCanUseSkill: 0
+  statCompo: {fileID: 0}
   skillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -733,6 +734,9 @@ MonoBehaviour:
   skillEndEvent:
     m_PersistentCalls:
       m_Calls: []
+  ownCircleMesh: {fileID: 0}
+  CriticalMaterial: {fileID: 0}
+  basicMaterial: {fileID: 0}
 --- !u!1 &1532530410968089591
 GameObject:
   m_ObjectHideFlags: 0

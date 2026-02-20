@@ -25,6 +25,11 @@ namespace Code.UI
             Bus<EnemyHpInfo>.Subscribe(SetHp);
         }
 
+        private void OnDisable()
+        {
+            Bus<EnemyHpInfo>.Unsubscribe(SetHp);
+        }
+
         public void SetHp(EnemyHpInfo evt)
         {
             if (evt.isActive == false)

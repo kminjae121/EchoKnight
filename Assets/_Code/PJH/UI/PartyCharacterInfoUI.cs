@@ -10,7 +10,7 @@ namespace Code.UI
         [SerializeField] private Image characterImage;
         [SerializeField] private TextMeshProUGUI characterNameText;
         [SerializeField] private TextMeshProUGUI characterDescText;
-        
+
         private void Awake()
         {
             Bus<PartyCharacterHoverEvent>.Subscribe(HandleHover);
@@ -23,7 +23,9 @@ namespace Code.UI
 
         private void HandleHover(PartyCharacterHoverEvent evt)
         {
+            characterImage.gameObject.SetActive(evt.CharacterImage != null);
             characterImage.sprite = evt.CharacterImage;
+            
             characterNameText.text = evt.CharacterName ?? string.Empty;
             characterDescText.text = evt.CharacterDesc ?? string.Empty;
         }

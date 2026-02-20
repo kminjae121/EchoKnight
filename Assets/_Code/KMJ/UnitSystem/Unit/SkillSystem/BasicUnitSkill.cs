@@ -13,34 +13,14 @@ namespace Code.UnitSystem.SkillSystem
 {
     public class BasicUnitSkill : BaseSkill
     {
-        
+        [Header("Basic Settings")]
         protected BasicUnit _basicUnit;
-        
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo = null;
-        
 
         protected override void Awake()
         {
             base.Awake();
-            _basicUnit = _owner as BasicUnit;
-
-            if (_basicUnit != null)
-            {
-                _inputReader = _basicUnit.inputSO;
-                if (_inputReader != null)
-                {
-                    _inputReader.OnAttackEvent += UseSkill;
-                }
-            }
-
-            if (_unitBase != null)
-            {
-                rotationCompo = _unitBase.GetUnitCompo<UnitRotation>();
-                triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
-                _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
-            }
-            
 
             var impulseObj = GameObject.Find("ImpulseSource");
             if (impulseObj) impulseSource = impulseObj.GetComponent<CinemachineImpulseSource>();
@@ -52,6 +32,25 @@ namespace Code.UnitSystem.SkillSystem
         protected override void Start()
         {
             base.Start();
+
+            _basicUnit = _owner as BasicUnit;
+
+            if (_basicUnit != null)
+            {
+                _inputReader = _basicUnit.inputSO;
+                if (_inputReader != null)
+                {
+                    _inputReader.OnAttackEvent -= UseSkill;
+                    _inputReader.OnAttackEvent += UseSkill;
+                }
+            }
+
+            if (_unitBase != null)
+            {
+                rotationCompo = _unitBase.GetUnitCompo<UnitRotation>();
+                triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
+                _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
+            }
         }
 
         public override void OnDisable()
@@ -60,15 +59,13 @@ namespace Code.UnitSystem.SkillSystem
             if (_inputReader != null)
                 _inputReader.OnAttackEvent -= UseSkill;
         }
-        
-        private void OnDestroy()
+
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             if (_inputReader != null)
                 _inputReader.OnAttackEvent -= UseSkill;
         }
-
-        
-
 
         private void Update()
         {
@@ -76,6 +73,7 @@ namespace Code.UnitSystem.SkillSystem
             {
                 GameObject enemy = _inputReader.GetEnemy();
                 _basicUnit.behaveCompo.ResetTile();
+                
                 if (enemy == null && _targetEnemy != null)
                 {
                     _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
@@ -119,7 +117,6 @@ namespace Code.UnitSystem.SkillSystem
             }
         }
 
-
         protected override void CanUseSkillTrue()
         {
             base.CanUseSkillTrue();
@@ -130,6 +127,7 @@ namespace Code.UnitSystem.SkillSystem
         public override void AttackEnemy()
         {
             base.AttackEnemy();
+            
             if (isCanUseSkill)
             {
                 GameObject enemy = null;
@@ -173,20 +171,28 @@ namespace Code.UnitSystem.SkillSystem
         private void FindEnemyIsThere(GameObject enemy)
         {
             _targetEnemy = null;
-            _verticalCollider.ToList().ForEach(obj =>
+            
+            if (_verticalCollider != null)
             {
-                if (enemy == obj.gameObject) _targetEnemy = enemy;
-            });
+                _verticalCollider.ToList().ForEach(obj =>
+                {
+                    if (enemy == obj.gameObject) _targetEnemy = enemy;
+                });
+            }
 
-            _horizontalCollider.ToList().ForEach(obj =>
+            if (_horizontalCollider != null)
             {
-                if (enemy == obj.gameObject) _targetEnemy = enemy;
-            });
+                _horizontalCollider.ToList().ForEach(obj =>
+                {
+                    if (enemy == obj.gameObject) _targetEnemy = enemy;
+                });
+            }
         }
 
         public override void ShowSkillRange()
         {
             base.ShowSkillRange();
+            
             if (_basicUnit != null && _basicUnit.gaugeManager != null)
             {
                 if (_basicUnit.gaugeManager.CanUseSkill(useSkillPoint))
@@ -210,16 +216,10 @@ namespace Code.UnitSystem.SkillSystem
                 else
                 {
                     Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-
                     Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                     Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
-                    return;
                 }
             }
-            else
-            {
-
-            }   
         }
     }
 }

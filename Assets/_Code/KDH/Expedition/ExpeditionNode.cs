@@ -15,6 +15,9 @@ namespace Code.Expedition.Components
 
         [Header("Visual")]
         [SerializeField] private Outlinable outlinable;
+        [SerializeField] private MeshRenderer nodeRenderer;
+        [SerializeField] private Material clearedMaterial;
+        [SerializeField] private Material unclearedMaterial;
 
         [Header("Connections")]
         [SerializeField] private List<ExpeditionPath> connectedPaths = new List<ExpeditionPath>();
@@ -22,12 +25,16 @@ namespace Code.Expedition.Components
         public ExpeditionNodeSO NodeData => nodeData;
         public string TargetSceneName => targetSceneName;
         public bool IsUnlocked => isUnlocked;
+        public bool IsCleared => isCleared;
         public List<ExpeditionPath> ConnectedPaths => connectedPaths;
 
         private void Awake()
         {
             if (outlinable == null)
                 outlinable = GetComponent<Outlinable>();
+            
+            if (nodeRenderer == null)
+                nodeRenderer = GetComponent<MeshRenderer>();
 
             SetOutline(false);
         }
@@ -42,12 +49,27 @@ namespace Code.Expedition.Components
             isCleared = cleared;
         }
 
-        // [추가] 아웃라인 활성화/비활성화 함수
         public void SetOutline(bool isActive)
         {
             if (outlinable != null)
             {
                 outlinable.enabled = isActive;
+            }
+        }
+        
+        public void UpdateMaterial(bool isCurrentNode)
+        {
+            if (nodeRenderer == null) return;
+
+            if (isCleared || isCurrentNode)
+            {
+                if (clearedMaterial != null)
+                    nodeRenderer.material = clearedMaterial;
+            }
+            else
+            {
+                if (unclearedMaterial != null)
+                    nodeRenderer.material = unclearedMaterial;
             }
         }
 

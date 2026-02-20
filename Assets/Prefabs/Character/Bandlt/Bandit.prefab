@@ -608,8 +608,8 @@ MonoBehaviour:
   basicSkillDamage: 0
   useSkillPoint: 13
   ownSkill: 1
-  statCompo: {fileID: 0}
   isCanUseSkill: 0
+  statCompo: {fileID: 0}
   skillStartEvent:
     m_PersistentCalls:
       m_Calls:
@@ -672,8 +672,8 @@ MonoBehaviour:
   basicSkillDamage: 6
   useSkillPoint: 15
   ownSkill: 0
-  statCompo: {fileID: 0}
   isCanUseSkill: 0
+  statCompo: {fileID: 0}
   skillStartEvent:
     m_PersistentCalls:
       m_Calls:
@@ -1016,7 +1016,7 @@ Transform:
   m_GameObject: {fileID: 1733374947282053944}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.68, z: 0}
+  m_LocalPosition: {x: 0, y: 0.864, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1211,6 +1211,7 @@ GameObject:
   - component: {fileID: 8687093477269508340}
   - component: {fileID: 9109243178793357433}
   - component: {fileID: 1364905615837076402}
+  - component: {fileID: 7062266341635414419}
   m_Layer: 7
   m_Name: Bandit
   m_TagString: Untagged
@@ -1384,12 +1385,33 @@ NavMeshAgent:
   m_AngularSpeed: 120
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 1
+  m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 0.96
   m_BaseOffset: -0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!65 &7062266341635414419
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333293328105742335}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 1, z: 0.5}
+  m_Center: {x: 0, y: 1.15, z: 0}
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1632,7 +1654,7 @@ Transform:
   m_GameObject: {fileID: 2829831168495099917}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.68, z: 0}
+  m_LocalPosition: {x: 0, y: 0.864, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3259,7 +3281,7 @@ Transform:
   m_GameObject: {fileID: 8758395380733786865}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.371, z: 0}
+  m_LocalPosition: {x: 0, y: 1.891, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_ConstrainProportionsScale: 0
   m_Children: []

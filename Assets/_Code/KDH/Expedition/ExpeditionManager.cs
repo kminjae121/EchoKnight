@@ -3,6 +3,9 @@ using UnityEngine;
 using Input; 
 using _00.Core._02.Scripts._01.Manager;
 using Code.Core;
+using Code.Core.Events.Bus;
+using System.Collections.Generic;
+using UnityEngine.SceneManagement; 
 
 namespace Code.Expedition.Managers
 {
@@ -19,27 +22,21 @@ namespace Code.Expedition.Managers
 
         private ExpeditionNode _currentNode;
         private ExpeditionNode _hoveredNode;
+        private ExpeditionNode _selectedNodeForMove; 
         private bool _isMoving;
+
+        private static string _savedCurrentNodeName = "";
+        private static HashSet<string> _savedClearedNodes = new HashSet<string>();
 
         protected override void Awake()
         {
             base.Awake();
-            DontDestroyOnLoad(gameObject);
-            
-            if (mainCamera == null) mainCamera = Camera.main;
+            DontDestroyOnLoad(gameObject); 
         }
 
         private void Start()
         {
-            if (_currentNode == null && startNode != null)
-            {
-                _currentNode = startNode;
-            }
-
-            if (_currentNode != null && player != null)
-            {
-                player.Initialize(_currentNode.transform.position);
-            }
+            InitializeExpeditionScene();
         }
 
         private void Update()
@@ -53,6 +50,8 @@ namespace Code.Expedition.Managers
             {
                 inputReader.OnClickEvent += HandleClick;
             }
+            Bus<StageClearEvent>.Subscribe(OnStageCleared);
+            SceneManager.sceneLoaded += OnSceneLoaded; 
         }
 
         private void OnDisable()
@@ -60,6 +59,90 @@ namespace Code.Expedition.Managers
             if (inputReader != null)
             {
                 inputReader.OnClickEvent -= HandleClick;
+            }
+            Bus<StageClearEvent>.Unsubscribe(OnStageCleared);
+            SceneManager.sceneLoaded -= OnSceneLoaded; 
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            InitializeExpeditionScene();
+        }
+
+        private void InitializeExpeditionScene()
+        {
+            ExpeditionNode[] allNodes = FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None);
+            
+            if (allNodes.Length == 0) return;
+
+            if (mainCamera == null) mainCamera = Camera.main;
+            if (player == null) player = FindAnyObjectByType<ExpeditionPlayer>();
+
+            if (string.IsNullOrEmpty(_savedCurrentNodeName))
+            {
+                if (startNode != null)
+                {
+                    _currentNode = startNode;
+                    _savedCurrentNodeName = startNode.name; 
+                    _savedClearedNodes.Add(startNode.name); 
+                }
+            }
+            else
+            {
+                foreach (var node in allNodes)
+                {
+                    if (node.name == _savedCurrentNodeName)
+                    {
+                        _currentNode = node;
+                        break;
+                    }
+                }
+            }
+
+            foreach (var node in allNodes)
+            {
+                if (_savedClearedNodes.Contains(node.name))
+                {
+                    node.SetCleared(true);
+                }
+            }
+
+            if (_currentNode != null && player != null)
+            {
+                player.Initialize(_currentNode.transform.position);
+            }
+            
+            UpdateAllNodesVisuals(allNodes);
+
+            _hoveredNode = null;
+            _selectedNodeForMove = null;
+            _isMoving = false;
+        }
+
+        private void OnStageCleared(StageClearEvent evt)
+        {
+            if (evt.isClear)
+            {
+                if (!string.IsNullOrEmpty(_savedCurrentNodeName))
+                {
+                    _savedClearedNodes.Add(_savedCurrentNodeName);
+                    Debug.Log($"[{_savedCurrentNodeName}] 스테이지가 클리어 기록에 추가되었습니다!");
+                }
+
+                if (_currentNode != null)
+                {
+                    _currentNode.SetCleared(true);
+                    UpdateAllNodesVisuals(FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None));
+                }
+            }
+        }
+
+        private void UpdateAllNodesVisuals(ExpeditionNode[] allNodes)
+        {
+            if (allNodes == null) return;
+            foreach (var node in allNodes)
+            {
+                node.UpdateMaterial(node == _currentNode);
             }
         }
 
@@ -75,7 +158,8 @@ namespace Code.Expedition.Managers
                 
                 if (hitNode != _hoveredNode)
                 {
-                    if (_hoveredNode != null) _hoveredNode.SetOutline(false);
+                    if (_hoveredNode != null && _hoveredNode != _selectedNodeForMove) 
+                        _hoveredNode.SetOutline(false);
 
                     _hoveredNode = hitNode;
                     if (_hoveredNode != null) _hoveredNode.SetOutline(true);
@@ -85,7 +169,9 @@ namespace Code.Expedition.Managers
             {
                 if (_hoveredNode != null)
                 {
-                    _hoveredNode.SetOutline(false);
+                    if (_hoveredNode != _selectedNodeForMove)
+                        _hoveredNode.SetOutline(false);
+                    
                     _hoveredNode = null;
                 }
             }
@@ -95,24 +181,47 @@ namespace Code.Expedition.Managers
         {
             if (_isMoving) return;
             if (mainCamera == null) return;
-            if (inputReader == null)
-            {
-                Debug.LogError("InputReader가 연결되지 않았습니다.");
-                return;
-            }
+            if (inputReader == null) return;
 
             Vector2 mousePos = inputReader.MousePosition;
             Ray ray = mainCamera.ScreenPointToRay(mousePos);
             
-            Debug.DrawRay(ray.origin, ray.direction * 10000f, Color.red, 2f);
-            
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, nodeLayer))
             {
-                ExpeditionNode selectedNode = hit.collider.GetComponent<ExpeditionNode>();
+                ExpeditionNode hitNode = hit.collider.GetComponent<ExpeditionNode>();
                 
-                if (selectedNode != null)
+                if (hitNode != null)
                 {
-                    TryMoveToNode(selectedNode);
+                    if (_selectedNodeForMove == hitNode)
+                    {
+                        hitNode.SetOutline(false);
+                        TryMoveToNode(hitNode);
+                        _selectedNodeForMove = null; 
+                    }
+                    else
+                    {
+                        if (_selectedNodeForMove != null && _selectedNodeForMove != _hoveredNode)
+                        {
+                            _selectedNodeForMove.SetOutline(false);
+                        }
+
+                        _selectedNodeForMove = hitNode;
+                        _selectedNodeForMove.SetOutline(true); 
+                        Debug.Log($"[{hitNode.name}] 노드가 선택되었습니다. 한 번 더 클릭하면 이동합니다.");
+                    }
+                }
+            }
+            else
+            {
+                if (_selectedNodeForMove != null)
+                {
+                    if (_selectedNodeForMove != _hoveredNode)
+                    {
+                        _selectedNodeForMove.SetOutline(false);
+                    }
+                    
+                    _selectedNodeForMove = null;
+                    Debug.Log("노드 선택이 취소되었습니다.");
                 }
             }
         }
@@ -125,6 +234,12 @@ namespace Code.Expedition.Managers
                 return;
             }
 
+            if (_currentNode != null && !_currentNode.IsCleared)
+            {
+                Debug.LogWarning("현재 스테이지를 클리어해야 다음 노드로 이동할 수 있습니다!");
+                return;
+            }
+
             ExpeditionPath path = _currentNode.GetPathTo(targetNode);
             if (path != null)
             {
@@ -133,6 +248,11 @@ namespace Code.Expedition.Managers
                 {
                     _isMoving = false;
                     _currentNode = targetNode;
+                    
+                    _savedCurrentNodeName = _currentNode.name; 
+                    
+                    UpdateAllNodesVisuals(FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None)); 
+                    
                     EnterStage(_currentNode);
                 });
             }

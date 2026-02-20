@@ -59,16 +59,13 @@ namespace EnemySystem
         public override void OnTurnStart()
         {
             base.OnTurnStart();
-            
             if (_ai != null) _ai.SetTurnState(true);
         }
 
         public override void OnTurnEnd()
         {
             if (_ai != null) _ai.SetTurnState(false);
-    
             base.OnTurnEnd();
-
             Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
         }
 
@@ -113,9 +110,9 @@ namespace EnemySystem
 
         public void OrderSkill(string skillName, GameObject target, Action onComplete)
         {
-            if (_skillCompo == null || _skillCompo.skills == null)
+            if (_skillCompo == null)
             {
-                Debug.LogError($"[EnemyUnit] {name}에게 SkillComponent가 없거나 스킬이 비어있습니다.");
+                Debug.LogError($"[EnemyUnit] {name}에게 SkillComponent가 없습니다.");
                 onComplete?.Invoke();
                 return;
             }
@@ -132,8 +129,7 @@ namespace EnemySystem
                 if (enumerator.MoveNext()) 
                 {
                     skillToUse = enumerator.Current;
-                    if (!string.IsNullOrEmpty(skillName))
-                        Debug.LogWarning($"[EnemyUnit] '{skillName}' 스킬을 찾을 수 없어 '{skillToUse.GetType().Name}'(으)로 대체합니다.");
+                    Debug.LogWarning($"[EnemyUnit] '{skillName}' 스킬을 찾지 못해 '{skillToUse.GetType().Name}'(으)로 대체하여 실행합니다.");
                 }
             }
 
@@ -143,7 +139,7 @@ namespace EnemySystem
             }
             else
             {
-                Debug.LogError($"[EnemyUnit] {name}: 사용할 수 있는 스킬이 없습니다.");
+                Debug.LogError($"[EnemyUnit] {name}: 실행할 수 있는 스킬이 없습니다. (SkillComponent 초기화 실패 또는 SkillSO 설정 확인 필요)");
                 onComplete?.Invoke();
             }
         }
@@ -152,15 +148,16 @@ namespace EnemySystem
         {
             bool isSkillEnded = false;
             
-            UnityEngine.Events.UnityAction endListener = () => isSkillEnded = true;
+            UnityEngine.Events.UnityAction endListener = () => 
+            {
+                isSkillEnded = true;
+            };
             
             string debugSkillName = skill.GetType().Name;
 
             if (skill.skillEndEvent != null)
                 skill.skillEndEvent.AddListener(endListener);
-            else
-                Debug.LogError($"[EnemyUnit] {debugSkillName}의 skillEndEvent가 null입니다.");
-
+            
             skill.ForceUseSkill(target);
 
             float timeout = 3.0f; 

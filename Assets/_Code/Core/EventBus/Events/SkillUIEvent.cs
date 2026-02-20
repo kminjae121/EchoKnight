@@ -1,4 +1,5 @@
 ﻿using Code.UnitSystem.SkillSystem;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.Core.Events.Bus
@@ -8,14 +9,16 @@ namespace Code.Core.Events.Bus
         public SkillComponent skillComponent;
         public int skillIdx;
         public string skillName;
-        public Image skillImage;
+        public Sprite skillImage;
+        public float skillCost;
 
-        public SkillUIEvent(int skillIdx, string skillName, Image skillImage, SkillComponent skillComponent)
+        public SkillUIEvent(int skillIdx, string skillName, float skillCost,Sprite skillImage, SkillComponent skillComponent)
         {
             this.skillIdx = skillIdx;
             this.skillComponent = skillComponent;
             this.skillName = skillName;
             this.skillImage = skillImage;
+            this.skillCost = skillCost;
         }
     }
 }

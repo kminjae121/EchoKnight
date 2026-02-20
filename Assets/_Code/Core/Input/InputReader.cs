@@ -1,9 +1,6 @@
 ﻿using System;
 using Code.Core.Interfaces;
-using Code.Map;
 using Code.UnitSystem;
-using EntityComponent;
-using UnitSystem;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,22 +9,24 @@ namespace Input
     [CreateAssetMenu(fileName = "Input", menuName = "Input/InputReader", order = 0)]
     public class InputReader : ScriptableObject, Controls.IPlayerActions
     {
-        
         [SerializeField] private LayerMask whatIsGround;
-        
         [SerializeField] private LayerMask WhatIsEnemy;
-        
         [SerializeField] private LayerMask WhatIsPlayer;
         
         private Controls _controls;
         public event Action OnAttackEvent;
         public event Action OnClickMoveEvent;
+        public event Action OnClickEvent;
+        public event Action OnSelectEvent;
 
+        public Vector2 MovementKey { get; private set; }
+        public Vector2 MouseUpDownValue { get; private set; }
         public event Action OnSelectUnitEvent;
         
         private Vector3 _gridPosition;
         private Vector2 _screenPosition;
 
+        public Vector2 MousePosition => _screenPosition;
 
         private void OnEnable()
         {
@@ -39,17 +38,15 @@ namespace Input
             _controls.Player.Enable();
         }
 
-
         private void OnDisable()
         {
             _controls.Player.Disable();
-            
         }
 
         public GameObject GetWorldPosition()
         {
             Camera mainCam = Camera.main;
-            Debug.Assert(mainCam != null, "No main camera in this scene");
+            Debug.Assert(mainCam != null, "메인 카메라가 씬에 없습니다.");
 
             GameObject gameObj = null;
             
@@ -66,9 +63,9 @@ namespace Input
         public IMapTile GetSelectedTile()
         {
             Camera mainCam = Camera.main;
-            Debug.Assert(mainCam != null, "No main camera in this scene");
+            Debug.Assert(mainCam != null, "메인 카메라가 씬에 없습니다.");
             
-            IMapTile maptile = new MapTile();
+            IMapTile maptile = null; 
             
             Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
             
@@ -83,7 +80,7 @@ namespace Input
         public Unit GetUnit()
         {
             Camera mainCam = Camera.main;
-            Debug.Assert(mainCam != null, "No main camera in this scene");
+            Debug.Assert(mainCam != null, "메인 카메라가 씬에 없습니다.");
             
             Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
             
@@ -97,7 +94,7 @@ namespace Input
         public GameObject GetEnemy()
         {
             Camera mainCam = Camera.main;
-            Debug.Assert(mainCam != null, "No main camera in this scene");
+            Debug.Assert(mainCam != null, "메인 카메라가 씬에 없습니다.");
             
             Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
             
@@ -113,6 +110,7 @@ namespace Input
         {
             if (context.performed)
             {
+                OnClickEvent?.Invoke();
                 if (GetUnit() != null)
                 {
                     OnSelectUnitEvent?.Invoke();
@@ -132,7 +130,23 @@ namespace Input
         {
             _screenPosition = context.ReadValue<Vector2>();
         }
-        
+
+        public void OnCamMove(InputAction.CallbackContext context)
+        {
+            Vector2 movementKey = context.ReadValue<Vector2>();
+            MovementKey = movementKey;
+        }
+
+        public void OnMouseUpDown(InputAction.CallbackContext context)
+        {
+            MouseUpDownValue = context.ReadValue<Vector2>();
+        }
+
+        public void OnSelectBtn(InputAction.CallbackContext context)
+        {
+            OnSelectEvent?.Invoke();
+        }
+
         public void SetActive(bool isActive)
         {
             if (isActive)

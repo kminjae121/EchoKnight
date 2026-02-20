@@ -1,4 +1,7 @@
 using System.Collections.Generic;
+using _Code.KMJ.UnitSystem.involveUnitSO;
+using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using Skill;
 using UnityEngine;
 
@@ -7,6 +10,16 @@ public enum EntityType
     LongRanger,
     MeleeAttacker,
 }
+
+public enum UnitType
+{
+    None,
+    Archer,
+    Bandlt,
+    Knight,
+    Magician,
+}
+
 [CreateAssetMenu (fileName = "Unit", menuName = "UnitSO")]
 public class UnitSO : ScriptableObject
 {
@@ -15,16 +28,17 @@ public class UnitSO : ScriptableObject
     
     [Header("UnitImage")]
     public Sprite UnitImage;
+
+    [Header("WhatItIs")]        
+    public UnitSpawnSO UnitSpawn;
+
+    [Header("SkillStorage")] public UnitSkillStorageSO SkillStorage;
     
-    [Header("OwnUnitCards")]
-    public List<UnitSkillCardSO> unitSkillCards;
-
-    [Header("CharacterAnimationController")]
-    public RuntimeAnimatorController animationController;
-
+    [Header("OwnSkillStorage")]
+    public UnitOwnSkillStorageSO OwnSkillStorage;
     [Space(4)]
     [Header("CharacterOwnCost")]
-    public int cost;
+    public int Cost;
     
     [Space(4)]
     [Header("UnitSettings")]
@@ -34,19 +48,28 @@ public class UnitSO : ScriptableObject
 
     public bool isPlayerUnit = false;
     
-    public float moveSpeed;
-    
-    public float attackDistance;
+    public float MoveSpeed;
 
+    public float Maxhealth;
+
+    public float AtkDamage;
+
+    [Range(1, 3f)]
+    public float SkillDamage;
+
+    public float DefensivePower;
+    
     [Header("UnitType")]
-    public EntityType entityType = EntityType.MeleeAttacker;
+    public EntityType EntityType = EntityType.MeleeAttacker;
+
+    public UnitType UnitType = UnitType.None;
 
 
     private void OnValidate()
     {
         if (isLongRange)
-            entityType = EntityType.LongRanger;
+            EntityType = EntityType.LongRanger;
         else
-            entityType = EntityType.MeleeAttacker;
+            EntityType = EntityType.MeleeAttacker;
     }
 }

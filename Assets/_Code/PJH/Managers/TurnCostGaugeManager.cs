@@ -11,12 +11,12 @@ namespace Code.Managers
         public int maxGaugeValue;
         public NotifyValue<int> currentGaugeValue;
 
-        private void OnEnable()
+        private void Awake()
         {
             Bus<UnitTurnEndEvent>.Subscribe(HandleEndTurn);
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<UnitTurnEndEvent>.Unsubscribe(HandleEndTurn);
         }

@@ -22,15 +22,17 @@ namespace Code.UnitSystem
 
         private SetUnitCamera unitCam;
         
-        private float _moveSpeed => _unit.unitSO.moveSpeed;
+        private float _moveSpeed => _unit.unitSO.MoveSpeed;
         
         [SerializeField] private UnitAnimation animationCompo;
 
         [SerializeField] private UnitRotation rotationCompo;
 
-        private GameObject _currentMapTile = null;
+        public GameObject _currentMapTile { get; set; }= null;
 
         private List<GameObject> _movingtiles =  new List<GameObject>();
+
+        [SerializeField] private GameObject _visualPrefabs;
 
         protected override void Start()
         {
@@ -58,31 +60,41 @@ namespace Code.UnitSystem
         public void CheckCanMoveTile(UnitMoveEvent evt)
         {
             moveEvent?.Invoke();
-            
-            if (_unit.GetCurrentCost() <= 0)
-            {
-                ResetTile();
-                EndAct();
-                return;
-            }
-            
             if (evt.isMove)
             {
                 if (_unit.isMyTurn)
                 {
+                    if (_unit.GetCurrentCost() <= 0)
+                    {
+                        Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
+                        ResetTile();
+                        EndAct();
+                        return;
+                    }
+                   
                     FindObjectInRange(); 
                     unitCam.SetThisUnit();
+                }
+                else
+                {
+                    ResetTile();
+                    _visualPrefabs.SetActive(false);
+                    EndAct();
                 }
             }
             else
             {
+                
                 ResetTile();
+                _visualPrefabs.SetActive(false);
                 EndAct();
-            }
+            }   
         }
 
         private void CheckTilesCanMoving()
         {
+            _movingtiles.Clear();
+            
             _horizontalCollider.ToList().ForEach(tile =>
             {
                 if (tile.TryGetComponent(out IMapTile tiled))
@@ -107,6 +119,22 @@ namespace Code.UnitSystem
             
         }
 
+        private void Update()
+        {
+            if (_unit.isMyTurn && _isAct)
+            {
+                CheckTilesCanMoving();
+                GameObject tileTrm = _unit.inputSO.GetWorldPosition();
+                
+                if (_movingtiles.Contains(tileTrm))
+                {
+                    rotationCompo.SetDir(_visualPrefabs.transform.position);
+                    _visualPrefabs.SetActive(true);
+                    _visualPrefabs.transform.position = tileTrm.transform.position;
+                }
+            }
+        }
+
         /// <summary>
         /// 플레이어가 움직이는 코드
         /// </summary>
@@ -118,29 +146,30 @@ namespace Code.UnitSystem
             if (!_isAct)
                 return;
             
-            
-            CheckTilesCanMoving();
-
             IMapTile tile = _unit.inputSO.GetSelectedTile();
             GameObject tileTrm = _unit.inputSO.GetWorldPosition();
 
             if (!_movingtiles.Contains(tileTrm))
             {
                 ResetTile();
+                _visualPrefabs.SetActive(false);
                 return;
             }
 
             if (tile == null)
             {
                 ResetTile();
+                _visualPrefabs.SetActive(false);
                 return;
             }
             else
             {
+                _visualPrefabs.SetActive(false);
                 StartCoroutine(MoveStart(tile, tileTrm));
                 ResetTile();
             }
             
+            _visualPrefabs.SetActive(false);
             unitCam.EndThisUnit();
         }
 
@@ -167,7 +196,7 @@ namespace Code.UnitSystem
                 animationCompo.PlaySelectAnimation("MOVE");   
                 while (Vector3.Distance(_unit.transform.position, tile.transform.position) > 0.01f)
                 {
-                    _unit.RemoveCost(0.1f);
+                    _unit.RemoveCost(0.03f);
                     _unit.transform.position = Vector3.MoveTowards(
                         _unit.transform.position,
                         tile.transform.position,
@@ -182,6 +211,8 @@ namespace Code.UnitSystem
             tile.transform.TryGetComponent(out IMapTile EndMapTile);
 
             EndMapTile.SetObstacle(true);
+            Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             
             animationCompo.PlaySelectAnimation("IDLE");   
             _isAct = false;

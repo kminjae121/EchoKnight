@@ -32,9 +32,14 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             StartCoroutine(StartEffect());
         }
 
+        public void SetDamageData(DamageData damageData)
+        {
+            _damageData = damageData;
+        }
+
         private IEnumerator StartEffect()
         {
-            yield return new WaitForSeconds(1.13f);
+            yield return new WaitForSeconds(0.4f);
 
             _collider.enabled = true;
         }
@@ -44,6 +49,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
             {
                 impulseSource.GenerateImpulse(0.3f);
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
                 
                 other.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,

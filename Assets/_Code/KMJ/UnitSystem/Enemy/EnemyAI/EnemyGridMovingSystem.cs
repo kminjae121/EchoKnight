@@ -1,110 +1,154 @@
+using System;
 using System.Collections;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Interfaces;
 using Code.UnitSystem;
-using UnitSystem;
 using UnityEngine;
-using UnityEngine.Events;
 using Unit = Code.UnitSystem.Unit;
 
 namespace EnemySystem
 {
     public class EnemyGridMovingSystem : MonoBehaviour
     {
-        private bool _isMoveToTarget = false;
-        [SerializeField] private UnitRotation rotationCompo;
-        [SerializeField] private UnitAnimation animationCompo;
+        [Header("Settings")]
+        [SerializeField] private LayerMask _whatIsGround;
+        [SerializeField] private float _moveSpeed = 2f;
 
-        [SerializeField] private LayerMask whatIsGround;
-
-        [SerializeField] private Transform owner;
-        public UnityEvent OnMoveEndEvent;
-
-        private GameObject _ownTrm;
-    
+        [Header("References")]
+        [SerializeField] private UnitRotation _rotationCompo;
+        
+        private Transform _rootTransform;
+        private GameObject _currentTileObj;
+        
         public void Initialize(Unit owner)
         {
-            
+            _rootTransform = owner.transform;
+            if (_rotationCompo == null) 
+                _rotationCompo = owner.GetComponent<UnitRotation>();
+        }
+
+        private void Awake()
+        {
+            if (_rootTransform == null) _rootTransform = transform;
+        }
+
+        #region [Move]
+        
+        public void MoveTo(Vector3 targetPos, int maxSteps, Action onComplete)
+        {
+            StartCoroutine(MoveSequence(targetPos, maxSteps, onComplete));
         }
         
-        public void Move()
+        private IEnumerator MoveSequence(Vector3 targetPos, int maxSteps, Action onComplete)
         {
-            MoveToRandomGrid();
-        }
-
-
-        private void MoveToRandomGrid()
-        {
-            int randomDir = Random.Range(1, 5);
-            
-            Moveing(randomDir);
-        }
-
-        private void Moveing(int dir)
-        {
-            MoveTo(dir);
-        }
-
-        private void MoveTo(int dirInt)
-        {
-            Vector3 step = dirInt switch
+            for (int i = 0; i < maxSteps; i++)
             {
-                1 => new Vector3(-1f, 0f, 0f), 
-                2 => new Vector3( 1f, 0f, 0f), 
-                3 => new Vector3( 0f, 0f, 1f), 
-                4 => new Vector3( 0f, 0f,-1f), 
-                _ => Vector3.zero
-            };
+                if (Vector3.Distance(_rootTransform.position, targetPos) < 0.1f) break;
 
-            if (step == Vector3.zero) return;
-            
-            StartCoroutine(Move(step));
-        }
+                Vector3 dir = (targetPos - _rootTransform.position).normalized;
+                Vector3 step = CalculateStep(dir);
+                Vector3 destination = _rootTransform.position + step;
 
-        private IEnumerator Move(Vector3 step)
-        {
-            Vector3 target = owner.position + step;
-            
-            if(Physics.Raycast(target, Vector3.down, out RaycastHit hit, Mathf.Infinity, whatIsGround))
-            {
-                if (_ownTrm != null)
-                {
-                    _ownTrm.GetComponent<IMapTile>().SetObstacle(false);
-                }
-                    
-                rotationCompo.SetDir(target);
-                while ((owner.position - target).sqrMagnitude > 0.0001f)
-                {
-                    owner.position = Vector3.MoveTowards(
-                        owner.position,
-                        target,
-                        2 * Time.deltaTime
-                    );
-                    yield return null;
-                }
-                owner.position = target;
+                if (!CheckDestination(destination)) break;
                 
+                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false));
+            }
+            
+            onComplete?.Invoke();
+        }
+
+        #endregion
+
+        #region [Retreat]
+
+        public void RetreatFromTarget(Vector3 targetPos, int steps, Action onComplete)
+        {
+            StartCoroutine(RetreatSequence(targetPos, steps, onComplete));
+        }
+
+        private IEnumerator RetreatSequence(Vector3 targetPos, int steps, Action onComplete)
+        {
+            for (int i = 0; i < steps; i++)
+            {
+                Vector3 dir = (_rootTransform.position - targetPos).normalized;
+                Vector3 step = CalculateStep(dir);
+                Vector3 destination = _rootTransform.position + step;
+
+                bool moveSuccess = false;
+
+                yield return StartCoroutine(MoveRoutine(destination, () => moveSuccess = true, checkObstacle: true));
+                
+                if (!CheckDestination(destination)) break; 
+            }
+
+            onComplete?.Invoke();
+        }
+
+        #endregion
+
+        #region [Internal Logic]
+
+        private Vector3 CalculateStep(Vector3 dir)
+        {
+            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
+                return new Vector3(Mathf.Sign(dir.x), 0, 0);
+            else
+                return new Vector3(0, 0, Mathf.Sign(dir.z));
+        }
+
+        private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true)
+        {
+            if (checkObstacle && !CheckDestination(targetPos))
+            {
+                onComplete?.Invoke();
+                yield break;
+            }
+
+            if (_currentTileObj != null)
+                _currentTileObj.GetComponent<IMapTile>().SetObstacle(false);
+
+            if (_rotationCompo != null)
+                _rotationCompo.SetDir(targetPos);
+
+            while ((_rootTransform.position - targetPos).sqrMagnitude > 0.0001f)
+            {
+                _rootTransform.position = Vector3.MoveTowards(
+                    _rootTransform.position, 
+                    targetPos, 
+                    _moveSpeed * Time.deltaTime
+                );
+                yield return null;
+            }
+            _rootTransform.position = targetPos;
+            
+            UpdateCurrentTile(targetPos);
+
+            onComplete?.Invoke();
+        }
+
+        private bool CheckDestination(Vector3 pos)
+        {
+            if (Physics.Raycast(pos + Vector3.up * 2, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
+            {
                 if (hit.transform.TryGetComponent(out IMapTile tile))
                 {
-                    if (tile.HasObstacle)
-                    {
-                        Move();
-                        yield break; 
-                    }
-                    
-                    tile.SetObstacle(true);
-
-                    _ownTrm = hit.transform.gameObject;
+                    return !tile.HasObstacle;
                 }
-            
-
-                OnMoveEndEvent?.Invoke();   
             }
-            else
+            return false;
+        }
+
+        private void UpdateCurrentTile(Vector3 pos)
+        {
+            if (Physics.Raycast(pos + Vector3.up * 2, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
             {
-                Move();
-                yield break; 
+                if (hit.transform.TryGetComponent(out IMapTile tile))
+                {
+                    tile.SetObstacle(true);
+                    _currentTileObj = hit.transform.gameObject;
+                }
             }
         }
+
+        #endregion
     }
 }

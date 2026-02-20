@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
 using Unity.Cinemachine;
@@ -49,11 +51,13 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
-            yield return new WaitForSeconds(2.2f);
+            
+            yield return new WaitForSeconds(0.3f);
+            yield return new WaitForSeconds(0.1f);
             
             animtionCompo.PlaySelectAnimation("MOVE");
             
-            while (Vector3.Distance(gameObject.transform.position, target.transform.position) > attackMoveDistance)
+            while (Vector3.Distance(target.transform.position, gameObject.transform.position) > attackMoveDistance)
             {
                 Vector3 currentPos = gameObject.transform.position;
                 Vector3 targetPos = target.transform.position;
@@ -83,8 +87,6 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 
         private IEnumerator ReturnOwnPos()
         {
-            Debug.Log(gameObject.transform.position);
-            Debug.Log(_ownTrm);
             
             animtionCompo.PlaySelectAnimation("MOVE");
             
@@ -97,9 +99,11 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
                 );
                 yield return null;
             }
-            
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             animtionCompo.PlaySelectAnimation("IDLE");
             atkCompo.attackEndEvent?.Invoke();
+             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }
 }

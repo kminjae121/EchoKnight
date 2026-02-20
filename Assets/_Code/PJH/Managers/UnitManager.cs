@@ -2,7 +2,6 @@
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
-using UnitSystem;
 using UnityEngine;
 
 namespace Code.Managers
@@ -22,7 +21,7 @@ namespace Code.Managers
             Bus<UnitSpawnEvent>.Unsubscribe(RegisterUnit);
             Bus<UnitDeadEvent>.Unsubscribe(RemoveUnit);
         }
-
+        
         #region Public Functions
 
         public IReadOnlyCollection<Unit> GetAllUnits()
@@ -37,9 +36,15 @@ namespace Code.Managers
         #endregion
         
         private void RegisterUnit(UnitSpawnEvent evt)
-            => activeUnits.Add(evt.Unit);
+        {
+            if (evt.Unit != null)
+                activeUnits.Add(evt.Unit);
+        }
 
         private void RemoveUnit(UnitDeadEvent evt)
-            => activeUnits.Remove(evt.Unit);
+        {
+            if (evt.Unit != null)
+                activeUnits.Remove(evt.Unit);
+        }
     }
 }

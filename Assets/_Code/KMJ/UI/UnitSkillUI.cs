@@ -11,15 +11,17 @@ namespace Code.UI
 {
     public class UnitSkillUI : MonoBehaviour
     {
-        private SkillComponent skillCompnent;
+        [SerializeField] private SkillComponent skillCompnent;
+
+        [SerializeField] private GameObject skillUI;
+
+        [SerializeField] private Sprite basicSprite;
 
         [SerializeField] private List<Image> skillImage;
 
         [SerializeField] private List<Button> skillbtn;
 
-        [ItemCanBeNull] private List<string> thisSkillName;
-
-        private List<bool> isCanSkill;
+        [SerializeField] private List<string> thisSkillName;
         
         private void Awake()
         {
@@ -35,30 +37,36 @@ namespace Code.UI
         }
 
         private void HandleClickRange(int idx)
-        {
-            if (isCanSkill[idx])
-            {
-                skillCompnent.StartSkill(thisSkillName[idx]);
-                isCanSkill[idx] = false;
-            }
-            else
-            {
-                skillCompnent.CancelSkill(thisSkillName[idx]);
-                isCanSkill[idx] = true;
-            }
+        { 
+            skillCompnent.CancelAllSkill();
+            
+            skillCompnent.StartSkill(thisSkillName[idx]);
         }
 
+        public void CancelSkill()
+        {
+            if (skillCompnent != null)
+            {
+                skillCompnent.CancelAllSkill();
+            }
+            
+            Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+        }
+        
         private void HandleSkillUIEvent(SkillUIEvent evt)
         {
             skillCompnent = evt.skillComponent;
-            skillImage[evt.skillIdx] = evt.skillImage;
             thisSkillName[evt.skillIdx] = evt.skillName;
             
             
             skillbtn[evt.skillIdx].onClick.RemoveAllListeners();
             
             int capturedIdx = evt.skillIdx;
-            skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
+
+            if (evt.skillName != null)
+            {
+                skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
+            }
         }
     }
 }

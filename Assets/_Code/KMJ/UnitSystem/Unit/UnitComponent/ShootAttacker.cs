@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
 using Unity.Cinemachine;
@@ -53,25 +54,31 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
+            
+            yield return new WaitForSeconds(0.3f);
             _target = null;
             
-            yield return new WaitForSeconds(2.2f);
+            yield return new WaitForSeconds(0.1f);
             
+            _target = target;
             animtionCompo.PlaySelectAnimation("ATTACK");
 
-            _target = target;
         }
 
         private void Shoot()
         {
             Vector3 pos = transform.position;
 
-            pos.y += 0.5f;
+            pos.y += 1.6f;
         
             GameObject shootItem = Instantiate(shootPrefabs, pos, Quaternion.identity);
 
             Vector3 slashRot = transform.rotation.eulerAngles;
-        
+
+            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
+            shootItemCompo.SetTarget(_target);
+            shootItemCompo.SetDamageData(atkCompo._damageData);
+            
             shootItem.transform.rotation = Quaternion.Euler(slashRot);
             impulseSource.GenerateImpulse(0.3f);
         }
@@ -79,6 +86,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private void AttackEnd()
         {
             animtionCompo.PlaySelectAnimation("IDLE");
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             atkCompo.attackEndEvent?.Invoke();
         }
     }

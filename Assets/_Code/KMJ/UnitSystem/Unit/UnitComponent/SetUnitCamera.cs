@@ -10,22 +10,25 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         [SerializeField] private CinemachineCamera unitCam;
 
         private GameObject ownCam;
+        private CinemachineCamera OwnCamCompo;
 
         private void Start()
         {
-            ownCam = GameObject.Find("BasicCam").gameObject;
+            ownCam = GameObject.Find("TopCam").gameObject;
+            OwnCamCompo = ownCam.GetComponent<CinemachineCamera>();
         }
 
         public void SetThisUnit()
         {
-            Bus<CamMovingEvent>.Raise(new CamMovingEvent(unitCam.gameObject));
-            unitCam.Priority = 2;
+           // Bus<CamMovingEvent>.Raise(new CamMovingEvent(unitCam.gameObject));
+           // unitCam.Priority = 2;
         }
 
         public void EndThisUnit()
         {
-            Bus<CamMovingEvent>.Raise(new CamMovingEvent(ownCam.gameObject));
-            unitCam.Priority = -1;
+//            Bus<CamMovingEvent>.Raise(new CamMovingEvent(ownCam.gameObject));
+            //unitCam.Priority = -1;
+        //   OwnCamCompo.Priority = 1;
         }
     }
 }

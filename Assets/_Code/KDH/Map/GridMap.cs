@@ -1,6 +1,6 @@
 ﻿using Code.Core.Interfaces;
 using UnityEngine;
-using UnityEngine. Rendering.Universal;
+using UnityEngine.Rendering.Universal;
 
 namespace Code.Map
 {
@@ -9,7 +9,7 @@ namespace Code.Map
         [Header("Map Settings")]
         [SerializeField] private int width = 10;
         [SerializeField] private int height = 10;
-        [SerializeField] private float tileSize = 1f;
+        [SerializeField] private float tileSize = 30f;
         
         [Header("Tile Prefab")]
         [SerializeField] private GameObject tilePrefab;
@@ -21,6 +21,7 @@ namespace Code.Map
         [SerializeField] private Material obstacleMaterial;
         [SerializeField] private float decalHeight = 1f;
         [SerializeField] private float projectionDepth = 1f;
+        [SerializeField] private uint decalRenderingLayerMask = 6;
 
         [SerializeField, HideInInspector] private MapTile[] serializedTiles;
 
@@ -43,17 +44,25 @@ namespace Code.Map
         private void RebuildTileArray()
         {
             if (serializedTiles == null || serializedTiles.Length == 0) return;
-            if (serializedTiles.Length != width * height) return;
-
-            tiles = new MapTile[width, height];
             
-            for (int i = 0; i < serializedTiles.Length; i++)
+            if (tiles == null || tiles.GetLength(0) != width || tiles.GetLength(1) != height)
+            {
+                tiles = new MapTile[width, height];
+            }
+            
+            int count = Mathf.Min(serializedTiles.Length, width * height);
+            
+            for (int i = 0; i < count; i++)
             {
                 if (serializedTiles[i] == null) continue;
                 
                 int x = i % width;
                 int y = i / width;
-                tiles[x, y] = serializedTiles[i];
+                
+                if (x < width && y < height)
+                {
+                    tiles[x, y] = serializedTiles[i];
+                }
             }
         }
 
@@ -63,9 +72,9 @@ namespace Code.Map
             tiles = new MapTile[width, height];
             serializedTiles = new MapTile[width * height];
 
-            for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; y++)
             {
-                for (int y = 0; y < height; y++)
+                for (int x = 0; x < width; x++)
                 {
                     CreateTile(x, y);
                 }
@@ -79,7 +88,12 @@ namespace Code.Map
             GameObject tileObject;
             if (tilePrefab != null)
             {
+                #if UNITY_EDITOR
+                tileObject = (GameObject)UnityEditor.PrefabUtility.InstantiatePrefab(tilePrefab, transform);
+                tileObject.transform.position = worldPosition;
+                #else
                 tileObject = Instantiate(tilePrefab, worldPosition, Quaternion.identity, transform);
+                #endif
             }
             else
             {
@@ -104,16 +118,18 @@ namespace Code.Map
         private void CreateDecal(GameObject tileObject)
         {
             GameObject decalObject = new GameObject("Decal");
-            decalObject. transform.parent = tileObject.transform;
-            decalObject.transform. localPosition = Vector3.up * decalHeight;
-            decalObject.transform. localRotation = Quaternion. Euler(90f, 0f, 0f);
+            decalObject.transform.parent = tileObject.transform;
+            decalObject.transform.localPosition = Vector3.up * decalHeight;
+            decalObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
 
             DecalProjector projector = decalObject.AddComponent<DecalProjector>();
+
             projector.size = new Vector3(tileSize * 0.9f, tileSize * 0.9f, projectionDepth);
             projector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
 
-            MapTileVisual visual = decalObject. AddComponent<MapTileVisual>();
-            visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial, projectionDepth);
+            MapTileVisual visual = decalObject.AddComponent<MapTileVisual>();
+
+            visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial, projectionDepth, decalRenderingLayerMask);
         }
 
         private void ClearMap()
@@ -127,6 +143,13 @@ namespace Code.Map
                         DestroyImmediate(tile.gameObject);
                     }
                 }
+            }
+            
+            // 자식 오브젝트가 남아있을 경우를 대비한 안전 장치
+            int childCount = transform.childCount;
+            for (int i = childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(transform.GetChild(i).gameObject);
             }
 
             tiles = null;
@@ -142,31 +165,34 @@ namespace Code.Map
         {
             Vector3 localPos = worldPosition - transform.position;
             int x = Mathf.RoundToInt(localPos.x / tileSize);
-            int y = Mathf.RoundToInt(localPos. z / tileSize);
+            int y = Mathf.RoundToInt(localPos.z / tileSize);
             return new Vector2Int(x, y);
         }
 
         public IMapTile GetTile(Vector2Int position)
         {
-            return GetTile(position. x, position.y);
+            return GetTile(position.x, position.y);
         }
 
         public IMapTile GetTile(int x, int y)
         {
-            if (! IsValidPosition(new Vector2Int(x, y))) return null;
+            if (!IsValidPosition(new Vector2Int(x, y))) return null;
             
             if (tiles == null)
             {
                 RebuildTileArray();
             }
             
-            return tiles? [x, y];
+            // Rebuild 실패 시 방어 코드
+            if (tiles == null) return null;
+
+            return tiles[x, y];
         }
 
         public bool IsValidPosition(Vector2Int position)
         {
             return position.x >= 0 && position.x < width &&
-                   position. y >= 0 && position.y < height;
+                   position.y >= 0 && position.y < height;
         }
 
         public bool CanMoveTo(Vector2Int position)

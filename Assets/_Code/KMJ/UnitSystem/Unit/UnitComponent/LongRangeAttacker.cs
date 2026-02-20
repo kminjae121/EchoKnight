@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
 using UnityEngine;
@@ -7,7 +9,7 @@ using UnityEngine.Experimental.GlobalIllumination;
 
 public class LongRangeAttacker : MonoBehaviour
 {
-    [SerializeField] private UnitAttackComponent atkCompo;
+        [SerializeField] private UnitAttackComponent atkCompo;
 
         [SerializeField] private float atkMoveSpeed;
 
@@ -50,9 +52,11 @@ public class LongRangeAttacker : MonoBehaviour
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
+            
+            yield return new WaitForSeconds(0.3f);
             _target = null;
             
-            yield return new WaitForSeconds(2.2f);
+            yield return new WaitForSeconds(0.1f);
             
              animtionCompo.PlaySelectAnimation("ATTACK");
 
@@ -64,8 +68,9 @@ public class LongRangeAttacker : MonoBehaviour
         {
             Vector3 dir = _target.transform.position;
 
-            dir.y += 0.4f;
+            dir.y += 1.4f;
             
+            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo._damageData);
             effectPrefab.transform.position = dir;
             
             effectPrefab.SetActive(true);
@@ -76,5 +81,8 @@ public class LongRangeAttacker : MonoBehaviour
         {
             animtionCompo.PlaySelectAnimation("IDLE");
             atkCompo.attackEndEvent?.Invoke();
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
         }
 }

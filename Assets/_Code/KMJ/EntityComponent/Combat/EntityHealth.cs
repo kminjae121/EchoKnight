@@ -1,86 +1,106 @@
-﻿using Code.UI;
+﻿using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.Core.Events.Bus;
+using Code.UI;
 using Code.UnitSystem;
 using EntityComponent;
 using GameEventChannel;
+using UnitSystem;
 using UnityEngine;
 
 namespace Code.EntityComponent
 {
-    public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable, IAfterInitialize
+    public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable
     {
-        private Unit _entity;
-        private ActionData _actionData;
-        private EntityStatCompo _statCompo;
-
         [SerializeField] private StatSO hpStat;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currentHealth;
         [SerializeField] private TextInfo normalText, criticalText;
         [SerializeField] private GameEventChannelSO textEventChannel;
-
+        
+        private Unit _entity;
+        private ActionData _actionData;
+        private UnitStatCompo _statCompo;
+        private UnitState unitStateCompo;
+        
+        private float _defensivePower;
+        
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
         
-        
         public delegate void OnHealthChanged(float current, float max);
-
         public event OnHealthChanged OnHealthChangedEvent;
         
         public void Initialize(Unit owner)
         {
             _entity = owner;
             _actionData = owner.GetUnitCompo<ActionData>();
-            _statCompo = owner.GetUnitCompo<EntityStatCompo>();
+            _statCompo = owner.GetUnitCompo<UnitStatCompo>();
+        }
+        
+        private void Start()
+        {
+            maxHealth = currentHealth = _statCompo.GetStat<float>(StatInfo.MaxHealth);
+            _defensivePower =  _statCompo.GetStat<float>(StatInfo.DefensivePower);
+            
+            unitStateCompo = new UnitState(_entity.unitSO);
         }
 
-        public void AfterInitialize()
+        public void HealHp(float amount)
         {
-            maxHealth = currentHealth = _statCompo.SubscribeStat(
-                hpStat, HandleMaxHPChanged, 10f);
-        }
+            currentHealth += amount;
 
-        private void OnDestroy()
-        {
-            _statCompo.UnSubscribeStat(hpStat, HandleMaxHPChanged);
+            if (currentHealth > maxHealth)
+                currentHealth = maxHealth;
+            
+            if (_entity as BasicUnit)
+            {
+                BasicUnit basicUnit = _entity as BasicUnit;
+               
+                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth
+                    ,MaxHealth, basicUnit.UnitImage));
+                
+                unitStateCompo.Heal(amount);
+            }
         }
-
-        private void HandleMaxHPChanged(StatSO stat, float currentvalue, float previousvalue)
-        {
-            float changed = currentvalue - previousvalue; 
-            maxHealth = currentvalue;
-            if (changed > 0)
-                currentHealth = Mathf.Clamp(currentHealth + changed, 0, maxHealth);
-            else
-                currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        }
+        
 
         public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer)
         {
-            
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
             _actionData.HitByPowerAttack = attackData.isPowerAttack;
             _actionData.LastDamageData = damageData; //데미지 데이터도 기록
             //넉백은 나중에 처리한다.
 
-            currentHealth = Mathf.Clamp(currentHealth - damageData.damage, 0, maxHealth);
+            float damage = damageData.damage;
+            float CalculateDamage = damage * (_defensivePower / 100);
+            damage -= CalculateDamage;
+            
+            currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
 
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
             int typeHash = damageData.isCritical ? criticalText.nameHash : normalText.nameHash;
-            Vector3 position = hitPoint + new Vector3(0, 0.3f);
-            PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damageData.damage.ToString(), typeHash
+            Vector3 position = hitPoint + new Vector3(0, 1.2f);
+            PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damage.ToString(), typeHash
                 , position, 0.5f);  
             
             textEventChannel.RaiseEvent(textEvt);
-           if (currentHealth <= 0)
+           
+           if (_entity as BasicUnit)
            {
-               _entity.OnDeathEvent?.Invoke();
-               return;
+               BasicUnit basicUnit = _entity as BasicUnit;
+               
+               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,
+                   MaxHealth, basicUnit.UnitImage));
+
+               unitStateCompo.TakeDamage(damage);
            }
            
            _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
+           
+           if (currentHealth <= 0)
+               _entity.OnDeathEvent?.Invoke();
         }
-
     }
 }

@@ -10,10 +10,8 @@ using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-public class BasicAttackSkill : BaseSkill
+public class BasicAttackSkill : BasicUnitSkill
 {
-    
-    [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private Animator animator;
     private UnitAnimation animtionCompo;
 
@@ -23,13 +21,13 @@ public class BasicAttackSkill : BaseSkill
         
     private Vector3 _ownTrm;
     
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
         skillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
         impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-        _damageData.damage = 2.3456f;
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
 
@@ -47,13 +45,16 @@ public class BasicAttackSkill : BaseSkill
     public void AttackAction(GameObject target)
     {
         _ownTrm = _owner.transform.position;
-        StartCoroutine(MeleeAttackAction(target));
+        StartCoroutine(MeleeAttackAction(target)); ;
         skillStartEvent?.Invoke();
     }
 
     private IEnumerator MeleeAttackAction(GameObject target)
     {
-        yield return new WaitForSeconds(2.2f);
+        
+        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(0.1f);
+        _targetEnemy = target;
             
         animtionCompo.PlaySelectAnimation("MOVE");
             
@@ -70,19 +71,20 @@ public class BasicAttackSkill : BaseSkill
                 atkMoveSpeed * Time.deltaTime
             );
 
-            if (Vector3.Distance(_owner.transform.position, target.transform.position) < attackMoveDistance * 2)
-            {
-                animtionCompo.PlaySelectAnimation("BAS");
-            }
-
             yield return null;
+        }
+        
+        if (Vector3.Distance(_owner.transform.position, target.transform.position) <= attackMoveDistance * 2)
+        {
+            animtionCompo.PlaySelectAnimation("BAS");
         }
     }
     
     public void TakeDamage()
     {
         Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-        impulseSource.GenerateImpulse(0.6f);
+        impulseSource.GenerateImpulse(0.3f);
+        
         _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
             _targetEnemy.transform.position,transform.position,attackData,_owner);
     }
@@ -106,7 +108,11 @@ public class BasicAttackSkill : BaseSkill
             yield return null;
         }
         animtionCompo.PlaySelectAnimation("IDLE");
-        
-        skillEndEvent?.Invoke();
+        Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+        skillEndEvent.Invoke();
+        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+        Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+        _targetEnemy = null;
     }
 }

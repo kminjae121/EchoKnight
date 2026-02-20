@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
+using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using NUnit.Framework.Constraints;
 using UnitSystem;
 using UnityEngine;
 
@@ -23,7 +25,9 @@ namespace Code.UnitSystem
 
         protected Action ResetTileEvent;
         
-        protected bool _isAct = false;
+        public bool _isAct { get; set; } = false;
+
+        public bool isMove = false;
 
         public void Initialize(Unit owner)
         {
@@ -51,47 +55,60 @@ namespace Code.UnitSystem
             if (_horizontalCollider == null)
                 return;
             
-            if(_verticalCollider == null)
-                return;
             
             _horizontalCollider.ToList().ForEach(obj =>
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    if (!tile.HasObstacle)
+                    if (!isMove)
                     {
-                        tile.SetWalkable(false);
+                        tile.SetEnemy(false);
+                    }
+                    else
+                    {
+                        if (!tile.HasObstacle)
+                        {
+                            tile.SetWalkable(false);
+                        }   
                     }
                 }
             });
+            
+            if(_verticalCollider == null)
+                return;
             
             _verticalCollider.ToList().ForEach(obj =>
             {
                 if (obj.TryGetComponent(out IMapTile tile))
                 {
-                    if (!tile.HasObstacle)
+                    if (!isMove)
                     {
-                        tile.SetWalkable(false);
+                        tile.SetEnemy(false);
+                    }
+                    else
+                    {
+                        if (!tile.HasObstacle)
+                        {
+                            tile.SetWalkable(false);
+                        }   
                     }
                 }
             });
             
-            _horizontalCollider.ToList().Clear();
-            _horizontalCollider = null;
-            _verticalCollider.ToList().Clear();
-            _horizontalCollider = null;
-            ResetTileEvent?.Invoke();
             _isAct = false;
+ 
+            _horizontalCollider.ToList().Clear();
+            _verticalCollider.ToList().Clear();
+            if (!isMove)
+            {
+                _horizontalCollider = null;
+                _verticalCollider = null;
+            }
+            ResetTileEvent?.Invoke();
         }
 
-
-        protected void FindObjectInRange()
+        public void ReCheckInRange()
         {
-            _rangeComponent.RemoveAllRange();
-            
-            _verticalCollider = Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsTarget);
-            _horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsTarget);
-
             _verticalCollider.ToList().ForEach(obj =>
             {
                 if (obj.TryGetComponent(out IMapTile tile))
@@ -110,6 +127,55 @@ namespace Code.UnitSystem
                     if (!tile.HasObstacle)
                     {
                         tile.SetWalkable(true);
+                    }
+                }
+            });
+            
+            _isAct = true;
+        }
+
+
+        public void FindObjectInRange()
+        {
+            _rangeComponent.RemoveAllRange();
+            
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+            
+            _verticalCollider = Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsTarget);
+            _horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsTarget);
+
+            _verticalCollider.ToList().ForEach(obj =>
+            {
+                if (obj.TryGetComponent(out IMapTile tile))
+                {
+                    if (!isMove)
+                    {
+                        tile.SetEnemy(true);    
+                    }
+                    else
+                    {
+                        if (!tile.HasObstacle)    
+                        {
+                            tile.SetWalkable(true);      
+                        }   
+                    }
+                }
+            });
+            
+            _horizontalCollider.ToList().ForEach(obj =>
+            {
+                if (obj.TryGetComponent(out IMapTile tile))
+                {
+                    if (!isMove)
+                    {
+                        tile.SetEnemy(true);    
+                    }
+                    else
+                    {
+                        if (!tile.HasObstacle)    
+                        {
+                            tile.SetWalkable(true);      
+                        }   
                     }
                 }
             });

@@ -1,5 +1,6 @@
 ﻿using Code.Core.Events.Bus;
 using Code.EntityComponent;
+using Unity.Cinemachine;
 using UnityEngine;
 
 namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
@@ -15,9 +16,12 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         [SerializeField] private AttackDataSO atkData;
 
         private GameObject _target = null;
+        
+        protected CinemachineImpulseSource impulseSource;
+        
         private void Awake()
         {
-            _damageData.damage = 4.567f;
+            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
         }
 
         private void FixedUpdate()
@@ -25,16 +29,30 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             transform.position += transform.forward * _moveSpeed * Time.fixedDeltaTime;
         }
 
+        public void SetDamageData(DamageData damageData)
+        {
+            _damageData = damageData;
+        }
+
+        public void SetTarget(GameObject target)
+        {
+            _target = target;
+        }
+
         private void OnTriggerEnter(Collider other)
         {
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
             {
-                Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
+                if (other.gameObject == _target)
+                {
+                    Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
+                    Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 
-                other.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,
-                    atkData,null);
-                
-                gameObject.SetActive(false);
+                    impulseSource.GenerateImpulse(0.4f);  
+                    other.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,
+                        atkData,null);
+                    gameObject.SetActive(false);   
+                }
             }
         }
     }

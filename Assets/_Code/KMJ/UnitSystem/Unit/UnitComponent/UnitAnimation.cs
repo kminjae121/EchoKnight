@@ -6,6 +6,7 @@ namespace UnitSystem
     public class UnitAnimation : MonoBehaviour, IUnitComponent
     {
         [SerializeField] private Animator _animator;
+        
         public void Initialize(Unit owner)
         {
             AnimationAllStop();
@@ -13,30 +14,50 @@ namespace UnitSystem
 
         public void PlaySelectAnimation(string animationName)
         {
-            AnimationAllStop();
+            if (_animator == null) return;
             
-            _animator.SetBool(animationName,true);
+            AnimationAllStop();
+            _animator.SetBool(animationName, true);
         }
 
         public void ReturnIdleAnimation()
         {
-            AnimationAllStop();
-
-            _animator.SetBool("IDLE", true);
+            PlaySelectAnimation("IDLE");
         }
 
         public void AnimationAllStop()
         {
             if (_animator == null) return;
 
-            var parameters = _animator.parameters;
-            for (int i = 0; i < parameters.Length; i++)
+            foreach (var param in _animator.parameters)
             {
-                var p = parameters[i];
-                
-                if (p.type == AnimatorControllerParameterType.Bool)
+                if (param.type == AnimatorControllerParameterType.Bool)
                 {
-                    _animator.SetBool(p.name, false);
+                    _animator.SetBool(param.name, false);
+                }
+            }
+        }
+        
+        public void RestartFromEntry()
+        {
+            if (_animator == null) return;
+            
+            AnimationAllStop();
+            ResetAllTriggers();
+            
+            _animator.Rebind();
+            _animator.Update(0f);
+        }
+        
+        private void ResetAllTriggers()
+        {
+            if (_animator == null) return;
+
+            foreach (var param in _animator.parameters)
+            {
+                if (param.type == AnimatorControllerParameterType.Trigger)
+                {
+                    _animator.ResetTrigger(param.name);
                 }
             }
         }

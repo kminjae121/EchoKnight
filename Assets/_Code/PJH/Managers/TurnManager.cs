@@ -28,7 +28,7 @@ namespace Code.Managers
 
         public void StartBattle()
         {
-            _units = unitManager.GetAllUnits().Select(u => u as ITurnable).ToList();
+            RefreshUnits();
 
             foreach (var unit in _units)
                 unit.TurnGauge = CalculateBaseTurnGauge(unit);
@@ -43,8 +43,10 @@ namespace Code.Managers
         {
             if (_currentTurnUnit == null)
                 return;
-
-            _currentTurnUnit.OnTurnEnd();
+            
+            // [수정됨] 무한 루프 원인 제거: 유닛이 이미 OnTurnEnd를 호출하고 이벤트를 보냈으므로,
+            // 여기서 다시 _currentTurnUnit.OnTurnEnd()를 호출하면 안 됩니다.
+            
             _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
             _currentTurnUnit = null;
 
@@ -53,17 +55,23 @@ namespace Code.Managers
 
         private void StartNextTurn()
         {
+            RefreshUnits();
+            
             _currentTurnUnit = GetNextUnit();
-
             AdvanceTime(_currentTurnUnit);
-
-            // 사실 필요 없지만 가독성을 위해
-            _currentTurnUnit.TurnGauge = 0f;
             _currentTurnUnit.OnTurnStart();
 
             UpdateCurrentTurnUI();
 
             Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
+        }
+
+        private void RefreshUnits()
+        {
+            _units = unitManager
+                .GetAllUnits()
+                .OfType<ITurnable>()
+                .ToList();
         }
 
         private ITurnable GetNextUnit()
@@ -113,7 +121,6 @@ namespace Code.Managers
         public List<ITurnable> GetTimelineUnits(int count)
         {
             return _units
-                //.Where(u => u != _currentTurnUnit)
                 .OrderBy(u => u.TurnGauge)
                 .Take(count)
                 .ToList();

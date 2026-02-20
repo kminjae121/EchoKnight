@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Runtime.InteropServices.ComTypes;
 using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
@@ -10,6 +13,7 @@ using Code.UnitSystem.SkillSystem;
 using EnemySystem;
 using Input;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace UnitSystem
@@ -65,6 +69,8 @@ namespace UnitSystem
                 triggerCompo.OnDeadEvent += LastDie;
 
             behaveCompo._currentMapTile = _startTile;
+            
+            transform.position = _startTile.transform.position;
         }
 
         protected override void OnDestroy()
@@ -129,6 +135,7 @@ namespace UnitSystem
             {
                 AnimationCompo.RestartFromEntry();
                 AnimationCompo.PlaySelectAnimation("HIT");
+                StartCoroutine(ReturnIdleAnimation());
             }
             base.Hit();
         }
@@ -165,6 +172,12 @@ namespace UnitSystem
             {
                 SetTarget(enemy);
             }
+        }
+
+        private IEnumerator ReturnIdleAnimation()
+        {
+            yield return new WaitForSeconds(1.5f);
+            AnimationCompo.ReturnIdleAnimation();
         }
 
         private void SetTarget(GameObject enemy)

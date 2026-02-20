@@ -17,8 +17,15 @@ public partial class IsTargetInRangeCondition : Condition
         {
             return false;
         }
+        
+        Vector3 agentPos = Agent.Value.transform.position;
+        Vector3 targetPos = Target.Value.transform.position;
+        
+        agentPos.y = 0f;
+        targetPos.y = 0f;
 
-        float distance = Vector3.Distance(Agent.Value.transform.position, Target.Value.transform.position);
+        float distance = Vector3.Distance(agentPos, targetPos);
+        
         float epsilon = 0.1f; 
 
         return distance <= (Range.Value + epsilon);

@@ -42,13 +42,22 @@ namespace EnemySystem
         {
             for (int i = 0; i < maxSteps; i++)
             {
-                if (Vector3.Distance(_rootTransform.position, targetPos) < 0.1f) break;
+                Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
+                Vector3 targetPos2D = new Vector3(targetPos.x, 0, targetPos.z);
 
-                Vector3 dir = (targetPos - _rootTransform.position).normalized;
+                if (Vector3.Distance(currentPos2D, targetPos2D) <= 1.1f) 
+                {
+                    break;
+                }
+                
+                Vector3 dir = (targetPos2D - currentPos2D).normalized;
                 Vector3 step = CalculateStep(dir);
                 Vector3 destination = _rootTransform.position + step;
-
-                if (!CheckDestination(destination)) break;
+                
+                if (!CheckDestination(destination)) 
+                {
+                    break;
+                }
                 
                 yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false));
             }
@@ -69,7 +78,10 @@ namespace EnemySystem
         {
             for (int i = 0; i < steps; i++)
             {
-                Vector3 dir = (_rootTransform.position - targetPos).normalized;
+                Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
+                Vector3 targetPos2D = new Vector3(targetPos.x, 0, targetPos.z);
+
+                Vector3 dir = (currentPos2D - targetPos2D).normalized;
                 Vector3 step = CalculateStep(dir);
                 Vector3 destination = _rootTransform.position + step;
 
@@ -119,7 +131,7 @@ namespace EnemySystem
                 yield return null;
             }
             _rootTransform.position = targetPos;
-            
+
             UpdateCurrentTile(targetPos);
 
             onComplete?.Invoke();
@@ -127,13 +139,30 @@ namespace EnemySystem
 
         private bool CheckDestination(Vector3 pos)
         {
-            if (Physics.Raycast(pos + Vector3.up * 2, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
+            Vector3 origin = pos + Vector3.up * 2;
+            Vector3 dir = Vector3.down;
+            
+            if (Physics.Raycast(origin, dir, out RaycastHit groundHit, Mathf.Infinity, _whatIsGround))
             {
-                if (hit.transform.TryGetComponent(out IMapTile tile))
+                if (groundHit.transform.TryGetComponent(out IMapTile tile))
                 {
-                    return !tile.HasObstacle;
+                    if (tile.HasObstacle) 
+                    {
+                        Debug.LogWarning($"[이동 불가] {pos} 타일({groundHit.transform.name}) 위에 이미 다른 유닛/장애물이 있습니다.");
+                        return false;
+                    }
+                    return true;
+                }
+                else
+                {
+                    Debug.LogWarning($"[이동 불가] {groundHit.transform.name}에 IMapTile 스크립트가 없습니다.");
                 }
             }
+            else
+            {
+                Debug.LogWarning($"[이동 불가] {pos} 위치에서 바닥(What Is Ground)을 찾을 수 없습니다.");
+            }
+            
             return false;
         }
 

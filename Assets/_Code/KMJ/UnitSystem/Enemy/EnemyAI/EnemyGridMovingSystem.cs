@@ -11,49 +11,22 @@ namespace EnemySystem
     {
         [Header("Settings")]
         [SerializeField] private LayerMask _whatIsGround;
-        [SerializeField] private float _moveSpeed = 3f; 
-        [SerializeField] private float _tileSize = 3.18f; 
-
-        [Header("Animation Sync")]
-        [SerializeField] private float _retreatAnimDuration = 0f;
+        [SerializeField] private float _moveSpeed = 10f; 
+        [Tooltip("GridMap의 Tile Size와 동일하게 맞춰주세요 (현재 맵 기준 30)")]
+        [SerializeField] private float _tileSize = 30f; 
 
         [Header("References")]
         [SerializeField] private UnitRotation _rotationCompo;
         
-        private Unit _owner;
-        private Animator _animator;
         private Transform _rootTransform;
         private GameObject _currentTileObj;
         
         public void Initialize(Unit owner)
         {
-            _owner = owner;
             _rootTransform = owner.transform;
-            
             if (_rotationCompo == null) 
                 _rotationCompo = owner.GetComponent<UnitRotation>();
-
-            _animator = owner.GetComponentInChildren<Animator>();
-            
-            if (_retreatAnimDuration <= 0f && _animator != null && _animator.runtimeAnimatorController != null)
-            {
-                foreach (var clip in _animator.runtimeAnimatorController.animationClips)
-                {
-                    if (clip.name.IndexOf("RETREAT", StringComparison.OrdinalIgnoreCase) >= 0)
-                    {
-                        _retreatAnimDuration = clip.length;
-                        Debug.Log($"[EnemyGridMovingSystem] {_owner.name}의 RETREAT 애니메이션 길이 자동 감지: {_retreatAnimDuration}초");
-                        break;
-                    }
-                }
                 
-                if (_retreatAnimDuration <= 0f) _retreatAnimDuration = 1.0f; 
-            }
-            else if (_retreatAnimDuration <= 0f)
-            {
-                _retreatAnimDuration = 1.0f;
-            }
-
             UpdateCurrentTile(_rootTransform.position);
         }
 
@@ -89,8 +62,8 @@ namespace EnemySystem
                 {
                     break;
                 }
-
-                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: false, overrideSpeed: -1f));
+                
+                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: false));
             }
             
             onComplete?.Invoke();
@@ -107,8 +80,6 @@ namespace EnemySystem
 
         private IEnumerator RetreatSequence(Vector3 targetPos, int steps, Action onComplete)
         {
-            float dynamicRetreatSpeed = (steps * _tileSize) / _retreatAnimDuration;
-
             for (int i = 0; i < steps; i++)
             {
                 Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
@@ -124,7 +95,7 @@ namespace EnemySystem
                     break; 
                 }
 
-                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: true, overrideSpeed: dynamicRetreatSpeed));
+                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: true));
             }
 
             onComplete?.Invoke();
@@ -142,7 +113,7 @@ namespace EnemySystem
                 return new Vector3(0, 0, Mathf.Sign(dir.z) * _tileSize);
         }
 
-        private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true, bool isRetreating = false, float overrideSpeed = -1f)
+        private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true, bool isRetreating = false)
         {
             if (checkObstacle && !CheckDestination(targetPos))
             {
@@ -171,15 +142,13 @@ namespace EnemySystem
                     }
                 }
             }
-            
-            float currentSpeed = overrideSpeed > 0f ? overrideSpeed : _moveSpeed;
 
             while ((_rootTransform.position - targetPos).sqrMagnitude > 0.1f)
             {
                 _rootTransform.position = Vector3.MoveTowards(
                     _rootTransform.position, 
                     targetPos, 
-                    currentSpeed * Time.deltaTime
+                    _moveSpeed * Time.deltaTime
                 );
                 yield return null;
             }

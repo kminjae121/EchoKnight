@@ -59,7 +59,7 @@ using UnityEngine;
             impulseSource.GenerateImpulse(0.5f);  
             Vector3 pos = transform.position;
 
-            pos.y += 0.5f;
+            pos.y += 3f;
         
             fireBallPrefab.transform.position = pos;
             fireBallPrefab.SetActive(true);

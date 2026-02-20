@@ -87,15 +87,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             {
                 _visualPrefabs.SetActive(false);
             }
-
-
-            if (isMoving && _unit.isMyTurn)
-            {
-                if (navMeshAgent.enabled == true)
-                {
-                    navMeshAgent.SetDestination(nextTile.transform.position);
-                }
-            }
         }
         
         private void CheckTilesCanMoving()
@@ -176,9 +167,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
+            nextTile.transform.position = tile.transform.position;
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
-            navMeshAgent.enabled = true;
             navMeshAgent.acceleration = 999f; 
             _visualPrefabs.SetActive(false);
             _isAct = false;
@@ -193,10 +184,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
             if (!tileInfo.IsWalkable)
                 yield break;
-
-            navMeshAgent.speed = _moveSpeed;
             
-            animationCompo.PlaySelectAnimation("MOVE"); 
             if (_currentMapTile != null)
             {
                 IMapTile tileInfos = _currentMapTile.GetComponent<IMapTile>();
@@ -204,59 +192,53 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 tileInfos.SetWalkable(true);
             }
             
-            navMeshAgent.ResetPath();    
+            yield return new WaitForSeconds(0.2f);
+            
+            navMeshAgent.enabled = true;
             navMeshAgent.isStopped = false;
-            
-            
-            nextTile.transform.position = tile.transform.position;
-
-            
-            yield return new WaitForSeconds(0.3f);
-            
-            rotationCompo.SetDir(tile.transform.position);
-            _unit.RemoveCost(15);
-            
-            while (Vector3.Distance(tile.transform.position, _unit.transform.position) >= 2f)
-            {
-                Debug.Log(Vector3.Distance(tile.transform.position, _unit.transform.position));
-                yield return null;
-            }
-            
             navMeshAgent.ResetPath();
-            navMeshAgent.speed = 0;
-            navMeshAgent.enabled = false;
             
+            navMeshAgent.updatePosition = true;
+            navMeshAgent.updateRotation = true;
 
+            navMeshAgent.speed = _moveSpeed;
+            navMeshAgent.acceleration = 999f;
+
+            rotationCompo.SetDir(tile.transform.position);
+            animationCompo.PlaySelectAnimation("MOVE");
             
-            while (Vector2.Distance(new Vector2(tile.transform.position.x, tile.transform.position.z),
-                       new Vector2(_unit.transform.position.x, _unit.transform.position.z)) >= 0.1f)
+            navMeshAgent.SetDestination(tile.transform.position);
+
+            navMeshAgent.stoppingDistance = 0.05f;
+            
+            _unit.RemoveCost(15);
+
+            while (navMeshAgent.pathPending) yield return null;
+
+            while (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
             {
-                Vector3 target = tile.transform.position;
-                target.y = _unit.transform.position.y;
-
-                _unit.transform.position = Vector3.MoveTowards(
-                    _unit.transform.position,
-                    target,
-                    _moveSpeed * Time.deltaTime
-                );
-
+                if (navMeshAgent.velocity.sqrMagnitude < 0.0001f && !navMeshAgent.pathPending)
+                {
+                    navMeshAgent.SetDestination(tile.transform.position);
+                }
                 yield return null;
             }
             
-            
+            navMeshAgent.isStopped = true;
+            navMeshAgent.ResetPath();
+            navMeshAgent.enabled = false;
+
             isMoving = false;
             _isAct = true;
             
             _currentMapTile = tile;
-            tile.transform.TryGetComponent(out IMapTile EndMapTile);
+            tile.TryGetComponent(out IMapTile endTile);
+            endTile.SetObstacle(true);
 
-            EndMapTile.SetObstacle(true);
-            _visualPrefabs.SetActive(true);
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false, new Vector3(0.1f,0.1f,0.1f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            _owner.transform.position = tile.transform.position;
-            animationCompo.PlaySelectAnimation("IDLE");   
+            animationCompo.PlaySelectAnimation("IDLE");
         }
     }
 }

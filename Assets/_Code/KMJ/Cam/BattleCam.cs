@@ -1,4 +1,5 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -27,6 +28,8 @@ namespace _Code.KMJ.Cam
 
             _basicSpeed = moveSpeed;
             _reduceSpeed = moveSpeed / 2;
+            
+            positionComposer = GetComponent<CinemachinePositionComposer>();
         }
 
         private void Start()
@@ -35,19 +38,34 @@ namespace _Code.KMJ.Cam
             positionComposer.enabled = false;
         }
 
+
+        private void OnDisable()
+        {
+            Bus<UnitCamSettingEvent>.Unsubscribe(SetTarget);
+        }
+
         public void SetTarget(UnitCamSettingEvent evt)
         {
             _isLocking = evt.isLocking;
             
             if (evt.target == null)
             {
-                positionComposer.enabled = false;
+                if (positionComposer.enabled == true)
+                {
+                    positionComposer.enabled = false;
+                }
                 battleCam.Target.TrackingTarget = null;
             }
-            else
+            else if(positionComposer != null)
             {
                 positionComposer.enabled = true;
                 positionComposer.Damping = evt.dampingSpeed;
+                battleCam.Target.TrackingTarget = evt.target.transform;
+            }
+            else
+            {
+                //positionComposer.enabled = true;
+                //positionComposer.Damping = evt.dampingSpeed;
                 battleCam.Target.TrackingTarget = evt.target.transform;
             }
         }

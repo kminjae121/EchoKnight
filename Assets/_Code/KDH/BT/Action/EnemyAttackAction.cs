@@ -18,8 +18,15 @@ public partial class EnemyAttackAction : Action
 
     protected override Status OnStart()
     {
-        if (Agent.Value == null || Target.Value == null) 
+        if (Agent.Value == null)
         {
+            Debug.LogError("[EnemyAttackAction] Agent(행동 주체)가 할당되지 않았습니다. BT 변수 매핑을 확인하세요.");
+            return Status.Failure;
+        }
+        
+        if (Target.Value == null)
+        {
+            Debug.LogError("[EnemyAttackAction] Target(공격 대상)이 할당되지 않았습니다. FindTarget 노드가 실패했거나 변수가 연결되지 않았습니다.");
             return Status.Failure;
         }
 
@@ -32,7 +39,6 @@ public partial class EnemyAttackAction : Action
 
         _isAttacking = true;
         
-        // 스킬 이름이 비어있을 경우에 대한 방어 로직은 EnemyUnit.OrderSkill 내부에서 처리됨
         string skillToUse = SkillName.Value;
         
         _enemyUnit.OrderSkill(skillToUse, Target.Value, OnDone);

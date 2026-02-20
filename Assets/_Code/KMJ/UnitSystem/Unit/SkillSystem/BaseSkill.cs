@@ -1,17 +1,10 @@
-﻿using System;
-using System.Linq;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+﻿using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
-using Code.Core.Interfaces;
 using Code.EntityComponent;
-using EnemySystem;
-using Input;
-using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 namespace Code.UnitSystem.SkillSystem
 {
@@ -21,48 +14,39 @@ namespace Code.UnitSystem.SkillSystem
         [SerializeField] protected AttackDataSO attackData;
         [field: SerializeField] public Sprite skillImage { get; set; }
         [SerializeField] private float basicSkillDamage;
-        protected float damage;
         public int useSkillPoint;
         [SerializeField] protected bool ownSkill = false;
+        
+        protected float damage;
+        protected DamageData _damageData;
+        public float addDamage { get; set; }
+        protected Unit _unitBase; 
+        public bool isCanUseSkill = false;
+        protected GameObject _targetEnemy = null;
 
-        #region UnitComponent
+        [Header("Unit Component")]
         protected SkillComponent _skillCompo;
         protected UnitRotation rotationCompo;
         protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
-        #endregion
-        
-        protected DamageData _damageData;
-        
-        public float addDamage { get; set; }
-        
-        protected Unit _unitBase; 
-        
-        public bool isCanUseSkill = false;
 
-        protected GameObject _targetEnemy = null;
-        #region SkillEvent
+        [Header("Skill Event")]
         public UnityEvent skillStartEvent;
         public UnityEvent<GameObject> skillEvent;
         public UnityEvent skillEndEvent;
-        #endregion
 
+        [Header("Camera & Effects")]
         protected CinemachineImpulseSource impulseSource;
         protected SetUnitCamera unitCam;
-        
+
+        [Header("Materials & Mesh")]
         [SerializeField] protected MeshRenderer ownCircleMesh;
-
-
-
         [SerializeField] protected Material CriticalMaterial;
         [SerializeField] protected Material basicMaterial;
         
         protected override void Awake()
         {
             base.Awake();
-
-            _unitBase = _owner;
-            
 
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
@@ -73,19 +57,24 @@ namespace Code.UnitSystem.SkillSystem
         {
             base.Start();
 
-            if (statCompo == null)
+            _unitBase = _owner;
+
+            if (_unitBase != null && statCompo == null)
             {
-                    statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
+                statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
             }
             
-            
-            float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
-            
-            float floatdamage = basicSkillDamage *= skillDamageValue;
-            
-            damage = (int)floatdamage;
+            if (statCompo != null)
+            {
+                float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
+                float floatdamage = basicSkillDamage * skillDamageValue;
+                damage = (int)floatdamage;
+            }
+            else
+            {
+                damage = basicSkillDamage;
+            }
 
-            
             _damageData.damage = damage;
         }
 
@@ -100,18 +89,15 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void OnDisable()
         {
             skillEndEvent.RemoveListener(CanUseSkillTrue);
-                
             ResetTileEvent -= skillEnd;
         }
         
         protected virtual void CanUseSkillTrue()
         {
-           
         }
         
         public virtual void ShowSkillRange()
         {
-            
         }
         
         public void CheckEnemyBody(GameObject target)
@@ -145,17 +131,14 @@ namespace Code.UnitSystem.SkillSystem
             else if (_unitBase.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
             {
                 addDamage = _damageData.damage * 0.4f;
-                
                 ownCircleMesh.material = CriticalMaterial;
             }
             else
             {
                 addDamage = 0f;
-                
                 ownCircleMesh.material = basicMaterial;
             }
         }
-        
 
         public virtual void CheckCanAttack()
         {
@@ -170,12 +153,12 @@ namespace Code.UnitSystem.SkillSystem
             BlockThisSkill();
             ResetTile();
             if (unitCam != null) unitCam.EndThisUnit();
+            
+            skillEndEvent?.Invoke();
         }
-        
 
         public virtual void AttackEnemy()
         {
-           
         }
 
         public void TurnEnd()

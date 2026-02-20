@@ -1,16 +1,16 @@
 ﻿using Code.EntityComponent;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-namespace EnemySystem
+namespace Code.UnitSystem.SkillSystem
 {
-    public class EnemyBasicAttackSkill : BaseSkill
+    public class EnemyBasicAttackSkill : BaseSkill, IAfterInitialize
     {
-        protected override void Awake()
+        public void AfterInitialize()
         {
-            base.Awake();
-            
+            damage = 10f; 
+            useSkillPoint = 0; 
+
             if (_owner != null)
             {
                 if (triggerCompo == null) 
@@ -22,35 +22,31 @@ namespace EnemySystem
                 if (_skillCompo == null) 
                     _skillCompo = _owner.GetUnitCompo<SkillComponent>();
             }
-        }
-        
 
-        private void OnEnable()
-        {
             if (triggerCompo != null)
             {
+                triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
+                triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
+
                 triggerCompo.OnBaseAttackSkillTrigger += AttackAction; 
                 triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
             }
         }
 
+        protected override void Start()
+        {
+            base.Start();
+            AfterInitialize();
+        }
+
         public override void OnDisable()
         {
             base.OnDisable();
-            
             if (triggerCompo != null)
             {
                 triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
                 triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
             }
-        }
-
-        public override void InitializeSkill()
-        {
-            base.InitializeSkill();
-            
-            damage = 10f; 
-            useSkillPoint = 0; 
         }
 
         public override void ForceUseSkill(GameObject target)
@@ -59,12 +55,11 @@ namespace EnemySystem
 
             if (_owner != null && _owner.AnimationCompo != null)
             {
-                _owner.AnimationCompo.PlaySelectAnimation("ATTACK");
+                _owner.AnimationCompo.PlaySelectAnimation("ATTACK"); 
             }
             else
             {
-                Debug.LogError($"[EnemyBasicAttackSkill] {_owner.name}의 AnimationCompo가 없어 공격 애니메이션을 재생할 수 없습니다.");
-                // 애니메이션이 없으면 즉시 종료 처리하여 멈춤 방지
+                Debug.LogError($"[EnemyBasicAttackSkill] 애니메이션 컴포넌트를 찾을 수 없어 턴을 강제 종료합니다.");
                 skillEnd();
             }
         }

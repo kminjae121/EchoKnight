@@ -11,8 +11,9 @@ namespace EnemySystem
     {
         [Header("Settings")]
         [SerializeField] private LayerMask _whatIsGround;
-        [SerializeField] private float _moveSpeed = 2f;
-        [SerializeField] private float _tileSize = 1f; 
+        [SerializeField] private float _moveSpeed = 10f; 
+        [Tooltip("GridMap의 Tile Size와 동일하게 맞춰주세요 (현재 맵 기준 30)")]
+        [SerializeField] private float _tileSize = 30f; 
 
         [Header("References")]
         [SerializeField] private UnitRotation _rotationCompo;
@@ -25,6 +26,8 @@ namespace EnemySystem
             _rootTransform = owner.transform;
             if (_rotationCompo == null) 
                 _rotationCompo = owner.GetComponent<UnitRotation>();
+                
+            UpdateCurrentTile(_rootTransform.position);
         }
 
         private void Awake()
@@ -81,16 +84,18 @@ namespace EnemySystem
             {
                 Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
                 Vector3 targetPos2D = new Vector3(targetPos.x, 0, targetPos.z);
-
+                
                 Vector3 dir = (currentPos2D - targetPos2D).normalized;
                 Vector3 step = CalculateStep(dir);
                 Vector3 destination = _rootTransform.position + step;
 
-                bool moveSuccess = false;
-
-                yield return StartCoroutine(MoveRoutine(destination, () => moveSuccess = true, checkObstacle: true));
+                if (!CheckDestination(destination)) 
+                {
+                    Debug.Log($"[후퇴 중단] {destination} 위치로 더 이상 물러날 수 없습니다.");
+                    break; 
+                }
                 
-                if (!CheckDestination(destination)) break; 
+                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false));
             }
 
             onComplete?.Invoke();
@@ -120,9 +125,12 @@ namespace EnemySystem
                 _currentTileObj.GetComponent<IMapTile>().SetObstacle(false);
 
             if (_rotationCompo != null)
-                _rotationCompo.SetDir(targetPos);
+            {
+                // 후퇴 시 타겟 방향이 아닌 현재 위치에서 바라보는 방향으로 회전하는 로직
+                //_rotationCompo.SetDir(targetPos); 
+            }
 
-            while ((_rootTransform.position - targetPos).sqrMagnitude > 0.0001f)
+            while ((_rootTransform.position - targetPos).sqrMagnitude > 0.1f)
             {
                 _rootTransform.position = Vector3.MoveTowards(
                     _rootTransform.position, 
@@ -140,9 +148,9 @@ namespace EnemySystem
 
         private bool CheckDestination(Vector3 pos)
         {
-            Vector3 origin = pos + Vector3.up * 2;
+            Vector3 origin = pos + Vector3.up * 5f;
             Vector3 dir = Vector3.down;
-            float checkRadius = _tileSize * 0.4f;
+            float checkRadius = _tileSize * 0.2f;
 
             if (Physics.SphereCast(origin, checkRadius, dir, out RaycastHit groundHit, Mathf.Infinity, _whatIsGround))
             {
@@ -150,15 +158,14 @@ namespace EnemySystem
                 {
                     if (tile.HasObstacle) 
                     {
+                        if (_currentTileObj == groundHit.transform.gameObject)
+                            return true;
+
                         Debug.LogWarning($"[이동 불가] {pos} 타일({groundHit.transform.name}) 위에 이미 다른 유닛/장애물이 있습니다.");
                         return false;
                     }
                     return true;
                 }
-            }
-            else
-            {
-                Debug.LogWarning($"[이동 불가] {pos} 위치에서 바닥을 찾을 수 없습니다. (타일 틈새 문제는 해결됨. 실제 맵 가장자리 밖이거나 타일이 없는 곳입니다.)");
             }
             
             return false;
@@ -166,8 +173,8 @@ namespace EnemySystem
 
         private void UpdateCurrentTile(Vector3 pos)
         {
-            float checkRadius = _tileSize * 0.4f;
-            if (Physics.SphereCast(pos + Vector3.up * 2, checkRadius, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
+            float checkRadius = _tileSize * 0.2f;
+            if (Physics.SphereCast(pos + Vector3.up * 5f, checkRadius, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
             {
                 if (hit.transform.TryGetComponent(out IMapTile tile))
                 {

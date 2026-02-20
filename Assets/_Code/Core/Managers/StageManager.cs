@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using UnityEngine;
@@ -79,7 +80,11 @@ namespace _Code.Core.Managers
             
             if (enemies.Count == 0)
             {
-                if (gameClearUI != null) gameClearUI.SetActive(true);
+                if (gameClearUI != null)
+                {
+                    Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+                    gameClearUI.SetActive(true);
+                }
             }
         }
 

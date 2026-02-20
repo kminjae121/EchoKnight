@@ -39,6 +39,9 @@ public class UnitSO : ScriptableObject
     [Space(4)]
     [Header("CharacterOwnCost")]
     public int Cost;
+
+    [Space(3)] 
+    [TextArea]public string UnitDescription;
     
     [Space(4)]
     [Header("UnitSettings")]

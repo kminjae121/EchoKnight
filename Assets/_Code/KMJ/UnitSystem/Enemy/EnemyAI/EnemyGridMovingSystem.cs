@@ -11,9 +11,8 @@ namespace EnemySystem
     {
         [Header("Settings")]
         [SerializeField] private LayerMask _whatIsGround;
-        [SerializeField] private float _moveSpeed = 10f; 
-        [Tooltip("GridMap의 Tile Size와 동일하게 맞춰주세요 (현재 맵 기준 30)")]
-        [SerializeField] private float _tileSize = 30f; 
+        [SerializeField] private float _moveSpeed = 3f; 
+        [SerializeField] private float _tileSize = 3.18f; 
 
         [Header("References")]
         [SerializeField] private UnitRotation _rotationCompo;
@@ -63,7 +62,7 @@ namespace EnemySystem
                     break;
                 }
                 
-                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false));
+                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: false));
             }
             
             onComplete?.Invoke();
@@ -84,7 +83,7 @@ namespace EnemySystem
             {
                 Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
                 Vector3 targetPos2D = new Vector3(targetPos.x, 0, targetPos.z);
-                
+
                 Vector3 dir = (currentPos2D - targetPos2D).normalized;
                 Vector3 step = CalculateStep(dir);
                 Vector3 destination = _rootTransform.position + step;
@@ -94,8 +93,8 @@ namespace EnemySystem
                     Debug.Log($"[후퇴 중단] {destination} 위치로 더 이상 물러날 수 없습니다.");
                     break; 
                 }
-                
-                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false));
+
+                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: true));
             }
 
             onComplete?.Invoke();
@@ -113,7 +112,7 @@ namespace EnemySystem
                 return new Vector3(0, 0, Mathf.Sign(dir.z) * _tileSize);
         }
 
-        private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true)
+        private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true, bool isRetreating = false)
         {
             if (checkObstacle && !CheckDestination(targetPos))
             {
@@ -124,10 +123,23 @@ namespace EnemySystem
             if (_currentTileObj != null)
                 _currentTileObj.GetComponent<IMapTile>().SetObstacle(false);
 
-            if (_rotationCompo != null)
+            if (!isRetreating && _rotationCompo != null)
             {
-                // 후퇴 시 타겟 방향이 아닌 현재 위치에서 바라보는 방향으로 회전하는 로직
-                //_rotationCompo.SetDir(targetPos); 
+                _rotationCompo.SetDir(targetPos); 
+
+                Vector3 lookDir = (targetPos - _rootTransform.position);
+                lookDir.y = 0;
+                if (lookDir.sqrMagnitude > 0.001f)
+                {
+                    Quaternion targetRot = Quaternion.LookRotation(lookDir.normalized);
+                    float timeout = 1.0f; 
+                    
+                    while (Quaternion.Angle(_rootTransform.rotation, targetRot) > 5f && timeout > 0f)
+                    {
+                        timeout -= Time.deltaTime;
+                        yield return null;
+                    }
+                }
             }
 
             while ((_rootTransform.position - targetPos).sqrMagnitude > 0.1f)

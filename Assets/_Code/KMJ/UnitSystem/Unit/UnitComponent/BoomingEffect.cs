@@ -39,7 +39,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private IEnumerator StartEffect()
         {
-            yield return new WaitForSeconds(0.53f);
+            yield return new WaitForSeconds(0.4f);
 
             _collider.enabled = true;
         }

@@ -5,7 +5,7 @@ using _00.Core._02.Scripts._01.Manager;
 using Code.Core;
 using Code.Core.Events.Bus;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
+using UnityEngine.SceneManagement; 
 
 namespace Code.Expedition.Managers
 {
@@ -31,7 +31,7 @@ namespace Code.Expedition.Managers
         protected override void Awake()
         {
             base.Awake();
-            DontDestroyOnLoad(gameObject);
+            DontDestroyOnLoad(gameObject); 
         }
 
         private void Start()
@@ -51,7 +51,7 @@ namespace Code.Expedition.Managers
                 inputReader.OnClickEvent += HandleClick;
             }
             Bus<StageClearEvent>.Subscribe(OnStageCleared);
-            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneLoaded += OnSceneLoaded; 
         }
 
         private void OnDisable()
@@ -61,7 +61,7 @@ namespace Code.Expedition.Managers
                 inputReader.OnClickEvent -= HandleClick;
             }
             Bus<StageClearEvent>.Unsubscribe(OnStageCleared);
-            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneLoaded -= OnSceneLoaded; 
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -72,7 +72,7 @@ namespace Code.Expedition.Managers
         private void InitializeExpeditionScene()
         {
             ExpeditionNode[] allNodes = FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None);
-
+            
             if (allNodes.Length == 0) return;
 
             if (mainCamera == null) mainCamera = Camera.main;
@@ -83,8 +83,8 @@ namespace Code.Expedition.Managers
                 if (startNode != null)
                 {
                     _currentNode = startNode;
-                    _savedCurrentNodeName = startNode.name;
-                    _savedClearedNodes.Add(startNode.name);
+                    _savedCurrentNodeName = startNode.name; 
+                    _savedClearedNodes.Add(startNode.name); 
                 }
             }
             else
@@ -121,12 +121,19 @@ namespace Code.Expedition.Managers
 
         private void OnStageCleared(StageClearEvent evt)
         {
-            if (evt.isClear && _currentNode != null)
+            if (evt.isClear)
             {
-                _currentNode.SetCleared(true);
-                _savedClearedNodes.Add(_currentNode.name);
-                Debug.Log($"[{_currentNode.name}] 스테이지가 클리어되었습니다!");
-                UpdateAllNodesVisuals(FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None));
+                if (!string.IsNullOrEmpty(_savedCurrentNodeName))
+                {
+                    _savedClearedNodes.Add(_savedCurrentNodeName);
+                    Debug.Log($"[{_savedCurrentNodeName}] 스테이지가 클리어 기록에 추가되었습니다!");
+                }
+
+                if (_currentNode != null)
+                {
+                    _currentNode.SetCleared(true);
+                    UpdateAllNodesVisuals(FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None));
+                }
             }
         }
 
@@ -241,7 +248,7 @@ namespace Code.Expedition.Managers
                 {
                     _isMoving = false;
                     _currentNode = targetNode;
-
+                    
                     _savedCurrentNodeName = _currentNode.name; 
                     
                     UpdateAllNodesVisuals(FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None)); 

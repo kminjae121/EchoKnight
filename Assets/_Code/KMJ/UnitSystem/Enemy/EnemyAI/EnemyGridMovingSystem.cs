@@ -12,6 +12,7 @@ namespace EnemySystem
         [Header("Settings")]
         [SerializeField] private LayerMask _whatIsGround;
         [SerializeField] private float _moveSpeed = 2f;
+        [SerializeField] private float _tileSize = 1f; 
 
         [Header("References")]
         [SerializeField] private UnitRotation _rotationCompo;
@@ -45,15 +46,15 @@ namespace EnemySystem
                 Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
                 Vector3 targetPos2D = new Vector3(targetPos.x, 0, targetPos.z);
 
-                if (Vector3.Distance(currentPos2D, targetPos2D) <= 1.1f) 
+                if (Vector3.Distance(currentPos2D, targetPos2D) <= (_tileSize * 1.1f)) 
                 {
                     break;
                 }
-                
+
                 Vector3 dir = (targetPos2D - currentPos2D).normalized;
                 Vector3 step = CalculateStep(dir);
                 Vector3 destination = _rootTransform.position + step;
-                
+
                 if (!CheckDestination(destination)) 
                 {
                     break;
@@ -102,9 +103,9 @@ namespace EnemySystem
         private Vector3 CalculateStep(Vector3 dir)
         {
             if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
-                return new Vector3(Mathf.Sign(dir.x), 0, 0);
+                return new Vector3(Mathf.Sign(dir.x) * _tileSize, 0, 0);
             else
-                return new Vector3(0, 0, Mathf.Sign(dir.z));
+                return new Vector3(0, 0, Mathf.Sign(dir.z) * _tileSize);
         }
 
         private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true)
@@ -131,7 +132,7 @@ namespace EnemySystem
                 yield return null;
             }
             _rootTransform.position = targetPos;
-
+            
             UpdateCurrentTile(targetPos);
 
             onComplete?.Invoke();
@@ -141,8 +142,9 @@ namespace EnemySystem
         {
             Vector3 origin = pos + Vector3.up * 2;
             Vector3 dir = Vector3.down;
-            
-            if (Physics.Raycast(origin, dir, out RaycastHit groundHit, Mathf.Infinity, _whatIsGround))
+            float checkRadius = _tileSize * 0.4f;
+
+            if (Physics.SphereCast(origin, checkRadius, dir, out RaycastHit groundHit, Mathf.Infinity, _whatIsGround))
             {
                 if (groundHit.transform.TryGetComponent(out IMapTile tile))
                 {
@@ -153,14 +155,10 @@ namespace EnemySystem
                     }
                     return true;
                 }
-                else
-                {
-                    Debug.LogWarning($"[이동 불가] {groundHit.transform.name}에 IMapTile 스크립트가 없습니다.");
-                }
             }
             else
             {
-                Debug.LogWarning($"[이동 불가] {pos} 위치에서 바닥(What Is Ground)을 찾을 수 없습니다.");
+                Debug.LogWarning($"[이동 불가] {pos} 위치에서 바닥을 찾을 수 없습니다. (타일 틈새 문제는 해결됨. 실제 맵 가장자리 밖이거나 타일이 없는 곳입니다.)");
             }
             
             return false;
@@ -168,7 +166,8 @@ namespace EnemySystem
 
         private void UpdateCurrentTile(Vector3 pos)
         {
-            if (Physics.Raycast(pos + Vector3.up * 2, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
+            float checkRadius = _tileSize * 0.4f;
+            if (Physics.SphereCast(pos + Vector3.up * 2, checkRadius, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
             {
                 if (hit.transform.TryGetComponent(out IMapTile tile))
                 {

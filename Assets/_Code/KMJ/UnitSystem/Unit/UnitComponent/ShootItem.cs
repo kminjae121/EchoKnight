@@ -1,5 +1,6 @@
 ﻿using Code.Core.Events.Bus;
 using Code.EntityComponent;
+using DG.Tweening;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -26,7 +27,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private void FixedUpdate()
         {
-            transform.position += transform.forward * _moveSpeed * Time.fixedDeltaTime;
+            transform.rotation = Quaternion.LookRotation(transform.position - _target.transform.position);
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _moveSpeed * Time.fixedDeltaTime);
         }
 
         public void SetDamageData(DamageData damageData)

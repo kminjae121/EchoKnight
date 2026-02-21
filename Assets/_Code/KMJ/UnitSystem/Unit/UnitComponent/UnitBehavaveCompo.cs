@@ -28,7 +28,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         [SerializeField] private UnitRotation rotationCompo;
         [SerializeField] private UnitAnimationTrigger triggerCompo;
-        [SerializeField] private GameObject _visualPrefabs;
+        [field:SerializeField] public GameObject visualPrefabs { get; set; }
 
         [SerializeField] private NavMeshAgent navMeshAgent;
         
@@ -72,19 +72,19 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
                 if (_movingtiles.Contains(tileTrm))
                 {
-                    _visualPrefabs.transform.rotation = _unit.transform.rotation;
-                    _visualPrefabs.SetActive(true);
-                    _visualPrefabs.transform.rotation = _unit.transform.rotation; 
-                    _visualPrefabs.transform.position = tileTrm.transform.position;
+                    visualPrefabs.transform.rotation = _unit.transform.rotation;
+                    visualPrefabs.SetActive(true);
+                    visualPrefabs.transform.rotation = _unit.transform.rotation; 
+                    visualPrefabs.transform.position = tileTrm.transform.position;
                 }
                 else
                 {
-                    _visualPrefabs.SetActive(false);
+                    visualPrefabs.SetActive(false);
                 }
             }
             else if (_isAct == false)
             {
-                _visualPrefabs.SetActive(false);
+                visualPrefabs.SetActive(false);
             }
         }
         
@@ -143,23 +143,23 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
             if (!_movingtiles.Contains(tileTrm))
             {
-                _visualPrefabs.SetActive(false);
+                visualPrefabs.SetActive(false);
                 return;
             }
             
 
             if (tile == null)
             {
-                _visualPrefabs.SetActive(false);
+                visualPrefabs.SetActive(false);
                 return;
             }
             else
             {
-                _visualPrefabs.SetActive(false);
+                visualPrefabs.SetActive(false);
                 StartCoroutine(MoveStart(tile, tileTrm));
             }
             
-            _visualPrefabs.SetActive(false);
+            visualPrefabs.SetActive(false);
         }
         
         
@@ -170,7 +170,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
             navMeshAgent.acceleration = 999f; 
-            _visualPrefabs.SetActive(false);
+            visualPrefabs.SetActive(false);
             _isAct = false;
             isMoving = true;
             

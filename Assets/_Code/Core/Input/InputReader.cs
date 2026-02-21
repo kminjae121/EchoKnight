@@ -111,15 +111,9 @@ namespace Input
             if (context.performed)
             {
                 OnClickEvent?.Invoke();
-                if (GetUnit() != null)
-                {
-                    OnSelectUnitEvent?.Invoke();
-                }
-                else if (GetEnemy() != null)
-                {
-                    OnAttackEvent?.Invoke();
-                }
-                else
+                OnAttackEvent?.Invoke();
+                OnSelectUnitEvent?.Invoke();
+                if (GetSelectedTile() != null)
                 {
                     OnClickMoveEvent?.Invoke();
                 }

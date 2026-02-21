@@ -164,7 +164,11 @@ namespace UnitSystem
 
             GameObject enemy = inputSO.GetEnemy();
 
-            if (enemy == null && _targetEnemy != null)
+            if (behaveCompo.visualPrefabs.activeInHierarchy)
+            {
+                ClearTarget();
+            }
+            else if (enemy == null && _targetEnemy != null)
             {
                 ClearTarget();
             }

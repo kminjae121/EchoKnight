@@ -43,7 +43,7 @@ namespace Code.UI
         }
 
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             Bus<SkillUIEvent>.Unsubscribe(SetSkillUIName);
             Bus<SetAtkUIEvent>.Unsubscribe(SetAtkUI);

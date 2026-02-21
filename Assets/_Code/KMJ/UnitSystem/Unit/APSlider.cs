@@ -15,6 +15,12 @@ public class APSlider : MonoBehaviour
         Bus<ApSliderEvent>.Subscribe(ApSlider);
     }
 
+    private void OnDisable()
+    {
+        
+        Bus<ApSliderEvent>.Unsubscribe(ApSlider);
+    }
+
     private void FixedUpdate()
     {
         apSlider.value = Mathf.Lerp(apSlider.value, targetValue, Time.fixedDeltaTime * 2);

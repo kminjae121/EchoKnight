@@ -72,7 +72,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
                 if (_movingtiles.Contains(tileTrm))
                 {
-                    rotationCompo.SetDir(_visualPrefabs.transform.position);
                     _visualPrefabs.transform.rotation = _unit.transform.rotation;
                     _visualPrefabs.SetActive(true);
                     _visualPrefabs.transform.rotation = _unit.transform.rotation; 
@@ -174,6 +173,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             _visualPrefabs.SetActive(false);
             _isAct = false;
             isMoving = true;
+            
+            rotationCompo.SetDir(tile.transform.position);
             
             
             if (tile == null) 

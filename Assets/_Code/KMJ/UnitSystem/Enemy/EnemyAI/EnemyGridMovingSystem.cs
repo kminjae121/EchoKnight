@@ -11,9 +11,8 @@ namespace EnemySystem
     {
         [Header("Settings")]
         [SerializeField] private LayerMask _whatIsGround;
-        [SerializeField] private float _moveSpeed = 10f; 
-        [Tooltip("GridMap의 Tile Size와 동일하게 맞춰주세요 (현재 맵 기준 30)")]
-        [SerializeField] private float _tileSize = 30f; 
+        [SerializeField] private float _moveSpeed = 3f; 
+        [SerializeField] private float _tileSize = 3.18f; 
 
         [Header("References")]
         [SerializeField] private UnitRotation _rotationCompo;

@@ -114,6 +114,7 @@ namespace UnitSystem
             if (behaveCompo != null)
                 behaveCompo.ResetTile();
             unitRangeCompo.RemoveAllRange();
+            
             base.OnTurnEnd();
         }
 

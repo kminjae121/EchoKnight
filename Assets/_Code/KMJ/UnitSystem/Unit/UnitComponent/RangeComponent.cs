@@ -14,8 +14,8 @@ namespace Code.UnitSystem
 
         protected Unit _owner;
         
-        [SerializeField] private Vector3 _verticalCheckBoxSize;
-        [SerializeField] private Vector3 _horizontalCheckBoxSize;
+        [SerializeField] protected Vector3 _verticalCheckBoxSize;
+        [SerializeField] protected Vector3 _horizontalCheckBoxSize;
 
         protected Collider[] _verticalCollider;
         

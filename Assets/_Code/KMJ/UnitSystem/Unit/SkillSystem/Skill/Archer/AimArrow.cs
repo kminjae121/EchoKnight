@@ -7,13 +7,15 @@ using UnityEngine;
 
 public class AimArrow : BasicUnitSkill
 {
-    [SerializeField] private GameObject _ArrowPrefab;
     
     private UnitAnimation animtionCompo;
 
     private GameObject _target;
 
     private bool isHorizontal = false;
+
+    private ShootItemAttackManager _shootItemManager;
+    
     protected override void Start()
     {
         base.Start();
@@ -21,6 +23,7 @@ public class AimArrow : BasicUnitSkill
         triggerCompo.OnAimArrowEndTrigger += SkillEnd;
         skillEvent.AddListener(AttackAction);
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+        _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
     }
 
     protected override void OnDestroy()
@@ -88,14 +91,13 @@ public class AimArrow : BasicUnitSkill
         Vector3 pos = _unitBase.transform.position;
 
         pos.y += 2f;
-    
-        GameObject shootItem = Instantiate(_ArrowPrefab, pos, Quaternion.identity);
-        ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
-        shootItemCompo.SetTarget(_target);
-        shootItemCompo.SetDamageData(_damageData);
+            
         Vector3 slashRot = transform.rotation.eulerAngles;
+        
+        _shootItemManager.SetTarget(_target);
+        _shootItemManager.SetDamageData(_damageData);
+        _shootItemManager.CreateShootItem("AimArrow",pos, slashRot);
     
-        shootItem.transform.rotation = Quaternion.Euler(slashRot);
         _target = null;
     }
 }

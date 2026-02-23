@@ -8,11 +8,11 @@ using UnityEngine;
 
     public class FireArrow : BasicUnitSkill
     {
-        [SerializeField] private GameObject _ArrowPrefab;
-        
         private UnitAnimation animtionCompo;
 
         private GameObject _target;
+        
+        private ShootItemAttackManager  _shootItemManager;
         
         protected override void Start()
         {
@@ -21,6 +21,8 @@ using UnityEngine;
             triggerCompo.OnFireArrowEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            
+            _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
         }
 
         protected override void OnDestroy()
@@ -61,14 +63,11 @@ using UnityEngine;
             Vector3 pos = _unitBase.transform.position;
 
             pos.y += 2f;
-        
-            GameObject shootItem = Instantiate(_ArrowPrefab, pos, Quaternion.identity);
 
             Vector3 slashRot = transform.rotation.eulerAngles;
-        
-            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
-            shootItemCompo.SetTarget(_target);
-            shootItemCompo.SetDamageData(_damageData);
-            shootItem.transform.rotation = Quaternion.Euler(slashRot);
+            
+            _shootItemManager.SetTarget(_target);
+            _shootItemManager.SetDamageData(_damageData);
+            _shootItemManager.CreateShootItem("FireArrow",pos, slashRot);
         }
     }

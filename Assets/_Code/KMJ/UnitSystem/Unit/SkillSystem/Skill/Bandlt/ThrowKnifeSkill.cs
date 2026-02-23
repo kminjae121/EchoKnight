@@ -9,11 +9,11 @@ using UnityEngine;
 
     public class ThrowKnifeSkill : BasicUnitSkill
     {
-        [SerializeField] private GameObject _knifePrefab;
-        
         private UnitAnimation animtionCompo;
 
         private GameObject _target;
+
+        private ShootItemAttackManager _shootItemManager;
         
         protected override void Start()
         {
@@ -22,6 +22,7 @@ using UnityEngine;
             triggerCompo.OnThrowKnifeEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
         }
 
         protected override void OnDestroy()
@@ -54,15 +55,13 @@ using UnityEngine;
 
             pos.y += 2f;
         
-            GameObject shootItem = Instantiate(_knifePrefab, pos, Quaternion.identity);
-
-            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
-            shootItemCompo.SetTarget(_target);
-            shootItemCompo.SetDamageData(_damageData);
-            
             Vector3 slashRot = transform.rotation.eulerAngles;
-        
-            shootItem.transform.rotation = Quaternion.Euler(slashRot);
+            
+            
+            _shootItemManager.SetTarget(_target);
+            _shootItemManager.SetDamageData(_damageData);
+            _shootItemManager.CreateShootItem("Knife",pos, slashRot);
+
             _target = null;
         }
         

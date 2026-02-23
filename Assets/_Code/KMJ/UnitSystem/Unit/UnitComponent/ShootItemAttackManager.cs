@@ -90,7 +90,7 @@ namespace UnitSystem
                 
             impulseSource.GenerateImpulse(0.4f);  
             
-            _target.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,
+            _target.GetComponent<IDamageable>().ApplyDamage(_damageData,transform.position, transform.position,
                 atkData,_unit);
         }
         

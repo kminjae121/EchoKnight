@@ -71,6 +71,8 @@ namespace UnitSystem
             behaveCompo._currentMapTile = _startTile;
             
             transform.position = _startTile.transform.position;
+            
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }
 
         protected override void OnDestroy()
@@ -103,6 +105,8 @@ namespace UnitSystem
                 behaveCompo.FindObjectInRange();
                 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             isMyTurn = true;
         }
 
@@ -115,6 +119,7 @@ namespace UnitSystem
                 behaveCompo.ResetTile();
             unitRangeCompo.RemoveAllRange();
             
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             base.OnTurnEnd();
         }
 

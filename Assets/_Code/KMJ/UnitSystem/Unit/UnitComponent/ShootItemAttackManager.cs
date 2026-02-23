@@ -76,10 +76,12 @@ namespace UnitSystem
                 return;
             
             GameObject shootItem = Instantiate(item, pos ,Quaternion.identity);
+
+            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
             
-            shootItem.GetComponent<ShootItem>().SetShootItemCompo(this);
+            shootItemCompo.SetShootItemCompo(this);
             
-            shootItem.GetComponent<ShootItem>().SetTarget(_target);
+            shootItemCompo.SetTarget(_target);
             
             shootItem.transform.rotation = Quaternion.Euler(rotation);
 

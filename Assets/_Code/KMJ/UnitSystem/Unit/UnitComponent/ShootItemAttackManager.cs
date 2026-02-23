@@ -40,12 +40,7 @@ namespace UnitSystem
                 _shootItemDict.Add(item.itemName, item);
             });
         }
-
-        private void Start()
-        {
-            
-        }
-
+        
 
         private void OnDisable()
         {

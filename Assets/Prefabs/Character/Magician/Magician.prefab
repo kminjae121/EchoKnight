@@ -3993,7 +3993,6 @@ MonoBehaviour:
   ownCircleMesh: {fileID: 8547850988546769422}
   CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
   basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
-  fireBallPrefab: {fileID: 6614522924868875889}
 --- !u!1 &4264332147043411263
 GameObject:
   m_ObjectHideFlags: 0
@@ -5675,6 +5674,7 @@ GameObject:
   - component: {fileID: 5924939475976118562}
   - component: {fileID: 2124457247866811024}
   - component: {fileID: 6706830835529682583}
+  - component: {fileID: 141951482387972346}
   m_Layer: 7
   m_Name: Magician
   m_TagString: Untagged
@@ -5882,6 +5882,21 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 1, z: 0.5}
   m_Center: {x: 0, y: 0.95, z: 0}
+--- !u!114 &141951482387972346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243688159485738314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 529ba432cf36400192ff6c5b203544f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  shootItems:
+  - {fileID: 2039785678302824675, guid: 301810faaa5dfd742ba3bf309b1360be, type: 3}
+  atkData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
 --- !u!1 &6248892654837155426
 GameObject:
   m_ObjectHideFlags: 0
@@ -12015,11 +12030,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 301810faaa5dfd742ba3bf309b1360be, type: 3}
---- !u!1 &6614522924868875889 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 944550535907797823, guid: 301810faaa5dfd742ba3bf309b1360be, type: 3}
-  m_PrefabInstance: {fileID: 6255559510292487502}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &6958902814287963233 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3909910654522587439, guid: 301810faaa5dfd742ba3bf309b1360be, type: 3}

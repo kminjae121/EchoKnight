@@ -21,7 +21,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         [SerializeField] private float attackMoveDistance = 1.5f;
 
-        [SerializeField] private GameObject shootPrefabs;
+        private ShootItemAttackManager _shootItemManager;
+        
         
         private CinemachineImpulseSource impulseSource;
         
@@ -37,6 +38,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             triggerCompo.OnShootAttackEndTrigger += AttackEnd;
             atkCompo.attackEvent.AddListener(AttackAction);
             impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
+            _shootItemManager = GetComponentInChildren<ShootItemAttackManager>();
         }
 
         private void OnDestroy()
@@ -70,16 +72,13 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Vector3 pos = transform.position;
 
             pos.y += 1.6f;
-        
-            GameObject shootItem = Instantiate(shootPrefabs, pos, Quaternion.identity);
-
-            Vector3 slashRot = transform.rotation.eulerAngles;
-
-            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
-            shootItemCompo.SetTarget(_target);
-            shootItemCompo.SetDamageData(atkCompo._damageData);
             
-            shootItem.transform.rotation = Quaternion.Euler(slashRot);
+            Vector3 slashRot = transform.rotation.eulerAngles;
+            
+            _shootItemManager.SetTarget(_target);
+            _shootItemManager.SetDamageData(atkCompo._damageData);
+            _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);
+
             impulseSource.GenerateImpulse(0.3f);
         }
         

@@ -6,11 +6,12 @@ using UnitSystem;
 using UnityEngine;
 
     public class FireBallSkill : BasicUnitSkill
-    {
-        [SerializeField] private GameObject fireBallPrefab;
+    { 
         private UnitAnimation animtionCompo;
 
         private GameObject _target = null;
+
+        private ShootItemAttackManager _shootItemManager;
 
         protected override void Start()
         {
@@ -19,6 +20,8 @@ using UnityEngine;
             triggerCompo.OnFireBallEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            
+            _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
         }
 
         protected override void OnDestroy()
@@ -60,18 +63,12 @@ using UnityEngine;
             Vector3 pos = transform.position;
 
             pos.y += 3f;
-        
-            fireBallPrefab.transform.position = pos;
-            fireBallPrefab.SetActive(true);
-            
-            ShootItem shootItemCompo = fireBallPrefab.GetComponent<ShootItem>();
-            shootItemCompo.SetTarget(_target);
-            shootItemCompo.SetDamageData(_damageData);
-
 
             Vector3 slashRot = transform.rotation.eulerAngles;
-        
-            fireBallPrefab.transform.rotation = Quaternion.Euler(slashRot);
+            
+            _shootItemManager.SetTarget(_target);
+            _shootItemManager.SetDamageData(_damageData);
+            _shootItemManager.CreateShootItem("FireBall",pos, slashRot);
             
             _target = null;
         }

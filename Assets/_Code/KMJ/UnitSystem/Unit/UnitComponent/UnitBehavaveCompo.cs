@@ -38,7 +38,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         private List<GameObject> _movingtiles =  new List<GameObject>();
 
-        private Transform nextTile;
+        private IMapTile nextTile = null;
         
         protected override void Start()
         {
@@ -51,15 +51,23 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             _moveSpeed = _unit.unitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
-
-            nextTile = transform;
+            
             navMeshAgent.enabled = false;
         }
 
         protected override void OnDestroy()
         {
             _unit.inputSO.OnClickMoveEvent -= Move;
+            
             base.OnDestroy();
+        }
+
+        private void OnDisable()
+        {
+            if (nextTile != null)
+            {
+                nextTile.SetEnemy(false);
+            }
         }
 
 
@@ -72,18 +80,32 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
                 if (_movingtiles.Contains(tileTrm))
                 {
+                    if (nextTile != null)
+                    {
+                        nextTile.SetEnemy(false);
+                    }
                     visualPrefabs.transform.rotation = _unit.transform.rotation;
                     visualPrefabs.SetActive(true);
                     visualPrefabs.transform.rotation = _unit.transform.rotation; 
                     visualPrefabs.transform.position = tileTrm.transform.position;
+                    nextTile = tileTrm.GetComponent<IMapTile>();
+                    nextTile.SetEnemy(true);
                 }
                 else
                 {
+                    if (nextTile != null)
+                    {
+                        nextTile.SetEnemy(false);
+                    }
                     visualPrefabs.SetActive(false);
                 }
             }
             else if (_isAct == false)
             {
+                if (nextTile != null)
+                {
+                    nextTile.SetEnemy(false);
+                }
                 visualPrefabs.SetActive(false);
             }
         }
@@ -166,7 +188,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
         {
-            nextTile.transform.position = tile.transform.position;
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
             navMeshAgent.acceleration = 999f; 

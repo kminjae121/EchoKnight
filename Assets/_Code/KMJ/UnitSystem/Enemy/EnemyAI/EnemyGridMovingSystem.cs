@@ -3,199 +3,113 @@ using System.Collections;
 using Code.Core.Interfaces;
 using Code.UnitSystem;
 using UnityEngine;
+using UnityEngine.AI;
 using Unit = Code.UnitSystem.Unit;
 
 namespace EnemySystem
 {
+    [RequireComponent(typeof(NavMeshAgent))]
     public class EnemyGridMovingSystem : MonoBehaviour
     {
         [Header("Settings")]
-        [SerializeField] private LayerMask _whatIsGround;
-        [SerializeField] private float _moveSpeed = 3f; 
         [SerializeField] private float _tileSize = 3.18f; 
 
         [Header("References")]
         [SerializeField] private UnitRotation _rotationCompo;
         
+        private NavMeshAgent _agent;
         private Transform _rootTransform;
-        private GameObject _currentTileObj;
+        private Animator _animator;
         
         public void Initialize(Unit owner)
         {
             _rootTransform = owner.transform;
+            _agent = GetComponent<NavMeshAgent>();
+            _animator = owner.GetComponentInChildren<Animator>();
+            
             if (_rotationCompo == null) 
                 _rotationCompo = owner.GetComponent<UnitRotation>();
-                
-            UpdateCurrentTile(_rootTransform.position);
+
+            if (_agent != null)
+            {
+                _agent.updateRotation = false;
+                _agent.updateUpAxis = false;
+            }
         }
 
-        private void Awake()
-        {
-            if (_rootTransform == null) _rootTransform = transform;
-        }
-
-        #region [Move]
-        
         public void MoveTo(Vector3 targetPos, int maxSteps, Action onComplete)
         {
-            StartCoroutine(MoveSequence(targetPos, maxSteps, onComplete));
+            float maxDistance = maxSteps * _tileSize;
+            StartCoroutine(NavMeshMoveRoutine(targetPos, maxDistance, false, onComplete));
         }
-        
-        private IEnumerator MoveSequence(Vector3 targetPos, int maxSteps, Action onComplete)
-        {
-            for (int i = 0; i < maxSteps; i++)
-            {
-                Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
-                Vector3 targetPos2D = new Vector3(targetPos.x, 0, targetPos.z);
-
-                if (Vector3.Distance(currentPos2D, targetPos2D) <= (_tileSize * 1.1f)) 
-                {
-                    break;
-                }
-
-                Vector3 dir = (targetPos2D - currentPos2D).normalized;
-                Vector3 step = CalculateStep(dir);
-                Vector3 destination = _rootTransform.position + step;
-
-                if (!CheckDestination(destination)) 
-                {
-                    break;
-                }
-                
-                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: false));
-            }
-            
-            onComplete?.Invoke();
-        }
-
-        #endregion
-
-        #region [Retreat]
 
         public void RetreatFromTarget(Vector3 targetPos, int steps, Action onComplete)
         {
-            StartCoroutine(RetreatSequence(targetPos, steps, onComplete));
-        }
+            float retreatDistance = steps * _tileSize;
+            Vector3 dirAwayFromTarget = (_rootTransform.position - targetPos).normalized;
+            Vector3 idealRetreatPos = _rootTransform.position + (dirAwayFromTarget * retreatDistance);
 
-        private IEnumerator RetreatSequence(Vector3 targetPos, int steps, Action onComplete)
-        {
-            for (int i = 0; i < steps; i++)
+            if (NavMesh.SamplePosition(idealRetreatPos, out NavMeshHit hit, _tileSize * 2f, NavMesh.AllAreas))
             {
-                Vector3 currentPos2D = new Vector3(_rootTransform.position.x, 0, _rootTransform.position.z);
-                Vector3 targetPos2D = new Vector3(targetPos.x, 0, targetPos.z);
-
-                Vector3 dir = (currentPos2D - targetPos2D).normalized;
-                Vector3 step = CalculateStep(dir);
-                Vector3 destination = _rootTransform.position + step;
-
-                if (!CheckDestination(destination)) 
-                {
-                    Debug.Log($"[후퇴 중단] {destination} 위치로 더 이상 물러날 수 없습니다.");
-                    break; 
-                }
-
-                yield return StartCoroutine(MoveRoutine(destination, null, checkObstacle: false, isRetreating: true));
+                StartCoroutine(NavMeshMoveRoutine(hit.position, retreatDistance, true, onComplete));
             }
-
-            onComplete?.Invoke();
-        }
-
-        #endregion
-
-        #region [Internal Logic]
-
-        private Vector3 CalculateStep(Vector3 dir)
-        {
-            if (Mathf.Abs(dir.x) > Mathf.Abs(dir.z))
-                return new Vector3(Mathf.Sign(dir.x) * _tileSize, 0, 0);
             else
-                return new Vector3(0, 0, Mathf.Sign(dir.z) * _tileSize);
+            {
+                Debug.Log("[후퇴 중단] 맵 끝이거나 막혀있습니다.");
+                onComplete?.Invoke();
+            }
         }
 
-        private IEnumerator MoveRoutine(Vector3 targetPos, Action onComplete, bool checkObstacle = true, bool isRetreating = false)
+        private IEnumerator NavMeshMoveRoutine(Vector3 destination, float maxDistance, bool isRetreating, Action onComplete)
         {
-            if (checkObstacle && !CheckDestination(targetPos))
+            if (_agent == null || !_agent.isOnNavMesh)
             {
                 onComplete?.Invoke();
                 yield break;
             }
 
-            if (_currentTileObj != null)
-                _currentTileObj.GetComponent<IMapTile>().SetObstacle(false);
+            Vector3 constrainedDest = GetConstrainedDestination(_rootTransform.position, destination, maxDistance);
 
-            if (!isRetreating && _rotationCompo != null)
+            _agent.SetDestination(constrainedDest);
+
+            if (_animator != null && isRetreating) _animator.SetBool("RETREAT", true);
+
+            while (_agent.pathPending || _agent.remainingDistance > 0.1f)
             {
-                _rotationCompo.SetDir(targetPos); 
-
-                Vector3 lookDir = (targetPos - _rootTransform.position);
-                lookDir.y = 0;
-                if (lookDir.sqrMagnitude > 0.001f)
+                if (!isRetreating && _rotationCompo != null && _agent.velocity.sqrMagnitude > 0.1f)
                 {
-                    Quaternion targetRot = Quaternion.LookRotation(lookDir.normalized);
-                    float timeout = 1.0f; 
-                    
-                    while (Quaternion.Angle(_rootTransform.rotation, targetRot) > 5f && timeout > 0f)
-                    {
-                        timeout -= Time.deltaTime;
-                        yield return null;
-                    }
+                    _rotationCompo.SetDir(_rootTransform.position + _agent.velocity);
                 }
-            }
-
-            while ((_rootTransform.position - targetPos).sqrMagnitude > 0.1f)
-            {
-                _rootTransform.position = Vector3.MoveTowards(
-                    _rootTransform.position, 
-                    targetPos, 
-                    _moveSpeed * Time.deltaTime
-                );
                 yield return null;
             }
-            _rootTransform.position = targetPos;
-            
-            UpdateCurrentTile(targetPos);
 
+            if (_animator != null && isRetreating) _animator.SetBool("RETREAT", false);
+            
             onComplete?.Invoke();
         }
 
-        private bool CheckDestination(Vector3 pos)
+        private Vector3 GetConstrainedDestination(Vector3 start, Vector3 target, float maxDistance)
         {
-            Vector3 origin = pos + Vector3.up * 5f;
-            Vector3 dir = Vector3.down;
-            float checkRadius = _tileSize * 0.2f;
-
-            if (Physics.SphereCast(origin, checkRadius, dir, out RaycastHit groundHit, Mathf.Infinity, _whatIsGround))
-            {
-                if (groundHit.transform.TryGetComponent(out IMapTile tile))
-                {
-                    if (tile.HasObstacle) 
-                    {
-                        if (_currentTileObj == groundHit.transform.gameObject)
-                            return true;
-
-                        Debug.LogWarning($"[이동 불가] {pos} 타일({groundHit.transform.name}) 위에 이미 다른 유닛/장애물이 있습니다.");
-                        return false;
-                    }
-                    return true;
-                }
-            }
+            NavMeshPath path = new NavMeshPath();
+            NavMesh.CalculatePath(start, target, NavMesh.AllAreas, path);
             
-            return false;
-        }
+            if (path.corners.Length == 0) return start;
 
-        private void UpdateCurrentTile(Vector3 pos)
-        {
-            float checkRadius = _tileSize * 0.2f;
-            if (Physics.SphereCast(pos + Vector3.up * 5f, checkRadius, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
+            float traveledDist = 0;
+            Vector3 currentPos = path.corners[0];
+
+            for (int i = 1; i < path.corners.Length; i++)
             {
-                if (hit.transform.TryGetComponent(out IMapTile tile))
+                float distToNextCorner = Vector3.Distance(currentPos, path.corners[i]);
+                if (traveledDist + distToNextCorner > maxDistance)
                 {
-                    tile.SetObstacle(true);
-                    _currentTileObj = hit.transform.gameObject;
+                    float remainingAllowableDist = maxDistance - traveledDist;
+                    return currentPos + (path.corners[i] - currentPos).normalized * remainingAllowableDist;
                 }
+                traveledDist += distToNextCorner;
+                currentPos = path.corners[i];
             }
+            return currentPos;
         }
-
-        #endregion
     }
 }

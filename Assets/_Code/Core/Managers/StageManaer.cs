@@ -1,6 +1,4 @@
-﻿using System;
-using _00.Core._02.Scripts._01.Manager;
-using _00.Core._02.Scripts._06.SO;
+﻿using _00.Core._02.Scripts._06.SO;
 using Code.Core.Events.Bus;
 using UnityEngine;
 

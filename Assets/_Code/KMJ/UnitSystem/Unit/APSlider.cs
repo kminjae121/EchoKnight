@@ -17,7 +17,6 @@ public class APSlider : MonoBehaviour
 
     private void OnDisable()
     {
-        
         Bus<ApSliderEvent>.Unsubscribe(ApSlider);
     }
 

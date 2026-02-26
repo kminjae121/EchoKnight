@@ -98,6 +98,7 @@ namespace Code.UnitManaging
                     {
                         basicUnit._startTile = tileMono.gameObject;
                     }
+                    
 
                     count += 1;
                     basicUnit.PlayableUnitID = count;

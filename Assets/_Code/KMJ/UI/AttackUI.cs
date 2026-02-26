@@ -53,11 +53,11 @@ namespace Code.UI
         private void Update()
         {
             
-            if (UnityEngine.Input.GetKeyDown(KeyCode.R) && !_isActive && _isCanOpen)
+            if (UnityEngine.Input.GetMouseButtonDown(1 ) && !_isActive && _isCanOpen)
             {
                 StartAttack();
             }
-            else if (UnityEngine.Input.GetKeyDown(KeyCode.R) && _isActive)
+            else if (UnityEngine.Input.GetMouseButtonDown(1) && _isActive)
             {
                 EndAttack();
             }

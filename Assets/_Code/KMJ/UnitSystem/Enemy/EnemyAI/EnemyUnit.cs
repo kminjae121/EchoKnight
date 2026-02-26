@@ -52,6 +52,11 @@ namespace EnemySystem
 
         private void Start()
         {
+            if (_mover != null)
+            {
+                _mover.Initialize(this);
+            }
+
             Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(this));
             OnIdleRequested();
         }
@@ -75,7 +80,6 @@ namespace EnemySystem
         {
             if (_mover == null)
             {
-                Debug.LogWarning($"[EnemyUnit] {name}에게 EnemyGridMovingSystem이 없습니다.");
                 onComplete?.Invoke();
                 return;
             }
@@ -139,7 +143,6 @@ namespace EnemySystem
             }
             else
             {
-                Debug.LogError($"[EnemyUnit] {name}: 실행할 수 있는 스킬이 없습니다. (SkillComponent 초기화 실패 또는 SkillSO 설정 확인 필요)");
                 onComplete?.Invoke();
             }
         }
@@ -153,8 +156,6 @@ namespace EnemySystem
                 isSkillEnded = true;
             };
             
-            string debugSkillName = skill.GetType().Name;
-
             if (skill.skillEndEvent != null)
                 skill.skillEndEvent.AddListener(endListener);
             
@@ -171,7 +172,7 @@ namespace EnemySystem
             
             if (timer >= timeout)
             {
-                Debug.LogWarning($"[EnemyUnit] {name}의 스킬 '{debugSkillName}' 실행 시간이 초과되어 강제 종료합니다. (Animation Event 누락 확인 필요)");
+                Debug.LogWarning($"[EnemyUnit] {name} 스킬 타임아웃.");
             }
 
             if (skill.skillEndEvent != null)

@@ -21,7 +21,15 @@ MonoBehaviour:
     RefIds:
     - rid: -2
       type: {class: , ns: , asm: }
-    - rid: 4948318552872976848
+    - rid: 4948318595449618577
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 3.18
+    - rid: 4948318595449618618
       type: {class: Start, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -32,10 +40,10 @@ MonoBehaviour:
         m_Parent:
           rid: -2
         m_Child:
-          rid: 4948318552872976849
+          rid: 4948318595449618619
         Repeat: 0
         AllowMultipleRepeatsPerTick: 0
-    - rid: 4948318552872976849
+    - rid: 4948318595449618619
       type: {class: SequenceComposite, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         ID:
@@ -44,10 +52,10 @@ MonoBehaviour:
         Graph:
           rid: 9157396298433823275
         m_Parent:
-          rid: 4948318552872976848
+          rid: 4948318595449618618
         m_Children:
-        - rid: 4948318552872976857
-    - rid: 4948318552872976850
+        - rid: 4948318595449618625
+    - rid: 4948318595449618620
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -55,7 +63,7 @@ MonoBehaviour:
           m_Value1: 0
         Name: Self
         m_Value: {fileID: 0}
-    - rid: 4948318552872976851
+    - rid: 4948318595449618621
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -63,7 +71,7 @@ MonoBehaviour:
           m_Value1: 8775463345220762729
         Name: Target
         m_Value: {fileID: 0}
-    - rid: 4948318552872976852
+    - rid: 4948318595449618622
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
@@ -71,39 +79,23 @@ MonoBehaviour:
           m_Value1: 9848024598306161479
         Name: Agent
         m_Value: {fileID: 0}
-    - rid: 4948318552872976853
-      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 2688864673558301174
-          m_Value1: 13241643668562056175
-        Name: MinMoveStep
-        m_Value: 1
-    - rid: 4948318552872976854
+    - rid: 4948318595449618623
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 16754167564708877673
           m_Value1: 3422334103230394182
         Name: MaxMoveStep
-        m_Value: 3
-    - rid: 4948318552872976855
-      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 8720051860275809312
-          m_Value1: 8952379494885017042
-        Name: TileSize
-        m_Value: 3.18
-    - rid: 4948318552872976856
+        m_Value: 2
+    - rid: 4948318595449618624
       type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         GUID:
           m_Value0: 2933650744991704912
           m_Value1: 8110417262465297092
         Name: OptimalRange
-        m_Value: 6
-    - rid: 4948318552872976857
+        m_Value: 2
+    - rid: 4948318595449618625
       type: {class: EnemyMoveAction, ns: , asm: Assembly-CSharp}
       data:
         ID:
@@ -112,17 +104,17 @@ MonoBehaviour:
         Graph:
           rid: 9157396298433823275
         m_Parent:
-          rid: 4948318552872976849
+          rid: 4948318595449618619
         Agent:
-          rid: 4948318552872976852
+          rid: 4948318595449618622
         Target:
-          rid: 4948318552872976851
+          rid: 4948318595449618621
         MaxMoveStep:
-          rid: 4948318552872976854
+          rid: 4948318595449618623
         OptimalRange:
-          rid: 4948318552872976856
+          rid: 4948318595449618624
         TileSize:
-          rid: 4948318552872976855
+          rid: 4948318595449618577
     - rid: 9157396298433823275
       type: {class: BehaviorGraphModule, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -134,14 +126,14 @@ MonoBehaviour:
           rid: 9157396298433823276
         BlackboardGroupReferences: []
         Root:
-          rid: 4948318552872976848
+          rid: 4948318595449618618
         m_ActiveNodes: []
         m_NodesToTick: []
         m_NodesToEnd:
           rid: 9157396298433823278
         m_EndedNodes:
           rid: 9157396298433823279
-        m_VersionTimestamp: 639076556605990240
+        m_VersionTimestamp: 639077355499320993
     - rid: 9157396298433823276
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -158,13 +150,11 @@ MonoBehaviour:
       type: {class: Blackboard, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
         m_Variables:
-        - rid: 4948318552872976850
-        - rid: 4948318552872976851
-        - rid: 4948318552872976852
-        - rid: 4948318552872976853
-        - rid: 4948318552872976854
-        - rid: 4948318552872976855
-        - rid: 4948318552872976856
+        - rid: 4948318595449618620
+        - rid: 4948318595449618621
+        - rid: 4948318595449618622
+        - rid: 4948318595449618623
+        - rid: 4948318595449618624
 --- !u!114 &-3345951085311709074
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -177,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5c02bb70996b49eba31d0c206e28da24, type: 3}
   m_Name: MoveSubGraph Blackboard
   m_EditorClassIdentifier: 
-  VersionTimestamp: 639076556590278702
+  VersionTimestamp: 639077355498191620
   AssetID:
     m_Value0: 3767081116205063671
     m_Value1: 15745800759277452778
@@ -186,22 +176,12 @@ MonoBehaviour:
     - rid: 9157396298433823282
     - rid: 9157396298433823403
     - rid: 9157396298433823412
-    - rid: 4948318302538825876
     - rid: 4948318302538826037
-    - rid: 4948318552872976511
     - rid: 4948318552872976687
   m_SharedBlackboardVariableGuids: []
   references:
     version: 2
     RefIds:
-    - rid: 4948318302538825876
-      type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 2688864673558301174
-          m_Value1: 13241643668562056175
-        Name: MinMoveStep
-        m_Value: 1
     - rid: 4948318302538826037
       type: {class: 'BlackboardVariable`1[[System.Int32, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -209,15 +189,7 @@ MonoBehaviour:
           m_Value0: 16754167564708877673
           m_Value1: 3422334103230394182
         Name: MaxMoveStep
-        m_Value: 3
-    - rid: 4948318552872976511
-      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 8720051860275809312
-          m_Value1: 8952379494885017042
-        Name: TileSize
-        m_Value: 3.18
+        m_Value: 2
     - rid: 4948318552872976687
       type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -225,7 +197,7 @@ MonoBehaviour:
           m_Value0: 2933650744991704912
           m_Value1: 8110417262465297092
         Name: OptimalRange
-        m_Value: 6
+        m_Value: 2
     - rid: 9157396298433823282
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -269,27 +241,15 @@ MonoBehaviour:
   - rid: 9157396298433823283
   - rid: 9157396298433823399
   - rid: 9157396298433823407
-  - rid: 4948318302538825866
   - rid: 4948318302538826028
   - rid: 4948318552872976676
-  - rid: 4948318552872976499
-  m_VersionTimestamp: 639076556629885521
+  m_VersionTimestamp: 639077355498191620
   m_CommandBuffer:
     m_Commands: []
   m_RuntimeBlackboardAsset: {fileID: -3345951085311709074}
   references:
     version: 2
     RefIds:
-    - rid: 4948318302538825866
-      type: {class: 'TypedVariableModel`1[[System.Int32, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
-      data:
-        ID:
-          m_Value0: 2688864673558301174
-          m_Value1: 13241643668562056175
-        Name: MinMoveStep
-        IsExposed: 1
-        m_IsShared: 0
-        m_Value: 1
     - rid: 4948318302538826028
       type: {class: 'TypedVariableModel`1[[System.Int32, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -299,17 +259,7 @@ MonoBehaviour:
         Name: MaxMoveStep
         IsExposed: 1
         m_IsShared: 0
-        m_Value: 3
-    - rid: 4948318552872976499
-      type: {class: 'TypedVariableModel`1[[System.Single, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
-      data:
-        ID:
-          m_Value0: 8720051860275809312
-          m_Value1: 8952379494885017042
-        Name: TileSize
-        IsExposed: 1
-        m_IsShared: 0
-        m_Value: 3.18
+        m_Value: 2
     - rid: 4948318552872976676
       type: {class: 'TypedVariableModel`1[[System.Single, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -319,7 +269,7 @@ MonoBehaviour:
         Name: OptimalRange
         IsExposed: 1
         m_IsShared: 0
-        m_Value: 6
+        m_Value: 2
     - rid: 9157396298433823283
       type: {class: 'TypedVariableModel`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -368,7 +318,7 @@ MonoBehaviour:
   - rid: 9157396298433823284
   - rid: 9157396298433823421
   - rid: 9157396298433823426
-  m_VersionTimestamp: 639076556605990240
+  m_VersionTimestamp: 639077355499320993
   m_SerializedVersion: 1
   m_DebugInfo: {fileID: 113526893399097511}
   m_RuntimeGraph: {fileID: -4355435923991856374}
@@ -401,7 +351,7 @@ MonoBehaviour:
     NamedChildren: []
     IsPlaceholder: 0
   - Name: Enemy Smart Move To Target
-    Story: '[Agent] smartly moves towards [Target] optimal range [OptimalRange]'
+    Story: '[Agent] smartly moves considering HP towards [Target]'
     RuntimeTypeString: EnemyMoveAction, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
     RuntimeTypeID:
@@ -446,6 +396,8 @@ MonoBehaviour:
   references:
     version: 2
     RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
     - rid: 4948318302538825862
       type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -486,17 +438,6 @@ MonoBehaviour:
           rid: 4948318552872976497
         LinkedVariable:
           rid: 4948318552872976847
-    - rid: 4948318552872976496
-      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
-      data:
-        FieldName: TileSize
-        Type:
-          m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
-            PublicKeyToken=b77a5c561934e089
-        LocalValue:
-          rid: 4948318552872976498
-        LinkedVariable:
-          rid: 4948318552872976804
     - rid: 4948318552872976497
       type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -505,24 +446,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: 0
-    - rid: 4948318552872976498
-      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: 0
-    - rid: 4948318552872976804
-      type: {class: 'TypedVariableModel`1[[System.Single, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
-      data:
-        ID:
-          m_Value0: 8720051860275809312
-          m_Value1: 8952379494885017042
-        Name: TileSize
-        IsExposed: 1
-        m_IsShared: 0
-        m_Value: 3.18
     - rid: 4948318552872976847
       type: {class: 'TypedVariableModel`1[[System.Single, mscorlib]]', ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:
@@ -533,6 +456,25 @@ MonoBehaviour:
         IsExposed: 1
         m_IsShared: 0
         m_Value: 6
+    - rid: 4948318595449618578
+      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
+      data:
+        FieldName: TileSize
+        Type:
+          m_SerializableType: System.Single, mscorlib, Version=4.0.0.0, Culture=neutral,
+            PublicKeyToken=b77a5c561934e089
+        LocalValue:
+          rid: 4948318595449618579
+        LinkedVariable:
+          rid: -2
+    - rid: 4948318595449618579
+      type: {class: 'BlackboardVariable`1[[System.Single, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
+      data:
+        GUID:
+          m_Value0: 0
+          m_Value1: 0
+        Name: 
+        m_Value: 3.18
     - rid: 9157396298433823284
       type: {class: StartNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -622,7 +564,7 @@ MonoBehaviour:
         - rid: 9157396298433823430
         - rid: 4948318302538825862
         - rid: 4948318552872976495
-        - rid: 4948318552872976496
+        - rid: 4948318595449618578
     - rid: 9157396298433823427
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
       data:

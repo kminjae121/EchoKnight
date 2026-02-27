@@ -262,8 +262,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             animationCompo.PlaySelectAnimation("IDLE");
             
-            ResetTile();
-            FindObjectInRange();
+            //ResetTile();
+            //FindObjectInRange();
         }
     }
 }

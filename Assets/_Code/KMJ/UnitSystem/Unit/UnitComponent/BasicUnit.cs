@@ -309,6 +309,7 @@ namespace UnitSystem
         public void LastDie()
         {
             gameObject.SetActive(false);
+            
             if (StageManager.Instance != null)
                 StageManager.Instance.PlayerDie();
         }

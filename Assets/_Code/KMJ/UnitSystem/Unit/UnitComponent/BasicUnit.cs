@@ -131,7 +131,7 @@ namespace UnitSystem
             }
             else if (isMyTurn && behaveCompo != null && evt.isStart == true)
             {
-                behaveCompo.ReCheckInRange();
+                behaveCompo.FindObjectInRange();
             }
         }
 

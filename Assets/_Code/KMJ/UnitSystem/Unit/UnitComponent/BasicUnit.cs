@@ -131,7 +131,7 @@ namespace UnitSystem
             }
             else if (isMyTurn && behaveCompo != null && evt.isStart == true)
             {
-                behaveCompo.ReCheckInRange();
+                behaveCompo.FindObjectInRange();
             }
         }
 
@@ -309,6 +309,7 @@ namespace UnitSystem
         public void LastDie()
         {
             gameObject.SetActive(false);
+            
             if (StageManager.Instance != null)
                 StageManager.Instance.PlayerDie();
         }

@@ -261,6 +261,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false, new Vector3(0.1f,0.1f,0.1f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             animationCompo.PlaySelectAnimation("IDLE");
+            
+            //ResetTile();
+            //FindObjectInRange();
         }
     }
 }

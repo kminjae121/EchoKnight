@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Code.KMJ.UnitSystem.involveUnitSO;
+using Code.Managers;
 using Code.UnitSystem.SkillSystem;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -15,13 +17,15 @@ namespace Code.UI
         [SerializeField] private HavingSkillSO havingSkillSO;
 
         [SerializeField] private List<UnitOwnSkillStorageSO> ownSkillStorage;
+        
+        private Dictionary<UnitType, UnitOwnSkillStorageSO> storageDict = new Dictionary<UnitType, UnitOwnSkillStorageSO>();
 
         #region UI
 
         [SerializeField] private List<GameObject> skillUI = new List<GameObject>();
-        [SerializeField] private List<Sprite> skillImages;
-        [SerializeField] private List<string> skillDescription;
-        [SerializeField] private List<string> skillOwnUnit;
+        [SerializeField] private List<Image> skillImages;
+        [SerializeField] private List<TextMeshProUGUI> skillDescription;
+        [SerializeField] private List<TextMeshProUGUI> skillOwnUnit;
         [SerializeField] private List<Button> skillBtn;
 
         #endregion
@@ -36,10 +40,22 @@ namespace Code.UI
                     skills.Remove(skill);
                 }
             });
+            
+            ownSkillStorage.ForEach(storage =>
+            {
+                storageDict.Add(storage.uniType, storage);
+            });
+
+            Show();
         }
 
         public void Show()
         {
+            skillUI.ForEach(UI =>
+            {
+                UI.SetActive(true);
+            });
+            
             int maxCount = skills.Count;
             int[] ran = new int[3];
 
@@ -55,24 +71,54 @@ namespace Code.UI
 
             for (int i = 0; i < skillUI.Count; i++)
             {
-                skillImages[i] = skills[ran[i]].skillUIImage;
-                skillDescription[i] = skills[ran[i]].SkillDescription;
-                skillOwnUnit[i] = skills[ran[i]].unitType.ToString();
-                skillBtn[i].onClick.AddListener(SkillBtn);
+                skillImages[i].sprite = skills[ran[i]].skillUIImage;
+                skillDescription[i].text = skills[ran[i]].SkillDescription;
+                skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
+                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[i]));
             }
-            
-            skillUI.ForEach(UI =>
-            {
-                UI.SetActive(true);
-            });
             
         }
 
-        public void SkillBtn()
+        private void SkillBtn(int idx)
         {
-            //havingSkillSO.HaveSkills.Add(skills[idx]);
-            //skills.Remove(skills[idx]);
+            if (skills.Count == 0)
+                return;
             
+            SkillSO skillInfo = skills[idx];
+
+            if (skillInfo.skillPrice < PlayerManager.Instance.Gold)
+                return;
+            
+            PlayerManager.Instance.RemoveGold(skillInfo.skillPrice);
+            
+            havingSkillSO.HaveSkills.Add(skillInfo);
+            
+            skills.Remove(skillInfo);
+
+            switch (skillInfo.unitType)
+            {
+                case UnitType.Archer:
+                    UnitOwnSkillStorageSO archerstorageSO = storageDict.GetValueOrDefault(UnitType.Archer);
+                    archerstorageSO.skills.Add(skillInfo);
+                    break;
+                
+                case UnitType.Knight:
+                    UnitOwnSkillStorageSO knightstorageSO = storageDict.GetValueOrDefault(UnitType.Knight);
+                    knightstorageSO.skills.Add(skillInfo);
+                    break;
+                
+                case UnitType.Magician:
+                    UnitOwnSkillStorageSO magicianstorageSO = storageDict.GetValueOrDefault(UnitType.Magician);
+                    magicianstorageSO.skills.Add(skillInfo);
+                    break;
+                case UnitType.Bandlt:
+                    UnitOwnSkillStorageSO bandltstorageSO = storageDict.GetValueOrDefault(UnitType.Bandlt);
+                    bandltstorageSO.skills.Add(skillInfo);
+                    break;
+                
+                case UnitType.None:
+                    break;
+            }
             
         }
     }

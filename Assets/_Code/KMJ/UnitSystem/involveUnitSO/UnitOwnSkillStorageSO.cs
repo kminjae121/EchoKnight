@@ -9,5 +9,22 @@ namespace _Code.KMJ.UnitSystem.involveUnitSO
     {
         public UnitType uniType = UnitType.None;
         public List<SkillSO> skills = null;
+        
+        public HavingSkillSO havingSkill = null;
+        
+        private void OnValidate()
+        {
+            if (havingSkill == null || skills == null) return;
+            
+            var set = new HashSet<SkillSO>(havingSkill.HaveSkills);
+
+            foreach (var skill in skills)
+            {
+                if (skill == null) continue;
+                
+                if (set.Add(skill))
+                    havingSkill.HaveSkills.Add(skill);
+            }
+        }
     }
 }

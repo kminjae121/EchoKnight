@@ -71,8 +71,9 @@ namespace Code.UI
                 skillDescription[i].text = skills[ran[i]].SkillDescription;
                 skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
               
-                skillBtn[i].onClick.RemoveAllListeners(); 
-                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[i])); 
+                skillBtn[i].onClick.RemoveAllListeners();
+                int idx = i;
+                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx])); 
             }
             
         }

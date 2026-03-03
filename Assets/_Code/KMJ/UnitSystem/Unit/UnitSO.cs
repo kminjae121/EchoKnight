@@ -61,8 +61,10 @@ public class UnitSO : ScriptableObject
     public float SkillDamage;
 
     public float DefensivePower;
-    
-    [Header("UnitType")]
+
+
+    [Header("UnitType")] 
+    public UnitInGameSO unitInGame;
     public EntityType EntityType = EntityType.MeleeAttacker;
 
     public UnitType UnitType = UnitType.None;

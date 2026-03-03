@@ -1,8 +1,9 @@
-﻿using Code.UnitSystem;
+﻿using System;
+using Code.UnitSystem;
 using EntityComponent;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
+namespace UnitSystem
 {
     public enum StatInfo
     {
@@ -16,21 +17,22 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
     {
         private UnitSO unitSO;
 
+        [SerializeField] private UnitInGameSO unitInGameSO;
+
         private float MoveSpeed => unitSO.MoveSpeed;
 
-        private float AtkDamage => unitSO.AtkDamage;
+        private float AtkDamage => unitInGameSO.AtkDamage;
 
-        private float MaxHealth => unitSO.Maxhealth;
+        private float MaxHealth => unitInGameSO.Maxhealth;
         
-        private float SkillDamage => unitSO.SkillDamage;
+        private float SkillDamage => unitInGameSO.SkillDamage;
         
-        private float DefensivePower => unitSO.DefensivePower;
+        private float DefensivePower => unitInGameSO.DefensivePower;
 
-        public void Initialize(Code.UnitSystem.Unit owner)
+        public void Initialize(Unit owner)
         {
             unitSO = owner.unitSO;
         }
-        
         public T GetStat<T>(StatInfo statInfo)
         {
             object value = statInfo switch

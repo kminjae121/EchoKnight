@@ -10,6 +10,7 @@ namespace Code.UnitSystem.SkillSystem
     {
         public UnitType unitType = UnitType.None;
         public string skillName;
+        [TextArea(3, 15)]
         public string SkillDescription;
         public int SkillCost;
         public int UsingSkillCost;

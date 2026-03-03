@@ -7,7 +7,9 @@ namespace Code.UnitSystem
     public class UnitRotation : MonoBehaviour, IUnitComponent
     {
         private Vector3 _targetDirection;
-        [SerializeField] private float _rotationSpeed = 15f;
+        
+        [Header("Settings")]
+        [SerializeField] private float _rotationSpeed = 30f; 
         
         public void Initialize(Code.UnitSystem.Unit owner)
         {
@@ -35,7 +37,7 @@ namespace Code.UnitSystem
             if (_targetDirection.sqrMagnitude > 0.001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(_targetDirection);
-                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
             }
         }
     }

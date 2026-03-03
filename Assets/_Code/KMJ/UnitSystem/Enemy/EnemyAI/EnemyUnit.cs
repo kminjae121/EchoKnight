@@ -97,9 +97,9 @@ namespace EnemySystem
                 onComplete?.Invoke();
                 return;
             }
-
+            
             if (AnimationCompo != null) 
-                AnimationCompo.PlaySelectAnimation("MOVE");
+                AnimationCompo.PlaySelectAnimation("RETREAT");
 
             _mover.RetreatFromTarget(targetPos, steps, () =>
             {

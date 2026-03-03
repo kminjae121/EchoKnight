@@ -16,7 +16,6 @@ namespace Code.UI
 
         public void ReturnHome()
         {
-            Bus<StageClearEvent>.Raise(new StageClearEvent(true));
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

@@ -20,6 +20,13 @@ public class WarningUI : MonoBehaviour
         Bus<WarningUIEvent>.Subscribe(OnWarningPanel);
     }
 
+    private void OnDisable()
+    {
+        
+        inputReader.OnClickEvent -= OnClickWarningPanel;
+        Bus<WarningUIEvent>.Unsubscribe(OnWarningPanel);
+    }
+
     private void OnWarningPanel(WarningUIEvent evt)
     {
         warningPanel.SetActive(true);

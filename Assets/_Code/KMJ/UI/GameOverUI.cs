@@ -17,6 +17,12 @@ namespace Code.UI
             returnBtn.onClick.AddListener(ReturnHome);
         }
 
+        private void OnDisable()
+        {
+            restartBtn.onClick.RemoveListener(RestartBtn);
+            returnBtn.onClick.RemoveListener(ReturnHome);
+        }
+
         public void ReturnHome()
         {
             SceneManager.LoadScene("Lobby");

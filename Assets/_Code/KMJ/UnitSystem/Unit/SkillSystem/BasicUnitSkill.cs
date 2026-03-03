@@ -67,7 +67,7 @@ namespace Code.UnitSystem.SkillSystem
                 _inputReader.OnAttackEvent -= UseSkill;
         }
 
-        private void Update()
+        public virtual void Update()
         {
             if (_basicUnit != null && _basicUnit.isMyTurn && _isAct && _inputReader != null)
             {

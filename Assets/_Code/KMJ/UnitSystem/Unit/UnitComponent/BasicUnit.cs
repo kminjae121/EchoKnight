@@ -71,6 +71,8 @@ namespace UnitSystem
             behaveCompo._currentMapTile = _startTile;
             
             transform.position = _startTile.transform.position;
+            
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }
 
         protected override void OnDestroy()
@@ -103,6 +105,8 @@ namespace UnitSystem
                 behaveCompo.FindObjectInRange();
                 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             isMyTurn = true;
         }
 
@@ -114,6 +118,8 @@ namespace UnitSystem
             if (behaveCompo != null)
                 behaveCompo.ResetTile();
             unitRangeCompo.RemoveAllRange();
+            
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             base.OnTurnEnd();
         }
 
@@ -125,7 +131,7 @@ namespace UnitSystem
             }
             else if (isMyTurn && behaveCompo != null && evt.isStart == true)
             {
-                behaveCompo.ReCheckInRange();
+                behaveCompo.FindObjectInRange();
             }
         }
 
@@ -164,7 +170,11 @@ namespace UnitSystem
 
             GameObject enemy = inputSO.GetEnemy();
 
-            if (enemy == null && _targetEnemy != null)
+            if (behaveCompo.visualPrefabs.activeInHierarchy)
+            {
+                ClearTarget();
+            }
+            else if (enemy == null && _targetEnemy != null)
             {
                 ClearTarget();
             }
@@ -299,6 +309,7 @@ namespace UnitSystem
         public void LastDie()
         {
             gameObject.SetActive(false);
+            
             if (StageManager.Instance != null)
                 StageManager.Instance.PlayerDie();
         }

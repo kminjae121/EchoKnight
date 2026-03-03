@@ -28,7 +28,7 @@ namespace Code.UI
             Bus<SkillUIEvent>.Subscribe(HandleSkillUIEvent);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             Bus<SkillUIEvent>.Unsubscribe(HandleSkillUIEvent);
             

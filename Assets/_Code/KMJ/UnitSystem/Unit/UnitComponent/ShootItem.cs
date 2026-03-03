@@ -1,5 +1,7 @@
 ﻿using Code.Core.Events.Bus;
 using Code.EntityComponent;
+using DG.Tweening;
+using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -7,36 +9,33 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 {
     public class ShootItem : MonoBehaviour
     {
+
+        [field : SerializeField] public string itemName { get; private set; }
+        
         [SerializeField] private LayerMask _whatIsEnemy;
 
         [SerializeField] private float _moveSpeed = 5f;
-
-        private DamageData _damageData;
-
-        [SerializeField] private AttackDataSO atkData;
+        
 
         private GameObject _target = null;
+
+        private ShootItemAttackManager _shootItemManager;
         
-        protected CinemachineImpulseSource impulseSource;
-        
-        private void Awake()
-        {
-            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-        }
 
         private void FixedUpdate()
         {
-            transform.position += transform.forward * _moveSpeed * Time.fixedDeltaTime;
-        }
-
-        public void SetDamageData(DamageData damageData)
-        {
-            _damageData = damageData;
+            transform.rotation = Quaternion.LookRotation(transform.position - _target.transform.position);
+            transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _moveSpeed * Time.fixedDeltaTime);
         }
 
         public void SetTarget(GameObject target)
         {
             _target = target;
+        }
+
+        public void SetShootItemCompo(ShootItemAttackManager shootItemManaer)
+        {
+            _shootItemManager = shootItemManaer;
         }
 
         private void OnTriggerEnter(Collider other)
@@ -45,12 +44,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             {
                 if (other.gameObject == _target)
                 {
-                    Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-                    Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-                
-                    impulseSource.GenerateImpulse(0.4f);  
-                    other.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,
-                        atkData,null);
+                    _shootItemManager.hitEvent.Invoke();
                     gameObject.SetActive(false);   
                 }
             }

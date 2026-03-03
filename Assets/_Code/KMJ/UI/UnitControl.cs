@@ -18,7 +18,7 @@ namespace Code.UI
             Bus<UnitAttackControlEvent>.Subscribe(SetAttacking);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             atkBtn.onClick.RemoveListener(HandleAttack);
             

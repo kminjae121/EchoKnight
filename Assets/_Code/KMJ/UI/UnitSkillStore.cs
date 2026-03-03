@@ -5,6 +5,7 @@ using Code.Managers;
 using Code.UnitSystem.SkillSystem;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
@@ -31,22 +32,17 @@ namespace Code.UI
         #endregion
 
 
-        private void Awake()
+
+        private void Start()
         {
-            skills.ForEach(skill =>
-            {
-                if (havingSkillSO.HaveSkills.Contains(skill))
-                {
-                    skills.Remove(skill);
-                }
-            });
+            skills.RemoveAll(skill => havingSkillSO.HaveSkills.Contains(skill));
             
             ownSkillStorage.ForEach(storage =>
             {
                 storageDict.Add(storage.uniType, storage);
             });
 
-            Show();
+            Show();            
         }
 
         public void Show()
@@ -57,7 +53,7 @@ namespace Code.UI
             });
             
             int maxCount = skills.Count;
-            int[] ran = new int[3];
+            int[] ran = new int[10];
 
             while (true)
             {
@@ -70,19 +66,22 @@ namespace Code.UI
             }
 
             for (int i = 0; i < skillUI.Count; i++)
-            {
+            {;
                 skillImages[i].sprite = skills[ran[i]].skillUIImage;
                 skillDescription[i].text = skills[ran[i]].SkillDescription;
                 skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
-                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[i]));
+              
+                skillBtn[i].onClick.RemoveAllListeners(); 
+                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[i])); 
             }
             
         }
 
         private void SkillBtn(int idx)
         {
-            if (skills.Count == 0)
+            if (skills.Count <= 0)
                 return;
+
             
             SkillSO skillInfo = skills[idx];
 
@@ -99,27 +98,28 @@ namespace Code.UI
             {
                 case UnitType.Archer:
                     UnitOwnSkillStorageSO archerstorageSO = storageDict.GetValueOrDefault(UnitType.Archer);
-                    archerstorageSO.skills.Add(skillInfo);
+                    //archerstorageSO.skills.Add(skillInfo);
                     break;
                 
                 case UnitType.Knight:
                     UnitOwnSkillStorageSO knightstorageSO = storageDict.GetValueOrDefault(UnitType.Knight);
-                    knightstorageSO.skills.Add(skillInfo);
+                    //knightstorageSO.skills.Add(skillInfo);
                     break;
                 
                 case UnitType.Magician:
                     UnitOwnSkillStorageSO magicianstorageSO = storageDict.GetValueOrDefault(UnitType.Magician);
-                    magicianstorageSO.skills.Add(skillInfo);
+                    //magicianstorageSO.skills.Add(skillInfo);
                     break;
                 case UnitType.Bandlt:
                     UnitOwnSkillStorageSO bandltstorageSO = storageDict.GetValueOrDefault(UnitType.Bandlt);
-                    bandltstorageSO.skills.Add(skillInfo);
+                    //bandltstorageSO.skills.Add(skillInfo);
                     break;
                 
                 case UnitType.None:
                     break;
             }
             
+            EventSystem.current.currentSelectedGameObject.gameObject.SetActive(false);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using NUnit.Framework;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.UnitSystem.SkillSystem
@@ -13,5 +15,7 @@ namespace Code.UnitSystem.SkillSystem
         public int UsingSkillCost;
         public Sprite skillUIImage;
         public string className;
+
+        public int skillPrice;
     }
 }

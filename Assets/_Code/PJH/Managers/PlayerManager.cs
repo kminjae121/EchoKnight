@@ -12,5 +12,8 @@ namespace Code.Managers
 
         public void AddGold(int value)
             => Gold += value;
+        
+        public void RemoveGold(int value)
+         => Gold -= value;
     }
 }

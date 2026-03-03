@@ -38,8 +38,12 @@ namespace Code.UI
                     unitSelectBtns[i].onClick.RemoveAllListeners();
                     int capturedIndex = i;
                     unitSelectBtns[i].onClick.AddListener(() => SetUnitSelect(capturedIndex));
+                    unitSelectBtns[i].GetComponent<Image>().sprite =
+                        unitStorageSO.unitStates[capturedIndex].Data.UnitImage;
                 }
             }
+            
+            unitSelectBtns[0].onClick?.Invoke();
         }
 
         private void SetUnitSelect(int idx)

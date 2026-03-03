@@ -2,6 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using GameEventChannel;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,6 +16,11 @@ namespace Code.UI
         [SerializeField] private Button unitHealthUpgradeButton;
         [SerializeField] private Button unitDamageUpgradeButton;
         [SerializeField] private Button unitSkillDamageUpgradeBtn;
+
+
+        [SerializeField] private TextMeshProUGUI unitHealthTxt;
+        [SerializeField] private TextMeshProUGUI unitDamageTxt;
+        [SerializeField] private TextMeshProUGUI unitSkillTxt;
 
         private void Awake()
         {
@@ -39,12 +45,16 @@ namespace Code.UI
             unitHealthUpgradeButton.onClick.AddListener(MaxHealthUpgrade);
             unitDamageUpgradeButton.onClick.AddListener(DamageUpgrade);
             unitSkillDamageUpgradeBtn.onClick.AddListener(SkillDamageUpgrade);
+
+            unitHealthTxt.text = $"체력 : {unitInfoSO.Maxhealth.ToString()}";
+            unitDamageTxt.text = $"공격력 {unitInfoSO.AtkDamage.ToString()}";
+            unitSkillTxt.text = $"스킬 공격력 : {unitInfoSO.SkillDamage.ToString()}";    
         }
 
 
-        private void MaxHealthUpgrade()
+        public void MaxHealthUpgrade()
         {
-         
+            
             if (unitDamageUpgradeButton == null)
                 return;
 
@@ -52,6 +62,7 @@ namespace Code.UI
                 return;
 
             unitInfoSO.Maxhealth += 10;
+            unitHealthTxt.text = $"체력 : {unitInfoSO.Maxhealth.ToString()}";
         }
 
         private void SkillDamageUpgrade()
@@ -63,6 +74,7 @@ namespace Code.UI
                 return;
             
             unitInfoSO.SkillDamage += 10;
+            unitSkillTxt.text = $"스킬 데미지 : {unitInfoSO.SkillDamage.ToString()}";
         }
 
         private void DamageUpgrade()
@@ -75,6 +87,7 @@ namespace Code.UI
 
 
             unitInfoSO.AtkDamage += 10;
+            unitDamageTxt.text = $"공격력 : {unitInfoSO.AtkDamage.ToString()}";
         }
     }
 }

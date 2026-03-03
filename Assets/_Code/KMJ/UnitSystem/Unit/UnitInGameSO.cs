@@ -7,11 +7,11 @@ namespace Code.UnitSystem
     {
         public UnitType UnitType = UnitType.None;
         
-        public float Maxhealth { get; set; }
-        public float AtkDamage { get; set; }
-        
-        public float SkillDamage { get; set; }
+        public float Maxhealth;
+        public float AtkDamage;
 
-        public float DefensivePower { get; set; }
+        public float SkillDamage;
+
+        public float DefensivePower;
     }
 }

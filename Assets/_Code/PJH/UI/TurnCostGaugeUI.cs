@@ -8,9 +8,14 @@ namespace Code.UI
 {
     public class TurnCostGaugeUI : MonoBehaviour
     {
+        [Header("UI Elements")]
         [SerializeField] private Image turnCostGaugeImage;
         [SerializeField] private TextMeshProUGUI costText;
+        
+        [Header("Dependencies")]
         [SerializeField] private TurnCostGaugeManager gaugeManager;
+        
+        [Header("Settings")]
         [SerializeField] private float gaugeTweenTime = 0.3f;
 
         private Tween _gaugeTween;

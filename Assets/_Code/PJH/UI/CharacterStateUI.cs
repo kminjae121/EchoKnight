@@ -8,8 +8,11 @@ namespace Code.UI
 {
     public class CharacterStateUI : MonoBehaviour
     {
+        [Header("UI Elements")]
         [SerializeField] private Image characterImage;
         [SerializeField] private Image healthBar;
+        
+        [Header("Settings")]
         [SerializeField] private float tweenTime = 0.3f;
 
         private UnitState _unit;

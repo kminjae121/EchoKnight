@@ -212,12 +212,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 24fbcd8fcf92484ea8163798f38972d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UI.PotionFillUI
-  filledImage: {fileID: 0}
-  inputReader: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  fillAmount: 0.05
-  endTime: 5
-  timeSlider: {fileID: 0}
-  isRunning: 1
 --- !u!1 &405673895
 GameObject:
   m_ObjectHideFlags: 0
@@ -483,7 +477,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6563834793727288299, guid: 8af6269e0a269534b8ebf52aa1a7816a, type: 3}
       propertyPath: skills.Array.size
-      value: 7
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6563834793727288299, guid: 8af6269e0a269534b8ebf52aa1a7816a, type: 3}
       propertyPath: 'skills.Array.data[2]'
@@ -492,17 +486,13 @@ PrefabInstance:
     - target: {fileID: 6563834793727288299, guid: 8af6269e0a269534b8ebf52aa1a7816a, type: 3}
       propertyPath: 'skills.Array.data[3]'
       value: 
-      objectReference: {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
+      objectReference: {fileID: 11400000, guid: 49aa6bbcc524d604e97103df070426a5, type: 2}
     - target: {fileID: 6563834793727288299, guid: 8af6269e0a269534b8ebf52aa1a7816a, type: 3}
       propertyPath: 'skills.Array.data[4]'
       value: 
-      objectReference: {fileID: 11400000, guid: 49aa6bbcc524d604e97103df070426a5, type: 2}
-    - target: {fileID: 6563834793727288299, guid: 8af6269e0a269534b8ebf52aa1a7816a, type: 3}
-      propertyPath: 'skills.Array.data[5]'
-      value: 
       objectReference: {fileID: 11400000, guid: d55721ce64d71b44ab8c0a09e708d036, type: 2}
     - target: {fileID: 6563834793727288299, guid: 8af6269e0a269534b8ebf52aa1a7816a, type: 3}
-      propertyPath: 'skills.Array.data[6]'
+      propertyPath: 'skills.Array.data[5]'
       value: 
       objectReference: {fileID: 11400000, guid: 3547ba0eb4e6b574aa423bbdc23a47b9, type: 2}
     - target: {fileID: 7331377768851596716, guid: 8af6269e0a269534b8ebf52aa1a7816a, type: 3}

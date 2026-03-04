@@ -4,6 +4,8 @@ using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.Managers;
 using Code.UnitSystem.SkillSystem;
 using TMPro;
+using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -57,28 +59,57 @@ namespace Code.UI
 
             while (true)
             {
-                ran[0] = Random.Range(0, maxCount);
-                ran[1] = Random.Range(0, maxCount);
-                ran[2] = Random.Range(0, maxCount);
-                ran[3] = Random.Range(0, maxCount);
-                ran[4] = Random.Range(0, maxCount);
-
-                if (ran[0] != ran[1] && ran[0] != ran[2] &&
-                    ran[0] != ran[3] && ran[0] != ran[4] &&
-                    ran[1] != ran[2] && ran[1] != ran[3] &&
-                    ran[1] != ran[4] && ran[2] != ran[3] &&
-                    ran[2] != ran[4] && ran[3] != ran[4])
+                if (maxCount == 0)
                 {
                     break;
+                }
+                else if (maxCount == 1)
+                {
+                    ran[0] = 0;
+                    break;
+                }
+                else if (maxCount == 2)
+                {
+                    ran[0] = Random.Range(0, maxCount);
+                    ran[1] = Random.Range(0, maxCount);
+
+                    if (ran[0] != ran[1])
+                        break;
+                }
+                else if (maxCount == 3)
+                {
+                    ran[0] = Random.Range(0, maxCount);
+                    ran[1] = Random.Range(0, maxCount);
+                    ran[2] = Random.Range(0, maxCount);
+                }
+                else if (maxCount == 4)
+                {
+                    ran[0] = Random.Range(0, maxCount);
+                    ran[1] = Random.Range(0, maxCount);
+                    ran[2] = Random.Range(0, maxCount);
+                    ran[3] = Random.Range(0, maxCount);
+                }
+                else
+                {
+                    ran[0] = Random.Range(0, maxCount);
+                    ran[1] = Random.Range(0, maxCount);
+                    ran[2] = Random.Range(0, maxCount);
+                    ran[3] = Random.Range(0, maxCount);
+                    ran[4] = Random.Range(0, maxCount);
+
+                    if (ran[0] != ran[1] && ran[0] != ran[2] &&
+                        ran[0] != ran[3] && ran[0] != ran[4] &&
+                        ran[1] != ran[2] && ran[1] != ran[3] &&
+                        ran[1] != ran[4] && ran[2] != ran[3] &&
+                        ran[2] != ran[4] && ran[3] != ran[4])
+                    {
+                        break;
+                    }
                 }
             }
 
             for (int i = 0; i < skillUI.Count; i++)
             {
-                if (i >= skills.Count)
-                {
-                    skillBtn[i].gameObject.SetActive(false);
-                }
                 skillImages[i].sprite = skills[ran[i]].skillUIImage;
                 
                 skillDescription[i].text = skills[ran[i]].SkillDescription;
@@ -88,6 +119,10 @@ namespace Code.UI
                 int idx = i;
                 skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx])); 
                 
+                if (i >= skills.Count)
+                {
+                    skillBtn[i].gameObject.SetActive(false);
+                }
             }
             
         }

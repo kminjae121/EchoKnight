@@ -60,20 +60,34 @@ namespace Code.UI
                 ran[0] = Random.Range(0, maxCount);
                 ran[1] = Random.Range(0, maxCount);
                 ran[2] = Random.Range(0, maxCount);
+                ran[3] = Random.Range(0, maxCount);
+                ran[4] = Random.Range(0, maxCount);
 
-                if (ran[0] != ran[1] && ran[1] != ran[2] && ran[2] != ran[0])
+                if (ran[0] != ran[1] && ran[0] != ran[2] &&
+                    ran[0] != ran[3] && ran[0] != ran[4] &&
+                    ran[1] != ran[2] && ran[1] != ran[3] &&
+                    ran[1] != ran[4] && ran[2] != ran[3] &&
+                    ran[2] != ran[4] && ran[3] != ran[4])
+                {
                     break;
+                }
             }
 
             for (int i = 0; i < skillUI.Count; i++)
-            {;
+            {
+                if (i >= skills.Count)
+                {
+                    skillBtn[i].gameObject.SetActive(false);
+                }
                 skillImages[i].sprite = skills[ran[i]].skillUIImage;
+                
                 skillDescription[i].text = skills[ran[i]].SkillDescription;
                 skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
               
                 skillBtn[i].onClick.RemoveAllListeners();
                 int idx = i;
                 skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx])); 
+                
             }
             
         }

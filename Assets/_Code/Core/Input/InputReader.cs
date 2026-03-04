@@ -19,6 +19,8 @@ namespace Input
         public event Action OnClickEvent;
         public event Action OnSelectEvent;
 
+        public event Action OnInteractionEvent;
+
         public Vector2 MovementKey { get; private set; }
         public Vector2 MouseUpDownValue { get; private set; }
         public event Action OnSelectUnitEvent;
@@ -139,6 +141,14 @@ namespace Input
         public void OnSelectBtn(InputAction.CallbackContext context)
         {
             OnSelectEvent?.Invoke();
+        }
+
+        public void OnInteraction(InputAction.CallbackContext context)
+        {
+            if (context.performed)
+            {
+                OnInteractionEvent?.Invoke();
+            }
         }
 
         public void SetActive(bool isActive)

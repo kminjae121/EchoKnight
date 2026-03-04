@@ -48,7 +48,6 @@ namespace Code.UI
 
         private void SetUnitSelect(int idx)
         {
-            Debug.Log(idx);
             Bus<SendUnitInfoEvent>.Raise(new SendUnitInfoEvent(unitStorageSO.unitStates[idx]));
         }
         

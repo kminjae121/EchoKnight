@@ -33,6 +33,7 @@ namespace UnitSystem
         {
             unitSO = owner.unitSO;
         }
+
         public T GetStat<T>(StatInfo statInfo)
         {
             object value = statInfo switch

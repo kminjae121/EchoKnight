@@ -52,6 +52,16 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
             unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
             
+            navMeshAgent.updatePosition = true;
+            
+            navMeshAgent.updateRotation = true;
+            
+            navMeshAgent.speed = _moveSpeed;
+            
+            navMeshAgent.acceleration = 999f;
+            
+            navMeshAgent.stoppingDistance = 0.05f;
+            
             navMeshAgent.enabled = false;
         }
 
@@ -178,7 +188,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             else
             {
                 visualPrefabs.SetActive(false);
-                StartCoroutine(MoveStart(tile, tileTrm));
+                StartCoroutine(Move(tile, tileTrm));
             }
             
             visualPrefabs.SetActive(false);
@@ -186,18 +196,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         
         
-        private IEnumerator MoveStart(IMapTile tileInfo, GameObject tile)
+        private IEnumerator Move(IMapTile tileInfo, GameObject tile)
         {
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
-            navMeshAgent.acceleration = 999f; 
-            visualPrefabs.SetActive(false);
-            _isAct = false;
-            isMoving = true;
-            
-            rotationCompo.SetDir(tile.transform.position);
-            
-            
             if (tile == null) 
                 yield break;
             
@@ -216,23 +216,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             yield return new WaitForSeconds(0.2f);
             
-            navMeshAgent.enabled = true;
-            navMeshAgent.isStopped = false;
-            navMeshAgent.ResetPath();
-            
-            navMeshAgent.updatePosition = true;
-            navMeshAgent.updateRotation = true;
+            MoveStart(tile);
 
-            navMeshAgent.speed = _moveSpeed;
-            navMeshAgent.acceleration = 999f;
-
-            rotationCompo.SetDir(tile.transform.position);
-            animationCompo.PlaySelectAnimation("MOVE");
-            
-            navMeshAgent.SetDestination(tile.transform.position);
-
-            navMeshAgent.stoppingDistance = 0.05f;
-            
             _unit.RemoveCost(15);
 
             while (navMeshAgent.pathPending) yield return null;
@@ -246,6 +231,31 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 yield return null;
             }
             
+            MoveEnd(tile);
+        }
+
+        private void MoveStart(GameObject tile)
+        {
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
+            visualPrefabs.SetActive(false);
+            _isAct = false;
+            isMoving = true;
+            
+            rotationCompo.SetDir(tile.transform.position);
+            
+            navMeshAgent.enabled = true;
+            navMeshAgent.isStopped = false;
+            navMeshAgent.ResetPath();
+
+            rotationCompo.SetDir(tile.transform.position);
+            animationCompo.PlaySelectAnimation("MOVE");
+            
+            navMeshAgent.SetDestination(tile.transform.position);
+        }
+
+        private void MoveEnd(GameObject tile)
+        {
             navMeshAgent.isStopped = true;
             navMeshAgent.ResetPath();
             navMeshAgent.enabled = false;
@@ -262,8 +272,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             animationCompo.PlaySelectAnimation("IDLE");
             
-            FindObjectInRange();
             ResetTile();
+            FindObjectInRange();
         }
     }
 }

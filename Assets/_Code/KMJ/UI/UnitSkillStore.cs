@@ -7,6 +7,7 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
+using UnityEngine.Analytics;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -54,84 +55,64 @@ namespace Code.UI
                 UI.SetActive(true);
             });
             
+            int[] randomIdx = SetRandomIdx();
+
+            SetSkillUI(randomIdx);
+        }
+
+        private int[] SetRandomIdx()
+        {
             int maxCount = skills.Count;
-            int[] ran = new int[10];
+            
+            int[] idx = new int[10];
 
-            while (true)
+            if (maxCount <= 0)
+                return idx;
+            
+            int pickCount = Mathf.Min(maxCount, 5);
+            
+            int[] pool = new int[maxCount];
+            
+            for (int i = 0; i < maxCount; i++)
+                pool[i] = i;
+            
+            for (int i = 0; i < pickCount; i++)
             {
-                if (maxCount == 0)
-                {
-                    break;
-                }
-                else if (maxCount == 1)
-                {
-                    ran[0] = 0;
-                    break;
-                }
-                else if (maxCount == 2)
-                {
-                    ran[0] = Random.Range(0, maxCount);
-                    ran[1] = Random.Range(0, maxCount);
-
-                    if (ran[0] != ran[1])
-                        break;
-                }
-                else if (maxCount == 3)
-                {
-                    ran[0] = Random.Range(0, maxCount);
-                    ran[1] = Random.Range(0, maxCount);
-                    ran[2] = Random.Range(0, maxCount);
-                }
-                else if (maxCount == 4)
-                {
-                    ran[0] = Random.Range(0, maxCount);
-                    ran[1] = Random.Range(0, maxCount);
-                    ran[2] = Random.Range(0, maxCount);
-                    ran[3] = Random.Range(0, maxCount);
-                }
-                else
-                {
-                    ran[0] = Random.Range(0, maxCount);
-                    ran[1] = Random.Range(0, maxCount);
-                    ran[2] = Random.Range(0, maxCount);
-                    ran[3] = Random.Range(0, maxCount);
-                    ran[4] = Random.Range(0, maxCount);
-
-                    if (ran[0] != ran[1] && ran[0] != ran[2] &&
-                        ran[0] != ran[3] && ran[0] != ran[4] &&
-                        ran[1] != ran[2] && ran[1] != ran[3] &&
-                        ran[1] != ran[4] && ran[2] != ran[3] &&
-                        ran[2] != ran[4] && ran[3] != ran[4])
-                    {
-                        break;
-                    }
-                }
+                int j = Random.Range(i, maxCount); 
+                (pool[i], pool[j]) = (pool[j], pool[i]);
+                idx[i] = pool[i];
             }
 
+            return idx;
+        }
+        
+        
+        private void SetSkillUI(int[] ran)
+        {
             for (int i = 0; i < skillUI.Count; i++)
             {
-                skillImages[i].sprite = skills[ran[i]].skillUIImage;
-                
-                skillDescription[i].text = skills[ran[i]].SkillDescription;
-                skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
-              
-                skillBtn[i].onClick.RemoveAllListeners();
-                int idx = i;
-                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx])); 
-                
                 if (i >= skills.Count)
                 {
                     skillBtn[i].gameObject.SetActive(false);
+                    continue;
                 }
+                skillImages[i].sprite = skills[ran[i]].skillUIImage;
+                
+                skillDescription[i].text = skills[ran[i]].SkillDescription;
+                
+                skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
+              
+                skillBtn[i].onClick.RemoveAllListeners();
+                
+                int idx = i;
+                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx])); 
             }
-            
         }
 
         private void SkillBtn(int idx)
         {
             if (skills.Count <= 0)
                 return;
-
             
             SkillSO skillInfo = skills[idx];
 

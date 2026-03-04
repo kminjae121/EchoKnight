@@ -6,8 +6,11 @@ namespace Code.UI
 {
     public class SelectedCharacterSlotUI : MonoBehaviour
     {
+        [Header("UI Elements")]
         [SerializeField] private Image slotImage;
         [SerializeField] private Button slotButton;
+        
+        [Header("Data")]
         [SerializeField] private UnitSO characterInfo;
 
         private Sprite _defaultSprite;
@@ -15,7 +18,6 @@ namespace Code.UI
         private void Awake()
         {
             slotButton.onClick.AddListener(HandleSlotButton);
-
             _defaultSprite = slotImage.sprite;
         }
 

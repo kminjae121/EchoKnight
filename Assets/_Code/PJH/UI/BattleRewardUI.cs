@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Code.Items;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -7,27 +6,26 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class BattleRewardUI : MonoBehaviour
+    public class BattleRewardUI : Panel
     {
+        [Header("Buttons")]
         [SerializeField] private Button nextButton;
+
+        [Header("Rewards")]
         [SerializeField] private RewardItemButton reawardButtonPrefab;
         [SerializeField] private Transform rewardTrm;
 
         private List<RewardItemButton> spawnedButtons = new();
 
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             nextButton.onClick.AddListener(HandleNextButton);
         }
 
-        private void Start()
+        public void SetupRewards(List<ItemSO> rewards)
         {
-            gameObject.SetActive(false);
-        }
-        
-        public void Open(List<ItemSO> rewards)
-        {
-            gameObject.SetActive(true);
+            base.Open();
 
             foreach (var item in rewards)
             {

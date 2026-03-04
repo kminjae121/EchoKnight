@@ -5,21 +5,23 @@ using UnityEngine;
 
 namespace Code.UI
 {
-    public class CharacterSkillInfoUI : MonoBehaviour
+    public class CharacterSkillInfoUI : Panel
     {
-        [SerializeField] private TextMeshProUGUI SkillCostText;
-        [SerializeField] private CharacterSkillButton SkillPrefab;
+        [Header("UI Elements")]
+        [SerializeField] private TextMeshProUGUI skillCostText;
         [SerializeField] private Transform skillTrm;
+
+        [Header("Prefabs")]
+        [SerializeField] private CharacterSkillButton skillPrefab;
 
         private UnitSO _unit;
 
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);
             Bus<SkillEquipEvent>.Subscribe(SkillEquip);
             Bus<SkillUnequipEvent>.Subscribe(SkillUnequip);
-            
-            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -32,13 +34,7 @@ namespace Code.UI
         private void HandleCharacterInfo(CharacterInfoEvent evt)
         {
             _unit = evt.Unit.Data;
-
             RefreshUI();
-        }
-        
-        public void ActivePanel()
-        {
-            gameObject.SetActive(true);
         }
         
         private void RefreshUI()
@@ -48,11 +44,11 @@ namespace Code.UI
 
             foreach (var skill in _unit.OwnSkillStorage.skills)
             {
-                var skillButton = Instantiate(SkillPrefab, skillTrm);
+                var skillButton = Instantiate(skillPrefab, skillTrm);
                 skillButton.SetSkill(skill, _unit.SkillStorage.skills.Contains(skill));
             }
             
-            SkillCostText.text = $"{GetCurrentCost()} / {_unit.Cost}";
+            skillCostText.text = $"{GetCurrentCost()} / {_unit.Cost}";
         }
         
         private void SkillEquip(SkillEquipEvent evt)

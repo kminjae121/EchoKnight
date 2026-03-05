@@ -44,9 +44,6 @@ namespace Code.Managers
             if (_currentTurnUnit == null)
                 return;
             
-            // [수정됨] 무한 루프 원인 제거: 유닛이 이미 OnTurnEnd를 호출하고 이벤트를 보냈으므로,
-            // 여기서 다시 _currentTurnUnit.OnTurnEnd()를 호출하면 안 됩니다.
-            
             _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
             _currentTurnUnit = null;
 

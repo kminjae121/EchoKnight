@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using _Code.Core.Managers;
+using _Code.KMJ.SO;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -17,49 +18,50 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI selectBtnTxt;
         [SerializeField] private TextMeshProUGUI skipBtnTxt;
         [SerializeField] private TextMeshProUGUI popUpTxt;
+        [SerializeField] private Image eventImg;
 
         [SerializeField] private Button skipBtn;
         [SerializeField] private Button selectBtn;
+        
 
-        [SerializeField] private List<string> eventTxts;
-        [SerializeField] private List<string> applyTxts;
-        [SerializeField] private List<string> cancelTxts;
+        [SerializeField] private float activeTime = 1;
 
-        [SerializeField] private float activeTime = 2;
-
-        [SerializeField] private List<string> failTxt;
-        [SerializeField] private List<string> successTxt;
+        [SerializeField] private List<EventTextSO> eventTexts;
 
         [SerializeField] private Image thisObjectImg;
         private void OnEnable()
         {
-            int randValue = Random.Range(0, eventTxts.Count);
+            int randValue = Random.Range(0, eventTexts.Count);
             thisObjectImg = GetComponent<Image>();
             
-            selectBtnTxt.text = applyTxts[randValue];
-            skipBtnTxt.text = cancelTxts[randValue];
+            selectBtnTxt.text = eventTexts[randValue].ApplyTxt;
+            skipBtnTxt.text = eventTexts[randValue].CancelTxt;
+            
+            eventImg.sprite = eventTexts[randValue].EventImg;
 
             DOTween.Sequence()
                 .Append(popUpTxt.transform.DOScale(1, 1f))
                 .Append(popUpTxt.DOFade(0, 0.6f))
-                .Append(thisObjectImg.DOFade(1, 1f))
-                .Append(mainTxt.DoText(eventTxts[randValue], activeTime))
-                .Append(selectBtn.transform.DOScale(1, 1f))
-                .Append(skipBtn.transform.DOScale(1, 1f));
+                .Append(thisObjectImg.DOFade(1, 0.4f))
+                .Append(eventImg.DOFade(255, 0.4f))
+                .Append(mainTxt.DoText(eventTexts[randValue].MainTxt, activeTime))
+                .Append(selectBtn.transform.DOScale(1, 0.5f))
+                .Append(skipBtn.transform.DOScale(1, 0.5f));
             
             int randomValue = Random.Range(0, 3);
             
-            skipBtn.onClick.AddListener(HandleSkipBtn);
-            selectBtn.onClick.AddListener(() =>HandleSelectBtn(randomValue,randValue));
+            skipBtn.onClick.AddListener(() => HandleSkipBtn(randValue));
+            selectBtn.onClick.AddListener(() =>HandleSelectBtn(randomValue, randValue));
         }
 
-        private void HandleSkipBtn()
+        private void HandleSkipBtn(int value)
         {
             skipBtn.gameObject.SetActive(false);
             selectBtn.gameObject.SetActive(false);
             DOTween.Sequence()
-                .Append(mainTxt.DoText("지나쳤습니다.", activeTime))
-                .AppendInterval(1f)
+                .Append(mainTxt.DoText(eventTexts[value].SkipTxt, activeTime))
+                .AppendInterval(0.5f)
+                .Append(eventImg.DOFade(0, 0.5f))
                 .Append(mainTxt.DoText("", 0))
                 .AppendInterval(0.3f)
                 .Append(thisObjectImg.DOFade(0, 1f));
@@ -78,22 +80,25 @@ namespace Code.UI
                 skipBtn.gameObject.SetActive(false);
                 selectBtn.gameObject.SetActive(false);
                 DOTween.Sequence()
-                    .Append(mainTxt.DoText(failTxt[randomValue], activeTime))
-                    .AppendInterval(1f)
-                    .Append(mainTxt.DoText("", 0))
+                    .Append(mainTxt.DoText(eventTexts[randomValue].FailTxt, activeTime))
                     .AppendInterval(0.3f)
-                    .Append(thisObjectImg.DOFade(0, 1f));
+                    .Append(eventImg.DOFade(0, 0.5f))
+                    .Append(mainTxt.DoText("", 0))
+                    .AppendInterval(0.2f)
+                    .Append(thisObjectImg.DOFade(0, 0.5f));
             }
             else
             {
                 skipBtn.gameObject.SetActive(false);
                 selectBtn.gameObject.SetActive(false);
                 DOTween.Sequence()
-                    .Append(mainTxt.DoText(successTxt[randomValue], activeTime))
-                    .AppendInterval(1f)
-                    .Append(mainTxt.DoText("", 0))
+                    .Append(mainTxt.DoText(eventTexts[randomValue].SuccessTxt, activeTime))
                     .AppendInterval(0.3f)
-                    .Append(thisObjectImg.DOFade(0, 1f));
+                    .Append(eventImg.DOFade(0, 0.5f))
+                    .Append(mainTxt.DoText("", 0))
+                    .AppendInterval(0.2f)
+                    .Append(thisObjectImg.DOFade(0, 0.5f));
+                
             }
         }
         

@@ -19,6 +19,9 @@ namespace Code.UI
     {
 
         [SerializeField] private GameObject storeObject;
+
+        [SerializeField] private Transform storePos;
+        [SerializeField] private Transform upPos;
         
         [SerializeField] private InputReader input;
         
@@ -48,12 +51,16 @@ namespace Code.UI
         [SerializeField] private List<Button> itemBtns;
 
         #endregion
-        
+
+        private void Awake()
+        {
+        }
 
         private void OnEnable()
         {
             skills.RemoveAll(skill => havingSkillSO.HaveSkills.Contains(skill));
-            
+
+            storeObject.transform.DOMove(storePos.position, 1f);
             Show();
             
             RandomChild();
@@ -70,7 +77,10 @@ namespace Code.UI
 
         public void CancelUI()
         {
-            storeObject.SetActive(false);
+            DOTween.Sequence()
+                .Append(storeObject.transform.DOMove(upPos.position, 1f))
+                .OnComplete(() => storeObject.SetActive(false));
+           
             GoodsManager.Instance.AddSkill();
         }
 
@@ -90,14 +100,10 @@ namespace Code.UI
             skillUI.ForEach(UI =>
             {
                 UI.SetActive(true);
-                UI.transform.DOKill();
-                UI.transform.DOScale(0, 0.01f);
             });
             itemUIs.ForEach(UI =>
             {
                 UI.SetActive(true);
-                UI.transform.DOKill();
-                UI.transform.DOScale(0, 0.01f);
             });
             
             int[] randomIdx = SetRandomIdx();
@@ -116,7 +122,6 @@ namespace Code.UI
                     itemBtns[i].gameObject.SetActive(false);
                     continue;
                 }
-                itemBtns[i].gameObject.transform.DOScale(1, 0.5f);
                 
                 itemImgs[i].sprite = items[randomIdx[i]].itemIcon;
                 
@@ -188,7 +193,6 @@ namespace Code.UI
                     skillBtn[i].gameObject.SetActive(false);
                     continue;
                 }
-                skillBtn[i].gameObject.transform.DOScale(1, 0.5f);
 
                 skillImages[i].sprite = skills[ran[i]].skillUIImage;
                 

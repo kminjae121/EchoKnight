@@ -21,7 +21,7 @@ namespace EnemySystem
         [SerializeField] private UnitRotation _rotationCompo;
         
         private NavMeshAgent _agent;
-        private NavMeshObstacle _obstacle; 
+        //private NavMeshObstacle _obstacle; 
         private Transform _rootTransform;
         private Animator _animator;
         private GameObject _currentTileObj; 
@@ -32,14 +32,14 @@ namespace EnemySystem
             if (_rootTransform == null) _rootTransform = transform;
             _agent = GetComponent<NavMeshAgent>();
             
-            _obstacle = GetComponent<NavMeshObstacle>();
-            if (_obstacle == null)
-            {
-                _obstacle = gameObject.AddComponent<NavMeshObstacle>();
-            }
-            _obstacle.carving = true; 
-            _obstacle.shape = NavMeshObstacleShape.Box;
-            _obstacle.size = new Vector3(_tileSize * 0.8f, 2f, _tileSize * 0.8f);
+            //_obstacle = GetComponent<NavMeshObstacle>();
+            //if (_obstacle == null)
+            //{
+            //    _obstacle = gameObject.AddComponent<NavMeshObstacle>();
+            //}
+            //_obstacle.carving = true; 
+            //_obstacle.shape = NavMeshObstacleShape.Box;
+            //_obstacle.size = new Vector3(_tileSize * 0.8f, 2f, _tileSize * 0.8f);
 
             _gridMap = FindAnyObjectByType<GridMap>();
         }
@@ -67,13 +67,13 @@ namespace EnemySystem
         {
             if (isMoving)
             {
-                if (_obstacle != null) _obstacle.enabled = false;
+                //if (_obstacle != null) _obstacle.enabled = false;
                 if (_agent != null) _agent.enabled = true;
             }
             else
             {
                 if (_agent != null) _agent.enabled = false;
-                if (_obstacle != null) _obstacle.enabled = true;
+               // if (_obstacle != null) _obstacle.enabled = true;
             }
         }
 

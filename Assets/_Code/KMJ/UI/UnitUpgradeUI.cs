@@ -38,18 +38,11 @@ namespace Code.UI
 
             unitImage.sprite = unit.unitState.Data.UnitImage;
             
-            unitHealthUpgradeButton.onClick.RemoveAllListeners();
-            unitDamageUpgradeButton.onClick.RemoveAllListeners();
-            unitSkillDamageUpgradeBtn.onClick.RemoveAllListeners();
-            
-            unitHealthUpgradeButton.onClick.AddListener(MaxHealthUpgrade);
-            unitDamageUpgradeButton.onClick.AddListener(DamageUpgrade);
-            unitSkillDamageUpgradeBtn.onClick.AddListener(SkillDamageUpgrade);
+            SetUnitBtns();
 
-            unitHealthTxt.text = $"체력 : {unitInfoSO.Maxhealth.ToString()}";
-            unitDamageTxt.text = $"공격력 {unitInfoSO.AtkDamage.ToString()}";
-            unitSkillTxt.text = $"스킬 공격력 : {unitInfoSO.SkillDamage.ToString()}";    
+            SetTexts();
         }
+
 
 
         public void MaxHealthUpgrade()
@@ -62,7 +55,7 @@ namespace Code.UI
                 return;
 
             unitInfoSO.Maxhealth += 10;
-            unitHealthTxt.text = $"체력 : {unitInfoSO.Maxhealth.ToString()}";
+            SetTexts();
         }
 
         private void SkillDamageUpgrade()
@@ -74,7 +67,7 @@ namespace Code.UI
                 return;
             
             unitInfoSO.SkillDamage += 10;
-            unitSkillTxt.text = $"스킬 데미지 : {unitInfoSO.SkillDamage.ToString()}";
+            SetTexts();
         }
 
         private void DamageUpgrade()
@@ -87,7 +80,25 @@ namespace Code.UI
 
 
             unitInfoSO.AtkDamage += 10;
-            unitDamageTxt.text = $"공격력 : {unitInfoSO.AtkDamage.ToString()}";
+            SetTexts();
+        }
+        
+        private void SetUnitBtns()
+        {
+            unitHealthUpgradeButton.onClick.RemoveAllListeners();
+            unitDamageUpgradeButton.onClick.RemoveAllListeners();
+            unitSkillDamageUpgradeBtn.onClick.RemoveAllListeners();
+            
+            unitHealthUpgradeButton.onClick.AddListener(MaxHealthUpgrade);
+            unitDamageUpgradeButton.onClick.AddListener(DamageUpgrade);
+            unitSkillDamageUpgradeBtn.onClick.AddListener(SkillDamageUpgrade);
+        }
+        
+        private void SetTexts()
+        {
+            unitHealthTxt.text = $"체력 : {unitInfoSO.Maxhealth.ToString()}";
+            unitDamageTxt.text = $"공격력 {unitInfoSO.AtkDamage.ToString()}";
+            unitSkillTxt.text = $"스킬 공격력 : {unitInfoSO.SkillDamage.ToString()}";
         }
     }
 }

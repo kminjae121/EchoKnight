@@ -44,7 +44,7 @@ namespace Code.UnitSystem
         
         private UnitSO _unitSO;
         
-        private BasicUnit _basicUnit;
+        public CharacterUnit _characterUnit { get; set; }
 
         private GameObject _targetEnemy = null;
         private EnemyTargeting _targetingCompo = null;
@@ -55,6 +55,8 @@ namespace Code.UnitSystem
 
         private SetUnitCamera unitCam;
 
+        private UnitCost unitCostCompo;
+
         
         protected override void Awake()
         {
@@ -62,24 +64,26 @@ namespace Code.UnitSystem
             {
                 attackEndEvent = new UnityEvent();
             }
+
         }
 
         protected override void Start()
         {
             base.Start();
             
-            _basicUnit = _owner as BasicUnit;
+            _characterUnit = _owner as CharacterUnit;
+            unitCostCompo = _characterUnit.GetUnitCompo<UnitCost>();
             
             
-            _inputReader = _basicUnit.inputSO;
+            _inputReader = _characterUnit.InputSO;
             
-            _unitSO = _basicUnit.unitSO;
+            _unitSO = _characterUnit.unitSO;
 
-            _atkDamage = _basicUnit.unitStatCompo.GetStat<float>(StatInfo.AtkDamage);
+            _atkDamage = _characterUnit.UnitStatCompo.GetStat<float>(StatInfo.AtkDamage);
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
-
-            unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
+            
+            Bus<TopCamEvent>.Subscribe(SetUp);
 
             ResetTileEvent += EndUnit;
             
@@ -89,17 +93,22 @@ namespace Code.UnitSystem
             _damageData.damage = _atkDamage;
 
             _inputReader.OnAttackEvent += AttackEnemy;
-            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
 
             attackEndEvent.AddListener(AttackEnded);
         }
-        
+
+        private void SetUp(TopCamEvent evt)
+        {
+            unitCam = evt.cam.GetComponent<SetUnitCamera>();
+        }
+
         protected override void OnDestroy()
         {
             attackEndEvent.RemoveListener(AttackEnded);
             _inputReader.OnAttackEvent -= AttackEnemy;
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
+            Bus<TopCamEvent>.Unsubscribe(SetUp);
             ResetTileEvent -= EndUnit;
         }
 
@@ -139,10 +148,10 @@ namespace Code.UnitSystem
         {
             if (evt.isAttack)
             {
-                if (_basicUnit.isMyTurn)
+                if (_characterUnit.isMyTurn)
                 {
                     Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-                    if (_basicUnit.GetCurrentCost() - 15 < 0)
+                    if (unitCostCompo.GetCurrentCost() - 15 < 0)
                     {
                         Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
                         return;
@@ -168,9 +177,9 @@ namespace Code.UnitSystem
 
         private void Update()
         {
-            if (_basicUnit.isMyTurn && _isAct)
+            if (_characterUnit.isMyTurn && _isAct)
             {
-                _basicUnit.behaveCompo.ResetTile();
+                _characterUnit.BehaveCompo.ResetTile();
                 GameObject enemy = _inputReader.GetEnemy();
 
                 if(enemy == null && _targetEnemy != null)
@@ -223,7 +232,7 @@ namespace Code.UnitSystem
             _damageData.damage = _atkDamage;
             addDamage = 0;
             
-            Vector3 toAttacker = _basicUnit.transform.position - target.transform.position;
+            Vector3 toAttacker = _characterUnit.transform.position - target.transform.position;
             toAttacker.y = 0f;
 
             Vector3 enemyForward = target.transform.forward;
@@ -265,7 +274,7 @@ namespace Code.UnitSystem
 
         public void AttackEnemy()
         {
-            if (_basicUnit.isMyTurn && _isAct)
+            if (_characterUnit.isMyTurn && _isAct)
             {
                 _damageData.damage += addDamage;
                 GameObject enemy = _inputReader.GetEnemy();
@@ -298,7 +307,7 @@ namespace Code.UnitSystem
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
                     0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
-                _basicUnit.RemoveCost(15f);   
+                unitCostCompo.RemoveCost(15f);   
                 ownCircleMesh.material = basicMaterial;
             }
         }
@@ -312,7 +321,7 @@ namespace Code.UnitSystem
         public void TakeDamage()
         {
             Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-            impulseSource.GenerateImpulse(0.6f);  
+            _characterUnit.impulseSource.GenerateImpulse(0.6f);  
             
             _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
                 _targetEnemy.transform.position,transform.position,attackData,_owner);

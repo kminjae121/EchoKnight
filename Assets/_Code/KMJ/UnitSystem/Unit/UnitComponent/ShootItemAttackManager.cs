@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
@@ -18,7 +19,6 @@ namespace UnitSystem
         
         private GameObject _target = null;
 
-
         private Dictionary<string, ShootItem> _shootItemDict = new Dictionary<string, ShootItem>();
         private DamageData _damageData;
         private CinemachineImpulseSource impulseSource;
@@ -29,10 +29,8 @@ namespace UnitSystem
         public void Initialize(Unit owner)
         {
             _unit = owner;
-            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
-
-            hitEvent += GiveDamage;
             
+            hitEvent += GiveDamage;
             
             shootItems.ForEach(item =>
             {
@@ -40,7 +38,15 @@ namespace UnitSystem
                 _shootItemDict.Add(item.itemName, item);
             });
         }
-        
+
+        private void Start()
+        {
+            if (_unit as CharacterUnit)
+            {
+                CharacterUnit characterUnit = _unit as CharacterUnit;
+                impulseSource = characterUnit.impulseSource;
+            }
+        }
 
         private void OnDisable()
         {
@@ -87,7 +93,8 @@ namespace UnitSystem
         {
             Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-                
+            
+            UnityLogger.Log(impulseSource);
             impulseSource.GenerateImpulse(0.4f);  
             
             _target.GetComponent<IDamageable>().ApplyDamage(_damageData,transform.position, transform.position,

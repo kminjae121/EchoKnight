@@ -1,5 +1,6 @@
 ﻿using System;
 using Code.Core.Events.Bus;
+using Input;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -11,11 +12,27 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 
         private GameObject ownCam;
         private CinemachineCamera OwnCamCompo;
+        [SerializeField] private InputReader inputSO;
 
         private void Start()
         {
-            ownCam = GameObject.Find("TopCam").gameObject;
-            OwnCamCompo = ownCam.GetComponent<CinemachineCamera>();
+            inputSO.OnInteractionEvent += HandleCam;
+            OwnCamCompo = ownCam.GetComponent<CinemachineCamera>();   
+        }
+
+        private void OnEnable()
+        {
+            Bus<TopCamEvent>.Subscribe(HandleCamEvent);
+        }
+
+        private void HandleCamEvent(TopCamEvent obj)
+        {
+            ownCam = obj.cam;
+        }
+
+        private void OnDisable()
+        {
+            inputSO.OnInteractionEvent -= HandleCam;
         }
 
         public void SetThisUnit()
@@ -29,6 +46,11 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
 //            Bus<CamMovingEvent>.Raise(new CamMovingEvent(ownCam.gameObject));
             //unitCam.Priority = -1;
         //   OwnCamCompo.Priority = 1;
+        }
+        
+        private void HandleCam()
+        {
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
         }
     }
 }

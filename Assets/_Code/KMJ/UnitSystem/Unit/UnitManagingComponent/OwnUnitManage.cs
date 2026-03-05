@@ -2,11 +2,14 @@
 using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.Managers;
 using Code.Map;
 using Code.UnitSystem;
 using GameEventChannel;
 using UnitSystem;
+using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Code.UnitManaging
 {
@@ -27,6 +30,11 @@ namespace Code.UnitManaging
         public List<UnitSpawnSO> _selectedUnits { get; private set; } = new List<UnitSpawnSO>();
 
         private readonly List<Unit> _myOwnUnitList = new List<Unit>();
+
+        [SerializeField] private TurnCostGaugeManager GaugeManager;
+        [SerializeField] private Button endTurnBtn;
+
+        [SerializeField] private CinemachineImpulseSource impulseSource;
 
         private void Awake()
         {
@@ -89,7 +97,7 @@ namespace Code.UnitManaging
                 Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(unit));
                 _myOwnUnitList.Add(unit);
 
-                if (unit is BasicUnit basicUnit)
+                if (unit is CharacterUnit basicUnit)
                 {
                     if (tile is MonoBehaviour tileMono)
                     {
@@ -105,6 +113,7 @@ namespace Code.UnitManaging
                         1, 1,
                         basicUnit.UnitImage
                     ));
+                    basicUnit.SetObject(GaugeManager, endTurnBtn,impulseSource);
 
                     StageManager.Instance.AddPlayerCnt();
                 }

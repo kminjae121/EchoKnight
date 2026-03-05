@@ -1,102 +1,214 @@
 ﻿using System;
 using System.Collections.Generic;
+using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.involveUnitSO;
+using Code.Items;
 using Code.Managers;
 using Code.UnitSystem.SkillSystem;
+using DG.Tweening;
+using Input;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
-namespace Code.UI
+namespace Code.UI   
 {
     public class UnitSkillStore : MonoBehaviour
     {
+
+        [SerializeField] private GameObject storeObject;
+        
+        [SerializeField] private InputReader input;
+        
         [SerializeField] private List<SkillSO> skills;
 
         [SerializeField] private HavingSkillSO havingSkillSO;
 
-        [SerializeField] private List<UnitOwnSkillStorageSO> ownSkillStorage;
-        
-        private Dictionary<UnitType, UnitOwnSkillStorageSO> storageDict = new Dictionary<UnitType, UnitOwnSkillStorageSO>();
+        [SerializeField] private List<ItemSO> items;
 
-        #region UI
+        [SerializeField] private TextMeshProUGUI goldTxt;
+
+        #region StoreUI
 
         [SerializeField] private List<GameObject> skillUI = new List<GameObject>();
         [SerializeField] private List<Image> skillImages;
         [SerializeField] private List<TextMeshProUGUI> skillDescription;
+        [SerializeField] private List<TextMeshProUGUI> skillPrice;
         [SerializeField] private List<TextMeshProUGUI> skillOwnUnit;
         [SerializeField] private List<Button> skillBtn;
-
         #endregion
 
+        #region ItemUI
 
+        [SerializeField] private List<GameObject> itemUIs = new List<GameObject>();
+        [SerializeField] private List<Image> itemImgs;
+        [SerializeField] private List<TextMeshProUGUI> itemDes;
+        [SerializeField] private List<Button> itemBtns;
 
-        private void Start()
+        #endregion
+        
+
+        private void OnEnable()
         {
             skills.RemoveAll(skill => havingSkillSO.HaveSkills.Contains(skill));
             
-            ownSkillStorage.ForEach(storage =>
-            {
-                storageDict.Add(storage.uniType, storage);
-            });
+            Show();
+            
+            RandomChild();
 
-            Show();            
+            input.OnCancelEvent += CancelUI;
+
+            goldTxt.text = $"골드 : {PlayerManager.Instance.Gold.ToString()}";    
         }
 
+        private void OnDisable()
+        {
+            input.OnCancelEvent -= CancelUI;
+        }
+
+        public void CancelUI()
+        {
+            storeObject.SetActive(false);
+            GoodsManager.Instance.AddSkill();
+        }
+
+
+        private void RandomChild()
+        {
+            var parent = transform;
+            int n = parent.childCount;
+
+            for (int i = 0; i < n; i++)
+            {
+                parent.GetChild(0).SetSiblingIndex(Random.Range(0, n));
+            }
+        }
         public void Show()
         {
             skillUI.ForEach(UI =>
             {
                 UI.SetActive(true);
+                UI.transform.DOKill();
+                UI.transform.DOScale(0, 0.01f);
+            });
+            itemUIs.ForEach(UI =>
+            {
+                UI.SetActive(true);
+                UI.transform.DOKill();
+                UI.transform.DOScale(0, 0.01f);
             });
             
-            int maxCount = skills.Count;
-            int[] ran = new int[10];
+            int[] randomIdx = SetRandomIdx();
+            int[] randomItemIdx = SetRandomIdxItem();
 
-            while (true)
+            SetSkillUI(randomIdx);
+            SetItemUI(randomItemIdx);
+        }
+
+        private void SetItemUI(int[] randomIdx)
+        {
+            for (int i = 0; i < itemUIs.Count; i++)
             {
-                ran[0] = Random.Range(0, maxCount);
-                ran[1] = Random.Range(0, maxCount);
-                ran[2] = Random.Range(0, maxCount);
-                ran[3] = Random.Range(0, maxCount);
-                ran[4] = Random.Range(0, maxCount);
-
-                if (ran[0] != ran[1] && ran[0] != ran[2] &&
-                    ran[0] != ran[3] && ran[0] != ran[4] &&
-                    ran[1] != ran[2] && ran[1] != ran[3] &&
-                    ran[1] != ran[4] && ran[2] != ran[3] &&
-                    ran[2] != ran[4] && ran[3] != ran[4])
+                if (i >= items.Count)
                 {
-                    break;
+                    itemBtns[i].gameObject.SetActive(false);
+                    continue;
                 }
+                itemBtns[i].gameObject.transform.DOScale(1, 0.5f);
+                
+                itemImgs[i].sprite = items[randomIdx[i]].itemIcon;
+                
+                itemDes[i].text = items[randomIdx[i]].itemDesc;
+                
+                itemBtns[i].GetComponent<StoreItemBtn>().SetItem(items[randomIdx[i]]);
+            }
+        }
+
+        private int[] SetRandomIdx()
+        {
+            int maxCount = skills.Count;
+            
+            int[] idx = new int[10];
+
+            if (maxCount <= 0)
+                return idx;
+            
+            int pickCount = Mathf.Min(maxCount, 5);
+            
+            int[] pool = new int[maxCount];
+            
+            for (int i = 0; i < maxCount; i++)
+                pool[i] = i;
+            
+            for (int i = 0; i < pickCount; i++)
+            {
+                int j = Random.Range(i, maxCount); 
+                (pool[i], pool[j]) = (pool[j], pool[i]);
+                idx[i] = pool[i];
             }
 
+            return idx;
+        }
+        
+        private int[] SetRandomIdxItem()
+        {
+            int maxCount = items.Count;
+            
+            int[] idx = new int[10];
+
+            if (maxCount <= 0)
+                return idx;
+            
+            int pickCount = Mathf.Min(maxCount, 5);
+            
+            int[] pool = new int[maxCount];
+            
+            for (int i = 0; i < maxCount; i++)
+                pool[i] = i;
+            
+            for (int i = 0; i < pickCount; i++)
+            {
+                int j = Random.Range(i, maxCount); 
+                (pool[i], pool[j]) = (pool[j], pool[i]);
+                idx[i] = pool[i];
+            }
+
+            return idx;
+        }
+        
+        
+        private void SetSkillUI(int[] ran)
+        {
             for (int i = 0; i < skillUI.Count; i++)
             {
                 if (i >= skills.Count)
                 {
                     skillBtn[i].gameObject.SetActive(false);
+                    continue;
                 }
+                skillBtn[i].gameObject.transform.DOScale(1, 0.5f);
+
                 skillImages[i].sprite = skills[ran[i]].skillUIImage;
                 
                 skillDescription[i].text = skills[ran[i]].SkillDescription;
+                
                 skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
+
+                skillPrice[i].text = $"{skills[ran[i]].skillPrice.ToString()} 골드";
               
                 skillBtn[i].onClick.RemoveAllListeners();
-                int idx = i;
-                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx])); 
                 
+                int idx = i;
+                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx]));
             }
-            
         }
 
         private void SkillBtn(int idx)
         {
             if (skills.Count <= 0)
                 return;
-
             
             SkillSO skillInfo = skills[idx];
 
@@ -105,34 +217,8 @@ namespace Code.UI
             
             PlayerManager.Instance.RemoveGold(skillInfo.skillPrice);
             
-            havingSkillSO.HaveSkills.Add(skillInfo);
-            
-            skills.Remove(skillInfo);
-
-            switch (skillInfo.unitType)
-            {
-                case UnitType.Archer:
-                    UnitOwnSkillStorageSO archerstorageSO = storageDict.GetValueOrDefault(UnitType.Archer);
-                    //archerstorageSO.skills.Add(skillInfo);
-                    break;
-                
-                case UnitType.Knight:
-                    UnitOwnSkillStorageSO knightstorageSO = storageDict.GetValueOrDefault(UnitType.Knight);
-                    //knightstorageSO.skills.Add(skillInfo);
-                    break;
-                
-                case UnitType.Magician:
-                    UnitOwnSkillStorageSO magicianstorageSO = storageDict.GetValueOrDefault(UnitType.Magician);
-                    //magicianstorageSO.skills.Add(skillInfo);
-                    break;
-                case UnitType.Bandlt:
-                    UnitOwnSkillStorageSO bandltstorageSO = storageDict.GetValueOrDefault(UnitType.Bandlt);
-                    //bandltstorageSO.skills.Add(skillInfo);
-                    break;
-                
-                case UnitType.None:
-                    break;
-            }
+            GoodsManager.Instance.GetSkill(skillInfo);
+            goldTxt.text = $"골드 : {PlayerManager.Instance.Gold.ToString()}";
             
             EventSystem.current.currentSelectedGameObject.gameObject.SetActive(false);
         }

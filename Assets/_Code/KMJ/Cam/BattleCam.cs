@@ -34,8 +34,14 @@ namespace _Code.KMJ.Cam
 
         private void Start()
         {
+            battleCam.Lens.NearClipPlane = -15;
             battleCam.Target.TrackingTarget = null;
             positionComposer.enabled = false;
+            Bus<TopCamEvent>.Raise(new TopCamEvent(gameObject));
+        }
+
+        private void OnEnable()
+        {
         }
 
 
@@ -86,10 +92,10 @@ namespace _Code.KMJ.Cam
             if (moveDir.sqrMagnitude > 1f)
                 moveDir.Normalize();
 
-            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.FieldOfView  >= 20)
-                battleCam.Lens.FieldOfView -= 100 * Time.deltaTime;
-            else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.FieldOfView <= 40)
-                battleCam.Lens.FieldOfView += 100 * Time.deltaTime;
+            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.OrthographicSize  >= 10)
+                battleCam.Lens.OrthographicSize -= 100 * Time.deltaTime;
+            else if(inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.OrthographicSize <= 35)
+                battleCam.Lens.OrthographicSize += 100 * Time.deltaTime;
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
                 moveSpeed = _reduceSpeed;

@@ -6,7 +6,6 @@ namespace Code.UnitSystem
     public class UnitSpawnSO : ScriptableObject
     {
         public string UnitName;
-
         public GameObject UnitPrefab;
     }
 }

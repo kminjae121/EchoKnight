@@ -8,18 +8,23 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class PartyUI : MonoBehaviour
+    public class PartyUI : Panel
     {
+        [Header("Buttons")]
         [SerializeField] private Button startButton;
+        
+        [Header("Slots")]
         [SerializeField] private List<SelectedCharacterSlotUI> characterSlots;
+        
+        [Header("Data")]
         [SerializeField] private UnitStorageSO unitStorage;
         [SerializeField] private int maxUnitCount = 3;
 
-        // 실제 파티 상태
         private readonly List<UnitSO> _partyUnits = new();
         
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
             
@@ -72,7 +77,6 @@ namespace Code.UI
                 unitStorage.unitStates.Add(new UnitState(unit));
             }
 
-            // 나중에 수정 해야 함.
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

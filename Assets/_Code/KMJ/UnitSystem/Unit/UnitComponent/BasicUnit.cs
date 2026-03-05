@@ -34,6 +34,7 @@ namespace UnitSystem
         public UnitManageRangeCompo unitRangeCompo { get; private set; }
         
         public UnitStatCompo unitStatCompo { get; private set; }
+        
 
         public int PlayableUnitID { get; set; } = -1;
         public GameObject _startTile = null;
@@ -131,7 +132,7 @@ namespace UnitSystem
             }
             else if (isMyTurn && behaveCompo != null && evt.isStart == true)
             {
-                behaveCompo.FindObjectInRange();
+                behaveCompo.ReCheckInRange();
             }
         }
 

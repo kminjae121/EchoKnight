@@ -29,7 +29,7 @@ namespace Code.Managers
             rewardItems.Add(itemList[Random.Range(0, itemList.Count)]);
             rewardItems.Add(itemList[Random.Range(0, itemList.Count)]);
             
-            battleRewardUI.Open(rewardItems);
+            battleRewardUI.SetupRewards(rewardItems);
         }
     }
 }

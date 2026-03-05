@@ -4,10 +4,11 @@ namespace Code.UI
 {
     public class LobbyButton : MonoBehaviour
     {
-        [SerializeField] private GameObject characterSelectUI;
+        [Header("Panel IDs")]
+        [SerializeField] private string characterSelectPanelId = "PartyPanel";
 
-        public void ReadyBattle() => characterSelectUI.SetActive(true);
+        public void ReadyBattle() => PanelManager.Open(characterSelectPanelId);
 
-        public void CancelBattle() => characterSelectUI.SetActive(false);
+        public void CancelBattle() => PanelManager.Close(characterSelectPanelId);
     }
 }

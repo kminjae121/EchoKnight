@@ -8,7 +8,10 @@ namespace Code.UI
 {
     public class CharacterSkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        [Header("UI Elements")]
         [SerializeField] private Image skillImage;
+        
+        [Header("Colors")]
         [SerializeField] private Color equippedColor;
         [SerializeField] private Color unequippedColor;
 

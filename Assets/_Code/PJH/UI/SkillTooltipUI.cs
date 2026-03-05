@@ -4,22 +4,25 @@ using UnityEngine;
 
 namespace Code.UI
 {
-    public class SkillTooltipUI : MonoBehaviour
+    public class SkillTooltipUI : Panel
     {
-        [SerializeField] private Canvas canvas;
+        [Header("Settings")]
+        [SerializeField] private Canvas targetCanvas;
         [SerializeField] private Vector2 offset = new(20, -20);
+        
+        [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI skillNameText;
         [SerializeField] private TextMeshProUGUI skillDescText;
         [SerializeField] private TextMeshProUGUI skillCostText;
 
         private RectTransform _rect;
         
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             _rect = GetComponent<RectTransform>();
             
             Bus<SkillUIHoverEvent>.Subscribe(HandleHoverUI);
-            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -31,7 +34,7 @@ namespace Code.UI
         {
             if (evt.Skill == null)
             {
-                gameObject.SetActive(false);
+                base.Close();
                 return;
             }
 
@@ -40,7 +43,7 @@ namespace Code.UI
             skillCostText.text = evt.Skill.SkillCost.ToString();
             
             SetRectPosition(evt.Transform);
-            gameObject.SetActive(true);
+            base.Open();
         }
         
         private void SetRectPosition(RectTransform trm)
@@ -49,10 +52,10 @@ namespace Code.UI
                 return;
 
             Vector3 worldPos = trm.TransformPoint(new Vector3(trm.rect.width / 2f, 0));
-            Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(canvas.worldCamera, worldPos);
+            Vector3 screenPoint = RectTransformUtility.WorldToScreenPoint(targetCanvas.worldCamera, worldPos);
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas.transform as RectTransform,
-                screenPoint, canvas.worldCamera, out Vector2 localPoint);
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(targetCanvas.transform as RectTransform,
+                screenPoint, targetCanvas.worldCamera, out Vector2 localPoint);
 
             _rect.anchoredPosition = localPoint + offset;
         }

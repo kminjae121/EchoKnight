@@ -52,12 +52,12 @@ namespace Code.EntityComponent
             if (currentHealth > maxHealth)
                 currentHealth = maxHealth;
             
-            if (_entity as BasicUnit)
+            if (_entity as CharacterUnit)
             {
-                BasicUnit basicUnit = _entity as BasicUnit;
+                CharacterUnit characterUnit = _entity as CharacterUnit;
                
-                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth
-                    ,MaxHealth, basicUnit.UnitImage));
+                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(characterUnit.PlayableUnitID,CurrentHealth
+                    ,MaxHealth, characterUnit.UnitImage));
                 
                 unitStateCompo.Heal(amount);
             }
@@ -87,12 +87,12 @@ namespace Code.EntityComponent
             
             textEventChannel.RaiseEvent(textEvt);
            
-           if (_entity as BasicUnit)
+           if (_entity as CharacterUnit)
            {
-               BasicUnit basicUnit = _entity as BasicUnit;
+               CharacterUnit characterUnit = _entity as CharacterUnit;
                
-               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(basicUnit.PlayableUnitID,CurrentHealth,
-                   MaxHealth, basicUnit.UnitImage));
+               Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(characterUnit.PlayableUnitID,CurrentHealth,
+                   MaxHealth, characterUnit.UnitImage));
 
                unitStateCompo.TakeDamage(damage);
            }

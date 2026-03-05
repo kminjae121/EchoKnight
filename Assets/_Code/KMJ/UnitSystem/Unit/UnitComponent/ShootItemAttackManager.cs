@@ -29,8 +29,12 @@ namespace UnitSystem
         public void Initialize(Unit owner)
         {
             _unit = owner;
-            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
 
+            if (_unit as CharacterUnit)
+            {
+                CharacterUnit characterUnit = _unit as CharacterUnit;
+                impulseSource = characterUnit.impulseSource;
+            }
             hitEvent += GiveDamage;
             
             

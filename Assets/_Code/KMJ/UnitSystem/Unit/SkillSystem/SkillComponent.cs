@@ -75,6 +75,21 @@ namespace Code.UnitSystem.SkillSystem
                 }
             }
         }
+        
+        public void UpdateSkillUI()
+        {
+            for (int i = 0; i <= 2; i++) Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,0, null, null));
+            
+            if (skills != null)
+            {
+                int idx = 0;
+                foreach (var skill in skills)
+                {
+                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.useSkillPoint,skill.Value.skillImage, this));
+                    idx++;
+                }
+            }
+        }
 
         private Type GetTypeByName(string className)
         {

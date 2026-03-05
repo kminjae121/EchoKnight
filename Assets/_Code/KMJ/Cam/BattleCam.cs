@@ -37,6 +37,11 @@ namespace _Code.KMJ.Cam
             battleCam.Lens.NearClipPlane = -15;
             battleCam.Target.TrackingTarget = null;
             positionComposer.enabled = false;
+            Bus<TopCamEvent>.Raise(new TopCamEvent(gameObject));
+        }
+
+        private void OnEnable()
+        {
         }
 
 

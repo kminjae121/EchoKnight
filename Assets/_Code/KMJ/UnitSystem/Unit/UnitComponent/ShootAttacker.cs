@@ -35,7 +35,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             triggerCompo.OnShootAttackTrigger += Shoot;
             triggerCompo.OnShootAttackEndTrigger += AttackEnd;
             atkCompo.attackEvent.AddListener(AttackAction);
-            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
             _shootItemManager = GetComponentInChildren<ShootItemAttackManager>();
         }
 
@@ -77,7 +76,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             _shootItemManager.SetDamageData(atkCompo._damageData);
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);
 
-            impulseSource.GenerateImpulse(0.3f);
+            atkCompo._characterUnit.impulseSource.GenerateImpulse(0.3f);
         }
         
         private void AttackEnd()

@@ -26,7 +26,16 @@ namespace Code.UI
             {
                 Btn.gameObject.SetActive(true);
             });
-            
+
+            SetCharacterBtns();
+        }
+        
+        private void SetUnitSelect(int idx)
+        {
+            Bus<SendUnitInfoEvent>.Raise(new SendUnitInfoEvent(unitStorageSO.unitStates[idx]));
+        }
+        private void SetCharacterBtns()
+        {
             for (int i = 0; i < unitSelectBtns.Count; i++)
             {
                 if (unitStorageSO.unitStates.Count <= i)
@@ -36,21 +45,16 @@ namespace Code.UI
                 else
                 {
                     unitSelectBtns[i].onClick.RemoveAllListeners();
+                    
                     int capturedIndex = i;
                     unitSelectBtns[i].onClick.AddListener(() => SetUnitSelect(capturedIndex));
+                    
                     unitSelectBtns[i].GetComponent<Image>().sprite =
                         unitStorageSO.unitStates[capturedIndex].Data.UnitImage;
                 }
             }
-            
+
             unitSelectBtns[0].onClick?.Invoke();
         }
-
-        private void SetUnitSelect(int idx)
-        {
-            Bus<SendUnitInfoEvent>.Raise(new SendUnitInfoEvent(unitStorageSO.unitStates[idx]));
-        }
-        
-        
     }
 }

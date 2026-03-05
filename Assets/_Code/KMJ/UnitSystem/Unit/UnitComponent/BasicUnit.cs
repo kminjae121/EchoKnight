@@ -14,6 +14,7 @@ using EnemySystem;
 using Input;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
 namespace UnitSystem
@@ -74,8 +75,11 @@ namespace UnitSystem
             transform.position = _startTile.transform.position;
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-        }
+            
+            inputSO.OnInteractionEvent += HandleCam;
+            inputSO.OnCancelEvent += HandleResetTile;
 
+        }
         protected override void OnDestroy()
         {
             if (triggerCompo != null)
@@ -83,6 +87,9 @@ namespace UnitSystem
             
             Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
             base.OnDestroy();
+            
+            inputSO.OnInteractionEvent -= HandleCam;
+            inputSO.OnCancelEvent -= HandleResetTile;
         }
 
         public override void OnTurnStart()
@@ -147,21 +154,21 @@ namespace UnitSystem
             base.Hit();
         }
 
+        private void HandleCam()
+        {
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
+        }
+
         private void Update()
         {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
-            {
-                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
-            }
-
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Escape))
-            {
-                RangesCompo.RemoveAllRange();
-                Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
-                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            }
-
             HandleTargeting();
+        }
+
+        private void HandleResetTile()
+        {
+            RangesCompo.RemoveAllRange();
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         }
 
         private void HandleTargeting()

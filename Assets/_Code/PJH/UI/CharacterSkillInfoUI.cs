@@ -1,5 +1,8 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Core.Events.Bus;
+using GondrLib.Dependencies;
+using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;
 
@@ -7,18 +10,25 @@ namespace Code.UI
 {
     public class CharacterSkillInfoUI : Panel
     {
+        [Header("Pool Settings")]
+        [SerializeField] private PoolingItemSO skillButtonPoolingSO;
+
         [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI skillCostText;
         [SerializeField] private Transform skillTrm;
 
-        [Header("Prefabs")]
-        [SerializeField] private CharacterSkillButton skillPrefab;
-
+        [Inject] private PoolManagerMono _poolManager;
+        
         private UnitSO _unit;
+        private List<CharacterSkillButton> _activeButtons = new();
 
         public override void Awake()
         {
             base.Awake();
+
+            if (_poolManager == null)
+                _poolManager = FindFirstObjectByType<PoolManagerMono>();
+
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);
             Bus<SkillEquipEvent>.Subscribe(SkillEquip);
             Bus<SkillUnequipEvent>.Subscribe(SkillUnequip);
@@ -39,13 +49,25 @@ namespace Code.UI
         
         private void RefreshUI()
         {
-            foreach (Transform child in skillTrm)
-                Destroy(child.gameObject);
+            foreach (var btn in _activeButtons)
+                btn.ReturnToPool();
+                
+            _activeButtons.Clear();
+
+            if (_poolManager == null)
+            {
+                Debug.LogWarning("풀 매니저를 찾을 수 없습니다.");
+                return;
+            }
 
             foreach (var skill in _unit.OwnSkillStorage.skills)
             {
-                var skillButton = Instantiate(skillPrefab, skillTrm);
+                var skillButton = _poolManager.Pop<CharacterSkillButton>(skillButtonPoolingSO);
+                skillButton.transform.SetParent(skillTrm);
+                skillButton.transform.localScale = Vector3.one;
+                
                 skillButton.SetSkill(skill, _unit.SkillStorage.skills.Contains(skill));
+                _activeButtons.Add(skillButton);
             }
             
             skillCostText.text = $"{GetCurrentCost()} / {_unit.Cost}";

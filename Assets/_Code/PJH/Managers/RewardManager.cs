@@ -8,8 +8,11 @@ namespace Code.Managers
 {
     public class RewardManager : MonoBehaviour
     {
+        [Header("Rewards Data")]
         [SerializeField] private List<ItemSO> itemList;
-        [SerializeField] BattleRewardUI battleRewardUI;
+        
+        [Header("UI References")]
+        [SerializeField] private BattleRewardUI battleRewardUI;
         
         private void Awake()
         {
@@ -25,11 +28,16 @@ namespace Code.Managers
         {
             List<ItemSO> rewardItems = new();
             
-            // 임시
+            if (itemList == null || itemList.Count == 0)
+            {
+                Debug.LogWarning("보상 아이템 리스트가 비어있습니다.");
+                return;
+            }
+
             rewardItems.Add(itemList[Random.Range(0, itemList.Count)]);
             rewardItems.Add(itemList[Random.Range(0, itemList.Count)]);
             
-            battleRewardUI.SetupRewards(rewardItems);
+            battleRewardUI.Open(rewardItems);
         }
     }
 }

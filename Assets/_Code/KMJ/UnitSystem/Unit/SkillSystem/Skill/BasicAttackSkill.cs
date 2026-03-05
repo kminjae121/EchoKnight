@@ -27,7 +27,6 @@ public class BasicAttackSkill : BasicUnitSkill
         skillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
-        impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
     }
 
@@ -83,7 +82,7 @@ public class BasicAttackSkill : BasicUnitSkill
     public void TakeDamage()
     {
         Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-        impulseSource.GenerateImpulse(0.3f);
+        characterUnit.impulseSource.GenerateImpulse(0.3f);
         
         _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
             _targetEnemy.transform.position,transform.position,attackData,_owner);

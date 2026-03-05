@@ -14,30 +14,24 @@ namespace Code.UnitSystem.SkillSystem
     public class BasicUnitSkill : BaseSkill
     {
         [Header("Basic Settings")]
-        protected BasicUnit _basicUnit;
+        protected CharacterUnit characterUnit;
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo = null;
 
         protected override void Awake()
         {
             base.Awake();
-
-            var impulseObj = GameObject.Find("ImpulseSource");
-            if (impulseObj) impulseSource = impulseObj.GetComponent<CinemachineImpulseSource>();
-
-            var camObj = GameObject.Find("TopCam");
-            if (camObj) unitCam = camObj.GetComponent<SetUnitCamera>();
         }
 
         protected override void Start()
         {
             base.Start();
 
-            _basicUnit = _owner as BasicUnit;
+            characterUnit = _owner as CharacterUnit;
 
-            if (_basicUnit != null)
+            if (characterUnit != null)
             {
-                _inputReader = _basicUnit.inputSO;
+                _inputReader = characterUnit.InputSO;
                 if (_inputReader != null)
                 {
                     _inputReader.OnAttackEvent -= UseSkill;
@@ -69,10 +63,10 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void Update()
         {
-            if (_basicUnit != null && _basicUnit.isMyTurn && _isAct && _inputReader != null)
+            if (characterUnit != null && characterUnit.isMyTurn && _isAct && _inputReader != null)
             {
                 GameObject enemy = _inputReader.GetEnemy();
-                _basicUnit.behaveCompo.ResetTile();
+                characterUnit.BehaveCompo.ResetTile();
                 
                 if (enemy == null && _targetEnemy != null)
                 {
@@ -157,8 +151,8 @@ namespace Code.UnitSystem.SkillSystem
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                     
-                    if (_basicUnit != null && _basicUnit.gaugeManager != null)
-                        _basicUnit.gaugeManager.UseSkill(useSkillPoint);
+                    if (characterUnit != null && characterUnit.GaugeManager != null)
+                        characterUnit.GaugeManager.UseSkill(useSkillPoint);
                     
                     Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                     
@@ -193,14 +187,14 @@ namespace Code.UnitSystem.SkillSystem
         {
             base.ShowSkillRange();
             
-            if (_basicUnit != null && _basicUnit.gaugeManager != null)
+            if (characterUnit != null && characterUnit.GaugeManager != null)
             {
-                if (_basicUnit.gaugeManager.CanUseSkill(useSkillPoint))
+                if (characterUnit.GaugeManager.CanUseSkill(useSkillPoint))
                 {
                     if (ownSkill)
                     {
                         Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-                        _basicUnit.gaugeManager.UseSkill(useSkillPoint);
+                        characterUnit.GaugeManager.UseSkill(useSkillPoint);
                         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                         skillEvent?.Invoke(null);
                         Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));

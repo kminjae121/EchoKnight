@@ -5353,6 +5353,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 129574143}
   m_Mesh: {fileID: -8678823145569952518, guid: 225fa02056d29994c85f7a60422ed4a6, type: 3}
+--- !u!114 &130142164 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2861568173519070282, guid: d587fee46528bcb4396971826c10f454, type: 3}
+  m_PrefabInstance: {fileID: 820015839}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03564c785395455cb0468ce8f946ae7b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &131492358
 GameObject:
   m_ObjectHideFlags: 0
@@ -20669,6 +20680,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 420109798}
   m_Mesh: {fileID: 7414509850709746518, guid: 1375c009bcd67e04fa9fea88c84732a0, type: 3}
+--- !u!114 &421848701 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 600360693994930503, guid: d587fee46528bcb4396971826c10f454, type: 3}
+  m_PrefabInstance: {fileID: 820015839}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 180ecf9b41d478f468eb3e9083753217, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &421997354
 GameObject:
   m_ObjectHideFlags: 0
@@ -27483,7 +27505,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: -15
+  near clip plane: 0.01
   far clip plane: 1000
   field of view: 20
   orthographic: 1
@@ -36652,7 +36674,7 @@ GameObject:
   - component: {fileID: 733307260}
   - component: {fileID: 733307259}
   - component: {fileID: 733307258}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: TopCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -36703,6 +36725,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCam: {fileID: 733307262}
+  inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
 --- !u!114 &733307260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36784,7 +36807,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 20
     OrthographicSize: 24.1
-    NearClipPlane: -15
+    NearClipPlane: 0.01
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
@@ -37251,6 +37274,17 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736796630}
   m_Mesh: {fileID: 1890910595786045333, guid: 1375c009bcd67e04fa9fea88c84732a0, type: 3}
+--- !u!114 &736944773 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4193574602828378490, guid: d587fee46528bcb4396971826c10f454, type: 3}
+  m_PrefabInstance: {fileID: 820015839}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &737782961
 GameObject:
   m_ObjectHideFlags: 0
@@ -41632,7 +41666,7 @@ PrefabInstance:
       objectReference: {fileID: 1377871929}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: enemies.Array.size
-      value: 4
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: 'enemies.Array.data[0]'
@@ -41652,7 +41686,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: enemySpawns.Array.size
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: enemySpawns.Array.data[0].enemyPrefab
+      value: 
+      objectReference: {fileID: 1506547141851097540, guid: 36c5e805fd462a049a1b00d7beda73ed, type: 3}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: enemySpawns.Array.data[0].spawnCoord.x
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: enemySpawns.Array.data[0].spawnCoord.y
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 4264538353261752983, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: m_Name
@@ -41774,6 +41820,18 @@ PrefabInstance:
       propertyPath: gridMap
       value: 
       objectReference: {fileID: 1377871929}
+    - target: {fileID: 5754089432759215070, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: endTurnBtn
+      value: 
+      objectReference: {fileID: 736944773}
+    - target: {fileID: 5754089432759215070, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: GaugeManager
+      value: 
+      objectReference: {fileID: 130142164}
+    - target: {fileID: 5754089432759215070, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: impulseSource
+      value: 
+      objectReference: {fileID: 421848701}
     - target: {fileID: 5754089432759215070, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: startingCoords.Array.data[0].x
       value: 7
@@ -78822,6 +78880,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unitCam: {fileID: 1567060467}
+  inputSO: {fileID: 0}
 --- !u!114 &1567060465
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -21,7 +21,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 {
     public class UnitBehavaveCompo : RangeComponent
     {
-        private BasicUnit _unit;
+        private CharacterUnit _unit;
         
         private SetUnitCamera unitCam;
         [SerializeField] private UnitAnimation animationCompo;
@@ -37,20 +37,23 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         public GameObject _currentMapTile { get; set; }= null;
         
         private List<GameObject> _movingtiles =  new List<GameObject>();
+        public UnitManageRangeCompo unitRangeCompo { get; private set; }
+        private UnitCost unitCostCompo;
 
         private IMapTile nextTile = null;
+
         
         protected override void Start()
         {
             base.Start();
             
-            _unit = _owner as BasicUnit;
+            _unit = _owner as CharacterUnit;
             
-            _unit.inputSO.OnClickMoveEvent += Move;
+            _unit.InputSO.OnClickMoveEvent += Move;
 
-            _moveSpeed = _unit.unitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
+            _moveSpeed = _unit.UnitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
 
-            unitCam = GameObject.Find("TopCam").GetComponent<SetUnitCamera>();
+            Bus<TopCamEvent>.Subscribe(HandleCamEvent);
             
             navMeshAgent.updatePosition = true;
             
@@ -63,11 +66,24 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             navMeshAgent.stoppingDistance = 0.05f;
             
             navMeshAgent.enabled = false;
+            
+            unitCostCompo = _unit.GetUnitCompo<UnitCost>();
+            
+            Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
+            
+            unitRangeCompo =  _unit.GetUnitCompo<UnitManageRangeCompo>();
+            
+            _unit.InputSO.OnCancelEvent += HandleResetTile;
+        }
+
+        private void HandleCamEvent(TopCamEvent obj)
+        {
+            unitCam = obj.cam.GetComponent<SetUnitCamera>();
         }
 
         protected override void OnDestroy()
         {
-            _unit.inputSO.OnClickMoveEvent -= Move;
+            _unit.InputSO.OnClickMoveEvent -= Move;
             
             base.OnDestroy();
         }
@@ -78,6 +94,9 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             {
                 nextTile.SetEnemy(false);
             }
+            _unit.InputSO.OnCancelEvent -= HandleResetTile;
+            Bus<TopCamEvent>.Unsubscribe(HandleCamEvent);
+            Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
         }
 
 
@@ -138,7 +157,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             {
                 CheckTilesCanMoving();
                 
-                GameObject tileTrm = _unit.inputSO.GetWorldPosition();
+                GameObject tileTrm = _unit.InputSO.GetWorldPosition();
             
                 if (_movingtiles.Contains(tileTrm))
                     SetTargetEnemy(tileTrm);
@@ -147,6 +166,26 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             }
             else if (_isAct == false)
                 EndTargeting();
+        }
+        
+        public void StartWalk(UnitSetMoveEvent evt)
+        {
+            if (_unit.isMyTurn  && evt.isStart == false)
+            { 
+                ResetTile();
+            }
+            else if (_unit.isMyTurn && evt.isStart == true)
+            {
+               ReCheckInRange();
+            }
+        }
+        
+        
+        private void HandleResetTile()
+        {
+            unitRangeCompo.RemoveAllRange();
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         }
         
         private void Move()
@@ -159,7 +198,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             if (isMoving)
                 return;
             
-            if (_unit.GetCurrentCost() <= 0)
+            if (unitCostCompo.GetCurrentCost() <= 0)
             {
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
                 ResetTile();
@@ -167,8 +206,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 return;
             }
             
-            IMapTile tile = _unit.inputSO.GetSelectedTile();
-            GameObject tileTrm = _unit.inputSO.GetWorldPosition();
+            IMapTile tile = _unit.InputSO.GetSelectedTile();
+            GameObject tileTrm = _unit.InputSO.GetWorldPosition();
 
             if (!_movingtiles.Contains(tileTrm))
             {
@@ -251,7 +290,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             MoveStart(tile);
 
-            _unit.RemoveCost(15);
+            unitCostCompo.RemoveCost(15);
 
             while (navMeshAgent.pathPending) yield return null;
 

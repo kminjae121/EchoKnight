@@ -48,9 +48,9 @@ using UnityEngine;
 
         private void PlusAP()
         {
-            BasicUnit unit = _owner as BasicUnit;
+            CharacterUnit unit = _owner as CharacterUnit;
 
-            unit.GetCost(25);
+            unit.UnitCostCompo.GetCost(25);
         }
         
         private void SkillEnd()

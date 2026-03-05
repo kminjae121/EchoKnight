@@ -1,4 +1,5 @@
 ﻿using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using _Code.KMJ.Cam;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
@@ -57,6 +58,8 @@ namespace Code.UnitSystem.SkillSystem
         protected override void Start()
         {
             base.Start();
+            
+            Bus<TopCamEvent>.Subscribe(HandleCamEvent);
 
             _unitBase = _owner;
 
@@ -77,6 +80,17 @@ namespace Code.UnitSystem.SkillSystem
             }
 
             _damageData.damage = damage;
+
+            if (_unitBase as CharacterUnit)
+            {
+                CharacterUnit unit = _unitBase as CharacterUnit;
+                impulseSource = unit.impulseSource;
+            }
+        }
+
+        private void HandleCamEvent(TopCamEvent obj)
+        {
+            unitCam =  obj.cam.GetComponent<SetUnitCamera>();
         }
 
         public virtual void InitializeSkill()
@@ -89,6 +103,7 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void OnDisable()
         {
+            Bus<TopCamEvent>.Unsubscribe(HandleCamEvent);
             skillEndEvent.RemoveListener(CanUseSkillTrue);
             ResetTileEvent -= skillEnd;
         }

@@ -11,17 +11,34 @@ namespace Code.UI
         [Header("UI Elements")]
         [SerializeField] private Image characterImage;
         [SerializeField] private Image healthBar;
+        [SerializeField] private Button stateButton;
         
         [Header("Settings")]
         [SerializeField] private float tweenTime = 0.3f;
+        [SerializeField] private string mainPanelId = "MainUnitInfoPanel";
 
         private UnitState _unit;
         private Tween _healthBarTween;
 
+        private void Awake()
+        {
+            if (stateButton != null)
+            {
+                stateButton.onClick.AddListener(HandleStateButtonClick);
+            }
+        }
+
         private void OnDestroy()
         {
+            if (stateButton != null)
+            {
+                stateButton.onClick.RemoveListener(HandleStateButtonClick);
+            }
+
             if (_unit != null)
+            {
                 _unit.CurrentHp.OnValueChanged -= RefreshHealthBar;
+            }
         }
 
         public void SetUnit(UnitState unit)
@@ -31,10 +48,17 @@ namespace Code.UI
             
             characterImage.sprite = _unit.Data.UnitImage;
         }
-        
-        public void SendUnitState()
+
+        private void HandleStateButtonClick()
         {
+            if (_unit == null)
+            {
+                Debug.LogWarning("유닛 정보가 존재하지 않습니다.");
+                return;
+            }
+
             Bus<CharacterInfoEvent>.Raise(new CharacterInfoEvent(_unit));
+            PanelManager.Open(mainPanelId);
         }
 
         private void RefreshHealthBar(float prev, float next)

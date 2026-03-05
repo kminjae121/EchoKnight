@@ -10,18 +10,19 @@ namespace Code.UI
 {
     public class CharacterStatPanel : Panel
     {
-        [Header("Equipped Items")]
+        [Header("Left Area : Equipped Items")]
         [SerializeField] private List<Image> skillIcons;
+        [SerializeField] private Sprite emptySkillSlotSprite;
         [SerializeField] private List<Image> artifactIcons;
-        [SerializeField] private Sprite emptySlotSprite;
+        [SerializeField] private Sprite emptyArtifactSlotSprite;
 
-        [Header("Visual & HP")]
+        [Header("Center Area : Visual & HP")]
         [SerializeField] private Transform modelSpawnPoint;
         [SerializeField] private Image hpBarFill;
         [SerializeField] private TextMeshProUGUI hpText;
         [SerializeField] private float hpTweenDuration = 0.3f;
 
-        [Header("Stat & Info")]
+        [Header("Right Area : Stat & Info")]
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI classText;
         [SerializeField] private TextMeshProUGUI atkText;
@@ -110,7 +111,7 @@ namespace Code.UI
                 }
                 else
                 {
-                    skillIcons[i].sprite = emptySlotSprite;
+                    skillIcons[i].sprite = emptySkillSlotSprite;
                 }
             }
         }
@@ -119,7 +120,7 @@ namespace Code.UI
         {
             for (int i = 0; i < artifactIcons.Count; i++)
             {
-                artifactIcons[i].sprite = emptySlotSprite;
+                artifactIcons[i].sprite = emptyArtifactSlotSprite;
             }
         }
 

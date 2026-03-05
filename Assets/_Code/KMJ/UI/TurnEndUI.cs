@@ -13,7 +13,6 @@ namespace Code.UI
         private void Awake()
         {
             //Bus<TurnEndUIEvent>.Subscribe(ActiveTurnUI);
-            
         }
 
         private void OnDestroy()

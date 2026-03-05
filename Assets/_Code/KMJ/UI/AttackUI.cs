@@ -19,7 +19,7 @@ namespace Code.UI
         [SerializeField] private List<TextMeshProUGUI> explainTxt;
         [SerializeField] private List<GameObject> selectItem;
         [SerializeField] private InputReader inputSO;
-
+        
         private bool _isCanOpen = true;
         private bool _isActive;
         private float _xValue;
@@ -287,6 +287,11 @@ namespace Code.UI
         {
             _isCanOpen = !evt.isLock;
             InitializeUI();
+        }
+
+        public void ActiveUI()
+        {
+            StartAttack();
         }
     }
 }

@@ -10,19 +10,19 @@ namespace Code.UI
 {
     public class CharacterStatPanel : Panel
     {
-        [Header("Left Area : Equipped Items")]
+        [Header("Equipped Items")]
         [SerializeField] private List<Image> skillIcons;
         [SerializeField] private Sprite emptySkillSlotSprite;
         [SerializeField] private List<Image> artifactIcons;
         [SerializeField] private Sprite emptyArtifactSlotSprite;
 
-        [Header("Center Area : Visual & HP")]
+        [Header("Visual & HP")]
         [SerializeField] private Transform modelSpawnPoint;
         [SerializeField] private Image hpBarFill;
         [SerializeField] private TextMeshProUGUI hpText;
         [SerializeField] private float hpTweenDuration = 0.3f;
 
-        [Header("Right Area : Stat & Info")]
+        [Header("Stat & Info")]
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI classText;
         [SerializeField] private TextMeshProUGUI atkText;
@@ -78,7 +78,7 @@ namespace Code.UI
             var data = _currentUnit.Data;
             
             nameText.text = data.UnitName;
-            classText.text = data.UnitType.ToString();
+            classText.text = data.UnitClass;
             atkText.text = data.AtkDamage.ToString("F1");
             defText.text = data.DefensivePower.ToString("F1");
             moveSpeedText.text = data.MoveSpeed.ToString("F1");

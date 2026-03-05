@@ -19,8 +19,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
-        [SerializeField] private float attackMoveDistance = 1.5f;
-
         private ShootItemAttackManager _shootItemManager;
         
         

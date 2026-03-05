@@ -20,7 +20,7 @@ public class SwordFlagSkill : BaseSkill
     private GameObject _target;
     
  
-    private void Start()
+    protected override void Start()
     {
         skillEvent.AddListener(UseSkill);
         _damageData.damage = 2.3456f;
@@ -71,10 +71,5 @@ public class SwordFlagSkill : BaseSkill
         slashRot.y += 90;
         
         slash.transform.rotation = Quaternion.Euler(slashRot);
-    }
-
-    private void TurnEnd()
-    {
-        skillEndEvent?.Invoke();
     }
 }

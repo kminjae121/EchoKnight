@@ -14,8 +14,7 @@ namespace Code.UnitSystem.SkillSystem.Skill
         private DamageData _damageData;
 
         [SerializeField] private AttackDataSO atkData;
-
-        private GameObject _target = null;
+        
         private void Awake()
         {
             _damageData.damage = 4.567f;

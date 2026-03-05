@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class BattleRewardUI : Panel
+    public class BattleRewardUI : MonoBehaviour
     {
         [Header("Buttons")]
         [SerializeField] private Button nextButton;
@@ -17,15 +17,20 @@ namespace Code.UI
 
         private List<RewardItemButton> spawnedButtons = new();
 
-        public override void Awake()
+        private void Awake()
         {
-            base.Awake();
             nextButton.onClick.AddListener(HandleNextButton);
+            gameObject.SetActive(false);
         }
 
-        public void SetupRewards(List<ItemSO> rewards)
+        private void OnDestroy()
         {
-            base.Open();
+            nextButton.onClick.RemoveListener(HandleNextButton);
+        }
+
+        public void Open(List<ItemSO> rewards)
+        {
+            gameObject.SetActive(true);
 
             foreach (var item in rewards)
             {

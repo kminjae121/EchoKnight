@@ -49,24 +49,33 @@ namespace Code.UI
             Bus<SkillUIEvent>.Unsubscribe(SetSkillUIName);
             Bus<SetAtkUIEvent>.Unsubscribe(SetAtkUI);
 
-            if (inputSO != null) 
+            if (inputSO != null)
                 inputSO.OnSelectEvent -= SelectItem;
         }
 
         private void Update()
         {
-            if (UnityEngine.Input.GetMouseButtonDown(1) && !_isActive && _isCanOpen)
-                StartAttack();
-            else if (UnityEngine.Input.GetMouseButtonDown(1) && _isActive)
-                EndAttack();
+            if (UnityEngine.Input.GetMouseButtonDown(1))
+                switch (_isActive)
+                {
+                    case false when _isCanOpen:
+                        StartAttack();
+                        break;
+                    case true:
+                        EndAttack();
+                        break;
+                }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.E))
                 DownItem();
             else if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
                 UpItem();
-            
-            if (selectArrow != null && selectArrow.gameObject.activeSelf)
-                selectArrow.transform.rotation = Quaternion.Euler(_xValue += 1f, 0f, 90f);
+
+            if (_isActive && selectArrow != null)
+            {
+                _xValue += 360f * Time.deltaTime;
+                selectArrow.localRotation = Quaternion.Euler(_xValue, 0f, 90f);
+            }
         }
 
         private void SelectItem()
@@ -79,7 +88,7 @@ namespace Code.UI
 
         private void StartAttack()
         {
-            if (SlotCount <= 0)
+            if (skillsName == null || skillsName.Count == 0)
                 return;
 
             InitializeUI();
@@ -114,16 +123,15 @@ namespace Code.UI
         {
             if (selectArrow != null)
                 selectArrow.anchoredPosition = new Vector3(80f, 186.5f, 0f);
-
-            _itemIdx = 0;
+            
             _xValue = 0f;
 
             if (atkUI != null)
                 atkUI.SetActive(false);
-            
+
             if (selectArrow != null)
                 selectArrow.gameObject.SetActive(false);
-            
+
             _isActive = false;
         }
 
@@ -149,7 +157,7 @@ namespace Code.UI
         {
             if (SlotCount <= 0)
                 return;
-            
+
             _itemIdx = WrapIndex(_itemIdx, SlotCount);
 
             // 화살표 위치 이동
@@ -162,23 +170,25 @@ namespace Code.UI
             }
 
             // 전체 색상 초기화
-            foreach (var skill in skillsName.Where(skill => skill != null))
-                skill.color = Color.white;
+            foreach (var skill in skillsName)
+                if (skill != null)
+                    skill.color = Color.white;
 
             // 전체 설명/선택표시 끄기
-            foreach (var text in explainTxt.Where(text => text != null))
-                text.gameObject.SetActive(false);
+            foreach (var text in explainTxt)
+                if (text != null)
+                    text.gameObject.SetActive(false);
 
             foreach (var item in selectItem.Where(item => item != null))
                 item.SetActive(false);
 
             // 선택 색상 가져오기
             Color selectedColor = Color.white;
-            
+
             if (_itemIdx < selectItem.Count && selectItem[_itemIdx] != null)
             {
                 var img = selectItem[_itemIdx].GetComponent<Image>();
-                
+
                 if (img != null)
                     selectedColor = img.color;
             }
@@ -200,27 +210,27 @@ namespace Code.UI
         private int FindFirstValidIndex(int start, int direction)
         {
             int count = SlotCount;
-            
+
             if (count <= 0)
                 return 0;
-            
+
             int idx = WrapIndex(start, count);
 
             for (int i = 0; i < count; i++)
             {
                 if (IsValidSlot(idx))
                     return idx;
-                
+
                 idx = WrapIndex(idx + direction, count);
             }
 
-            return 0;
+            return start;
         }
 
         private int FindNextValidIndex(int current, int direction)
         {
             int count = SlotCount;
-            
+
             if (count <= 0)
                 return 0;
 
@@ -238,8 +248,8 @@ namespace Code.UI
         private bool IsValidSlot(int idx)
         {
             if (idx < 0 || idx >= skillsName.Count)
-                return true;
-            
+                return false;
+
             if (skillsName[idx] == null)
                 return false;
 
@@ -250,12 +260,12 @@ namespace Code.UI
         {
             if (count <= 0)
                 return 0;
-            
+
             idx %= count;
-            
+
             if (idx < 0)
                 idx += count;
-            
+
             return idx;
         }
 
@@ -268,7 +278,7 @@ namespace Code.UI
 
             if (idx >= 0 && idx < explainTxt.Count && explainTxt[idx] != null)
                 explainTxt[idx].text = $"코스트 - {evt.skillCost}";
-            
+
             if (_isActive)
                 ApplySelection();
         }
@@ -277,12 +287,6 @@ namespace Code.UI
         {
             _isCanOpen = !evt.isLock;
             InitializeUI();
-
-            if (atkUI != null)
-                atkUI.SetActive(false);
-            
-            if (selectArrow != null)
-                selectArrow.gameObject.SetActive(false);
         }
     }
 }

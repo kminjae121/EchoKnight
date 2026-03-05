@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Code.Core.Managers;
 using Code.Core;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -50,7 +51,7 @@ namespace _00.Core._02.Scripts._01.Manager
             
             int sceneIdx = scenesName.IndexOf(sceneName);
             _currentSceneIdx = sceneIdx;
-
+            
             LoadSceneWithTransition(sceneName);
         }
 
@@ -58,6 +59,7 @@ namespace _00.Core._02.Scripts._01.Manager
         {
             if (SceneTransitioner.Instance != null)
             {
+                GoodsManager.Instance.AddSkill();
                 SceneTransitioner.Instance.LoadScene(sceneName, defaultTransitionEffect);
             }
             else

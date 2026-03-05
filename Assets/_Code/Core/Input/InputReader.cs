@@ -21,6 +21,8 @@ namespace Input
 
         public event Action OnInteractionEvent;
 
+        public event Action OnCancelEvent;
+
         public Vector2 MovementKey { get; private set; }
         public Vector2 MouseUpDownValue { get; private set; }
         public event Action OnSelectUnitEvent;
@@ -149,6 +151,12 @@ namespace Input
             {
                 OnInteractionEvent?.Invoke();
             }
+        }
+
+        public void OnEsc(InputAction.CallbackContext context)
+        {
+            if(context.performed)
+                OnCancelEvent?.Invoke();
         }
 
         public void SetActive(bool isActive)

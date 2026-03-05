@@ -26,7 +26,6 @@ namespace Code.UI
         public void ReturnHome()
         {
             SceneManager.LoadScene("Lobby");
-            Bus<StageClearEvent>.Raise(new StageClearEvent(false));
         }
         public void RestartBtn()
         {

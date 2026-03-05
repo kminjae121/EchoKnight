@@ -7,6 +7,7 @@ namespace Code.UI
 {
     public class PartyCharacterInfoUI : MonoBehaviour
     {
+        [Header("UI Elements")]
         [SerializeField] private Image characterImage;
         [SerializeField] private TextMeshProUGUI characterNameText;
         [SerializeField] private TextMeshProUGUI characterDescText;

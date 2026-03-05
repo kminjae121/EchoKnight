@@ -7,8 +7,11 @@ namespace Code.UI
 {
     public class PartyCharacterSlotUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
+        [Header("UI Elements")]
         [SerializeField] private Image slotImage;
         [SerializeField] private Button slotButton;
+        
+        [Header("Data")]
         [SerializeField] private UnitSO characterInfo;
 
         private bool _isSelected;

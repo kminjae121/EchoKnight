@@ -9,11 +9,12 @@ namespace Code.UI
 {
     public class RewardItemButton : MonoBehaviour
     {
+        [Header("UI Elements")]
         [SerializeField] private Button itemButton;
         [SerializeField] private TextMeshProUGUI itemNameText;
         [SerializeField] private Image itemImage;
 
-        private ItemSO item;
+        private ItemSO _item;
         
         private void Awake()
         {
@@ -27,18 +28,18 @@ namespace Code.UI
         
         public void SetItem(ItemSO newItem)
         {
-            item = newItem;
+            _item = newItem;
 
-            itemNameText.text = item.itemName;
-            itemImage.sprite = item.itemIcon;
+            itemNameText.text = _item.itemName;
+            itemImage.sprite = _item.itemIcon;
         }
 
         private void HandleItemButton()
         {
-            if (item == null)
+            if (_item == null)
                 return;
 
-            switch (item)
+            switch (_item)
             {
                 case CurrencyItemSO currency:
                     HandleCurrency(currency);
@@ -60,7 +61,7 @@ namespace Code.UI
         private void HandleEquipment(EquipmentItemSO equipment)
         {
             PlayerManager.Instance.equipmentInventory.Add(equipment);
-            UnityLogger.Log($"인벤토리 장비 추가");
+            UnityLogger.Log("인벤토리 장비 추가");
         }
     }
 }

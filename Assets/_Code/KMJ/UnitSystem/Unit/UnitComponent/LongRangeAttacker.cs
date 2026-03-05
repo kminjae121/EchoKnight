@@ -20,8 +20,6 @@ public class LongRangeAttacker : MonoBehaviour
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
         [SerializeField] private GameObject effectPrefab;
-        
-        [SerializeField] private float attackMoveDistance = 1.5f;
 
 
         private GameObject _target = null;

@@ -41,9 +41,6 @@ namespace Code.UnitManaging
 
         private void Start()
         {
-            if (gridMap == null)
-                gridMap = FindObjectOfType<GridMap>();
-
             currentCost = 100;
             SelectUnits();
             MakeGameUnit();

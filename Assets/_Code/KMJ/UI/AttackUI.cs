@@ -13,227 +13,280 @@ namespace Code.UI
         [SerializeField] private GameObject atkUI;
         [SerializeField] private UnitSkillUI skillUI;
         [SerializeField] private List<TextMeshProUGUI> skillsName;
-        
         [SerializeField] private RectTransform selectArrow;
-        
         [SerializeField] private List<RectTransform> items;
-
         [SerializeField] private List<Button> itemBtns;
-
         [SerializeField] private List<TextMeshProUGUI> explainTxt;
-        
         [SerializeField] private List<GameObject> selectItem;
-
         [SerializeField] private InputReader inputSO;
 
         private bool _isCanOpen = true;
+        private bool _isActive;
+        private float _xValue;
+        private int _itemIdx;
 
-        private bool _isActive = false;
+        private Image _arrowImage;
 
-        private float _xValue = 0;
-
-        private int _itemIdx = 0;
+        private int SlotCount => items?.Count ?? 0;
 
         private void Awake()
         {
-            Bus<SetAtkUIEvent>.Subscribe(SetAtkUI);
-            Bus<SkillUIEvent>.Subscribe(SetSkillUIName);
-            inputSO.OnSelectEvent += SelectItem;
+            _arrowImage = selectArrow != null ? selectArrow.GetComponent<Image>() : null;
             _isActive = false;
         }
 
+        private void OnEnable()
+        {
+            Bus<SetAtkUIEvent>.Subscribe(SetAtkUI);
+            Bus<SkillUIEvent>.Subscribe(SetSkillUIName);
+
+            if (inputSO != null)
+                inputSO.OnSelectEvent += SelectItem;
+        }
 
         private void OnDisable()
         {
             Bus<SkillUIEvent>.Unsubscribe(SetSkillUIName);
             Bus<SetAtkUIEvent>.Unsubscribe(SetAtkUI);
-            inputSO.OnSelectEvent -= SelectItem;
+
+            if (inputSO != null)
+                inputSO.OnSelectEvent -= SelectItem;
         }
 
         private void Update()
         {
-            
-            if (UnityEngine.Input.GetMouseButtonDown(1 ) && !_isActive && _isCanOpen)
-            {
-                StartAttack();
-            }
-            else if (UnityEngine.Input.GetMouseButtonDown(1) && _isActive)
-            {
-                EndAttack();
-            }
+            if (UnityEngine.Input.GetMouseButtonDown(1))
+                switch (_isActive)
+                {
+                    case false when _isCanOpen:
+                        StartAttack();
+                        break;
+                    case true:
+                        EndAttack();
+                        break;
+                }
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.E))
-            {
                 DownItem();
-            }
             else if (UnityEngine.Input.GetKeyDown(KeyCode.Q))
-            {
                 UpItem();
+
+            if (_isActive && selectArrow != null)
+            {
+                _xValue += 360f * Time.deltaTime;
+                selectArrow.localRotation = Quaternion.Euler(_xValue, 0f, 90f);
             }
-            
-            selectArrow.transform.rotation = Quaternion.Euler(_xValue += 1f,0,90);
         }
 
         private void SelectItem()
         {
-            if (_isActive == true)
-            {
-                itemBtns[_itemIdx].onClick?.Invoke();
-            }
+            if (!_isActive || _itemIdx < 0 || _itemIdx >= itemBtns.Count)
+                return;
+
+            itemBtns[_itemIdx].onClick?.Invoke();
         }
 
         private void StartAttack()
         {
+            if (skillsName == null || skillsName.Count == 0)
+                return;
+
             InitializeUI();
-            _itemIdx = 0;
-            _xValue = 0;
+
+            _itemIdx = FindFirstValidIndex(0, +1);
+            _xValue = 0f;
+
             atkUI.SetActive(true);
             selectArrow.gameObject.SetActive(true);
             _isActive = true;
-            
-            
-            skillsName.ToList().ForEach(txt =>
-            {
-                txt.color = Color.white;
-            });
-            
-            Image img = selectItem[_itemIdx].GetComponent<Image>();
-            
-            skillsName[_itemIdx].color = img.color;
-            selectArrow.GetComponent<Image>().color = img.color;
-            
-            selectItem.ToList().ForEach(obj =>
-            {
-                obj.SetActive(false);
-            });
-            explainTxt.ToList().ForEach(txt =>
-            {
-                txt.gameObject.SetActive(false);
-            });
-            explainTxt[_itemIdx].gameObject.SetActive(true);
-            
-            selectItem[_itemIdx].SetActive(true);
+
+            ApplySelection();
         }
 
         private void EndAttack()
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-            skillUI.CancelSkill();
+
+            if (skillUI != null)
+                skillUI.CancelSkill();
+
             Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(false));
-            selectArrow.transform.rotation = Quaternion.Euler(0,0,90);
+
+            if (selectArrow != null)
+                selectArrow.transform.rotation = Quaternion.Euler(0f, 0f, 90f);
+
             InitializeUI();
         }
 
         private void InitializeUI()
         {
-            Vector3 pos = new Vector3(80, 186.5f, 0);
-            selectArrow.anchoredPosition = pos;
-            _itemIdx = 0;
-            _xValue = 0;
-            atkUI.SetActive(false);
-            selectArrow.gameObject.SetActive(false);
+            if (selectArrow != null)
+                selectArrow.anchoredPosition = new Vector3(80f, 186.5f, 0f);
+            
+            _xValue = 0f;
+
+            if (atkUI != null)
+                atkUI.SetActive(false);
+
+            if (selectArrow != null)
+                selectArrow.gameObject.SetActive(false);
+
             _isActive = false;
         }
 
         private void UpItem()
         {
-            _itemIdx -= 1;
-            if (_itemIdx <= -1)
-            {
-                _itemIdx = 3;
-            }
-            if (_itemIdx >= 1)
-            {
-                for (int i = _itemIdx; i >= 0; i--)
-                {
-                    if (skillsName[i].text == null)
-                    {
-                        _itemIdx -= 1;
-                    }
-                    else
-                        break;
-                }
-            }
+            if (!_isActive || SlotCount <= 0)
+                return;
 
-            SetAtkUI();
+            _itemIdx = FindNextValidIndex(_itemIdx, -1);
+            ApplySelection();
         }
 
         private void DownItem()
         {
-            _itemIdx += 1;
-            if (_itemIdx >= 4)
-            {
-                _itemIdx = 0;
-            }
-            if (_itemIdx >= 1)
-            {
-                if (skillsName[_itemIdx].text == null)
-                {
-                    _itemIdx = 0;
-                }
-            }
-                
-            SetAtkUI();
+            if (!_isActive || SlotCount <= 0)
+                return;
+
+            _itemIdx = FindNextValidIndex(_itemIdx, +1);
+            ApplySelection();
         }
 
-        private void SetAtkUI()
+        private void ApplySelection()
         {
-            Vector3 pos = items[_itemIdx].localPosition;
-            pos.x = 80;
-            pos.z = 0;
-            selectArrow.localPosition = pos;
-            
-            skillsName.ToList().ForEach(txt =>
+            if (SlotCount <= 0)
+                return;
+
+            _itemIdx = WrapIndex(_itemIdx, SlotCount);
+
+            // 화살표 위치 이동
+            if (selectArrow != null && _itemIdx < items.Count && items[_itemIdx] != null)
             {
-                txt.color = Color.white;
-            });
-            
-            
-            skillsName.ToList().ForEach(txt =>
+                Vector3 pos = items[_itemIdx].localPosition;
+                pos.x = 80f;
+                pos.z = 0f;
+                selectArrow.localPosition = pos;
+            }
+
+            // 전체 색상 초기화
+            foreach (var skill in skillsName)
+                if (skill != null)
+                    skill.color = Color.white;
+
+            // 전체 설명/선택표시 끄기
+            foreach (var text in explainTxt)
+                if (text != null)
+                    text.gameObject.SetActive(false);
+
+            foreach (var item in selectItem.Where(item => item != null))
+                item.SetActive(false);
+
+            // 선택 색상 가져오기
+            Color selectedColor = Color.white;
+
+            if (_itemIdx < selectItem.Count && selectItem[_itemIdx] != null)
             {
-                txt.color = Color.white;
-            });
-            
-            Image img = selectItem[_itemIdx].GetComponent<Image>();
-            
-            skillsName[_itemIdx].color = img.color;
-            selectArrow.GetComponent<Image>().color = img.color;
-            
-            explainTxt.ToList().ForEach(txt =>
-            {
-                txt.gameObject.SetActive(false);
-            });
-            explainTxt[_itemIdx].gameObject.SetActive(true);
-            
-            selectItem.ToList().ForEach(obj =>
-            {
-                obj.SetActive(false);
-            });
-            
-            selectItem[_itemIdx].SetActive(true);
+                var img = selectItem[_itemIdx].GetComponent<Image>();
+
+                if (img != null)
+                    selectedColor = img.color;
+            }
+
+            // 선택 강조
+            if (_itemIdx < skillsName.Count && skillsName[_itemIdx] != null)
+                skillsName[_itemIdx].color = selectedColor;
+
+            if (_arrowImage != null)
+                _arrowImage.color = selectedColor;
+
+            if (_itemIdx < explainTxt.Count && explainTxt[_itemIdx] != null)
+                explainTxt[_itemIdx].gameObject.SetActive(true);
+
+            if (_itemIdx < selectItem.Count && selectItem[_itemIdx] != null)
+                selectItem[_itemIdx].SetActive(true);
         }
 
-        public void SetSkillUIName(SkillUIEvent evt)
+        private int FindFirstValidIndex(int start, int direction)
         {
-            skillsName[evt.skillIdx + 1].text = evt.skillName;
-            explainTxt[evt.skillIdx + 1].text = $"코스트 - {evt.skillCost}";
+            int count = SlotCount;
+
+            if (count <= 0)
+                return 0;
+
+            int idx = WrapIndex(start, count);
+
+            for (int i = 0; i < count; i++)
+            {
+                if (IsValidSlot(idx))
+                    return idx;
+
+                idx = WrapIndex(idx + direction, count);
+            }
+
+            return start;
         }
 
-        public void SetAtkUI(SetAtkUIEvent evt)
+        private int FindNextValidIndex(int current, int direction)
         {
-            if (evt.isLock)
+            int count = SlotCount;
+
+            if (count <= 0)
+                return 0;
+
+            int idx = current;
+
+            for (int i = 0; i < count; i++)
             {
-                _isCanOpen = false;
+                idx = WrapIndex(idx + direction, count);
+                if (IsValidSlot(idx)) return idx;
             }
-            else if(evt.isLock == false)
-            {
-                _isCanOpen = true;
-            }
-            
+
+            return current;
+        }
+
+        private bool IsValidSlot(int idx)
+        {
+            if (idx < 0 || idx >= skillsName.Count)
+                return false;
+
+            if (skillsName[idx] == null)
+                return false;
+
+            return !string.IsNullOrEmpty(skillsName[idx].text);
+        }
+
+        private int WrapIndex(int idx, int count)
+        {
+            if (count <= 0)
+                return 0;
+
+            idx %= count;
+
+            if (idx < 0)
+                idx += count;
+
+            return idx;
+        }
+
+        private void SetSkillUIName(SkillUIEvent evt)
+        {
+            int idx = evt.skillIdx + 1;
+
+            if (idx >= 0 && idx < skillsName.Count && skillsName[idx] != null)
+                skillsName[idx].text = evt.skillName;
+
+            if (idx >= 0 && idx < explainTxt.Count && explainTxt[idx] != null)
+                explainTxt[idx].text = $"코스트 - {evt.skillCost}";
+
+            if (_isActive)
+                ApplySelection();
+        }
+
+        private void SetAtkUI(SetAtkUIEvent evt)
+        {
+            _isCanOpen = !evt.isLock;
             InitializeUI();
-            atkUI.SetActive(false);
-            selectArrow.gameObject.SetActive(false);
         }
     }
 }

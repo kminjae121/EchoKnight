@@ -6,20 +6,22 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class CharacterInfoUI : MonoBehaviour
+    public class CharacterInfoUI : Panel
     {
+        [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private Image unitImage;
+        
+        [Header("Buttons")]
         [SerializeField] private Button exitButton;
         
         private UnitState _unit;
 
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             exitButton.onClick.AddListener(HandleExitButton);
             Bus<CharacterInfoEvent>.Subscribe(HandleUnitInfo);
-            
-            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -28,22 +30,19 @@ namespace Code.UI
             Bus<CharacterInfoEvent>.Unsubscribe(HandleUnitInfo);
         }
         
-        public void ActivePanel()
-        {
-            gameObject.SetActive(true);
-        }
-        
         private void HandleUnitInfo(CharacterInfoEvent evt)
         {
             _unit = evt.Unit;
             
             unitNameText.text = _unit.Data.UnitName;
             unitImage.sprite = _unit.Data.UnitImage;
+            
+            base.Open();
         }
         
         private void HandleExitButton()
         {
-            gameObject.SetActive(false);
+            base.Close();
         }
     }
 }

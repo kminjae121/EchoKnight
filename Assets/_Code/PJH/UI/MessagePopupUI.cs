@@ -5,16 +5,19 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class MessagePopupUI : MonoBehaviour
+    public class MessagePopupUI : Panel
     {
+        [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI messageText;
+        
+        [Header("Buttons")]
         [SerializeField] private Button checkButton;
 
-        private void Awake()
+        public override void Awake()
         {
+            base.Awake();
             Bus<ShowMessageUIEvent>.Subscribe(HandleShowMessage);
             checkButton.onClick.AddListener(Hide);
-            gameObject.SetActive(false);
         }
 
         private void OnDestroy()
@@ -30,13 +33,13 @@ namespace Code.UI
         
         private void Show(string message)
         {
-            gameObject.SetActive(true);
             messageText.text = message;
+            base.Open();
         }
         
         private void Hide()
         {
-            gameObject.SetActive(false);
+            base.Close();
         }
     }
 }

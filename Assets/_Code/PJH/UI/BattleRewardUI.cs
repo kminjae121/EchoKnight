@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Code.Items;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,7 +8,10 @@ namespace Code.UI
 {
     public class BattleRewardUI : MonoBehaviour
     {
+        [Header("Buttons")]
         [SerializeField] private Button nextButton;
+
+        [Header("Rewards")]
         [SerializeField] private RewardItemButton reawardButtonPrefab;
         [SerializeField] private Transform rewardTrm;
 
@@ -18,13 +20,14 @@ namespace Code.UI
         private void Awake()
         {
             nextButton.onClick.AddListener(HandleNextButton);
-        }
-
-        private void Start()
-        {
             gameObject.SetActive(false);
         }
-        
+
+        private void OnDestroy()
+        {
+            nextButton.onClick.RemoveListener(HandleNextButton);
+        }
+
         public void Open(List<ItemSO> rewards)
         {
             gameObject.SetActive(true);

@@ -49,8 +49,6 @@ namespace Code.UnitSystem
         private GameObject _targetEnemy = null;
         private EnemyTargeting _targetingCompo = null;
 
-        private bool isAttack = false;
-
         public UnityEvent<GameObject> attackEvent = new UnityEvent<GameObject>();
         public UnityEvent attackStartEvent;
         public UnityEvent attackEndEvent;
@@ -58,7 +56,7 @@ namespace Code.UnitSystem
         private SetUnitCamera unitCam;
 
         
-        private void Awake()
+        protected override void Awake()
         {
             if (attackEndEvent == null)
             {
@@ -96,7 +94,7 @@ namespace Code.UnitSystem
             attackEndEvent.AddListener(AttackEnded);
         }
         
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             attackEndEvent.RemoveListener(AttackEnded);
             _inputReader.OnAttackEvent -= AttackEnemy;

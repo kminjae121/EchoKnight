@@ -1,13 +1,17 @@
 ﻿using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
+using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class CharacterSkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class CharacterSkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPoolable
     {
+        [Header("Pooling Settings")]
+        [SerializeField] private PoolingItemSO poolingType;
+
         [Header("UI Elements")]
         [SerializeField] private Image skillImage;
         
@@ -17,6 +21,11 @@ namespace Code.UI
 
         private SkillSO _skillInfo;
         private bool _isEquipped;
+
+        private GondrLib.ObjectPool.Runtime.Pool _pool;
+
+        public PoolingItemSO PoolingType => poolingType;
+        public GameObject GameObject => gameObject;
 
         private void Awake()
         {
@@ -30,6 +39,26 @@ namespace Code.UI
             Bus<SkillUnequippedEvent>.Unsubscribe(HandleSkillUnequipped);
         }
 
+        public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool)
+        {
+            _pool = pool;
+        }
+
+        public void ResetItem()
+        {
+            _skillInfo = null;
+            _isEquipped = false;
+            skillImage.color = unequippedColor;
+        }
+
+        public void ReturnToPool()
+        {
+            if (_pool != null)
+                _pool.Push(this);
+            else
+                Destroy(gameObject);
+        }
+
         public void SetSkill(SkillSO skill, bool isEquipped)
         {
             _skillInfo = skill;
@@ -41,6 +70,12 @@ namespace Code.UI
         
         public void HandleSkillButton()
         {
+            if (_skillInfo == null)
+            {
+                Debug.LogWarning("스킬 정보가 존재하지 않습니다.");
+                return;
+            }
+
             if (_isEquipped)
                 Bus<SkillUnequipEvent>.Raise(new SkillUnequipEvent(_skillInfo));
             else
@@ -72,7 +107,8 @@ namespace Code.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skillInfo, (RectTransform)transform));
+            if (_skillInfo != null)
+                Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skillInfo, (RectTransform)transform));
         }
 
         public void OnPointerExit(PointerEventData eventData)

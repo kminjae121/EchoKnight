@@ -75,7 +75,7 @@ namespace _Code.Core.Managers
                 enemies.Remove(enemy);
             }
             
-            if (enemies.Count == 0)
+            if (enemies.Count <= 0)
             {
                 if (gameClearUI != null)
                 {

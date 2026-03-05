@@ -1,13 +1,12 @@
 ﻿using DG.Tweening;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Code.UI
 {
     [RequireComponent(typeof(Button))]
-    public class SideNavButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
+    public class SideNavButton : MonoBehaviour
     {
         [Header("Panel Settings")]
         [SerializeField] private string targetPanelId;
@@ -16,16 +15,18 @@ namespace Code.UI
         [Header("Animation Targets")]
         [SerializeField] private Transform scaleTarget;
         [SerializeField] private CanvasGroup panelNameCanvasGroup;
+        [SerializeField] private GameObject hoverArea;
 
         [Header("Hover Animation Settings")]
         [SerializeField] private float animationDuration = 0.3f;
         [SerializeField] private Vector3 hoverScale = new Vector3(1.1f, 1.1f, 1.1f);
         [SerializeField] private Ease animationEase = Ease.OutCubic;
         
-        private Button _navButton;  
+        private Button _navButton;
         private Vector3 _originalScale;
         private Tween _scaleTween;
         private Tween _fadeTween;
+        private HoverDetector _detector;
 
         private void Awake()
         {
@@ -40,17 +41,32 @@ namespace Code.UI
                 panelNameCanvasGroup.alpha = 0f;
 
             _navButton.onClick.AddListener(HandleNavButtonClick);
+
+            GameObject targetHoverObj = hoverArea != null ? hoverArea : gameObject;
+            _detector = targetHoverObj.GetComponent<HoverDetector>();
+            
+            if (_detector == null)
+                _detector = targetHoverObj.AddComponent<HoverDetector>();
+
+            _detector.OnEnter += PlayHoverEnter;
+            _detector.OnExit += PlayHoverExit;
         }
 
         private void OnDestroy()
         {
             _navButton.onClick.RemoveListener(HandleNavButtonClick);
             
+            if (_detector != null)
+            {
+                _detector.OnEnter -= PlayHoverEnter;
+                _detector.OnExit -= PlayHoverExit;
+            }
+
             _scaleTween?.Kill();
             _fadeTween?.Kill();
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
+        private void PlayHoverEnter()
         {
             _scaleTween?.Kill();
             _scaleTween = scaleTarget.DOScale(hoverScale, animationDuration).SetEase(animationEase);
@@ -62,7 +78,7 @@ namespace Code.UI
             }
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        private void PlayHoverExit()
         {
             _scaleTween?.Kill();
             _scaleTween = scaleTarget.DOScale(_originalScale, animationDuration).SetEase(animationEase);

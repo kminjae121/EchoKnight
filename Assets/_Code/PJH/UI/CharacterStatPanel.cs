@@ -12,8 +12,9 @@ namespace Code.UI
     {
         [Header("Equipped Items")]
         [SerializeField] private List<Image> skillIcons;
+        [SerializeField] private Sprite emptySkillSlotSprite;
         [SerializeField] private List<Image> artifactIcons;
-        [SerializeField] private Sprite emptySlotSprite;
+        [SerializeField] private Sprite emptyArtifactSlotSprite;
 
         [Header("Visual & HP")]
         [SerializeField] private Transform modelSpawnPoint;
@@ -77,7 +78,7 @@ namespace Code.UI
             var data = _currentUnit.Data;
             
             nameText.text = data.UnitName;
-            classText.text = data.UnitType.ToString();
+            classText.text = data.UnitClass;
             atkText.text = data.AtkDamage.ToString("F1");
             defText.text = data.DefensivePower.ToString("F1");
             moveSpeedText.text = data.MoveSpeed.ToString("F1");
@@ -110,7 +111,7 @@ namespace Code.UI
                 }
                 else
                 {
-                    skillIcons[i].sprite = emptySlotSprite;
+                    skillIcons[i].sprite = emptySkillSlotSprite;
                 }
             }
         }
@@ -119,7 +120,7 @@ namespace Code.UI
         {
             for (int i = 0; i < artifactIcons.Count; i++)
             {
-                artifactIcons[i].sprite = emptySlotSprite;
+                artifactIcons[i].sprite = emptyArtifactSlotSprite;
             }
         }
 

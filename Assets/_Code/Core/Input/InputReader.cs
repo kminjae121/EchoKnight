@@ -13,24 +13,21 @@ namespace Input
         [SerializeField] private LayerMask WhatIsEnemy;
         [SerializeField] private LayerMask WhatIsPlayer;
         
-        private Controls _controls;
         public event Action OnAttackEvent;
         public event Action OnClickMoveEvent;
         public event Action OnClickEvent;
         public event Action OnSelectEvent;
-
         public event Action OnInteractionEvent;
-
         public event Action OnCancelEvent;
 
         public Vector2 MovementKey { get; private set; }
         public Vector2 MouseUpDownValue { get; private set; }
         public event Action OnSelectUnitEvent;
         
+        private Controls _controls;
         private Vector3 _gridPosition;
-        private Vector2 _screenPosition;
 
-        public Vector2 MousePosition => _screenPosition;
+        public Vector2 MousePosition { get; private set; }
 
         private void OnEnable()
         {
@@ -39,6 +36,7 @@ namespace Input
                 _controls = new Controls();
                 _controls.Player.SetCallbacks(this);
             }
+            
             _controls.Player.Enable();
         }
 
@@ -54,12 +52,10 @@ namespace Input
 
             GameObject gameObj = null;
             
-            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            Ray cameraRay = mainCam.ScreenPointToRay(MousePosition);
             
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
-            {
                 gameObj = hit.transform.gameObject;
-            }
 
             return gameObj;
         }
@@ -71,12 +67,10 @@ namespace Input
             
             IMapTile maptile = null; 
             
-            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            Ray cameraRay = mainCam.ScreenPointToRay(MousePosition);
             
             if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, whatIsGround))
-            {
                 maptile = hit.transform.GetComponent<IMapTile>();
-            }
 
             return maptile;
         }
@@ -86,13 +80,10 @@ namespace Input
             Camera mainCam = Camera.main;
             Debug.Assert(mainCam != null, "메인 카메라가 씬에 없습니다.");
             
-            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            Ray cameraRay = mainCam.ScreenPointToRay(MousePosition);
             
-            if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsPlayer))
-            {
-                return hit.collider.gameObject.GetComponent<Unit>();
-            }
-            return null;
+            return Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsPlayer) ?
+                hit.collider.gameObject.GetComponent<Unit>() : null;
         }
 
         public GameObject GetEnemy()
@@ -100,14 +91,10 @@ namespace Input
             Camera mainCam = Camera.main;
             Debug.Assert(mainCam != null, "메인 카메라가 씬에 없습니다.");
             
-            Ray cameraRay = mainCam.ScreenPointToRay(_screenPosition);
+            Ray cameraRay = mainCam.ScreenPointToRay(MousePosition);
             
-            if (Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsEnemy))
-            {
-                return hit.collider.gameObject;
-            }
-
-            return null;
+            return Physics.Raycast(cameraRay, out RaycastHit hit, mainCam.farClipPlane, WhatIsEnemy) ?
+                hit.collider.gameObject : null;
         }
 
         public void OnClick(InputAction.CallbackContext context)
@@ -117,22 +104,20 @@ namespace Input
                 OnClickEvent?.Invoke();
                 OnAttackEvent?.Invoke();
                 OnSelectUnitEvent?.Invoke();
+                
                 if (GetSelectedTile() != null)
-                {
                     OnClickMoveEvent?.Invoke();
-                }
             }
         }
 
         public void OnPointer(InputAction.CallbackContext context)
         {
-            _screenPosition = context.ReadValue<Vector2>();
+            MousePosition = context.ReadValue<Vector2>();
         }
 
         public void OnCamMove(InputAction.CallbackContext context)
         {
-            Vector2 movementKey = context.ReadValue<Vector2>();
-            MovementKey = movementKey;
+            MovementKey = context.ReadValue<Vector2>();
         }
 
         public void OnMouseUpDown(InputAction.CallbackContext context)
@@ -148,12 +133,10 @@ namespace Input
         public void OnInteraction(InputAction.CallbackContext context)
         {
             if (context.performed)
-            {
                 OnInteractionEvent?.Invoke();
-            }
         }
 
-        public void OnEsc(InputAction.CallbackContext context)
+        public void OnEscape(InputAction.CallbackContext context)
         {
             if(context.performed)
                 OnCancelEvent?.Invoke();
@@ -162,13 +145,9 @@ namespace Input
         public void SetActive(bool isActive)
         {
             if (isActive)
-            {
                 _controls.Player.Enable();
-            }
             else
-            {
                 _controls.Player.Disable();
-            }
         }
     }
 }

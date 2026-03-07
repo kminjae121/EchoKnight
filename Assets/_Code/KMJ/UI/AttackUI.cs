@@ -271,13 +271,13 @@ namespace Code.UI
 
         private void SetSkillUIName(SkillUIEvent evt)
         {
-            int idx = evt.skillIdx + 1;
+            int idx = evt.SkillIndex + 1;
 
             if (idx >= 0 && idx < skillsName.Count && skillsName[idx] != null)
-                skillsName[idx].text = evt.skillName;
+                skillsName[idx].text = evt.SkillName;
 
             if (idx >= 0 && idx < explainTxt.Count && explainTxt[idx] != null)
-                explainTxt[idx].text = $"코스트 - {evt.skillCost}";
+                explainTxt[idx].text = $"코스트 - {evt.SkillCost}";
 
             if (_isActive)
                 ApplySelection();

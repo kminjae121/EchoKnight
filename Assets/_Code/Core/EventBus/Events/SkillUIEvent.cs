@@ -6,19 +6,19 @@ namespace Code.Core.Events.Bus
 {
     public struct SkillUIEvent : IEvent
     {
-        public SkillComponent skillComponent;
-        public int skillIdx;
-        public string skillName;
-        public Sprite skillImage;
-        public float skillCost;
+        public SkillComponent SkillComponent { get; private set; }
+        public int SkillIndex { get; private set; }
+        public string SkillName { get; private set; }
+        public Sprite SkillImage { get; private set; }
+        public float SkillCost { get; private set; }
 
-        public SkillUIEvent(int skillIdx, string skillName, float skillCost,Sprite skillImage, SkillComponent skillComponent)
+        public SkillUIEvent(int skillIndex, string skillName, float skillCost,Sprite skillImage, SkillComponent skillComponent)
         {
-            this.skillIdx = skillIdx;
-            this.skillComponent = skillComponent;
-            this.skillName = skillName;
-            this.skillImage = skillImage;
-            this.skillCost = skillCost;
+            SkillIndex = skillIndex;
+            SkillComponent = skillComponent;
+            SkillName = skillName;
+            SkillImage = skillImage;
+            SkillCost = skillCost;
         }
     }
 }

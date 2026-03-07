@@ -44,7 +44,7 @@ namespace UnitSystem
         {
             if (OwnUnitManage.Instance == null) return;
             float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
-            Bus<ApSliderEvent>.Raise(new ApSliderEvent(value));
+            Bus<ActionGaugeEvent>.Raise(new ActionGaugeEvent(value));
         }
     }
 }

@@ -26,6 +26,9 @@ public class UnitSO : ScriptableObject
     [Header("UnitName")]
     public string UnitName;
     
+    [Header("UnitClass")]
+    public string UnitClass;
+    
     [Header("UnitImage")]
     public Sprite UnitImage;
 

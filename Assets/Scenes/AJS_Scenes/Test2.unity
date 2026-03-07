@@ -27505,7 +27505,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: -15
   far clip plane: 1000
   field of view: 20
   orthographic: 1
@@ -36807,7 +36807,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 20
     OrthographicSize: 24.1
-    NearClipPlane: 0.01
+    NearClipPlane: -15
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
@@ -37274,17 +37274,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 736796630}
   m_Mesh: {fileID: 1890910595786045333, guid: 1375c009bcd67e04fa9fea88c84732a0, type: 3}
---- !u!114 &736944773 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 4193574602828378490, guid: d587fee46528bcb4396971826c10f454, type: 3}
-  m_PrefabInstance: {fileID: 820015839}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &737782961
 GameObject:
   m_ObjectHideFlags: 0
@@ -41823,7 +41812,7 @@ PrefabInstance:
     - target: {fileID: 5754089432759215070, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: endTurnBtn
       value: 
-      objectReference: {fileID: 736944773}
+      objectReference: {fileID: 0}
     - target: {fileID: 5754089432759215070, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: GaugeManager
       value: 
@@ -106642,7 +106631,7 @@ Transform:
   m_GameObject: {fileID: 2108932549}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 4.7, y: 9, z: -28.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

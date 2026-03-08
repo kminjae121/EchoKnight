@@ -43,7 +43,7 @@ namespace Code.UI
                 .Append(popUpTxt.transform.DOScale(1, 1f))
                 .Append(popUpTxt.DOFade(0, 0.6f))
                 .Append(thisObjectImg.DOFade(1, 0.4f))
-                .Append(eventImg.DOFade(255, 0.4f))
+                .Append(eventImg.DOFade(1, 1f))
                 .Append(mainTxt.DoText(eventTexts[randValue].MainTxt, activeTime))
                 .Append(selectBtn.transform.DOScale(1, 0.5f))
                 .Append(skipBtn.transform.DOScale(1, 0.5f));
@@ -62,7 +62,7 @@ namespace Code.UI
                 .Append(mainTxt.DoText(eventTexts[value].SkipTxt, activeTime))
                 .AppendInterval(0.5f)
                 .Append(eventImg.DOFade(0, 0.5f))
-                .Append(mainTxt.DoText("", 0))
+                .Append(mainTxt.RemoveText( 0.5f))
                 .AppendInterval(0.3f)
                 .Append(thisObjectImg.DOFade(0, 1f));
         }
@@ -77,25 +77,29 @@ namespace Code.UI
         {
             if (value == 1)
             {
+                mainTxt.text = eventTexts[randomValue].FailTxt;
+                
                 skipBtn.gameObject.SetActive(false);
                 selectBtn.gameObject.SetActive(false);
                 DOTween.Sequence()
                     .Append(mainTxt.DoText(eventTexts[randomValue].FailTxt, activeTime))
                     .AppendInterval(0.3f)
                     .Append(eventImg.DOFade(0, 0.5f))
-                    .Append(mainTxt.DoText("", 0))
+                    .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
                     .Append(thisObjectImg.DOFade(0, 0.5f));
             }
             else
             {
+                mainTxt.text = eventTexts[randomValue].SuccessTxt;
+                
                 skipBtn.gameObject.SetActive(false);
                 selectBtn.gameObject.SetActive(false);
                 DOTween.Sequence()
                     .Append(mainTxt.DoText(eventTexts[randomValue].SuccessTxt, activeTime))
                     .AppendInterval(0.3f)
                     .Append(eventImg.DOFade(0, 0.5f))
-                    .Append(mainTxt.DoText("", 0))
+                    .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
                     .Append(thisObjectImg.DOFade(0, 0.5f));
                 

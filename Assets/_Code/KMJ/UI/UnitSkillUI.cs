@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -55,15 +53,15 @@ namespace Code.UI
         
         private void HandleSkillUIEvent(SkillUIEvent evt)
         {
-            skillCompnent = evt.skillComponent;
-            thisSkillName[evt.skillIdx] = evt.skillName;
+            skillCompnent = evt.SkillComponent;
+            thisSkillName[evt.SkillIndex] = evt.SkillName;
             
             
-            skillbtn[evt.skillIdx].onClick.RemoveAllListeners();
+            skillbtn[evt.SkillIndex].onClick.RemoveAllListeners();
             
-            int capturedIdx = evt.skillIdx;
+            int capturedIdx = evt.SkillIndex;
 
-            if (evt.skillName != null)
+            if (evt.SkillName != null)
             {
                 skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
             }

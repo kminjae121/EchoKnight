@@ -20,5 +20,23 @@ namespace _Code.Core.Managers
                 duration
             ).SetEase(Ease.Linear);
         }
+
+        public static Tween RemoveText(this TextMeshProUGUI thisTmp, float duration)
+        {
+            string text = thisTmp.text;
+            
+            int length = text.Length;
+
+            return DOTween.To(
+                () => length,
+                x =>
+                {
+                    length = x;
+                    thisTmp.text = text.Remove(length - 1);
+                },
+                0,
+                duration
+            ).SetEase(Ease.Linear);
+        }
     }
 }

@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class CharacterSkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPoolable
+    public class CharacterSkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPoolable
     {
         [Header("Pooling Settings")]
         [SerializeField] private PoolingItemSO poolingType;
@@ -21,7 +21,6 @@ namespace Code.UI
 
         private SkillSO _skillInfo;
         private bool _isEquipped;
-
         private GondrLib.ObjectPool.Runtime.Pool _pool;
 
         public PoolingItemSO PoolingType => poolingType;
@@ -68,18 +67,19 @@ namespace Code.UI
             RefreshColor();
         }
         
-        public void HandleSkillButton()
+        public void OnPointerClick(PointerEventData eventData)
         {
             if (_skillInfo == null)
-            {
-                Debug.LogWarning("스킬 정보가 존재하지 않습니다.");
                 return;
-            }
 
-            if (_isEquipped)
-                Bus<SkillUnequipEvent>.Raise(new SkillUnequipEvent(_skillInfo));
-            else
-                Bus<SkillEquipEvent>.Raise(new SkillEquipEvent(_skillInfo));
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                Bus<SkillDetailSelectEvent>.Raise(new SkillDetailSelectEvent(_skillInfo));
+            }
+            else if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skillInfo, _isEquipped, eventData.position));
+            }
         }
         
         private void HandleSkillEquipped(SkillEquippedEvent evt)

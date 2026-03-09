@@ -22,7 +22,7 @@ namespace UnitSystem
         [SerializeField] private LayerMask whatIsGround;
         [SerializeField] private Image unitImage;
 
-        public UnitBehavaveCompo BehaveCompo { get; set; }
+        public UnitBehaviorCompo BehaveCompo { get; set; }
         public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         
@@ -41,7 +41,7 @@ namespace UnitSystem
         {
             SkillCompo = GetUnitCompo<SkillComponent>();
             TriggerCompo = GetUnitCompo<UnitAnimationTrigger>();
-            BehaveCompo = GetUnitCompo<UnitBehavaveCompo>();
+            BehaveCompo = GetUnitCompo<UnitBehaviorCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
             UnitCostComponentCompo = GetUnitCompo<UnitCostComponent>();

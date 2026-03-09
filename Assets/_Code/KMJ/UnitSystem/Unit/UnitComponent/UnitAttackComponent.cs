@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+﻿using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using EnemySystem;
@@ -14,38 +12,34 @@ namespace Code.UnitSystem
 {
     public class UnitAttackComponent : RangeComponent
     {
-        private CinemachineImpulseSource impulseSource;
-        
         [SerializeField] private LayerMask whatIsBody;
-
         [SerializeField] private UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitRotation rotationCompo; 
-        
         [SerializeField] private MeshRenderer ownCircleMesh;
         [SerializeField] private Material CriticalMaterial;
         [SerializeField] private Material basicMaterial;
         
-        public CharacterUnit _characterUnit { get; set; }
+        public CharacterUnit _characterUnit { get; private set; }
         private UnitCostComponent _unitCostComponentCompo;
         
         private InputReader _inputReader;
         private UnitSO _unitSO;
+        private CinemachineImpulseSource _impulseSource;
         
         public DamageData _damageData;
         private float _atkDamage;
-        private float addDamage = 0;
+        private float addDamage;
 
-        private GameObject _targetEnemy = null;
-        private EnemyTargeting _targetingCompo = null;
+        private GameObject _targetEnemy;
+        private EnemyTargeting _targetingCompo;
 
-        public UnityEvent<GameObject> attackEvent = new UnityEvent<GameObject>();
+        public UnityEvent<GameObject> attackEvent = new();
         public UnityEvent attackStartEvent;
         public UnityEvent attackEndEvent;
         
         protected override void Awake()
         {
-            if (attackEndEvent == null)
-                attackEndEvent = new UnityEvent();
+            attackEndEvent ??= new UnityEvent();
         }
 
         protected override void Start()
@@ -72,7 +66,6 @@ namespace Code.UnitSystem
         {
             attackEndEvent.RemoveListener(AttackEnded);
             _inputReader.OnAttackEvent -= AttackEnemy;
-            
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
         }
         

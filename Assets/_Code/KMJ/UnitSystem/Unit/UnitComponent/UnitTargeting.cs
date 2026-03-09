@@ -13,7 +13,7 @@ namespace UnitSystem
     {
         [SerializeField] private UnitAttackComponent atkCompo;
         [SerializeField] private InputReader inputSO;
-        [SerializeField] private UnitBehavaveCompo behaveCompo;
+        [SerializeField] private UnitBehaviorCompo behaveCompo;
 
         private GameObject _targetEnemy;
 

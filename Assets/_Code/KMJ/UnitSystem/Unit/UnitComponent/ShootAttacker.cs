@@ -48,20 +48,17 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         public void AttackAction(GameObject target)
         {
             _ownTrm = transform.position;
-            StartCoroutine(MeleeAttackAction(target));
+            StartCoroutine(ShootAttackSet(target));
         }
 
-        private IEnumerator MeleeAttackAction(GameObject target)
+        private IEnumerator ShootAttackSet(GameObject target)
         {
+            yield return new WaitForSeconds(0.4f);
             
-            yield return new WaitForSeconds(0.3f);
             _target = null;
-            
-            yield return new WaitForSeconds(0.1f);
-            
             _target = target;
+            
             animtionCompo.PlaySelectAnimation("ATTACK");
-
         }
 
         private void Shoot()
@@ -82,9 +79,11 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private void AttackEnd()
         {
             animtionCompo.PlaySelectAnimation("IDLE");
+            
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            
             atkCompo.attackEndEvent?.Invoke();
         }
     }

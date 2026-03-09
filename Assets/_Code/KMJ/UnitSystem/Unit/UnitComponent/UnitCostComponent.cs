@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace UnitSystem
 {
-    public class UnitCost : MonoBehaviour, IUnitComponent
+    public class UnitCostComponent : MonoBehaviour, IUnitComponent
     {
         private Unit unit;
         
@@ -44,6 +44,7 @@ namespace UnitSystem
         {
             if (OwnUnitManage.Instance == null) return;
             float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
+            
             Bus<ActionGaugeEvent>.Raise(new ActionGaugeEvent(value));
         }
     }

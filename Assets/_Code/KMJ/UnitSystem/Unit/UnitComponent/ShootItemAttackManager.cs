@@ -34,7 +34,6 @@ namespace UnitSystem
             
             shootItems.ForEach(item =>
             {
-                
                 _shootItemDict.Add(item.itemName, item);
             });
         }
@@ -66,8 +65,6 @@ namespace UnitSystem
         public void CreateShootItem(string itemName, Vector3 pos, Vector3 rotation)
         {
             ShootItem itemCompo = _shootItemDict.GetValueOrDefault(itemName);
-            
-            
             GameObject item = itemCompo.gameObject;
 
             if (item == null)
@@ -77,16 +74,11 @@ namespace UnitSystem
                 return;
             
             GameObject shootItem = Instantiate(item, pos ,Quaternion.identity);
-
             ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
             
             shootItemCompo.SetShootItemCompo(this);
-            
             shootItemCompo.SetTarget(_target);
-            
             shootItem.transform.rotation = Quaternion.Euler(rotation);
-
-            
         }
 
         private void GiveDamage()
@@ -94,12 +86,10 @@ namespace UnitSystem
             Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             
-            UnityLogger.Log(impulseSource);
             impulseSource.GenerateImpulse(0.4f);  
             
             _target.GetComponent<IDamageable>().ApplyDamage(_damageData,transform.position, transform.position,
                 atkData,_unit);
         }
-        
     }
 }

@@ -20,8 +20,7 @@ public class LongRangeAttacker : MonoBehaviour
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
         [SerializeField] private GameObject effectPrefab;
-
-
+        
         private GameObject _target = null;
         
         public bool isRunningAttack = false;
@@ -45,32 +44,27 @@ public class LongRangeAttacker : MonoBehaviour
         public void AttackAction(GameObject target)
         {
             _ownTrm = transform.position;
+            
             StartCoroutine(MeleeAttackAction(target));
         }
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
+            yield return new WaitForSeconds(0.4f);
             
-            yield return new WaitForSeconds(0.3f);
-            _target = null;
-            
-            yield return new WaitForSeconds(0.1f);
-            
-             animtionCompo.PlaySelectAnimation("ATTACK");
-
              _target = target;
+             
+             animtionCompo.PlaySelectAnimation("ATTACK");
         }
 
 
         private void ShootLongRangeAttack()
         {
             Vector3 dir = _target.transform.position;
-
             dir.y += 1.4f;
             
             effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo._damageData);
             effectPrefab.transform.position = dir;
-            
             effectPrefab.SetActive(true);
         }
 
@@ -79,6 +73,7 @@ public class LongRangeAttacker : MonoBehaviour
         {
             animtionCompo.PlaySelectAnimation("IDLE");
             atkCompo.attackEndEvent?.Invoke();
+            
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));

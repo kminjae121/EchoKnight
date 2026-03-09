@@ -153,7 +153,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private void Update()
         {
-            if (_unit.isMyTurn && _isAct && !isMoving)
+            if (_unit.isMyTurn && IsActive && !isMoving)
             {
                 CheckTilesCanMoving();
                 
@@ -164,7 +164,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 else
                   EndTargeting();
             }
-            else if (_isAct == false)
+            else if (!IsActive)
                 EndTargeting();
         }
         
@@ -192,7 +192,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             if (!_unit.isMyTurn)
                 return;
-            if (!_isAct)
+            if (!IsActive)
                 return;
 
             if (isMoving)
@@ -232,7 +232,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             visualPrefabs.SetActive(false);
             
-            _isAct = false;
+            IsActive = false;
             isMoving = true;
             
             rotationCompo.SetDir(tile.transform.position);
@@ -254,7 +254,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             navMeshAgent.enabled = false;
 
             isMoving = false;
-            _isAct = true;
+            IsActive = true;
             
             _currentMapTile = tile;
             tile.TryGetComponent(out IMapTile endTile);

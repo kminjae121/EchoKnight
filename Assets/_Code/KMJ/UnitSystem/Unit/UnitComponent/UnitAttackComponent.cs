@@ -128,7 +128,7 @@ namespace Code.UnitSystem
 
         private void Update()
         {
-            if (_characterUnit.isMyTurn && _isAct)
+            if (_characterUnit.isMyTurn && IsActive)
             {
                 _characterUnit.BehaveCompo.ResetTile();
                 GameObject enemy = _inputReader.GetEnemy();
@@ -209,7 +209,7 @@ namespace Code.UnitSystem
 
         public void AttackEnemy()
         {
-            if (_characterUnit.isMyTurn && _isAct)
+            if (_characterUnit.isMyTurn && IsActive)
             {
                 _damageData.damage += addDamage;
                 GameObject enemy = _inputReader.GetEnemy();

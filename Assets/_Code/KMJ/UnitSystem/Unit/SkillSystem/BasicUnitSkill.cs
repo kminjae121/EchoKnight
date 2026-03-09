@@ -13,7 +13,8 @@ namespace Code.UnitSystem.SkillSystem
 {
     public class BasicUnitSkill : BaseSkill
     {
-        [Header("Basic Settings")]
+        [Header("Basic Settings")] [SerializeField]
+        protected CriticalSpot criticalSpot;
         protected CharacterUnit characterUnit;
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo = null;
@@ -89,7 +90,7 @@ namespace Code.UnitSystem.SkillSystem
                     if (_targetEnemy != null && _targetingCompo == null)
                     {
                         rotationCompo.SetDir(_targetEnemy.transform.position);
-                        CheckEnemyBody(_targetEnemy);
+                        criticalSpot.CheckEnemyBody(_damageData,_targetEnemy,damage,addDamage);
                         
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();

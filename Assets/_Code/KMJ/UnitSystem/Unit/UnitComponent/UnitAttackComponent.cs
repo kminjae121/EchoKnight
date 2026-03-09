@@ -18,7 +18,8 @@ namespace Code.UnitSystem
         [SerializeField] private LayerMask whatIsBody;
 
         [SerializeField] private UnitAnimationTrigger triggerCompo;
-        [SerializeField] private UnitRotation rotationCompo; 
+        [SerializeField] private UnitRotation rotationCompo;
+        [SerializeField] private CriticalSpot criticalSpot;
         
         [SerializeField] private MeshRenderer ownCircleMesh;
         [SerializeField] private Material CriticalMaterial;
@@ -161,52 +162,12 @@ namespace Code.UnitSystem
                         
                         _targetingCompo.Targeting();
                         
-                        CheckEnemyBody(_targetEnemy);
+                        criticalSpot.CheckEnemyBody(_damageData, _targetEnemy.gameObject, _atkDamage, addDamage);
                         
                         Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage,health.CurrentHealth, 
                             health.MaxHealth,_damageData.damage, true,targetUnit.unitSO.UnitImage,true));
                     }
                 }
-            }
-        }
-
-        private void CheckEnemyBody(GameObject target)
-        {
-            _damageData.damage = _atkDamage;
-            addDamage = 0;
-            
-            Vector3 toAttacker = _characterUnit.transform.position - target.transform.position;
-            toAttacker.y = 0f;
-
-            Vector3 enemyForward = target.transform.forward;
-            enemyForward.y = 0f;
-
-            toAttacker.Normalize();
-            enemyForward.Normalize();
-
-            float dot = Vector3.Dot(enemyForward, toAttacker);
-            
-            float deadZone = 0.2f;
-
-            BodyType type =
-                dot > deadZone ? BodyType.Head :
-                dot < -deadZone ? BodyType.Back :
-                BodyType.None;
-
-            if (_unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else if (_unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else
-            {
-                addDamage = 0f;
-                ownCircleMesh.material = basicMaterial;
             }
         }
 

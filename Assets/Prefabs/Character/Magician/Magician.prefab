@@ -1569,6 +1569,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 556797374222218312}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &4441434729300838614
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1965540238293477992}
+  - component: {fileID: 7752189333861557116}
+  m_Layer: 7
+  m_Name: CriticalSpot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1965540238293477992
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4441434729300838614}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.934}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5312050881103246690}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7752189333861557116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4441434729300838614}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b780d06803845cfab41feb8b4b43889, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Code.KMJ.UnitSystem.Unit.UnitComponent.CriticalSpot
 --- !u!1 &4587660561393082411
 GameObject:
   m_ObjectHideFlags: 0
@@ -2136,6 +2180,7 @@ Transform:
   - {fileID: 1617682948123757803}
   - {fileID: 8813400249751240388}
   - {fileID: 6547914116936946141}
+  - {fileID: 1965540238293477992}
   - {fileID: 5553305412821377374}
   - {fileID: 606917524072472636}
   - {fileID: 8716369724573428111}
@@ -5691,6 +5736,7 @@ MonoBehaviour:
     m_Bits: 512
   triggerCompo: {fileID: 4918850842610012167}
   rotationCompo: {fileID: 5137460681628610011}
+  criticalSpot: {fileID: 7752189333861557116}
   ownCircleMesh: {fileID: 8547850988546769422}
   CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
   basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}

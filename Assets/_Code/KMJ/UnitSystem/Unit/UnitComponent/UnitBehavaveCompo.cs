@@ -36,11 +36,12 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private float _moveSpeed;
         public GameObject _currentMapTile { get; set; }= null;
         
-        private readonly List<GameObject> _movingTiles =  new();
+        private List<GameObject> _movingtiles =  new List<GameObject>();
         public UnitManageRangeCompo unitRangeCompo { get; private set; }
-        private UnitCost unitCostCompo;
+        private UnitCostComponent _unitCostComponentCompo;
 
         private IMapTile nextTile = null;
+
         
         protected override void Start()
         {
@@ -66,7 +67,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             navMeshAgent.enabled = false;
             
-            unitCostCompo = _unit.GetUnitCompo<UnitCost>();
+            _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
             
@@ -125,57 +126,64 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private void CheckTilesCanMoving()
         {
-            _movingTiles.Clear();
+            _movingtiles.Clear();
 
-            foreach (var tile in _horizontalCollider)
+            _horizontalCollider.ToList().ForEach(tile =>
             {
-                if (!tile.TryGetComponent(out IMapTile tiled))
-                    continue;
-                
-                if (!tiled.HasObstacle)
-                    _movingTiles.Add(tile.gameObject);
-            }
+                if (tile.TryGetComponent(out IMapTile tiled))
+                {
+                    if (!tiled.HasObstacle)
+                    {
+                        _movingtiles.Add(tile.gameObject);
+                    }
+                }
+            });
 
-            foreach (var tile in _verticalCollider)
+            _verticalCollider.ToList().ForEach(tile =>
             {
-                if (!tile.TryGetComponent(out IMapTile tiled))
-                    continue;
-                
-                if (!tiled.HasObstacle)
-                    _movingTiles.Add(tile.gameObject);
-            }
+                if (tile.TryGetComponent(out IMapTile tiled))
+                {
+                    if (!tiled.HasObstacle)
+                    {
+                        _movingtiles.Add(tile.gameObject);
+                    }
+                }
+            });
         }
 
         private void Update()
         {
-            if (_unit.isMyTurn && IsActive && !isMoving)
+            if (_unit.isMyTurn && _isAct && !isMoving)
             {
                 CheckTilesCanMoving();
                 
                 GameObject tileTrm = _unit.InputSO.GetWorldPosition();
             
-                if (_movingTiles.Contains(tileTrm))
+                if (_movingtiles.Contains(tileTrm))
                     SetTargetEnemy(tileTrm);
                 else
                   EndTargeting();
             }
-            else if (IsActive == false)
+            else if (_isAct == false)
                 EndTargeting();
         }
         
         public void StartWalk(UnitSetMoveEvent evt)
         {
-            if (_unit.isMyTurn  && !evt.isStart)
+            if (_unit.isMyTurn  && evt.isStart == false)
+            { 
                 ResetTile();
+            }
             else if (_unit.isMyTurn && evt.isStart == true)
+            {
                ReCheckInRange();
+            }
         }
         
         
         private void HandleResetTile()
         {
             unitRangeCompo.RemoveAllRange();
-            
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         }
@@ -184,30 +192,30 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             if (!_unit.isMyTurn)
                 return;
-            
-            if (!IsActive)
+            if (!_isAct)
                 return;
 
             if (isMoving)
                 return;
             
-            if (unitCostCompo.GetCurrentCost() <= 0)
+            if (_unitCostComponentCompo.GetCurrentCost() <= 0)
             {
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
-                
                 ResetTile();
                 EndAct();
-                
                 return;
             }
             
             IMapTile tile = _unit.InputSO.GetSelectedTile();
             GameObject tileTrm = _unit.InputSO.GetWorldPosition();
+
+            if (!_movingtiles.Contains(tileTrm))
+            {
+                visualPrefabs.SetActive(false);
+                return;
+            }
             
             visualPrefabs.SetActive(false);
-            
-            if (!_movingTiles.Contains(tileTrm))
-                return;
             
             StartCoroutine(Move(tile, tileTrm));
             
@@ -224,7 +232,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             visualPrefabs.SetActive(false);
             
-            IsActive = false;
+            _isAct = false;
             isMoving = true;
             
             rotationCompo.SetDir(tile.transform.position);
@@ -246,7 +254,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             navMeshAgent.enabled = false;
 
             isMoving = false;
-            IsActive = true;
+            _isAct = true;
             
             _currentMapTile = tile;
             tile.TryGetComponent(out IMapTile endTile);
@@ -282,8 +290,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             MoveStart(tile);
 
-            // 추후 수정
-            unitCostCompo.RemoveCost(15);
+            _unitCostComponentCompo.RemoveCost(15);
 
             while (navMeshAgent.pathPending) yield return null;
 
@@ -298,5 +305,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             MoveEnd(tile);
         }
+
     }
 }

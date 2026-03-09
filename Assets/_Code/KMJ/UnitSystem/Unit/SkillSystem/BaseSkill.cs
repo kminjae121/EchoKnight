@@ -64,9 +64,8 @@ namespace Code.UnitSystem.SkillSystem
             _unitBase = _owner;
 
             if (_unitBase != null && statCompo == null)
-            {
                 statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
-            }
+            
             
             if (statCompo != null)
             {
@@ -75,9 +74,7 @@ namespace Code.UnitSystem.SkillSystem
                 damage = (int)floatdamage;
             }
             else
-            {
                 damage = basicSkillDamage;
-            }
 
             _damageData.damage = damage;
 
@@ -158,9 +155,9 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void CheckCanAttack()
         {
-            if (unitCam != null) unitCam.SetThisUnit();
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+            
             FindObjectInRange();
         }
 
@@ -168,7 +165,6 @@ namespace Code.UnitSystem.SkillSystem
         {
             BlockThisSkill();
             ResetTile();
-            if (unitCam != null) unitCam.EndThisUnit();
             
             skillEndEvent?.Invoke();
         }

@@ -50,7 +50,7 @@ using UnityEngine;
         {
             CharacterUnit unit = _owner as CharacterUnit;
 
-            unit.UnitCostCompo.GetCost(25);
+            unit.UnitCostComponentCompo.GetCost(25);
         }
         
         private void SkillEnd()

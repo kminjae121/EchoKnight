@@ -68,16 +68,19 @@ namespace Code.UnitSystem.SkillSystem
                 GameObject enemy = _inputReader.GetEnemy();
                 characterUnit.BehaveCompo.ResetTile();
                 
-                if (enemy == null && _targetEnemy != null)
+                if (enemy == null)
                 {
-                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                    if (_targetingCompo != null) _targetingCompo.OffTargeting();
-                    
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
-                        _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
+                    if (_targetEnemy != null)
+                    {
+                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                        _targetingCompo.OffTargeting();
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
+                            _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
 
-                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
-                    _targetingCompo = null;
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+                        _targetingCompo = null;
+                    }
                 }
                 else if (enemy != null)
                 {
@@ -87,26 +90,16 @@ namespace Code.UnitSystem.SkillSystem
                     {
                         rotationCompo.SetDir(_targetEnemy.transform.position);
                         CheckEnemyBody(_targetEnemy);
+                        
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                        
                         if (_targetingCompo != null) _targetingCompo.Targeting();
                         
                         Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage, health.CurrentHealth,
-                            health.MaxHealth, _damageData.damage, true, 
+                            health.MaxHealth, _damageData.damage, true,
                             _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
                     }
-                }
-            }
-            else
-            {
-                if (_targetEnemy != null && _targetingCompo != null)
-                {
-                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                    if (_targetingCompo != null) _targetingCompo.OffTargeting();
-
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
-                        _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
-                    _targetingCompo = null;
                 }
             }
         }
@@ -114,6 +107,7 @@ namespace Code.UnitSystem.SkillSystem
         protected override void CanUseSkillTrue()
         {
             base.CanUseSkillTrue();
+            
             Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(false));
             Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
         }
@@ -166,20 +160,21 @@ namespace Code.UnitSystem.SkillSystem
         {
             _targetEnemy = null;
             
+            
             if (_verticalCollider != null)
             {
-                _verticalCollider.ToList().ForEach(obj =>
+                foreach (var obj in _verticalCollider)
                 {
                     if (enemy == obj.gameObject) _targetEnemy = enemy;
-                });
+                }
             }
 
             if (_horizontalCollider != null)
             {
-                _horizontalCollider.ToList().ForEach(obj =>
+                foreach (var obj in _horizontalCollider)
                 {
                     if (enemy == obj.gameObject) _targetEnemy = enemy;
-                });
+                }
             }
         }
 
@@ -193,16 +188,19 @@ namespace Code.UnitSystem.SkillSystem
                 {
                     if (ownSkill)
                     {
-                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         characterUnit.GaugeManager.UseSkill(useSkillPoint);
+                        
+                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
-                        skillEvent?.Invoke(null);
                         Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
+                        
+                        skillEvent?.Invoke(null);
                     }
                     else
                     {
                         Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+                        
                         CheckCanAttack();
                         CanUseThisSkill();
                     }

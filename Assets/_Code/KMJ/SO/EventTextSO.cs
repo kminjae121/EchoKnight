@@ -1,5 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using Code.Items;
+using UnityEngine;
 
+
+public enum EventType
+{
+    Health,
+    Item
+}
 namespace _Code.KMJ.SO
 {
     [CreateAssetMenu(fileName = "EventSO", menuName = "EventSO", order = 0)]
@@ -13,6 +21,12 @@ namespace _Code.KMJ.SO
         public string FailTxt;
         public string SkipTxt;
 
+        public EventType EventType;
+
         public Sprite EventImg;
+        
+        public float value;
+
+        public ItemSO item;
     }
 }

@@ -158,7 +158,6 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void CheckCanAttack()
         {
-            if (unitCam != null) unitCam.SetThisUnit();
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             FindObjectInRange();
@@ -168,7 +167,6 @@ namespace Code.UnitSystem.SkillSystem
         {
             BlockThisSkill();
             ResetTile();
-            if (unitCam != null) unitCam.EndThisUnit();
             
             skillEndEvent?.Invoke();
         }

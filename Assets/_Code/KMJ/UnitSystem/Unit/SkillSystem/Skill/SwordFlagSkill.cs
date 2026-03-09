@@ -10,7 +10,6 @@ using UnityEngine.Events;
 
 public class SwordFlagSkill : BaseSkill
 {
-    [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private Animator animator;
     private UnitAnimation animtionCompo;
 

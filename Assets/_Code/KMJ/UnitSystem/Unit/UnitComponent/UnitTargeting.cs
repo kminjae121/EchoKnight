@@ -38,17 +38,11 @@ namespace UnitSystem
             GameObject enemy = inputSO.GetEnemy();
 
             if (behaveCompo.visualPrefabs.activeInHierarchy)
-            {
                 ClearTarget();
-            }
             else if (enemy == null && _targetEnemy != null)
-            {
                 ClearTarget();
-            }
             else if (enemy != null)
-            {
                 SetTarget(enemy);
-            }
         }
         
         private void SetTarget(GameObject enemy)
@@ -85,6 +79,7 @@ namespace UnitSystem
 
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, img, false, 0));
             }
+            
             _targetEnemy = null;
             _targetingCompo = null;
         }

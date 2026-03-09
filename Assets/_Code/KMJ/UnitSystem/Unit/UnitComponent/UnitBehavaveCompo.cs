@@ -38,7 +38,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         private List<GameObject> _movingtiles =  new List<GameObject>();
         public UnitManageRangeCompo unitRangeCompo { get; private set; }
-        private UnitCost unitCostCompo;
+        private UnitCostComponent _unitCostComponentCompo;
 
         private IMapTile nextTile = null;
 
@@ -67,7 +67,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             navMeshAgent.enabled = false;
             
-            unitCostCompo = _unit.GetUnitCompo<UnitCost>();
+            _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
             
@@ -198,7 +198,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             if (isMoving)
                 return;
             
-            if (unitCostCompo.GetCurrentCost() <= 0)
+            if (_unitCostComponentCompo.GetCurrentCost() <= 0)
             {
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
                 ResetTile();
@@ -290,7 +290,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             
             MoveStart(tile);
 
-            unitCostCompo.RemoveCost(15);
+            _unitCostComponentCompo.RemoveCost(15);
 
             while (navMeshAgent.pathPending) yield return null;
 

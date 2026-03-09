@@ -17,7 +17,7 @@ namespace UnitSystem
     {
         private UnitSO unitSO;
 
-        [SerializeField] private UnitInGameSO unitInGameSO;
+       private UnitInGameSO unitInGameSO;
 
         private float MoveSpeed => unitSO.MoveSpeed;
 
@@ -32,6 +32,7 @@ namespace UnitSystem
         public void Initialize(Unit owner)
         {
             unitSO = owner.unitSO;
+            unitInGameSO = unitSO.unitInGame;
         }
 
         public T GetStat<T>(StatInfo statInfo)

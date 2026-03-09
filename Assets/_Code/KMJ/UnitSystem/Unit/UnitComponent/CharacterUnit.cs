@@ -30,14 +30,9 @@ namespace UnitSystem
         
         public UnitStatCompo UnitStatCompo { get; private set; }
         
-        public UnitCost UnitCostCompo { get; private set; }
-        
-
+        public UnitCostComponent UnitCostComponentCompo { get; private set; }
         public int PlayableUnitID { get; set; } = -1;
         public GameObject _startTile = null;
-
-        private GameObject _targetEnemy = null;
-        private EnemyTargeting _targetingCompo = null;
         public TurnCostGaugeManager GaugeManager { get; set; }
         private Button endTurnBtn;
         public CinemachineImpulseSource impulseSource { get; private set; }
@@ -49,7 +44,7 @@ namespace UnitSystem
             BehaveCompo = GetUnitCompo<UnitBehavaveCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
-            UnitCostCompo = GetUnitCompo<UnitCost>();
+            UnitCostComponentCompo = GetUnitCompo<UnitCostComponent>();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
@@ -86,7 +81,7 @@ namespace UnitSystem
             if (OwnUnitManage.Instance != null)
                 OwnUnitManage.Instance.currentCost += 20;
 
-            UnitCostCompo.UpdateAPGauge();
+            UnitCostComponentCompo.UpdateAPGauge();
             SkillCompo.UpdateSkillUI();
 
             if (endTurnBtn != null)
@@ -135,6 +130,7 @@ namespace UnitSystem
             {
                 if (endTurnBtn != null)
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
+                
                 OnTurnEnd();
                 Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             }

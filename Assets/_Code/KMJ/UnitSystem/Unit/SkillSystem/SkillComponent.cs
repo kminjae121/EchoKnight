@@ -28,10 +28,8 @@ namespace Code.UnitSystem.SkillSystem
             if (storageSO != null && storageSO.skills != null)
             {
                 foreach (var skillInfo in storageSO.skills)
-                {
                     if (!_skillList.Contains(skillInfo))
                         _skillList.Add(skillInfo);
-                }
             }
 
             foreach (var skillSo in _skillList)
@@ -56,23 +54,17 @@ namespace Code.UnitSystem.SkillSystem
                         component.useSkillPoint = skillSo.UsingSkillCost;
                         
                         if (!skills.ContainsKey(skillSo.skillName))
-                        {
                             skills.Add(skillSo.skillName, component);
-                        }
                     }
                 }
                 else
-                {
                     Debug.LogWarning($"[SkillComponent] '{_unit.name}'에 스킬 컴포넌트 '{type.Name}'가 부착되어 있지 않습니다.");
-                }
             }
 
             if (skills.Count > 0)
             {
                 foreach (var skill in skills.Values)
-                {
                     skill.InitializeSkill();
-                }
             }
         }
         
@@ -118,11 +110,6 @@ namespace Code.UnitSystem.SkillSystem
         private void BooleanSkill(UsingSkillEvent evt)
         {
             isUseSkill = evt.isUsingSkill;
-        }
-
-        public void InitializeSkills()
-        {
-            // Interface implementation
         }
         
         public void StartSkill(string skillName)

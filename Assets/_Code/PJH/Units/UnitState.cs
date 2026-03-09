@@ -37,7 +37,7 @@ namespace Code.UnitSystem
         {
             if (IsDead)
                 return;
-
+            
             CurrentHp.Value = Mathf.Min(Data.Maxhealth, CurrentHp.Value + value);
         }
     }

@@ -1,122 +1,73 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using Code.EntityComponent;
 using Code.UnitSystem;
-using EnemySystem;
-using EntityComponent;
-using TMPro;
 using UnitSystem;
-using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events;
 
 namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 {
-    public class UnitBehavaveCompo : RangeComponent
+    public class UnitBehaviorCompo : RangeComponent
     {
-        private CharacterUnit _unit;
-        
-        private SetUnitCamera unitCam;
         [SerializeField] private UnitAnimation animationCompo;
-
         [SerializeField] private UnitRotation rotationCompo;
         [SerializeField] private UnitAnimationTrigger triggerCompo;
         [field:SerializeField] public GameObject visualPrefabs { get; set; }
-
         [SerializeField] private NavMeshAgent navMeshAgent;
         
-        private bool isMoving = false;
-        private float _moveSpeed;
         public GameObject _currentMapTile { get; set; }= null;
-        
-        private List<GameObject> _movingtiles =  new List<GameObject>();
         public UnitManageRangeCompo unitRangeCompo { get; private set; }
+        
+        private readonly List<GameObject> _movingTiles =  new();
+        private CharacterUnit _unit;
+        private bool isMoving;
+        private float _moveSpeed;
         private UnitCostComponent _unitCostComponentCompo;
-
-        private IMapTile nextTile = null;
-
+        private IMapTile nextTile;
         
         protected override void Start()
         {
             base.Start();
             
-            _unit = _owner as CharacterUnit;
-            
-            _unit.InputSO.OnClickMoveEvent += Move;
-
-            _moveSpeed = _unit.UnitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
-
-            Bus<TopCamEvent>.Subscribe(HandleCamEvent);
-            
             navMeshAgent.updatePosition = true;
-            
             navMeshAgent.updateRotation = true;
-            
             navMeshAgent.speed = _moveSpeed;
-            
             navMeshAgent.acceleration = 999f;
-            
             navMeshAgent.stoppingDistance = 0.05f;
-            
             navMeshAgent.enabled = false;
             
+            _unit = _owner as CharacterUnit;
+            _unit.InputSO.OnClickMoveEvent += Move;
+            _unit.InputSO.OnCancelEvent += HandleResetTile;
+
+            _moveSpeed = _unit.UnitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
             _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
+            unitRangeCompo = _unit.GetUnitCompo<UnitManageRangeCompo>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
-            
-            unitRangeCompo =  _unit.GetUnitCompo<UnitManageRangeCompo>();
-            
-            _unit.InputSO.OnCancelEvent += HandleResetTile;
-        }
-
-        private void HandleCamEvent(TopCamEvent obj)
-        {
-            unitCam = obj.cam.GetComponent<SetUnitCamera>();
-        }
-
-        protected override void OnDestroy()
-        {
-            _unit.InputSO.OnClickMoveEvent -= Move;
-            
-            base.OnDestroy();
         }
 
         private void OnDisable()
         {
-            if (nextTile != null)
-            {
-                nextTile.SetEnemy(false);
-            }
+            nextTile?.SetEnemy(false);
+
             _unit.InputSO.OnCancelEvent -= HandleResetTile;
-            Bus<TopCamEvent>.Unsubscribe(HandleCamEvent);
+            _unit.InputSO.OnClickMoveEvent -= Move;
             Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
         }
-
-
+        
         private void EndTargeting()
         {
-            if (nextTile != null)
-            {
-                nextTile.SetEnemy(false);
-            }
-
+            nextTile?.SetEnemy(false);
             visualPrefabs.SetActive(false);
         }
 
         private void SetTargetEnemy(GameObject tileTrm)
         {
-            if (nextTile != null)
-            {
-                nextTile.SetEnemy(false);
-            }
-            visualPrefabs.transform.rotation = _unit.transform.rotation;
+            nextTile?.SetEnemy(false);
+            
             visualPrefabs.SetActive(true);
             visualPrefabs.transform.rotation = _unit.transform.rotation; 
             visualPrefabs.transform.position = tileTrm.transform.position;
@@ -126,29 +77,25 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         private void CheckTilesCanMoving()
         {
-            _movingtiles.Clear();
+            _movingTiles.Clear();
 
-            _horizontalCollider.ToList().ForEach(tile =>
+            foreach (var tile in _horizontalCollider)
             {
-                if (tile.TryGetComponent(out IMapTile tiled))
-                {
-                    if (!tiled.HasObstacle)
-                    {
-                        _movingtiles.Add(tile.gameObject);
-                    }
-                }
-            });
+                if (!tile.TryGetComponent(out IMapTile tiled))
+                    continue;
+                
+                if (!tiled.HasObstacle)
+                    _movingTiles.Add(tile.gameObject);
+            }
 
-            _verticalCollider.ToList().ForEach(tile =>
+            foreach (var tile in _verticalCollider)
             {
-                if (tile.TryGetComponent(out IMapTile tiled))
-                {
-                    if (!tiled.HasObstacle)
-                    {
-                        _movingtiles.Add(tile.gameObject);
-                    }
-                }
-            });
+                if (!tile.TryGetComponent(out IMapTile tiled))
+                    continue;
+                
+                if (!tiled.HasObstacle)
+                    _movingTiles.Add(tile.gameObject);
+            }
         }
 
         private void Update()
@@ -159,7 +106,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 
                 GameObject tileTrm = _unit.InputSO.GetWorldPosition();
             
-                if (_movingtiles.Contains(tileTrm))
+                if (_movingTiles.Contains(tileTrm))
                     SetTargetEnemy(tileTrm);
                 else
                   EndTargeting();
@@ -170,14 +117,10 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
         public void StartWalk(UnitSetMoveEvent evt)
         {
-            if (_unit.isMyTurn  && evt.isStart == false)
-            { 
+            if (_unit.isMyTurn  && !evt.isStart)
                 ResetTile();
-            }
-            else if (_unit.isMyTurn && evt.isStart == true)
-            {
+            else if (_unit.isMyTurn && evt.isStart)
                ReCheckInRange();
-            }
         }
         
         
@@ -209,17 +152,12 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             IMapTile tile = _unit.InputSO.GetSelectedTile();
             GameObject tileTrm = _unit.InputSO.GetWorldPosition();
 
-            if (!_movingtiles.Contains(tileTrm))
-            {
-                visualPrefabs.SetActive(false);
-                return;
-            }
-            
             visualPrefabs.SetActive(false);
+            
+            if (!_movingTiles.Contains(tileTrm))
+                return;
             
             StartCoroutine(Move(tile, tileTrm));
-            
-            visualPrefabs.SetActive(false);
         }
         
         
@@ -227,10 +165,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private void MoveStart(GameObject tile)
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-            
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
-            
-            visualPrefabs.SetActive(false);
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject,
+                true, new Vector3(0.1f, 0.1f, 0.1f)));
             
             IsActive = false;
             isMoving = true;
@@ -261,14 +197,14 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             endTile.SetObstacle(true);
 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false, new Vector3(0.1f,0.1f,0.1f)));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
+                false, new Vector3(0.1f, 0.1f, 0.1f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             animationCompo.PlaySelectAnimation("IDLE");
             
             ResetTile();
             FindObjectInRange();
         }
-        
         
         private IEnumerator Move(IMapTile tileInfo, GameObject tile)
         {
@@ -292,19 +228,18 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
             _unitCostComponentCompo.RemoveCost(15);
 
-            while (navMeshAgent.pathPending) yield return null;
+            while (navMeshAgent.pathPending)
+                yield return null;
 
             while (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
             {
                 if (navMeshAgent.velocity.sqrMagnitude < 0.0001f && !navMeshAgent.pathPending)
-                {
                     navMeshAgent.SetDestination(tile.transform.position);
-                }
+                
                 yield return null;
             }
             
             MoveEnd(tile);
         }
-
     }
 }

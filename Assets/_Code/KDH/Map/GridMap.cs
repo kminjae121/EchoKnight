@@ -36,10 +36,10 @@ namespace Code.Map
             RebuildTileArray();
         }
 
-        private void OnEnable()
-        {
-            RebuildTileArray();
-        }
+        // private void OnEnable()
+        // {
+        //     RebuildTileArray();
+        // }
 
         private void RebuildTileArray()
         {

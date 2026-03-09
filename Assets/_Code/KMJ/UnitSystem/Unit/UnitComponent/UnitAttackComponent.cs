@@ -1,4 +1,6 @@
-﻿using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+﻿using System.Linq;
+using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using EnemySystem;
@@ -12,19 +14,23 @@ namespace Code.UnitSystem
 {
     public class UnitAttackComponent : RangeComponent
     {
+        
         [SerializeField] private LayerMask whatIsBody;
+
         [SerializeField] private UnitAnimationTrigger triggerCompo;
-        [SerializeField] private UnitRotation rotationCompo; 
+        [SerializeField] private UnitRotation rotationCompo;
+        [SerializeField] private CriticalSpot criticalSpot;
+        
         [SerializeField] private MeshRenderer ownCircleMesh;
         [SerializeField] private Material CriticalMaterial;
         [SerializeField] private Material basicMaterial;
         
-        public CharacterUnit _characterUnit { get; private set; }
+        private CinemachineImpulseSource _impulseSource;
+        public CharacterUnit _characterUnit { get; set; }
         private UnitCostComponent _unitCostComponentCompo;
         
         private InputReader _inputReader;
         private UnitSO _unitSO;
-        private CinemachineImpulseSource _impulseSource;
         
         public DamageData _damageData;
         private float _atkDamage;
@@ -32,6 +38,7 @@ namespace Code.UnitSystem
 
         private GameObject _targetEnemy;
         private EnemyTargeting _targetingCompo;
+        private Unit targetUnit;
 
         public UnityEvent<GameObject> attackEvent = new();
         public UnityEvent attackStartEvent;
@@ -39,7 +46,8 @@ namespace Code.UnitSystem
         
         protected override void Awake()
         {
-            attackEndEvent ??= new UnityEvent();
+            if (attackEndEvent == null)
+                attackEndEvent = new UnityEvent();
         }
 
         protected override void Start()
@@ -49,16 +57,16 @@ namespace Code.UnitSystem
             _characterUnit = _owner as CharacterUnit;
             _unitCostComponentCompo = _characterUnit.GetUnitCompo<UnitCostComponent>();
             
+            Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
+            _inputReader.OnAttackEvent += AttackEnemy;
+            attackEndEvent.AddListener(AttackEnded);
+            
             _unitSO = _characterUnit.unitSO;
             _inputReader = _characterUnit.InputSO;
             
             _atkDamage = _characterUnit.UnitStatCompo.GetStat<float>(StatInfo.AtkDamage);
             _damageData = new DamageData();
             _damageData.damage = _atkDamage;
-
-            Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
-            _inputReader.OnAttackEvent += AttackEnemy;
-            attackEndEvent.AddListener(AttackEnded);
         }
 
 
@@ -66,13 +74,14 @@ namespace Code.UnitSystem
         {
             attackEndEvent.RemoveListener(AttackEnded);
             _inputReader.OnAttackEvent -= AttackEnemy;
+            
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
         }
         
         private void FindEnemyIsThere(GameObject enemy)
         {
             if (_targetEnemy != null && _targetEnemy != enemy)
-                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                _targetingCompo.OffTargeting();
             
             _targetEnemy = null;
 
@@ -130,11 +139,11 @@ namespace Code.UnitSystem
                 {
                     if (_targetEnemy != null)
                     {
-                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                        _targetingCompo.OffTargeting();
+                       if(_targetingCompo != null)
+                          _targetingCompo.OffTargeting();
                         
-                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                            0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
+                       Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                            0, false,null,true));
 
                         _targetingCompo = null;
                     }
@@ -148,55 +157,17 @@ namespace Code.UnitSystem
                         rotationCompo.SetDir(_targetEnemy.transform.position);
                         
                         EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
-                        
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                        targetUnit = _targetEnemy.GetComponent<Unit>();
+                        
                         _targetingCompo.Targeting();
                         
-                        CheckEnemyBody(_targetEnemy);
+                        criticalSpot.CheckEnemyBody(_damageData, _targetEnemy.gameObject, _atkDamage, addDamage);
+                        
                         Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage,health.CurrentHealth, 
-                            health.MaxHealth,_damageData.damage, true,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
+                            health.MaxHealth,_damageData.damage, true,targetUnit.unitSO.UnitImage,true));
                     }
                 }
-            }
-        }
-
-        private void CheckEnemyBody(GameObject target)
-        {
-            _damageData.damage = _atkDamage;
-            addDamage = 0;
-            
-            Vector3 toAttacker = _characterUnit.transform.position - target.transform.position;
-            toAttacker.y = 0f;
-
-            Vector3 enemyForward = target.transform.forward;
-            enemyForward.y = 0f;
-
-            toAttacker.Normalize();
-            enemyForward.Normalize();
-
-            float dot = Vector3.Dot(enemyForward, toAttacker);
-            
-            float deadZone = 0.2f;
-
-            BodyType type =
-                dot > deadZone ? BodyType.Head :
-                dot < -deadZone ? BodyType.Back :
-                BodyType.None;
-
-            if (_unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else if (_unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else
-            {
-                addDamage = 0f;
-                ownCircleMesh.material = basicMaterial;
             }
         }
 
@@ -215,7 +186,7 @@ namespace Code.UnitSystem
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                 Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
                 
-                _targetEnemy.GetComponent<EnemyTargeting>().OffTargeting();
+                _targetingCompo.OffTargeting();
                 AttackStart();
             }
             ResetTile();
@@ -230,7 +201,7 @@ namespace Code.UnitSystem
                 attackEvent?.Invoke(_targetEnemy);
                 
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
-                    0, false, _targetEnemy.GetComponent<Unit>().unitSO.UnitImage, true));
+                    0, false, targetUnit.unitSO.UnitImage, true));
                 
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject,
                     true,new Vector3(0.1f,0.1f,0.1f)));

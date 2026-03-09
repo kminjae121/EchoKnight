@@ -38,7 +38,16 @@ namespace Code.UI
             _originalScale = scaleTarget.localScale;
 
             if (panelNameCanvasGroup != null)
+            {
                 panelNameCanvasGroup.alpha = 0f;
+                Canvas textCanvas = panelNameCanvasGroup.GetComponent<Canvas>();
+                if (textCanvas == null)
+                {
+                    textCanvas = panelNameCanvasGroup.gameObject.AddComponent<Canvas>();
+                }
+                textCanvas.overrideSorting = true;
+                textCanvas.sortingOrder = 100;
+            }
 
             _navButton.onClick.AddListener(HandleNavButtonClick);
 

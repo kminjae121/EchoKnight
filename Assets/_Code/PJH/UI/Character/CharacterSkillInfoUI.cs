@@ -13,6 +13,9 @@ namespace Code.UI
 {
     public class CharacterSkillInfoUI : Panel
     {
+        [Header("Database")]
+        [SerializeField] private List<SkillSO> allSkillsDatabase;
+
         [Header("Pool Settings")]
         [SerializeField] private PoolingItemSO skillButtonPoolingSO;
 
@@ -61,12 +64,27 @@ namespace Code.UI
             
             _loadoutTween?.Kill();
         }
+
+        public override void Open()
+        {
+            base.Open();
+            
+            if (_unit != null)
+            {
+                RefreshUI();
+                ClearDetailArea();
+            }
+        }
         
         private void HandleCharacterInfo(CharacterInfoEvent evt)
         {
             _unit = evt.Unit.Data;
-            RefreshUI();
-            ClearDetailArea();
+
+            if (IsOpen)
+            {
+                RefreshUI();
+                ClearDetailArea();
+            }
         }
         
         private void RefreshUI()
@@ -82,13 +100,30 @@ namespace Code.UI
                 return;
             }
 
-            foreach (var skill in _unit.OwnSkillStorage.skills)
+            if (_unit == null)
+                return;
+
+            if (allSkillsDatabase == null || allSkillsDatabase.Count == 0)
+            {
+                Debug.LogWarning("스킬 데이터베이스가 비어있습니다. 인스펙터에서 스킬들을 연결해주세요.");
+                return;
+            }
+
+            var matchingSkills = allSkillsDatabase.Where(skill => skill.unitType == _unit.UnitType).ToList();
+
+            foreach (var skill in matchingSkills)
             {
                 var skillButton = _poolManager.Pop<CharacterSkillButton>(skillButtonPoolingSO);
                 skillButton.transform.SetParent(skillTrm);
                 skillButton.transform.localScale = Vector3.one;
                 
-                skillButton.SetSkill(skill, _unit.SkillStorage.skills.Contains(skill));
+                bool isEquipped = false;
+                if (_unit.SkillStorage != null && _unit.SkillStorage.skills != null)
+                {
+                    isEquipped = _unit.SkillStorage.skills.Contains(skill);
+                }
+                
+                skillButton.SetSkill(skill, isEquipped);
                 _activeButtons.Add(skillButton);
             }
             
@@ -110,6 +145,9 @@ namespace Code.UI
         
         private void SkillEquip(SkillEquipEvent evt)
         {
+            if (_unit.SkillStorage == null || _unit.SkillStorage.skills == null)
+                return;
+
             if (_unit.SkillStorage.skills.Contains(evt.Skill))
                 return;
             
@@ -133,6 +171,9 @@ namespace Code.UI
 
         private void SkillUnequip(SkillUnequipEvent evt)
         {
+            if (_unit.SkillStorage == null || _unit.SkillStorage.skills == null)
+                return;
+
             if (_unit.SkillStorage.skills.Remove(evt.Skill))
             {
                 Bus<SkillUnequippedEvent>.Raise(new SkillUnequippedEvent(evt.Skill));
@@ -166,6 +207,11 @@ namespace Code.UI
         }
         
         private int GetCurrentCost()
-            => _unit.SkillStorage.skills.Sum(skill => skill.SkillCost);
+        {
+            if (_unit == null || _unit.SkillStorage == null || _unit.SkillStorage.skills == null)
+                return 0;
+                
+            return _unit.SkillStorage.skills.Sum(skill => skill.SkillCost);
+        }
     }
 }

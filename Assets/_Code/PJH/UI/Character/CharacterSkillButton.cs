@@ -14,10 +14,7 @@ namespace Code.UI
 
         [Header("UI Elements")]
         [SerializeField] private Image skillImage;
-        
-        [Header("Colors")]
-        [SerializeField] private Color equippedColor;
-        [SerializeField] private Color unequippedColor;
+        [SerializeField] private GameObject frameImage;
 
         private SkillSO _skillInfo;
         private bool _isEquipped;
@@ -47,7 +44,8 @@ namespace Code.UI
         {
             _skillInfo = null;
             _isEquipped = false;
-            skillImage.color = unequippedColor;
+            if (frameImage != null)
+                frameImage.SetActive(false);
         }
 
         public void ReturnToPool()
@@ -64,7 +62,7 @@ namespace Code.UI
             skillImage.sprite = skill.skillUIImage;
             _isEquipped = isEquipped;
 
-            RefreshColor();
+            RefreshEquipState();
         }
         
         public void OnPointerClick(PointerEventData eventData)
@@ -88,7 +86,7 @@ namespace Code.UI
                 return;
 
             _isEquipped = true;
-            RefreshColor();
+            RefreshEquipState();
         }
         
         private void HandleSkillUnequipped(SkillUnequippedEvent evt)
@@ -97,12 +95,13 @@ namespace Code.UI
                 return;
 
             _isEquipped = false;
-            RefreshColor();
+            RefreshEquipState();
         }
         
-        private void RefreshColor()
+        private void RefreshEquipState()
         {
-            skillImage.color = _isEquipped ? equippedColor : unequippedColor;
+            if (frameImage != null)
+                frameImage.SetActive(_isEquipped);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

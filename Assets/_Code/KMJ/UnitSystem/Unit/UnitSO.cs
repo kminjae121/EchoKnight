@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
+using Code.UnitSystem.ArtifactSystem;
 using Skill;
 using UnityEngine;
 
@@ -39,6 +40,11 @@ public class UnitSO : ScriptableObject
     
     [Header("OwnSkillStorage")]
     public UnitOwnSkillStorageSO OwnSkillStorage;
+    
+    [Header("ArtifactStorage")]
+    public ArtifactStorageSO OwnArtifactStorage;
+    public ArtifactStorageSO EquippedArtifacts;
+
     [Space(4)]
     [Header("CharacterOwnCost")]
     public int Cost;
@@ -65,13 +71,11 @@ public class UnitSO : ScriptableObject
 
     public float DefensivePower;
 
-
     [Header("UnitType")] 
     public UnitInGameSO unitInGame;
     public EntityType EntityType = EntityType.MeleeAttacker;
 
     public UnitType UnitType = UnitType.None;
-
 
     private void OnValidate()
     {

@@ -1,21 +1,12 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using Code.EntityComponent;
 using Code.UnitSystem;
-using EnemySystem;
-using EntityComponent;
-using TMPro;
 using UnitSystem;
-using Unity.Cinemachine;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events;
 
 namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 {
@@ -103,9 +94,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private void EndTargeting()
         {
             if (nextTile != null)
-            {
                 nextTile.SetEnemy(false);
-            }
 
             visualPrefabs.SetActive(false);
         }
@@ -113,9 +102,8 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private void SetTargetEnemy(GameObject tileTrm)
         {
             if (nextTile != null)
-            {
                 nextTile.SetEnemy(false);
-            }
+            
             visualPrefabs.transform.rotation = _unit.transform.rotation;
             visualPrefabs.SetActive(true);
             visualPrefabs.transform.rotation = _unit.transform.rotation; 
@@ -128,27 +116,23 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             _movingtiles.Clear();
 
-            _horizontalCollider.ToList().ForEach(tile =>
+            foreach (var tile in _horizontalCollider)
             {
-                if (tile.TryGetComponent(out IMapTile tiled))
-                {
-                    if (!tiled.HasObstacle)
-                    {
-                        _movingtiles.Add(tile.gameObject);
-                    }
-                }
-            });
+                if (!tile.TryGetComponent(out IMapTile tiled))
+                    continue;
+                
+                if (!tiled.HasObstacle)
+                    _movingtiles.Add(tile.gameObject);
+            }
 
-            _verticalCollider.ToList().ForEach(tile =>
+            foreach (var tile in _verticalCollider)
             {
-                if (tile.TryGetComponent(out IMapTile tiled))
-                {
-                    if (!tiled.HasObstacle)
-                    {
-                        _movingtiles.Add(tile.gameObject);
-                    }
-                }
-            });
+                if (!tile.TryGetComponent(out IMapTile tiled))
+                    continue;
+                
+                if (!tiled.HasObstacle)
+                    _movingtiles.Add(tile.gameObject);
+            }
         }
 
         private void Update()

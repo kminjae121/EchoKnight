@@ -63,7 +63,7 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void Update()
         {
-            if (characterUnit != null && characterUnit.isMyTurn && _isAct && _inputReader != null)
+            if (characterUnit != null && characterUnit.isMyTurn && IsActive && _inputReader != null)
             {
                 GameObject enemy = _inputReader.GetEnemy();
                 characterUnit.BehaveCompo.ResetTile();

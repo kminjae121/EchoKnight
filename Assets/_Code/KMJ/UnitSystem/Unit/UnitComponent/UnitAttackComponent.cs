@@ -85,7 +85,7 @@ namespace Code.UnitSystem
             
             Bus<TopCamEvent>.Subscribe(SetUp);
 
-            ResetTileEvent += EndUnit;
+            _resetTileEvent += EndUnit;
             
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
             
@@ -99,6 +99,7 @@ namespace Code.UnitSystem
 
         private void SetUp(TopCamEvent evt)
         {
+            Debug.Log(evt.cam.name);
             unitCam = evt.cam.GetComponent<SetUnitCamera>();
         }
 
@@ -109,7 +110,7 @@ namespace Code.UnitSystem
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
             Bus<TopCamEvent>.Unsubscribe(SetUp);
-            ResetTileEvent -= EndUnit;
+            _resetTileEvent -= EndUnit;
         }
 
         private void AttackEnded()
@@ -177,7 +178,7 @@ namespace Code.UnitSystem
 
         private void Update()
         {
-            if (_characterUnit.isMyTurn && _isAct)
+            if (_characterUnit.isMyTurn && IsActive)
             {
                 _characterUnit.BehaveCompo.ResetTile();
                 GameObject enemy = _inputReader.GetEnemy();
@@ -274,7 +275,7 @@ namespace Code.UnitSystem
 
         public void AttackEnemy()
         {
-            if (_characterUnit.isMyTurn && _isAct)
+            if (_characterUnit.isMyTurn && IsActive)
             {
                 _damageData.damage += addDamage;
                 GameObject enemy = _inputReader.GetEnemy();

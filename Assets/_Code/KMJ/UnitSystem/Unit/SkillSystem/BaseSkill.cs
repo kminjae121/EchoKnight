@@ -52,7 +52,7 @@ namespace Code.UnitSystem.SkillSystem
 
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
-            ResetTileEvent += skillEnd;
+            _resetTileEvent += skillEnd;
         }
 
         protected override void Start()
@@ -105,7 +105,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             Bus<TopCamEvent>.Unsubscribe(HandleCamEvent);
             skillEndEvent.RemoveListener(CanUseSkillTrue);
-            ResetTileEvent -= skillEnd;
+            _resetTileEvent -= skillEnd;
         }
         
         protected virtual void CanUseSkillTrue()

@@ -33,7 +33,7 @@ namespace UnitSystem
         private void HandleTargeting()
         {
             if (!unit.isMyTurn || inputSO == null) return;
-            if (atkCompo != null && atkCompo._isAct) return;
+            if (atkCompo != null && atkCompo.IsActive) return;
 
             GameObject enemy = inputSO.GetEnemy();
 

@@ -22,18 +22,22 @@ namespace UnitSystem
         [SerializeField] private LayerMask whatIsGround;
         [SerializeField] private Image unitImage;
 
+        #region UnitCompo
+
         public UnitBehavaveCompo BehaveCompo { get; set; }
         public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
-        
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
-        
         public UnitStatCompo UnitStatCompo { get; private set; }
-        
         public UnitCostComponent UnitCostComponentCompo { get; private set; }
-        public int PlayableUnitID { get; set; } = -1;
-        public GameObject _startTile = null;
         public TurnCostGaugeManager GaugeManager { get; set; }
+
+        #endregion
+        
+        public int PlayableUnitID { get; set; } = -1;
+        
+        public GameObject _startTile = null;
+        
         private Button endTurnBtn;
         public CinemachineImpulseSource impulseSource { get; private set; }
 

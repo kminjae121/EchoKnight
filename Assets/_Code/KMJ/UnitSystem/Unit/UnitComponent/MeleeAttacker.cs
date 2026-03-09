@@ -115,6 +115,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
             atkCompo._characterUnit.impulseSource.GenerateImpulse(0.6f);  
             
+            
             _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo._damageData, 
                 _target.transform.position,transform.position,atkData,atkCompo._characterUnit);
             

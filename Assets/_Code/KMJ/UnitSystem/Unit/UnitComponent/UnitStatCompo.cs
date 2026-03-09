@@ -17,22 +17,21 @@ namespace UnitSystem
     {
         private UnitSO unitSO;
 
-       private UnitInGameSO unitInGameSO;
+         private UnitInGameSO unitInGameSO;
 
         private float MoveSpeed => unitSO.MoveSpeed;
 
-        private float AtkDamage => unitInGameSO.AtkDamage;
+        private float AtkDamage => unitSO.AtkDamage;
 
-        private float MaxHealth => unitInGameSO.Maxhealth;
+        private float MaxHealth => unitSO.Maxhealth;
         
-        private float SkillDamage => unitInGameSO.SkillDamage;
+        private float SkillDamage => unitSO.SkillDamage;
         
-        private float DefensivePower => unitInGameSO.DefensivePower;
+        private float DefensivePower => unitSO.DefensivePower;
 
         public void Initialize(Unit owner)
         {
             unitSO = owner.unitSO;
-            unitInGameSO = unitSO.unitInGame;
         }
 
         public T GetStat<T>(StatInfo statInfo)

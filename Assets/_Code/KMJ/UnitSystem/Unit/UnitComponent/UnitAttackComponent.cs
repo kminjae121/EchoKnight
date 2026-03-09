@@ -132,12 +132,12 @@ namespace Code.UnitSystem
                     {
                         _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
                         _targetingCompo.OffTargeting();
-                    }
-                    
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                        0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
+                        
+                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
+                            0, false,_targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
 
-                    _targetingCompo = null;
+                        _targetingCompo = null;
+                    }
                 }
                 else
                 {

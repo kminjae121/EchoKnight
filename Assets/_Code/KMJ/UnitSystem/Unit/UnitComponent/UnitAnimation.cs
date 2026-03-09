@@ -30,12 +30,8 @@ namespace UnitSystem
             if (_animator == null) return;
 
             foreach (var param in _animator.parameters)
-            {
                 if (param.type == AnimatorControllerParameterType.Bool)
-                {
                     _animator.SetBool(param.name, false);
-                }
-            }
         }
         
         public void RestartFromEntry()
@@ -54,12 +50,8 @@ namespace UnitSystem
             if (_animator == null) return;
 
             foreach (var param in _animator.parameters)
-            {
                 if (param.type == AnimatorControllerParameterType.Trigger)
-                {
                     _animator.ResetTrigger(param.name);
-                }
-            }
         }
     }
 }

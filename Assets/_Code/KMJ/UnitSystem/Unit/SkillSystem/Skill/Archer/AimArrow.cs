@@ -53,7 +53,7 @@ public class AimArrow : BasicUnitSkill
         base.Update();
         if (UnityEngine.Input.GetKeyDown(KeyCode.R))
         {
-            if (_isAct)
+            if (IsActive)
             {
                 if (isHorizontal == false)
                 {

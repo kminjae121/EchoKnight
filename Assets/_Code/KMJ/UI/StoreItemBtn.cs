@@ -29,12 +29,13 @@ namespace Code.UI
             itemButton.onClick.RemoveListener(HandleItemButton);
         }
 
-        public void SetItem(ItemSO newItem)
+        public void SetItem(ItemSO newItem, TextMeshProUGUI goldTxt)
         {
             item = newItem;
 
             itemNameText.text = item.itemName;
             itemImage.sprite = item.itemIcon;
+            this.goldTxt = goldTxt;
         }
 
         private void HandleItemButton()

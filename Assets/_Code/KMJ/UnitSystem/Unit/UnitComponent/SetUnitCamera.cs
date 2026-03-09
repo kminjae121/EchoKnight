@@ -11,13 +11,11 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         [SerializeField] private CinemachineCamera unitCam;
 
         private GameObject ownCam;
-        private CinemachineCamera OwnCamCompo;
         [SerializeField] private InputReader inputSO;
 
         private void Start()
         {
             inputSO.OnInteractionEvent += HandleCam;
-            OwnCamCompo = ownCam.GetComponent<CinemachineCamera>();   
         }
 
         private void OnEnable()
@@ -33,19 +31,6 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         private void OnDisable()
         {
             inputSO.OnInteractionEvent -= HandleCam;
-        }
-
-        public void SetThisUnit()
-        {
-           // Bus<CamMovingEvent>.Raise(new CamMovingEvent(unitCam.gameObject));
-           // unitCam.Priority = 2;
-        }
-
-        public void EndThisUnit()
-        {
-//            Bus<CamMovingEvent>.Raise(new CamMovingEvent(ownCam.gameObject));
-            //unitCam.Priority = -1;
-        //   OwnCamCompo.Priority = 1;
         }
         
         private void HandleCam()

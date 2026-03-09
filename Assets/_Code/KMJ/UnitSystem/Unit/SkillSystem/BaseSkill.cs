@@ -52,7 +52,7 @@ namespace Code.UnitSystem.SkillSystem
 
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
-            ResetTileEvent += skillEnd;
+            _resetTileEvent += skillEnd;
         }
 
         protected override void Start()
@@ -64,9 +64,8 @@ namespace Code.UnitSystem.SkillSystem
             _unitBase = _owner;
 
             if (_unitBase != null && statCompo == null)
-            {
                 statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
-            }
+            
             
             if (statCompo != null)
             {
@@ -75,9 +74,7 @@ namespace Code.UnitSystem.SkillSystem
                 damage = (int)floatdamage;
             }
             else
-            {
                 damage = basicSkillDamage;
-            }
 
             _damageData.damage = damage;
 
@@ -105,7 +102,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             Bus<TopCamEvent>.Unsubscribe(HandleCamEvent);
             skillEndEvent.RemoveListener(CanUseSkillTrue);
-            ResetTileEvent -= skillEnd;
+            _resetTileEvent -= skillEnd;
         }
         
         protected virtual void CanUseSkillTrue()
@@ -116,51 +113,12 @@ namespace Code.UnitSystem.SkillSystem
         {
         }
         
-        public void CheckEnemyBody(GameObject target)
-        {
-            _damageData.damage = damage;
-            addDamage = 0;
-            
-            Vector3 toAttacker = _unitBase.transform.position - target.transform.position;
-            toAttacker.y = 0f;
-
-            Vector3 enemyForward = target.transform.forward;
-            enemyForward.y = 0f;
-
-            toAttacker.Normalize();
-            enemyForward.Normalize();
-
-            float dot = Vector3.Dot(enemyForward, toAttacker);
-            
-            float deadZone = 0.2f;
-
-            BodyType type =
-                dot > deadZone ? BodyType.Head :
-                dot < -deadZone ? BodyType.Back :
-                BodyType.None;
-
-            if (_unitBase.unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else if (_unitBase.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else
-            {
-                addDamage = 0f;
-                ownCircleMesh.material = basicMaterial;
-            }
-        }
 
         public virtual void CheckCanAttack()
         {
-            if (unitCam != null) unitCam.SetThisUnit();
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+            
             FindObjectInRange();
         }
 
@@ -168,7 +126,6 @@ namespace Code.UnitSystem.SkillSystem
         {
             BlockThisSkill();
             ResetTile();
-            if (unitCam != null) unitCam.EndThisUnit();
             
             skillEndEvent?.Invoke();
         }

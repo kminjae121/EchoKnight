@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using _Code.Core.Managers;
 using _Code.KMJ.SO;
+using Code.UnitSystem;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -29,6 +30,9 @@ namespace Code.UI
         [SerializeField] private List<EventTextSO> eventTexts;
 
         [SerializeField] private Image thisObjectImg;
+
+        [SerializeField] private UnitStorageSO storageSO;
+        
         private void OnEnable()
         {
             int randValue = Random.Range(0, eventTexts.Count);
@@ -64,7 +68,8 @@ namespace Code.UI
                 .Append(eventImg.DOFade(0, 0.5f))
                 .Append(mainTxt.RemoveText( 0.5f))
                 .AppendInterval(0.3f)
-                .Append(thisObjectImg.DOFade(0, 1f));
+                .Append(thisObjectImg.DOFade(0, 1f))
+                .OnComplete(() => DOTween.KillAll());
         }
 
         private void OnDisable()
@@ -87,7 +92,14 @@ namespace Code.UI
                     .Append(eventImg.DOFade(0, 0.5f))
                     .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
-                    .Append(thisObjectImg.DOFade(0, 0.5f));
+                    .Append(thisObjectImg.DOFade(0, 0.5f))
+                    .OnComplete(() => DOTween.KillAll());
+                
+                
+                storageSO.unitStates.ForEach(state =>
+                {
+                    state.TakeDamage(eventTexts[randomValue].value);
+                });
             }
             else
             {
@@ -101,8 +113,13 @@ namespace Code.UI
                     .Append(eventImg.DOFade(0, 0.5f))
                     .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
-                    .Append(thisObjectImg.DOFade(0, 0.5f));
-                
+                    .Append(thisObjectImg.DOFade(0, 0.5f))
+                    .OnComplete(() => DOTween.KillAll());
+                 
+                storageSO.unitStates.ForEach(state =>
+                {
+                    state.Heal(eventTexts[randomValue].value);
+                });
             }
         }
         

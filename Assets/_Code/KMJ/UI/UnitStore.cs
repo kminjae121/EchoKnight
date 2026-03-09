@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.Items;
@@ -9,15 +8,14 @@ using DG.Tweening;
 using Input;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Code.UI   
 {
-    public class UnitSkillStore : MonoBehaviour
+    public class UnitStore : MonoBehaviour
     {
-
+        private int skillCount = 5;
+        private int itemCount = 3;
         [SerializeField] private GameObject storeObject;
 
         [SerializeField] private Transform storePos;
@@ -33,28 +31,13 @@ namespace Code.UI
 
         [SerializeField] private TextMeshProUGUI goldTxt;
 
-        #region StoreUI
 
-        [SerializeField] private List<GameObject> skillUI = new List<GameObject>();
-        [SerializeField] private List<Image> skillImages;
-        [SerializeField] private List<TextMeshProUGUI> skillDescription;
-        [SerializeField] private List<TextMeshProUGUI> skillPrice;
-        [SerializeField] private List<TextMeshProUGUI> skillOwnUnit;
-        [SerializeField] private List<Button> skillBtn;
-        #endregion
+        [SerializeField] private StoreSkillBtn skillUI;
 
-        #region ItemUI
+        [SerializeField] private StoreItemBtn itemUI;
 
-        [SerializeField] private List<GameObject> itemUIs = new List<GameObject>();
-        [SerializeField] private List<Image> itemImgs;
-        [SerializeField] private List<TextMeshProUGUI> itemDes;
-        [SerializeField] private List<Button> itemBtns;
-
-        #endregion
-
-        private void Awake()
-        {
-        }
+        private List<StoreSkillBtn> skillBtns = new List<StoreSkillBtn>();
+        private List<StoreItemBtn> itemBtns = new List<StoreItemBtn>();
 
         private void OnEnable()
         {
@@ -95,43 +78,36 @@ namespace Code.UI
                 parent.GetChild(0).SetSiblingIndex(Random.Range(0, n));
             }
         }
+        
         public void Show()
         {
-            skillUI.ForEach(UI =>
-            {
-                UI.SetActive(true);
-            });
-            itemUIs.ForEach(UI =>
-            {
-                UI.SetActive(true);
-            });
-            
-            int[] randomIdx = SetRandomIdx();
+            int[] randomIdx = SetRandomIdxSkill();
             int[] randomItemIdx = SetRandomIdxItem();
-
-            SetSkillUI(randomIdx);
-            SetItemUI(randomItemIdx);
+            
+            SpawnItem(randomItemIdx,randomIdx);
         }
 
-        private void SetItemUI(int[] randomIdx)
+        private void SpawnItem(int[] itemRandom, int[] skillRandom)
         {
-            for (int i = 0; i < itemUIs.Count; i++)
+            for (int i = 0; i < skillCount; i++)
             {
-                if (i >= items.Count)
-                {
-                    itemBtns[i].gameObject.SetActive(false);
-                    continue;
-                }
+                StoreSkillBtn skillBtn = Instantiate(skillUI,transform);
                 
-                itemImgs[i].sprite = items[randomIdx[i]].itemIcon;
-                
-                itemDes[i].text = items[randomIdx[i]].itemDesc;
-                
-                itemBtns[i].GetComponent<StoreItemBtn>().SetItem(items[randomIdx[i]]);
+                skillBtns.Add(skillBtn);
             }
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                StoreItemBtn itemBtn = Instantiate(itemUI, transform);
+                
+                itemBtns.Add(itemBtn);
+            }
+
+            SetSkillUI(skillRandom);
+            SetItemUI(itemRandom);
         }
 
-        private int[] SetRandomIdx()
+        private int[] SetRandomIdxSkill()
         {
             int maxCount = skills.Count;
             
@@ -183,48 +159,32 @@ namespace Code.UI
             return idx;
         }
         
+        private void SetItemUI(int[] randomIdx)
+        {
+            for (int i = 0; i < itemBtns.Count; i++)
+            {
+                if (i >= items.Count)
+                {
+                    itemBtns[i].gameObject.SetActive(false);
+                    continue;
+                }
+                
+                itemBtns[i].SetItem(items[randomIdx[i]],goldTxt);
+            }
+        }
         
         private void SetSkillUI(int[] ran)
         {
-            for (int i = 0; i < skillUI.Count; i++)
+            for (int i = 0; i < skillBtns.Count; i++)
             {
                 if (i >= skills.Count)
                 {
-                    skillBtn[i].gameObject.SetActive(false);
+                    skillBtns[i].gameObject.SetActive(false);
                     continue;
                 }
-
-                skillImages[i].sprite = skills[ran[i]].skillUIImage;
                 
-                skillDescription[i].text = skills[ran[i]].SkillDescription;
-                
-                skillOwnUnit[i].text = skills[ran[i]].unitType.ToString();
-
-                skillPrice[i].text = $"{skills[ran[i]].skillPrice.ToString()} 골드";
-              
-                skillBtn[i].onClick.RemoveAllListeners();
-                
-                int idx = i;
-                skillBtn[i].onClick.AddListener(() => SkillBtn(ran[idx]));
+                skillBtns[i].SetSkill(skills[ran[i]], goldTxt);
             }
-        }
-
-        private void SkillBtn(int idx)
-        {
-            if (skills.Count <= 0)
-                return;
-            
-            SkillSO skillInfo = skills[idx];
-
-            if (skillInfo.skillPrice < PlayerManager.Instance.Gold)
-                return;
-            
-            PlayerManager.Instance.RemoveGold(skillInfo.skillPrice);
-            
-            GoodsManager.Instance.GetSkill(skillInfo);
-            goldTxt.text = $"골드 : {PlayerManager.Instance.Gold.ToString()}";
-            
-            EventSystem.current.currentSelectedGameObject.gameObject.SetActive(false);
         }
     }
 }

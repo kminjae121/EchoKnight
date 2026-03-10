@@ -30,7 +30,12 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         protected override void Start()
         {
             base.Start();
+            _unit = _owner as CharacterUnit;
+            _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
+            unitRangeCompo = _unit.GetUnitCompo<UnitManageRangeCompo>();
             
+            
+            _moveSpeed = _unit.UnitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
             navMeshAgent.updatePosition = true;
             navMeshAgent.updateRotation = true;
             navMeshAgent.speed = _moveSpeed;
@@ -38,15 +43,13 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             navMeshAgent.stoppingDistance = 0.05f;
             navMeshAgent.enabled = false;
             
-            _unit = _owner as CharacterUnit;
             _unit.InputSO.OnClickMoveEvent += Move;
             _unit.InputSO.OnCancelEvent += HandleResetTile;
 
-            _moveSpeed = _unit.UnitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
-            _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
-            unitRangeCompo = _unit.GetUnitCompo<UnitManageRangeCompo>();
             
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
+
+            isMoving = false;
         }
 
         private void OnDisable()

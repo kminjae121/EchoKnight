@@ -58,11 +58,11 @@ namespace Code.UnitSystem
             _unitCostComponentCompo = CharacterUnit.GetUnitCompo<UnitCostComponent>();
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
-            _inputReader.OnAttackEvent += AttackEnemy;
             attackEndEvent.AddListener(AttackEnded);
             
             _unitSO = CharacterUnit.unitSO;
             _inputReader = CharacterUnit.InputSO;
+            _inputReader.OnAttackEvent += AttackEnemy;
             
             AtkDamage = CharacterUnit.UnitStatCompo.GetStat<float>(StatInfo.AtkDamage);
             DamageData = new DamageData();
@@ -77,16 +77,15 @@ namespace Code.UnitSystem
             
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
         }
-        
-        
-        private void AttackEnded()
-        {
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
-        }
+
         public void FindEnemyIsThere(GameObject enemy)
         {
             if (_targetEnemy != null && _targetEnemy != enemy)
+            {
+                _targetEnemy.GetComponent<EnemyTargeting>();
                 _targetingCompo.OffTargeting();
+            }
+
             
             _targetEnemy = null;
 
@@ -97,6 +96,11 @@ namespace Code.UnitSystem
             foreach (var obj in _horizontalCollider)
                 if (enemy == obj.gameObject)
                     _targetEnemy = enemy;
+        }
+        
+        private void AttackEnded()
+        {
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
 
         public void CheckCanAttack(UnitAttackEvent evt)
@@ -127,31 +131,6 @@ namespace Code.UnitSystem
             }
         }
 
-        public void SetTargeting(EnemyTargeting targetingCompo)
-        {
-            _targetingCompo = targetingCompo;
-        }
-
-
-        private void AttackStart()
-        {
-            if (_targetEnemy != null)
-            {
-                RotationCompo.SetDir(_targetEnemy.transform.position);
-                
-                attackEvent?.Invoke(_targetEnemy);
-                
-                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
-                    0, false, targetUnit.unitSO.UnitImage, true));
-                
-                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject,
-                    true,new Vector3(0.1f,0.1f,0.1f)));
-                
-                //예비 후에 수정
-                _unitCostComponentCompo.RemoveCost(15f);   
-                ownCircleMesh.material = basicMaterial;
-            }
-        }
         public void AttackEnemy()
         {
             if (CharacterUnit.isMyTurn && IsActive)
@@ -167,10 +146,32 @@ namespace Code.UnitSystem
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                 Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
                 
-                _targetingCompo.OffTargeting();
+                if(_targetingCompo != null)
+                    _targetingCompo.OffTargeting();
+                
                 AttackStart();
             }
             ResetTile();
+        }
+
+        private void AttackStart()
+        {
+            if (_targetEnemy != null)
+            {
+                RotationCompo.SetDir(_targetEnemy.transform.position);
+                
+                attackEvent?.Invoke(_targetEnemy);
+                
+                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
+                    0, false, null, true));
+                
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject,
+                    true,new Vector3(0.1f,0.1f,0.1f)));
+                
+                //예비 후에 수정
+                _unitCostComponentCompo.RemoveCost(15f);   
+                ownCircleMesh.material = basicMaterial;
+            }
         }
     }
 }

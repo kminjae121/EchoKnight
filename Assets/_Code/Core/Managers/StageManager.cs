@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
@@ -53,6 +54,7 @@ namespace _Code.Core.Managers
                 if (data.enemyPrefab == null) continue;
 
                 IMapTile tile = gridMap.GetTile(data.spawnCoord);
+                
                 if (tile == null)
                 {
                     Debug.LogWarning($"적 스폰 좌표 {data.spawnCoord}가 유효하지 않습니다.");

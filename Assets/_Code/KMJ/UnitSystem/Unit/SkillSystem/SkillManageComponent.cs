@@ -12,5 +12,10 @@ namespace Code.UnitSystem.SkillSystem
         {
             usingSkill = skillSo.skill;
         }
+
+        public BasicUnitSkill GetSkillInfo()
+        {
+            return usingSkill;
+        }
     }
 }

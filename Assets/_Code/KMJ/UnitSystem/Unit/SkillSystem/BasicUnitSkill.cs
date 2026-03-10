@@ -13,16 +13,11 @@ namespace Code.UnitSystem.SkillSystem
 {
     public class BasicUnitSkill : BaseSkill
     {
-        [Header("Basic Settings")] [SerializeField]
-        protected CriticalSpot criticalSpot;
+        [Header("Basic Settings")] [field: SerializeField]
+        public CriticalSpot criticalSpot { get; private set; }
         protected CharacterUnit characterUnit;
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo = null;
-
-        protected override void Awake()
-        {
-            base.Awake();
-        }
 
         protected override void Start()
         {
@@ -55,61 +50,11 @@ namespace Code.UnitSystem.SkillSystem
                 _inputReader.OnAttackEvent -= UseSkill;
         }
 
-        protected override void OnDestroy()
+        public void SetEnemyTargeting(EnemyTargeting targeting)
         {
-            base.OnDestroy();
-            if (_inputReader != null)
-                _inputReader.OnAttackEvent -= UseSkill;
+            _targetingCompo = targeting;
         }
-
-        public virtual void Update()
-        {
-            SkillTargeting();
-        }
-
-        private void SkillTargeting()
-        {
-            if (characterUnit != null && characterUnit.isMyTurn && IsActive && _inputReader != null)
-            {
-                GameObject enemy = _inputReader.GetEnemy();
-                characterUnit.BehaveCompo.ResetTile();
-                
-                if (enemy == null)
-                {
-                    if (_targetEnemy != null)
-                    {
-                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                        _targetingCompo.OffTargeting();
-                        
-                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
-                            _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
-
-                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
-                        _targetingCompo = null;
-                    }
-                }
-                else if (enemy != null)
-                {
-                    FindEnemyIsThere(enemy);
-
-                    if (_targetEnemy != null && _targetingCompo == null)
-                    {
-                        rotationCompo.SetDir(_targetEnemy.transform.position);
-                        criticalSpot.CheckEnemyBody(_damageData,_targetEnemy,damage,addDamage);
-                        
-                        EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
-                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                        
-                        if (_targetingCompo != null) _targetingCompo.Targeting();
-                        
-                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage, health.CurrentHealth,
-                            health.MaxHealth, _damageData.damage, true,
-                            _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
-                    }
-                }
-            }
-        }
-
+        
         protected override void CanUseSkillTrue()
         {
             base.CanUseSkillTrue();
@@ -149,10 +94,10 @@ namespace Code.UnitSystem.SkillSystem
                     if (_targetingCompo != null) _targetingCompo.OffTargeting();
                     
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
-                        _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
+                        null,true));
                     
                     if (characterUnit != null && characterUnit.GaugeManager != null)
-                        characterUnit.GaugeManager.UseSkill(useSkillPoint);
+                        characterUnit.GaugeManager.UseSkill(UseSkillPoint);
                     
                     Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                     
@@ -162,7 +107,7 @@ namespace Code.UnitSystem.SkillSystem
             skillEnd(); 
         }
 
-        private void FindEnemyIsThere(GameObject enemy)
+        public void FindEnemyIsThere(GameObject enemy)
         {
             _targetEnemy = null;
             
@@ -180,37 +125,40 @@ namespace Code.UnitSystem.SkillSystem
         public override void ShowSkillRange()
         {
             base.ShowSkillRange();
-            
+
             if (characterUnit != null && characterUnit.GaugeManager != null)
-            {
-                if (characterUnit.GaugeManager.CanUseSkill(useSkillPoint))
+                if (characterUnit.GaugeManager.CanUseSkill(UseSkillPoint))
                 {
                     if (ownSkill)
                     {
-                        characterUnit.GaugeManager.UseSkill(useSkillPoint);
-                        
+                        characterUnit.GaugeManager.UseSkill(UseSkillPoint);
+
                         Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
+                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,
+                            new Vector3(0.1f, 0.1f, 0.1f)));
                         Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
-                        
+                        Bus<SendSkillEvent>.Raise(new SendSkillEvent(this));
+
                         skillEvent?.Invoke(null);
                     }
                     else
                     {
                         Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+                        Bus<SendSkillEvent>.Raise(new SendSkillEvent(this));
                         
                         CheckCanAttack();
                         CanUseThisSkill();
                     }
+
                 }
                 else
                 {
+                    Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
                     Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
                     Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                     Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                 }
-            }
         }
     }
 }

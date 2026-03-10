@@ -70,12 +70,17 @@ namespace Code.UnitSystem
         }
 
 
+        
         protected override void OnDestroy()
         {
             attackEndEvent.RemoveListener(AttackEnded);
             _inputReader.OnAttackEvent -= AttackEnemy;
             
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
+        }
+        public void SetTargeting(EnemyTargeting targetingCompo)
+        {
+            _targetingCompo = targetingCompo;
         }
 
         public void FindEnemyIsThere(GameObject enemy)

@@ -51,7 +51,7 @@ namespace Code.UnitSystem.SkillSystem
                     BaseSkill component = components[0] as BaseSkill;
                     if (component != null)
                     {
-                        component.useSkillPoint = skillSo.UsingSkillCost;
+                        component.UseSkillPoint = skillSo.UsingSkillCost;
                         
                         if (!skills.ContainsKey(skillSo.skillName))
                             skills.Add(skillSo.skillName, component);
@@ -77,7 +77,7 @@ namespace Code.UnitSystem.SkillSystem
                 int idx = 0;
                 foreach (var skill in skills)
                 {
-                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.useSkillPoint,skill.Value.skillImage, this));
+                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.UseSkillPoint,skill.Value.SkillImage, this));
                     idx++;
                 }
             }

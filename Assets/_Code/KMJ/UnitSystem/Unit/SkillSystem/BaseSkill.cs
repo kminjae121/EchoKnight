@@ -13,22 +13,25 @@ namespace Code.UnitSystem.SkillSystem
     public abstract class BaseSkill : RangeComponent
     {
         [Header("Base Settings")]
+        [field: SerializeField] public Sprite SkillImage { get; set; }
         [SerializeField] protected AttackDataSO attackData;
-        [field: SerializeField] public Sprite skillImage { get; set; }
         [SerializeField] private float basicSkillDamage;
-        public int useSkillPoint;
         [SerializeField] protected bool ownSkill = false;
         
-        protected float damage;
-        protected DamageData _damageData;
-        public float addDamage { get; set; }
-        protected Unit _unitBase; 
+        public DamageData DamageData;
+        public int UseSkillPoint;
         public bool isCanUseSkill = false;
+        
+        public float AddDamage { get; private set; }
+        public UnitRotation rotationCompo { get; set; }
+        public float damage { get; set; }
+        
+        
+        protected Unit _unitBase; 
         protected GameObject _targetEnemy = null;
 
         [Header("Unit Component")]
         protected SkillComponent _skillCompo;
-        protected UnitRotation rotationCompo;
         protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
 
@@ -39,7 +42,6 @@ namespace Code.UnitSystem.SkillSystem
 
         [Header("Camera & Effects")]
         protected CinemachineImpulseSource impulseSource;
-        protected SetUnitCamera unitCam;
 
         [Header("Materials & Mesh")]
         [SerializeField] protected MeshRenderer ownCircleMesh;
@@ -58,8 +60,6 @@ namespace Code.UnitSystem.SkillSystem
         protected override void Start()
         {
             base.Start();
-            
-            Bus<TopCamEvent>.Subscribe(HandleCamEvent);
 
             _unitBase = _owner;
 
@@ -76,7 +76,7 @@ namespace Code.UnitSystem.SkillSystem
             else
                 damage = basicSkillDamage;
 
-            _damageData.damage = damage;
+            DamageData.damage = damage;
 
             if (_unitBase as CharacterUnit)
             {
@@ -84,11 +84,7 @@ namespace Code.UnitSystem.SkillSystem
                 impulseSource = unit.impulseSource;
             }
         }
-
-        private void HandleCamEvent(TopCamEvent obj)
-        {
-            unitCam =  obj.cam.GetComponent<SetUnitCamera>();
-        }
+        
 
         public virtual void InitializeSkill()
         {
@@ -100,7 +96,6 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void OnDisable()
         {
-            Bus<TopCamEvent>.Unsubscribe(HandleCamEvent);
             skillEndEvent.RemoveListener(CanUseSkillTrue);
             _resetTileEvent -= skillEnd;
         }

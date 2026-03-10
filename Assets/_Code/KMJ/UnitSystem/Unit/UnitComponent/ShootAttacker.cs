@@ -25,10 +25,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private CinemachineImpulseSource impulseSource;
         
         private GameObject _target = null;
-        
-        public bool isRunningAttack = false;
-        
-        private Vector3 _ownTrm;
 
         private void Start()
         {
@@ -47,7 +43,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
 
         public void AttackAction(GameObject target)
         {
-            _ownTrm = transform.position;
             StartCoroutine(ShootAttackSet(target));
         }
 

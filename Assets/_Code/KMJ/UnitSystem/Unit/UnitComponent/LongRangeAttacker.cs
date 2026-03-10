@@ -22,10 +22,7 @@ public class LongRangeAttacker : MonoBehaviour
         [SerializeField] private GameObject effectPrefab;
         
         private GameObject _target = null;
-        
-        public bool isRunningAttack = false;
-        
-        private Vector3 _ownTrm;
+    
 
         private void Start()
         {
@@ -43,12 +40,10 @@ public class LongRangeAttacker : MonoBehaviour
 
         public void AttackAction(GameObject target)
         {
-            _ownTrm = transform.position;
-            
-            StartCoroutine(MeleeAttackAction(target));
+            StartCoroutine(LongRangeAttackAction(target));
         }
 
-        private IEnumerator MeleeAttackAction(GameObject target)
+        private IEnumerator LongRangeAttackAction(GameObject target)
         {
             yield return new WaitForSeconds(0.4f);
             

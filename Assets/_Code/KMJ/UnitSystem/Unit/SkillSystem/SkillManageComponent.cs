@@ -8,6 +8,16 @@ namespace Code.UnitSystem.SkillSystem
     {
         private BasicUnitSkill usingSkill;
 
+        private void Awake()
+        {
+            Bus<SendSkillEvent>.Subscribe(SetSkillSO);
+        }
+
+        private void OnDisable()
+        {
+            Bus<SendSkillEvent>.Unsubscribe(SetSkillSO);
+        }
+
         public void SetSkillSO(SendSkillEvent skillSo)
         {
             usingSkill = skillSo.skill;

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+﻿using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using EnemySystem;
@@ -15,94 +13,100 @@ namespace Code.UnitSystem
     public class UnitAttackComponent : RangeComponent
     {
         [field: SerializeField] public UnitRotation RotationCompo { get; private set; }
-        [field : SerializeField] public CriticalSpot CriticalSpot { get; private set; }
+        [field: SerializeField] public CriticalSpot CriticalSpot { get; private set; }
         
-        
-        [SerializeField] private UnitAnimationTrigger triggerCompo;
-        [SerializeField] private LayerMask whatIsBody;
-        [SerializeField] private MeshRenderer ownCircleMesh;
-        [SerializeField] private Material CriticalMaterial;
+        [SerializeField] private MeshRenderer ownCircleMesh;    
         [SerializeField] private Material basicMaterial;
-        
+
         public CharacterUnit CharacterUnit { get; set; }
         public float AtkDamage { get; private set; }
         public float AddDamage { get; private set; }
+
+        private const float AttackCost = 15f;
         
-        
-        private CinemachineImpulseSource _impulseSource;
         private InputReader _inputReader;
         private UnitCostComponent _unitCostComponentCompo;
-        private UnitSO _unitSO;
-        
+
         public DamageData DamageData;
 
         private GameObject _targetEnemy;
         private EnemyTargeting _targetingCompo;
-        private Unit targetUnit;
 
-        public UnityEvent<GameObject> attackEvent = new();
+        public UnityEvent<GameObject> attackEvent;
         public UnityEvent attackStartEvent;
         public UnityEvent attackEndEvent;
         
-        protected override void Awake()
-        {
-            if (attackEndEvent == null)
-                attackEndEvent = new UnityEvent();
-        }
-
         protected override void Start()
         {
             base.Start();
-            
+
             CharacterUnit = _owner as CharacterUnit;
             _unitCostComponentCompo = CharacterUnit.GetUnitCompo<UnitCostComponent>();
-            
+
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
             attackEndEvent.AddListener(AttackEnded);
             
-            _unitSO = CharacterUnit.unitSO;
             _inputReader = CharacterUnit.InputSO;
             _inputReader.OnAttackEvent += AttackEnemy;
-            
+
             AtkDamage = CharacterUnit.UnitStatCompo.GetStat<float>(StatInfo.AtkDamage);
-            DamageData = new DamageData();
-            DamageData.damage = AtkDamage;
+
+            DamageData = new DamageData
+            {
+                damage = AtkDamage
+            };
         }
 
-
-        
         protected override void OnDestroy()
         {
-            attackEndEvent.RemoveListener(AttackEnded);
-            _inputReader.OnAttackEvent -= AttackEnemy;
-            
+            attackEndEvent?.RemoveListener(AttackEnded);
+
+            if (_inputReader != null)
+                _inputReader.OnAttackEvent -= AttackEnemy;
+
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
+
+            base.OnDestroy();
         }
-        public void SetTargeting(EnemyTargeting targetingCompo)
-        {
+
+        public void SetTargeting(EnemyTargeting targetingCompo) => 
             _targetingCompo = targetingCompo;
+
+        private float ComputeDamage() => AtkDamage + AddDamage;
+
+        private bool HasEnoughCost()
+        {
+            if (_unitCostComponentCompo == null) return false;
+            return _unitCostComponentCompo.GetCurrentCost() - AttackCost >= 0;
         }
 
         public void FindEnemyIsThere(GameObject enemy)
         {
-            if (_targetEnemy != null && _targetEnemy != enemy)
+            if (enemy == null)
             {
-                _targetEnemy.GetComponent<EnemyTargeting>();
-                _targetingCompo.OffTargeting();
+                _targetEnemy = null;
+                return;
             }
 
-            
+            if (_targetEnemy != null && _targetEnemy != enemy) _targetingCompo?.OffTargeting();
+
             _targetEnemy = null;
 
             foreach (var obj in _verticalCollider)
                 if (enemy == obj.gameObject)
+                {
                     _targetEnemy = enemy;
+                    return;
+                }
 
             foreach (var obj in _horizontalCollider)
                 if (enemy == obj.gameObject)
+                {
                     _targetEnemy = enemy;
+                    return;
+                }
         }
-        
+
         private void AttackEnded()
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
@@ -112,25 +116,22 @@ namespace Code.UnitSystem
         {
             if (evt.isAttack)
             {
-                if (CharacterUnit.isMyTurn)
+                if (!CharacterUnit.isMyTurn) return;
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
+                
+                if (!HasEnoughCost())
                 {
-                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-                    
-                    //임시 후에 수정
-                    if (_unitCostComponentCompo.GetCurrentCost() - 15 < 0)
-                    {
-                        Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
-                        return;
-                    }
-                    attackStartEvent?.Invoke();
-                    
-                    FindObjectInRange();
+                    Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
+                    return;
                 }
+
+                attackStartEvent?.Invoke();
+                FindObjectInRange();
             }
             else
             {
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-                
+
                 ResetTile();
                 EndAct();
             }
@@ -138,45 +139,46 @@ namespace Code.UnitSystem
 
         public void AttackEnemy()
         {
-            if (CharacterUnit.isMyTurn && IsActive)
-            {
-                DamageData.damage += AddDamage;
-                GameObject enemy = _inputReader.GetEnemy();
+            if (!(CharacterUnit.isMyTurn && IsActive)) return;
 
-                FindEnemyIsThere(enemy);
-                
-                if (_targetEnemy == null)
-                    return;
-                
-                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
-                Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
-                
-                if(_targetingCompo != null)
-                    _targetingCompo.OffTargeting();
-                
-                AttackStart();
-            }
+            var enemy = _inputReader.GetEnemy();
+            FindEnemyIsThere(enemy);
+            
+            if (_targetEnemy == null) return;
+            
+            DamageData.damage = ComputeDamage();
+
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+            Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
+
+            _targetingCompo?.OffTargeting();
+            AttackStart();
             ResetTile();
         }
 
         private void AttackStart()
         {
-            if (_targetEnemy != null)
+            if (_targetEnemy == null)
+                return;
+            
+            if (!HasEnoughCost())
             {
-                RotationCompo.SetDir(_targetEnemy.transform.position);
-                
-                attackEvent?.Invoke(_targetEnemy);
-                
-                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
-                    0, false, null, true));
-                
-                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject,
-                    true,new Vector3(0.1f,0.1f,0.1f)));
-                
-                //예비 후에 수정
-                _unitCostComponentCompo.RemoveCost(15f);   
-                ownCircleMesh.material = basicMaterial;
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다."));
+                return;
             }
+            _unitCostComponentCompo.RemoveCost(AttackCost);
+
+            RotationCompo.SetDir(_targetEnemy.transform.position);
+
+            attackEvent?.Invoke(_targetEnemy);
+
+            Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
+                0, false, null, true));
+
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject,
+                true, new Vector3(0.1f, 0.1f, 0.1f)));
+
+            ownCircleMesh.material = basicMaterial;
         }
     }
 }

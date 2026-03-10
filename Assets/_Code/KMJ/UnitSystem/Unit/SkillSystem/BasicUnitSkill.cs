@@ -69,38 +69,23 @@ namespace Code.UnitSystem.SkillSystem
             
             if (isCanUseSkill)
             {
-                GameObject enemy = null;
-                if (_inputReader != null) 
-                    enemy = _inputReader.GetEnemy();
-
-                if (enemy == null && _targetEnemy != null)
-                    enemy = _targetEnemy;
-
-                if (enemy != null)
+                GameObject enemy = _inputReader.GetEnemy();
+                FindEnemyIsThere(enemy);
+                
+                if (_targetEnemy != null)
                 {
-                    FindEnemyIsThere(enemy);
-                    if (_targetEnemy == null) _targetEnemy = enemy; 
-                    
-                    if (rotationCompo != null)
-                        rotationCompo.SetDir(enemy.transform.position);
-
-                    skillEvent?.Invoke(_targetEnemy);
-                    
                     ownCircleMesh.material = basicMaterial;
-
-                    if (_unitBase != null)
-                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
+                    characterUnit.GaugeManager.UseSkill(UseSkillPoint);
                     
-                    if (_targetingCompo != null) _targetingCompo.OffTargeting();
+                    if (rotationCompo != null) rotationCompo.SetDir(enemy.transform.position);
+                    if(_targetingCompo != null) _targetingCompo.OffTargeting();
                     
+                    Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
                         null,true));
-                    
-                    if (characterUnit != null && characterUnit.GaugeManager != null)
-                        characterUnit.GaugeManager.UseSkill(UseSkillPoint);
-                    
                     Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                     
+                    skillEvent?.Invoke(_targetEnemy);
                     _targetEnemy = null;
                 }
             }
@@ -132,21 +117,12 @@ namespace Code.UnitSystem.SkillSystem
                     if (ownSkill)
                     {
                         characterUnit.GaugeManager.UseSkill(UseSkillPoint);
-
-                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-                        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,
-                            new Vector3(0.1f, 0.1f, 0.1f)));
-                        Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
-                        Bus<SendSkillEvent>.Raise(new SendSkillEvent(this));
-
+                        SkillStartEvent();
                         skillEvent?.Invoke(null);
                     }
                     else
                     {
-                        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-                        Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
-                        Bus<SendSkillEvent>.Raise(new SendSkillEvent(this));
-                        
+                        SkillStartEvent();
                         CheckCanAttack();
                         CanUseThisSkill();
                     }
@@ -159,6 +135,15 @@ namespace Code.UnitSystem.SkillSystem
                     Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                     Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                 }
+        }
+
+        private void SkillStartEvent()
+        {
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,
+                new Vector3(0.1f, 0.1f, 0.1f)));
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+            Bus<SendSkillEvent>.Raise(new SendSkillEvent(this));
         }
     }
 }

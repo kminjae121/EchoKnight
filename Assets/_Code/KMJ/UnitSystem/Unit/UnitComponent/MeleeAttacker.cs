@@ -113,11 +113,11 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         public void TakeDamage()
         {
             Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-            atkCompo._characterUnit.impulseSource.GenerateImpulse(0.6f);  
+            atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.6f);  
             
             
-            _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo._damageData, 
-                _target.transform.position,transform.position,atkData,atkCompo._characterUnit);
+            _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo.DamageData, 
+                _target.transform.position,transform.position,atkData,atkCompo.CharacterUnit);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
         }

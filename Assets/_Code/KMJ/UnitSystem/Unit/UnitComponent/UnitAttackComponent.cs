@@ -58,11 +58,11 @@ namespace Code.UnitSystem
             _unitCostComponentCompo = CharacterUnit.GetUnitCompo<UnitCostComponent>();
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
-            _inputReader.OnAttackEvent += AttackEnemy;
             attackEndEvent.AddListener(AttackEnded);
             
             _unitSO = CharacterUnit.unitSO;
             _inputReader = CharacterUnit.InputSO;
+            _inputReader.OnAttackEvent += AttackEnemy;
             
             AtkDamage = CharacterUnit.UnitStatCompo.GetStat<float>(StatInfo.AtkDamage);
             DamageData = new DamageData();
@@ -77,11 +77,15 @@ namespace Code.UnitSystem
             
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
         }
-        
+
         public void FindEnemyIsThere(GameObject enemy)
         {
             if (_targetEnemy != null && _targetEnemy != enemy)
+            {
+                _targetEnemy.GetComponent<EnemyTargeting>();
                 _targetingCompo.OffTargeting();
+            }
+
             
             _targetEnemy = null;
 
@@ -142,7 +146,9 @@ namespace Code.UnitSystem
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                 Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
                 
-                _targetingCompo.OffTargeting();
+                if(_targetingCompo != null)
+                    _targetingCompo.OffTargeting();
+                
                 AttackStart();
             }
             ResetTile();
@@ -157,7 +163,7 @@ namespace Code.UnitSystem
                 attackEvent?.Invoke(_targetEnemy);
                 
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
-                    0, false, targetUnit.unitSO.UnitImage, true));
+                    0, false, null, true));
                 
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject,
                     true,new Vector3(0.1f,0.1f,0.1f)));

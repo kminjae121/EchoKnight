@@ -15,15 +15,12 @@ public partial class IsTargetInRangeCondition : Condition
     public override bool IsTrue()
     {
         if (Target.Value == null || Agent.Value == null)
-        {
             return false;
-        }
         
-        var gridMap = GameObject.FindAnyObjectByType<GridMap>();
-        if (gridMap != null)
+        if (GridMap.Instance != null)
         {
-            Vector2Int agentGrid = gridMap.WorldToGridPosition(Agent.Value.transform.position);
-            Vector2Int targetGrid = gridMap.WorldToGridPosition(Target.Value.transform.position);
+            Vector2Int agentGrid = GridMap.Instance.WorldToGridPosition(Agent.Value.transform.position);
+            Vector2Int targetGrid = GridMap.Instance.WorldToGridPosition(Target.Value.transform.position);
             
             float gridDistance = Vector2.Distance(agentGrid, targetGrid);
             return gridDistance <= Range.Value;

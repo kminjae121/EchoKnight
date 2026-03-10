@@ -25,7 +25,6 @@ namespace EnemySystem
         private Transform _rootTransform;
         private Animator _animator;
         private GameObject _currentTileObj; 
-        private GridMap _gridMap;
         
         private void Awake()
         {
@@ -40,8 +39,6 @@ namespace EnemySystem
             //_obstacle.carving = true; 
             //_obstacle.shape = NavMeshObstacleShape.Box;
             //_obstacle.size = new Vector3(_tileSize * 0.8f, 2f, _tileSize * 0.8f);
-
-            _gridMap = FindAnyObjectByType<GridMap>();
         }
 
         public void Initialize(Unit owner)
@@ -79,12 +76,12 @@ namespace EnemySystem
 
         public Vector3 GetExactTileCenter(Vector3 pos)
         {
-            if (_gridMap != null)
+            if (GridMap.Instance != null)
             {
-                Vector2Int gridPos = _gridMap.WorldToGridPosition(pos);
-                if (_gridMap.IsValidPosition(gridPos))
+                Vector2Int gridPos = GridMap.Instance.WorldToGridPosition(pos);
+                if (GridMap.Instance.IsValidPosition(gridPos))
                 {
-                    Vector3 exactPos = _gridMap.GridToWorldPosition(gridPos.x, gridPos.y);
+                    Vector3 exactPos = GridMap.Instance.GridToWorldPosition(gridPos.x, gridPos.y);
                     return new Vector3(exactPos.x, pos.y, exactPos.z);
                 }
             }

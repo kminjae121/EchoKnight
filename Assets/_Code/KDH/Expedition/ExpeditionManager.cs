@@ -6,9 +6,18 @@ using Code.Core;
 using Code.Core.Events.Bus;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement; 
+using Code.Expedition.Data;
+using PixeLadder.EasyTransition; 
 
 namespace Code.Expedition.Managers
 {
+    [System.Serializable]
+    public struct EventUIMapping
+    {
+        public EventNodeSO eventNodeData;
+        public GameObject uiPanel;
+    }
+
     public class ExpeditionManager : MonoSingleton<ExpeditionManager>
     {
         [Header("References")]
@@ -19,6 +28,9 @@ namespace Code.Expedition.Managers
         
         [Header("Camera")]
         [SerializeField] private Camera mainCamera;
+
+        [Header("Event Transition Settings")]
+        [SerializeField] private List<EventUIMapping> eventUIMappings; 
 
         private ExpeditionNode _currentNode;
         private ExpeditionNode _hoveredNode;
@@ -126,7 +138,7 @@ namespace Code.Expedition.Managers
                 if (!string.IsNullOrEmpty(_savedCurrentNodeName))
                 {
                     _savedClearedNodes.Add(_savedCurrentNodeName);
-                    Debug.Log($"[{_savedCurrentNodeName}] 스테이지가 클리어 기록에 추가되었습니다!");
+                    Debug.Log($"[{_savedCurrentNodeName}] 노드가 클리어 기록에 추가되었습니다!");
                 }
 
                 if (_currentNode != null)
@@ -236,7 +248,7 @@ namespace Code.Expedition.Managers
 
             if (_currentNode != null && !_currentNode.IsCleared)
             {
-                Debug.LogWarning("현재 스테이지를 클리어해야 다음 노드로 이동할 수 있습니다!");
+                Debug.LogWarning("현재 노드를 클리어해야 다음 노드로 이동할 수 있습니다!");
                 return;
             }
 
@@ -264,9 +276,51 @@ namespace Code.Expedition.Managers
 
         private void EnterStage(ExpeditionNode node)
         {
+            if (node.NodeData != null && node.NodeData.nodeType == ExpeditionNodeType.Event)
+            {
+                if (SceneTransitioner.Instance != null)
+                {
+                    _isMoving = true; 
+                    
+                    GameObject targetUI = null;
+                    EventNodeSO currentEventData = node.NodeData as EventNodeSO;
+
+                    foreach (var mapping in eventUIMappings)
+                    {
+                        if (mapping.eventNodeData == currentEventData)
+                        {
+                            targetUI = mapping.uiPanel;
+                            break;
+                        }
+                    }
+
+                    if (targetUI == null && eventUIMappings.Count > 0)
+                    {
+                        targetUI = eventUIMappings[0].uiPanel;
+                        Debug.Log("매칭되는 EventNodeSO가 없어 기본 UI를 사용합니다.");
+                    }
+
+                    SceneTransitioner.Instance.DoTransition(
+                        midTransitionAction: () => 
+                        {
+                            if (targetUI != null) targetUI.SetActive(true);
+                        },
+                        onCompleteAction: () =>
+                        {
+                            _isMoving = false;
+                        }
+                    );
+                }
+                else
+                {
+                    Debug.LogWarning("SceneTransitioner가 없습니다!");
+                }
+                return;
+            }
+
             if (string.IsNullOrEmpty(node.TargetSceneName))
             {
-                Debug.LogWarning($"[{node.name}] 노드에 이동할 씬 이름(TargetSceneName)이 설정되지 않았습니다.");
+                Debug.LogWarning($"[{node.name}] 노드에 이동할 씬 이름이 설정되지 않았습니다.");
                 return;
             }
 
@@ -276,7 +330,7 @@ namespace Code.Expedition.Managers
             }
             else
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene(node.TargetSceneName);
+                SceneManager.LoadScene(node.TargetSceneName);
             }
         }
     }

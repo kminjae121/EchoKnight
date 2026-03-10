@@ -44,7 +44,7 @@ namespace Code.UI
 
         private void HandleSkillPressed()
         {
-            if (skillso.skillPrice < PlayerManager.Instance.Gold)
+            if (skillso.skillPrice > PlayerManager.Instance.Gold)
                 return;
             
             PlayerManager.Instance.RemoveGold(skillso.skillPrice);

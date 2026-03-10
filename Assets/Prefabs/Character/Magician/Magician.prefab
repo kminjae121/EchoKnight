@@ -1307,6 +1307,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8716369724573428111}
   - component: {fileID: 7904145215716462513}
+  - component: {fileID: 7899156878848632344}
   - component: {fileID: 8467227793752848513}
   - component: {fileID: 2656233011362560395}
   m_Layer: 7
@@ -1348,6 +1349,18 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d55721ce64d71b44ab8c0a09e708d036, type: 2}
   currentSkillCost: 10
   storageSO: {fileID: 11400000, guid: d624d89f40569d541a7e874ce4a243bf, type: 2}
+--- !u!114 &7899156878848632344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4247871956059741608}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1416e31b2a44d2f82af213f940a3668, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.SkillManageComponent
 --- !u!114 &8467227793752848513
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1366,52 +1379,26 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 192
   isMove: 0
+  <SkillImage>k__BackingField: {fileID: 0}
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
-  <skillImage>k__BackingField: {fileID: 21300000, guid: d98b775a6f3c03e43ba95a50dd259d3f, type: 3}
   basicSkillDamage: 0
-  useSkillPoint: 14
   ownSkill: 1
+  UseSkillPoint: 0
   isCanUseSkill: 0
-  statCompo: {fileID: 0}
+  statCompo: {fileID: 6021934548967281175}
   skillStartEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610480631626221528}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: SetThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   skillEvent:
     m_PersistentCalls:
       m_Calls: []
   skillEndEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610480631626221528}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: EndThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   ownCircleMesh: {fileID: 8547850988546769422}
   CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
   basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
-  criticalSpot: {fileID: 0}
+  <criticalSpot>k__BackingField: {fileID: 7752189333861557116}
   healPrefab: {fileID: 5054388580355579544}
 --- !u!114 &2656233011362560395
 MonoBehaviour:
@@ -1431,52 +1418,26 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   isMove: 0
+  <SkillImage>k__BackingField: {fileID: 0}
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
-  <skillImage>k__BackingField: {fileID: 21300000, guid: 04841b8a9cae96b42aa2a2689b689515, type: 3}
   basicSkillDamage: 6
-  useSkillPoint: 16
   ownSkill: 0
+  UseSkillPoint: 0
   isCanUseSkill: 0
-  statCompo: {fileID: 0}
+  statCompo: {fileID: 6021934548967281175}
   skillStartEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610480631626221528}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: SetThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   skillEvent:
     m_PersistentCalls:
       m_Calls: []
   skillEndEvent:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610480631626221528}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: EndThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   ownCircleMesh: {fileID: 8547850988546769422}
   CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
   basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
-  criticalSpot: {fileID: 0}
+  <criticalSpot>k__BackingField: {fileID: 7752189333861557116}
 --- !u!1 &4286341817391397124
 GameObject:
   m_ObjectHideFlags: 0
@@ -2316,7 +2277,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   atkCompo: {fileID: 3897272450828838402}
   atkMoveSpeed: 0
-  animator: {fileID: 0}
+  animator: {fileID: 7615231855437860106}
   animtionCompo: {fileID: 4608990689356498612}
   triggerCompo: {fileID: 4918850842610012167}
   effectPrefab: {fileID: 2544580028942621615}
@@ -2837,6 +2798,7 @@ MonoBehaviour:
   atkCompo: {fileID: 3897272450828838402}
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   behaveCompo: {fileID: 346073034446612595}
+  skillManager: {fileID: 7899156878848632344}
 --- !u!1 &7366538928604377655
 GameObject:
   m_ObjectHideFlags: 0
@@ -5733,12 +5695,12 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 320
   isMove: 0
+  <RotationCompo>k__BackingField: {fileID: 5137460681628610011}
+  <CriticalSpot>k__BackingField: {fileID: 7752189333861557116}
+  triggerCompo: {fileID: 4918850842610012167}
   whatIsBody:
     serializedVersion: 2
     m_Bits: 512
-  triggerCompo: {fileID: 4918850842610012167}
-  rotationCompo: {fileID: 5137460681628610011}
-  criticalSpot: {fileID: 7752189333861557116}
   ownCircleMesh: {fileID: 8547850988546769422}
   CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
   basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}

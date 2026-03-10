@@ -14,27 +14,27 @@ namespace Code.UnitSystem
 {
     public class UnitAttackComponent : RangeComponent
     {
+        [field: SerializeField] public UnitRotation RotationCompo { get; private set; }
+        [field : SerializeField] public CriticalSpot CriticalSpot { get; private set; }
         
-        [SerializeField] private LayerMask whatIsBody;
-
+        
         [SerializeField] private UnitAnimationTrigger triggerCompo;
-        [SerializeField] private UnitRotation rotationCompo;
-        [SerializeField] private CriticalSpot criticalSpot;
-        
+        [SerializeField] private LayerMask whatIsBody;
         [SerializeField] private MeshRenderer ownCircleMesh;
         [SerializeField] private Material CriticalMaterial;
         [SerializeField] private Material basicMaterial;
         
-        private CinemachineImpulseSource _impulseSource;
-        public CharacterUnit _characterUnit { get; set; }
-        private UnitCostComponent _unitCostComponentCompo;
+        public CharacterUnit CharacterUnit { get; set; }
+        public float AtkDamage { get; private set; }
+        public float AddDamage { get; private set; }
         
+        
+        private CinemachineImpulseSource _impulseSource;
         private InputReader _inputReader;
+        private UnitCostComponent _unitCostComponentCompo;
         private UnitSO _unitSO;
         
-        public DamageData _damageData;
-        private float _atkDamage;
-        private float addDamage;
+        public DamageData DamageData;
 
         private GameObject _targetEnemy;
         private EnemyTargeting _targetingCompo;
@@ -54,22 +54,23 @@ namespace Code.UnitSystem
         {
             base.Start();
             
-            _characterUnit = _owner as CharacterUnit;
-            _unitCostComponentCompo = _characterUnit.GetUnitCompo<UnitCostComponent>();
+            CharacterUnit = _owner as CharacterUnit;
+            _unitCostComponentCompo = CharacterUnit.GetUnitCompo<UnitCostComponent>();
             
             Bus<UnitAttackEvent>.Subscribe(CheckCanAttack);
-            _inputReader.OnAttackEvent += AttackEnemy;
             attackEndEvent.AddListener(AttackEnded);
             
-            _unitSO = _characterUnit.unitSO;
-            _inputReader = _characterUnit.InputSO;
+            _unitSO = CharacterUnit.unitSO;
+            _inputReader = CharacterUnit.InputSO;
+            _inputReader.OnAttackEvent += AttackEnemy;
             
-            _atkDamage = _characterUnit.UnitStatCompo.GetStat<float>(StatInfo.AtkDamage);
-            _damageData = new DamageData();
-            _damageData.damage = _atkDamage;
+            AtkDamage = CharacterUnit.UnitStatCompo.GetStat<float>(StatInfo.AtkDamage);
+            DamageData = new DamageData();
+            DamageData.damage = AtkDamage;
         }
 
 
+        
         protected override void OnDestroy()
         {
             attackEndEvent.RemoveListener(AttackEnded);
@@ -77,11 +78,19 @@ namespace Code.UnitSystem
             
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
         }
-        
-        private void FindEnemyIsThere(GameObject enemy)
+        public void SetTargeting(EnemyTargeting targetingCompo)
+        {
+            _targetingCompo = targetingCompo;
+        }
+
+        public void FindEnemyIsThere(GameObject enemy)
         {
             if (_targetEnemy != null && _targetEnemy != enemy)
+            {
+                _targetEnemy.GetComponent<EnemyTargeting>();
                 _targetingCompo.OffTargeting();
+            }
+
             
             _targetEnemy = null;
 
@@ -103,7 +112,7 @@ namespace Code.UnitSystem
         {
             if (evt.isAttack)
             {
-                if (_characterUnit.isMyTurn)
+                if (CharacterUnit.isMyTurn)
                 {
                     Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                     
@@ -127,55 +136,11 @@ namespace Code.UnitSystem
             }
         }
 
-
-        private void Update()
-        {
-            if (_characterUnit.isMyTurn && IsActive)
-            {
-                _characterUnit.BehaveCompo.ResetTile();
-                GameObject enemy = _inputReader.GetEnemy();
-
-                if(enemy == null)
-                {
-                    if (_targetEnemy != null)
-                    {
-                       if(_targetingCompo != null)
-                          _targetingCompo.OffTargeting();
-                        
-                       Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0,0,0, 
-                            0, false,null,true));
-
-                        _targetingCompo = null;
-                    }
-                }
-                else
-                {
-                    FindEnemyIsThere(enemy);
-                    
-                    if (_targetEnemy != null && _targetingCompo == null)
-                    {
-                        rotationCompo.SetDir(_targetEnemy.transform.position);
-                        
-                        EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
-                        _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                        targetUnit = _targetEnemy.GetComponent<Unit>();
-                        
-                        _targetingCompo.Targeting();
-                        
-                        criticalSpot.CheckEnemyBody(_damageData, _targetEnemy.gameObject, _atkDamage, addDamage);
-                        
-                        Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(addDamage,health.CurrentHealth, 
-                            health.MaxHealth,_damageData.damage, true,targetUnit.unitSO.UnitImage,true));
-                    }
-                }
-            }
-        }
-
         public void AttackEnemy()
         {
-            if (_characterUnit.isMyTurn && IsActive)
+            if (CharacterUnit.isMyTurn && IsActive)
             {
-                _damageData.damage += addDamage;
+                DamageData.damage += AddDamage;
                 GameObject enemy = _inputReader.GetEnemy();
 
                 FindEnemyIsThere(enemy);
@@ -186,7 +151,9 @@ namespace Code.UnitSystem
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
                 Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
                 
-                _targetingCompo.OffTargeting();
+                if(_targetingCompo != null)
+                    _targetingCompo.OffTargeting();
+                
                 AttackStart();
             }
             ResetTile();
@@ -196,12 +163,12 @@ namespace Code.UnitSystem
         {
             if (_targetEnemy != null)
             {
-                rotationCompo.SetDir(_targetEnemy.transform.position);
+                RotationCompo.SetDir(_targetEnemy.transform.position);
                 
                 attackEvent?.Invoke(_targetEnemy);
                 
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
-                    0, false, targetUnit.unitSO.UnitImage, true));
+                    0, false, null, true));
                 
                 Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject,
                     true,new Vector3(0.1f,0.1f,0.1f)));

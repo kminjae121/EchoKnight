@@ -20,7 +20,6 @@ namespace Code.UnitManaging
         [Header("References")]
         [SerializeField] private GameEventChannelSO unitDeadEventChannel;
         [SerializeField] private UnitStorage storageCompo;
-        [SerializeField] private GridMap gridMap;
 
         [Header("Spawn Settings")]
         [SerializeField] public List<Vector2Int> startingCoords = new List<Vector2Int>();
@@ -58,12 +57,6 @@ namespace Code.UnitManaging
         {
             if (_selectedUnits.Count == 0)
                 return;
-            
-            if (gridMap == null)
-            {
-                Debug.LogError("GridMap이 할당되지 않았습니다.");
-                return;
-            }
 
             int count = -1;
 
@@ -74,7 +67,7 @@ namespace Code.UnitManaging
                 if (i >= 3) return;
 
                 Vector2Int coord = startingCoords[i];
-                IMapTile tile = gridMap.GetTile(coord);
+                IMapTile tile = GridMap.Instance.GetTile(coord);
 
                 if (tile == null)
                 {
@@ -82,7 +75,7 @@ namespace Code.UnitManaging
                     continue;
                 }
 
-                Vector3 spawnPos = gridMap.GridToWorldPosition(coord.x, coord.y);
+                Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(coord.x, coord.y);
 
                 GameObject spawnUnit = Instantiate(
                     _selectedUnits[i].UnitPrefab,
@@ -100,11 +93,8 @@ namespace Code.UnitManaging
                 if (unit is CharacterUnit basicUnit)
                 {
                     if (tile is MonoBehaviour tileMono)
-                    {
                         basicUnit._startTile = tileMono.gameObject;
-                    }
                     
-
                     count += 1;
                     basicUnit.PlayableUnitID = count;
 
@@ -113,6 +103,7 @@ namespace Code.UnitManaging
                         1, 1,
                         basicUnit.UnitImage
                     ));
+                    
                     basicUnit.SetObject(GaugeManager, endTurnBtn,impulseSource);
 
                     StageManager.Instance.AddPlayerCnt();

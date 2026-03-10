@@ -78,6 +78,11 @@ namespace Code.UnitSystem
             Bus<UnitAttackEvent>.Unsubscribe(CheckCanAttack);
         }
         
+        
+        private void AttackEnded()
+        {
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+        }
         public void FindEnemyIsThere(GameObject enemy)
         {
             if (_targetEnemy != null && _targetEnemy != enemy)
@@ -92,11 +97,6 @@ namespace Code.UnitSystem
             foreach (var obj in _horizontalCollider)
                 if (enemy == obj.gameObject)
                     _targetEnemy = enemy;
-        }
-        
-        private void AttackEnded()
-        {
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
 
         public void CheckCanAttack(UnitAttackEvent evt)
@@ -127,26 +127,11 @@ namespace Code.UnitSystem
             }
         }
 
-        public void AttackEnemy()
+        public void SetTargeting(EnemyTargeting targetingCompo)
         {
-            if (CharacterUnit.isMyTurn && IsActive)
-            {
-                DamageData.damage += AddDamage;
-                GameObject enemy = _inputReader.GetEnemy();
-
-                FindEnemyIsThere(enemy);
-                
-                if (_targetEnemy == null)
-                    return;
-                
-                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
-                Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
-                
-                _targetingCompo.OffTargeting();
-                AttackStart();
-            }
-            ResetTile();
+            _targetingCompo = targetingCompo;
         }
+
 
         private void AttackStart()
         {
@@ -166,6 +151,26 @@ namespace Code.UnitSystem
                 _unitCostComponentCompo.RemoveCost(15f);   
                 ownCircleMesh.material = basicMaterial;
             }
+        }
+        public void AttackEnemy()
+        {
+            if (CharacterUnit.isMyTurn && IsActive)
+            {
+                DamageData.damage += AddDamage;
+                GameObject enemy = _inputReader.GetEnemy();
+
+                FindEnemyIsThere(enemy);
+                
+                if (_targetEnemy == null)
+                    return;
+                
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+                Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
+                
+                _targetingCompo.OffTargeting();
+                AttackStart();
+            }
+            ResetTile();
         }
     }
 }

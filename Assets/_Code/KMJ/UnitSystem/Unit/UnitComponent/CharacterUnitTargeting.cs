@@ -71,6 +71,8 @@ namespace UnitSystem
                         0, false,null,true));
 
                     _targetingCompo = null;
+
+                    atkCompo.SetTargeting(null);
                 }
             }
             else
@@ -84,6 +86,8 @@ namespace UnitSystem
                     EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                     _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
                     _targetUnit = _targetEnemy.GetComponent<Unit>();
+                    
+                    atkCompo.SetTargeting(_targetingCompo);
                         
                     _targetingCompo.Targeting();
                         

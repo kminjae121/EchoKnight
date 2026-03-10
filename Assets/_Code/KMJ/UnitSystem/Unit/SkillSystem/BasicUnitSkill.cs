@@ -64,6 +64,11 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void Update()
         {
+            SkillTargeting();
+        }
+
+        private void SkillTargeting()
+        {
             if (characterUnit != null && characterUnit.isMyTurn && IsActive && _inputReader != null)
             {
                 GameObject enemy = _inputReader.GetEnemy();
@@ -161,22 +166,15 @@ namespace Code.UnitSystem.SkillSystem
         {
             _targetEnemy = null;
             
-            
             if (_verticalCollider != null)
-            {
                 foreach (var obj in _verticalCollider)
-                {
-                    if (enemy == obj.gameObject) _targetEnemy = enemy;
-                }
-            }
+                    if (enemy == obj.gameObject)
+                        _targetEnemy = enemy;
 
             if (_horizontalCollider != null)
-            {
                 foreach (var obj in _horizontalCollider)
-                {
-                    if (enemy == obj.gameObject) _targetEnemy = enemy;
-                }
-            }
+                    if (enemy == obj.gameObject)
+                        _targetEnemy = enemy;
         }
 
         public override void ShowSkillRange()

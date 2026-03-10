@@ -48,34 +48,6 @@ public class AimArrow : BasicUnitSkill
         animtionCompo.PlaySelectAnimation("AIM");
     }
 
-    public override void Update()
-    {
-        base.Update();
-        if (UnityEngine.Input.GetKeyDown(KeyCode.R))
-        {
-            if (IsActive)
-            {
-                if (isHorizontal == false)
-                {
-                    float x = _verticalCheckBoxSize.x;
-
-                    _verticalCheckBoxSize.x = _verticalCheckBoxSize.z;
-                    _verticalCheckBoxSize.z = x;
-
-                    ShowSkillRange();
-                }
-                else
-                {
-                    float z = _verticalCheckBoxSize.z;
-
-                    _verticalCheckBoxSize.z = _verticalCheckBoxSize.x;
-                    _verticalCheckBoxSize.x = z;
-                    ShowSkillRange();
-                }
-            }
-        }
-    }
-
     private void SkillEnd()
     {
         skillEndEvent?.Invoke();
@@ -95,7 +67,7 @@ public class AimArrow : BasicUnitSkill
         Vector3 slashRot = transform.rotation.eulerAngles;
         
         _shootItemManager.SetTarget(_target);
-        _shootItemManager.SetDamageData(_damageData);
+        _shootItemManager.SetDamageData(DamageData);
         _shootItemManager.CreateShootItem("AimArrow",pos, slashRot);
     
         _target = null;

@@ -67,7 +67,7 @@ using UnityEngine;
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(_damageData);
+            _shootItemManager.SetDamageData(DamageData);
             _shootItemManager.CreateShootItem("FireBall",pos, slashRot);
             
             _target = null;

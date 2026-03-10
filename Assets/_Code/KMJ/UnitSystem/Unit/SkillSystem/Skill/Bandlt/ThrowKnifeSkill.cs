@@ -59,7 +59,7 @@ using UnityEngine;
             
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(_damageData);
+            _shootItemManager.SetDamageData(DamageData);
             _shootItemManager.CreateShootItem("Knife",pos, slashRot);
 
             _target = null;

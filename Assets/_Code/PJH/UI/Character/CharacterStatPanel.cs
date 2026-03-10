@@ -38,12 +38,38 @@ namespace Code.UI
         {
             base.Awake();
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);
+
+            for (int i = 0; i < skillIcons.Count; i++)
+            {
+                int index = i;
+                var trigger = skillIcons[i].gameObject.AddComponent<DoubleClickTrigger>();
+                trigger.CanDoubleClick = () => _currentUnit != null && 
+                                               _currentUnit.Data.SkillStorage != null && 
+                                               index < _currentUnit.Data.SkillStorage.skills.Count;
+                trigger.OnDoubleClick = () => OpenTargetPanel("SkillPanel");
+            }
+
+            for (int i = 0; i < artifactIcons.Count; i++)
+            {
+                int index = i;
+                var trigger = artifactIcons[i].gameObject.AddComponent<DoubleClickTrigger>();
+                trigger.CanDoubleClick = () => _currentUnit != null && 
+                                               _currentUnit.Data.EquippedArtifacts != null && 
+                                               index < _currentUnit.Data.EquippedArtifacts.artifacts.Count;
+                trigger.OnDoubleClick = () => OpenTargetPanel("ArtifactPanel");
+            }
         }
 
         private void OnDestroy()
         {
             Bus<CharacterInfoEvent>.Unsubscribe(HandleCharacterInfo);
             UnsubscribeHpEvent();
+        }
+
+        private void OpenTargetPanel(string targetPanelId)
+        {
+            PanelManager.Close("StatPanel");
+            PanelManager.Open(targetPanelId);
         }
 
         private void HandleCharacterInfo(CharacterInfoEvent evt)
@@ -54,8 +80,14 @@ namespace Code.UI
             if (_currentUnit != null)
             {
                 _currentUnit.CurrentHp.OnValueChanged += RefreshHpBar;
-                RefreshAllUI();
+                if (IsOpen) RefreshAllUI();
             }
+        }
+
+        public override void Open()
+        {
+            base.Open();
+            if (_currentUnit != null) RefreshAllUI();
         }
 
         private void UnsubscribeHpEvent()
@@ -118,9 +150,19 @@ namespace Code.UI
 
         private void RefreshArtifactSlots()
         {
+            var data = _currentUnit.Data;
+
             for (int i = 0; i < artifactIcons.Count; i++)
             {
-                artifactIcons[i].sprite = emptyArtifactSlotSprite;
+                if (data.EquippedArtifacts != null && i < data.EquippedArtifacts.artifacts.Count)
+                {
+                    artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].artifactIcon;
+                    artifactIcons[i].color = Color.white;
+                }
+                else
+                {
+                    artifactIcons[i].sprite = emptyArtifactSlotSprite;
+                }
             }
         }
 
@@ -132,11 +174,7 @@ namespace Code.UI
                 _spawnedModel = null;
             }
 
-            if (modelSpawnPoint == null)
-            {
-                Debug.LogWarning("모델 생성 포인트가 설정되지 않았습니다.");
-                return;
-            }
+            if (modelSpawnPoint == null) return;
 
             var spawnData = _currentUnit.Data.UnitSpawn;
             

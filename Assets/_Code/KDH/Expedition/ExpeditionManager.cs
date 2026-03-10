@@ -29,7 +29,7 @@ namespace Code.Expedition.Managers
         [Header("Camera")]
         [SerializeField] private Camera mainCamera;
 
-        [Header("Event Transition Settings")]
+        [Header("Event UIs")]
         [SerializeField] private List<EventUIMapping> eventUIMappings; 
 
         private ExpeditionNode _currentNode;

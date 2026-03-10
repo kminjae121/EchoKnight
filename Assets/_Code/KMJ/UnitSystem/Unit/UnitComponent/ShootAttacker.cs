@@ -70,10 +70,10 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(atkCompo._damageData);
+            _shootItemManager.SetDamageData(atkCompo.DamageData);
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);
 
-            atkCompo._characterUnit.impulseSource.GenerateImpulse(0.3f);
+            atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.3f);
         }
         
         private void AttackEnd()

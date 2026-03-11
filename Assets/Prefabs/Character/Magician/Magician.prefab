@@ -65,6 +65,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 942759690901270324}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &463770408987101400
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5293222781538231341}
+  - component: {fileID: 9008094745192252598}
+  m_Layer: 0
+  m_Name: Attack Presenter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5293222781538231341
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 463770408987101400}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8813400249751240388}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9008094745192252598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 463770408987101400}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8ecd03ee1d64c59a6f404c5e9c93c20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.AttackSystem.AttackPresenter
 --- !u!1 &558986514604418871
 GameObject:
   m_ObjectHideFlags: 0
@@ -2427,6 +2471,60 @@ Transform:
   - {fileID: 674222240726325836}
   m_Father: {fileID: 1699059084575450975}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6611357848462433934
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1447528522481767514}
+  - component: {fileID: 8282076254478717998}
+  m_Layer: 0
+  m_Name: Attack Executer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1447528522481767514
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6611357848462433934}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8813400249751240388}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8282076254478717998
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6611357848462433934}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f974a31570e94e809a0865d0ad1af66b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.AttackSystem.AttackExecutor
+  atkPresenter: {fileID: 9008094745192252598}
+  rotationCompo: {fileID: 5137460681628610011}
+  ownCircleMesh: {fileID: 8547850988546769422}
+  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
+  attackEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  attackEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6629061283153615086
 GameObject:
   m_ObjectHideFlags: 0
@@ -5659,7 +5757,10 @@ Transform:
   m_LocalPosition: {x: 0, y: 0.136, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 5293222781538231341}
+  - {fileID: 1447528522481767514}
+  - {fileID: 8346908253827466996}
   m_Father: {fileID: 5312050881103246690}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &3897272450828838402
@@ -5674,51 +5775,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a756be0c718b41b588cb881237e7bf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMove: 0
-  <RotationCompo>k__BackingField: {fileID: 5137460681628610011}
   <CriticalSpot>k__BackingField: {fileID: 7752189333861557116}
-  triggerCompo: {fileID: 4918850842610012167}
-  whatIsBody:
-    serializedVersion: 2
-    m_Bits: 512
-  ownCircleMesh: {fileID: 8547850988546769422}
-  CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
-  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
-  attackEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610480631626221528}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: SetThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+  <atkPresenter>k__BackingField: {fileID: 9008094745192252598}
+  <attckExecutor>k__BackingField: {fileID: 8282076254478717998}
+  <attackTargetSelector>k__BackingField: {fileID: 1372168856531958069}
   attackStartEvent:
     m_PersistentCalls:
       m_Calls: []
-  attackEndEvent:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 610480631626221528}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: EndThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+--- !u!1 &7738885640076194424
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8346908253827466996}
+  - component: {fileID: 1372168856531958069}
+  m_Layer: 0
+  m_Name: Attack Selecter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8346908253827466996
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7738885640076194424}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8813400249751240388}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1372168856531958069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7738885640076194424}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdcec963ee8042129d7f717d43187a55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.AttackSystem.AttackTargetSelector
+  isMove: 0
 --- !u!1 &7851814534499140271
 GameObject:
   m_ObjectHideFlags: 0

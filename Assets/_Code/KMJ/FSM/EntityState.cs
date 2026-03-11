@@ -1,4 +1,4 @@
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using Code.AttackSystem;
 using Code.UnitSystem;
 
 namespace Blade.FSM

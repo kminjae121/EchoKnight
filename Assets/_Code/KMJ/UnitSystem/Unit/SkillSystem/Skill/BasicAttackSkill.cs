@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;

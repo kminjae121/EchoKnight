@@ -4,7 +4,7 @@ using Input;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
+namespace Code.AttackSystem
 {
     public class SetUnitCamera : MonoBehaviour
     {

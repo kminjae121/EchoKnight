@@ -1,4 +1,5 @@
-﻿using Code.Core.Events.Bus;
+﻿using Code.AttackSystem;
+using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
@@ -41,7 +42,7 @@ namespace UnitSystem
                 return;
             }
 
-            if (atkCompo != null && atkCompo.IsActive)
+            if (atkCompo != null && atkCompo.attackTargetSelector.IsActive)
             {
                 AttackTargeting();
                 return;
@@ -131,30 +132,30 @@ namespace UnitSystem
 
                     _targetingCompo = null;
 
-                    atkCompo.SetTargeting(null);
+                    atkCompo.attackTargetSelector.SetTargeting(null);
                 }
             }
             else
             {
-                atkCompo.FindEnemyIsThere(enemy);
+                atkCompo.attackTargetSelector.FindEnemyIsThere(enemy);
 
                 if (_targetEnemy != null && _targetingCompo == null)
                 {
-                    atkCompo.RotationCompo.SetDir(_targetEnemy.transform.position);
+                    atkCompo.attckExecutor.SetRotation(_targetEnemy);
 
                     EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                     _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
                     _targetUnit = _targetEnemy.GetComponent<Unit>();
 
-                    atkCompo.SetTargeting(_targetingCompo);
+                    atkCompo.attackTargetSelector.SetTargeting(_targetingCompo);
 
                     _targetingCompo.Targeting();
 
-                    atkCompo.CriticalSpot.CheckEnemyBody(atkCompo.DamageData, _targetEnemy.gameObject,
-                        atkCompo.AtkDamage, atkCompo.AddDamage);
+                    atkCompo.CriticalSpot.CheckEnemyBody(atkCompo.attckExecutor.GetDamageData(), _targetEnemy.gameObject,
+                        atkCompo.attckExecutor.AtkDamage, atkCompo.attckExecutor.AddDamage);
 
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(atkCompo.AddDamage, health.CurrentHealth,
-                        health.MaxHealth, atkCompo.DamageData.damage, true, _targetUnit.unitSO.UnitImage, true));
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(atkCompo.attckExecutor.AddDamage, health.CurrentHealth,
+                        health.MaxHealth, atkCompo.attckExecutor.DamageData.damage, true, _targetUnit.unitSO.UnitImage, true));
                 }
             }
         }

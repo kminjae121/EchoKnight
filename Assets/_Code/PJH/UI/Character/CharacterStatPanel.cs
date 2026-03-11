@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
-using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -16,10 +15,9 @@ namespace Code.UI
         [SerializeField] private List<Image> artifactIcons;
         [SerializeField] private Sprite emptyArtifactSlotSprite;
 
-        [Header("Hp Bar")]
+        [Header("HP Bar")]
         [SerializeField] private Image hpBarFill;
         [SerializeField] private TextMeshProUGUI hpText;
-        [SerializeField] private float hpTweenDuration = 0.3f;
 
         [Header("Stat & Info")]
         [SerializeField] private TextMeshProUGUI nameText;
@@ -30,7 +28,6 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI descriptionText;
 
         private UnitState _currentUnit;
-        private Tween _hpTween;
 
         public override void Awake()
         {
@@ -39,23 +36,27 @@ namespace Code.UI
 
             for (int i = 0; i < skillIcons.Count; i++)
             {
-                int index = i;
-                var trigger = skillIcons[i].gameObject.AddComponent<DoubleClickTrigger>();
-
-                trigger.CanDoubleClick = () => _currentUnit != null && 
-                                               _currentUnit.Data.SkillStorage != null && 
-                                               index < _currentUnit.Data.SkillStorage.skills.Count;
-                trigger.OnDoubleClick = () => OpenTargetPanel("SkillPanel");
+                var trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                trigger.useHoverVisuals = false;
+                trigger.OnClick = () => OpenTargetPanel("SkillPanel");
             }
 
             for (int i = 0; i < artifactIcons.Count; i++)
             {
                 int index = i;
-                var trigger = artifactIcons[i].gameObject.AddComponent<DoubleClickTrigger>();
-                trigger.CanDoubleClick = () => _currentUnit != null && 
-                                               _currentUnit.Data.EquippedArtifacts != null && 
-                                               index < _currentUnit.Data.EquippedArtifacts.artifacts.Count;
-                trigger.OnDoubleClick = () => OpenTargetPanel("ArtifactPanel");
+                var trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                trigger.useHoverVisuals = false;
+                
+                trigger.OnClick = () => OpenTargetPanel("ArtifactPanel");
+                trigger.OnHoverEnter = (pos) =>
+                {
+                    if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null && index < _currentUnit.Data.EquippedArtifacts.artifacts.Count)
+                    {
+                        var artifact = _currentUnit.Data.EquippedArtifacts.artifacts[index];
+                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pos, true));
+                    }
+                };
+                trigger.OnHoverExit = () => Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, Vector2.zero, true));
             }
         }
 
@@ -119,13 +120,7 @@ namespace Code.UI
         {
             float maxHp = _currentUnit.Data.Maxhealth;
             hpText.text = $"{nextValue:F0} / {maxHp:F0}";
-
-            float fillAmount = maxHp > 0 ? nextValue / maxHp : 0f;
-
-            _hpTween?.Kill();
-            _hpTween = hpBarFill
-                .DOFillAmount(fillAmount, hpTweenDuration)
-                .SetEase(Ease.OutCubic);
+            hpBarFill.fillAmount = maxHp > 0 ? nextValue / maxHp : 0f;
         }
 
         private void RefreshSkillSlots()
@@ -134,15 +129,19 @@ namespace Code.UI
             
             for (int i = 0; i < skillIcons.Count; i++)
             {
-                if (data.SkillStorage != null && i < data.SkillStorage.skills.Count)
+                var trigger = skillIcons[i].GetComponent<SlotHoverClickTrigger>();
+                bool hasSkill = data.SkillStorage != null && i < data.SkillStorage.skills.Count;
+
+                if (hasSkill)
                 {
                     skillIcons[i].sprite = data.SkillStorage.skills[i].skillUIImage;
-                    skillIcons[i].color = Color.white;
                 }
                 else
                 {
                     skillIcons[i].sprite = emptySkillSlotSprite;
                 }
+                
+                if (trigger != null) trigger.SetInteractable(hasSkill);
             }
         }
 
@@ -152,15 +151,19 @@ namespace Code.UI
 
             for (int i = 0; i < artifactIcons.Count; i++)
             {
-                if (data.EquippedArtifacts != null && i < data.EquippedArtifacts.artifacts.Count)
+                var trigger = artifactIcons[i].GetComponent<SlotHoverClickTrigger>();
+                bool hasArtifact = data.EquippedArtifacts != null && i < data.EquippedArtifacts.artifacts.Count;
+
+                if (hasArtifact)
                 {
                     artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].artifactIcon;
-                    artifactIcons[i].color = Color.white;
                 }
                 else
                 {
                     artifactIcons[i].sprite = emptyArtifactSlotSprite;
                 }
+                
+                if (trigger != null) trigger.SetInteractable(hasArtifact);
             }
         }
     }

@@ -45,6 +45,21 @@ namespace Code.UI
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);
             Bus<ArtifactEquipEvent>.Subscribe(HandleEquip);
             Bus<ArtifactUnequipEvent>.Subscribe(HandleUnequip);
+
+            for (int i = 0; i < equippedSlotImages.Count; i++)
+            {
+                int index = i;
+                var trigger = equippedSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                trigger.useHoverVisuals = false;
+                trigger.OnRightClick = (pos) =>
+                {
+                    if (_unit != null && _unit.EquippedArtifacts != null && index < _unit.EquippedArtifacts.artifacts.Count)
+                    {
+                        var artifact = _unit.EquippedArtifacts.artifacts[index];
+                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pos));
+                    }
+                };
+            }
         }
 
         private void OnDestroy()
@@ -84,33 +99,23 @@ namespace Code.UI
             foreach (var btn in _activeButtons) btn.ReturnToPool();
             _activeButtons.Clear();
 
-            var displayList = _unit.OwnArtifactStorage.artifacts.ToList();
+            var displayList = _unit.OwnArtifactStorage.artifacts
+                .Where(a => _unit.EquippedArtifacts == null || !_unit.EquippedArtifacts.artifacts.Contains(a))
+                .ToList();
 
             if (_isSortedByRarity)
             {
-                displayList = displayList
-                    .OrderByDescending(a => _unit.EquippedArtifacts != null && _unit.EquippedArtifacts.artifacts.Contains(a))
-                    .ThenByDescending(a => a.rarity)
-                    .ToList();
-            }
-            else
-            {
-                displayList = displayList
-                    .OrderByDescending(a => _unit.EquippedArtifacts != null && _unit.EquippedArtifacts.artifacts.Contains(a))
-                    .ToList();
+                displayList = displayList.OrderByDescending(a => a.rarity).ToList();
             }
 
             foreach (var artifact in displayList)
             {
                 var btn = _poolManager.Pop<ArtifactButton>(artifactButtonPoolingSO);
                 btn.transform.SetParent(inventoryTrm);
-                btn.transform.SetAsLastSibling();
+                btn.transform.SetAsLastSibling(); 
                 btn.transform.localScale = Vector3.one;
 
-                bool isEquipped = _unit.EquippedArtifacts != null && 
-                                  _unit.EquippedArtifacts.artifacts.Contains(artifact);
-
-                btn.SetArtifact(artifact, isEquipped);
+                btn.SetArtifact(artifact, false);
                 _activeButtons.Add(btn);
             }
 
@@ -123,15 +128,19 @@ namespace Code.UI
 
             for (int i = 0; i < equippedSlotImages.Count; i++)
             {
-                if (i < equippedList.Count)
+                var trigger = equippedSlotImages[i].GetComponent<SlotHoverClickTrigger>();
+                bool hasArtifact = i < equippedList.Count;
+
+                if (hasArtifact)
                 {
                     equippedSlotImages[i].sprite = equippedList[i].artifactIcon;
-                    equippedSlotImages[i].color = Color.white;
                 }
                 else
                 {
                     equippedSlotImages[i].sprite = emptySlotSprite;
                 }
+
+                if (trigger != null) trigger.SetInteractable(hasArtifact);
             }
         }
 

@@ -62,6 +62,12 @@ namespace Code.UI
 
         private void HandlePopupEvent(ArtifactPopupEvent evt)
         {
+            if (evt.Artifact == null)
+            {
+                Hide();
+                return;
+            }
+
             _targetArtifact = evt.Artifact;
             _isCurrentlyEquipped = evt.IsEquipped;
 
@@ -74,8 +80,8 @@ namespace Code.UI
                 SetTierTextColor(_targetArtifact.rarity);
             }
 
-            equipButton.gameObject.SetActive(!_isCurrentlyEquipped);
-            unequipButton.gameObject.SetActive(_isCurrentlyEquipped);
+            equipButton.gameObject.SetActive(!_isCurrentlyEquipped && !evt.IsReadOnly);
+            unequipButton.gameObject.SetActive(_isCurrentlyEquipped && !evt.IsReadOnly);
 
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
@@ -89,7 +95,7 @@ namespace Code.UI
                     evt.Position, 
                     _parentCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _parentCanvas.worldCamera, 
                     out Vector2 localPoint);
-                
+
                 float normalizedX = (localPoint.x - canvasRect.rect.xMin) / canvasRect.rect.width;
                 float normalizedY = (localPoint.y - canvasRect.rect.yMin) / canvasRect.rect.height;
 
@@ -97,7 +103,7 @@ namespace Code.UI
                 float pivotY = normalizedY > 0.5f ? 1f : 0f;
                 _rectTransform.pivot = new Vector2(pivotX, pivotY);
             }
-            
+
             if (_parentCanvas != null && _parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
             {
                 RectTransformUtility.ScreenPointToWorldPointInRectangle(
@@ -114,22 +120,11 @@ namespace Code.UI
         {
             switch (rarity)
             {
-                case ArtifactRarity.Legendary:
-                    tierText.color = new Color(1f, 0.84f, 0f); 
-                    break;
-                case ArtifactRarity.Epic:
-                    tierText.color = new Color(0.63f, 0.13f, 0.94f); 
-                    break;
-                case ArtifactRarity.Rare:
-                    tierText.color = new Color(0f, 0.5f, 1f); 
-                    break;
-                case ArtifactRarity.Uncommon:
-                    tierText.color = Color.green; 
-                    break;
-                case ArtifactRarity.Common:
-                default:
-                    tierText.color = Color.gray; 
-                    break;
+                case ArtifactRarity.Legendary: tierText.color = new Color(1f, 0.84f, 0f); break;
+                case ArtifactRarity.Epic: tierText.color = new Color(0.63f, 0.13f, 0.94f); break;
+                case ArtifactRarity.Rare: tierText.color = new Color(0f, 0.5f, 1f); break;
+                case ArtifactRarity.Uncommon: tierText.color = Color.green; break;
+                case ArtifactRarity.Common: default: tierText.color = Color.gray; break;
             }
         }
 

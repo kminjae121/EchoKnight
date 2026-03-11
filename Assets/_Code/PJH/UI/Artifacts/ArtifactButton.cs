@@ -7,15 +7,14 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class ArtifactButton : MonoBehaviour, IPointerClickHandler, IPoolable
+    public class ArtifactButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IPoolable
     {
         [Header("Pooling Settings")]
         [SerializeField] private PoolingItemSO poolingType;
 
         [Header("UI Elements")]
         [SerializeField] private Image iconImage;
-        [SerializeField] private GameObject equippedFrame;
-        [SerializeField] private GameObject unequippedFrame;
+        [SerializeField] private GameObject hoverImage; 
 
         private ArtifactSO _artifact;
         private bool _isEquipped;
@@ -30,9 +29,6 @@ namespace Code.UI
         {
             _artifact = null;
             _isEquipped = false;
-            
-            if (equippedFrame != null) equippedFrame.SetActive(false);
-            if (unequippedFrame != null) unequippedFrame.SetActive(false);
         }
 
         public void ReturnToPool()
@@ -46,9 +42,26 @@ namespace Code.UI
             _artifact = artifact;
             iconImage.sprite = artifact.artifactIcon;
             _isEquipped = isEquipped;
-            
-            if (equippedFrame != null) equippedFrame.SetActive(isEquipped);
-            if (unequippedFrame != null) unequippedFrame.SetActive(!isEquipped);
+
+            iconImage.color = Color.white; 
+
+            if (hoverImage != null) hoverImage.SetActive(false);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (_artifact != null && hoverImage != null) 
+            {
+                hoverImage.SetActive(true);
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (_artifact != null && hoverImage != null) 
+            {
+                hoverImage.SetActive(false);
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData)

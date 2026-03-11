@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Code.Core.Events.Bus;
+using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
-using DG.Tweening;
 using GondrLib.Dependencies;
 using GondrLib.ObjectPool.Runtime;
 using TMPro;
@@ -13,34 +12,25 @@ namespace Code.UI
 {
     public class CharacterSkillPanel : Panel
     {
-        [Header("Database")]
-        [SerializeField] private List<SkillSO> allSkillsDatabase;
-
         [Header("Pool Settings")]
         [SerializeField] private PoolingItemSO skillButtonPoolingSO;
 
-        [Header("Loadout Area")]
-        [SerializeField] private Image loadoutFillImage;
-        [SerializeField] private TextMeshProUGUI loadoutCostText;
-        [SerializeField] private int maxEquipCount = 4;
-        [SerializeField] private float loadoutTweenTime = 0.3f;
+        [Header("Containers")]
+        [SerializeField] private Transform ownSkillContainer;
 
-        [Header("List Area")]
-        [SerializeField] private Transform skillTrm;
-
-        [Header("Detail Area")]
-        [SerializeField] private Image detailIcon;
-        [SerializeField] private TextMeshProUGUI detailNameText;
-        [SerializeField] private TextMeshProUGUI detailDescText;
-        [SerializeField] private TextMeshProUGUI detailCostText;
-        [SerializeField] private TextMeshProUGUI detailDamageText;
-        [SerializeField] private TextMeshProUGUI detailRangeText;
+        [Header("Detail Settings")]
+        [SerializeField] private Image detailIconImage; 
+        [SerializeField] private TextMeshProUGUI nameText;
+        [SerializeField] private TextMeshProUGUI descText;
+        [SerializeField] private TextMeshProUGUI costText;
+        [SerializeField] private TextMeshProUGUI damageText;
+        [SerializeField] private TextMeshProUGUI rangeText;
 
         [Inject] private PoolManagerMono _poolManager;
         
         private UnitSO _unit;
         private List<CharacterSkillButton> _activeButtons = new();
-        private Tween _loadoutTween;
+        private SkillSO _selectedSkill;
 
         public override void Awake()
         {
@@ -50,168 +40,105 @@ namespace Code.UI
                 _poolManager = FindFirstObjectByType<PoolManagerMono>();
 
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);
-            Bus<SkillEquipEvent>.Subscribe(SkillEquip);
-            Bus<SkillUnequipEvent>.Subscribe(SkillUnequip);
-            Bus<SkillDetailSelectEvent>.Subscribe(HandleDetailSelect);
+            Bus<SkillEquipEvent>.Subscribe(HandleSkillEquipped);
+            Bus<SkillUnequipEvent>.Subscribe(HandleSkillUnequipped);
+            Bus<SkillDetailSelectEvent>.Subscribe(HandleSkillSelect);
         }
 
         private void OnDestroy()
         {
             Bus<CharacterInfoEvent>.Unsubscribe(HandleCharacterInfo);
-            Bus<SkillEquipEvent>.Unsubscribe(SkillEquip);
-            Bus<SkillUnequipEvent>.Unsubscribe(SkillUnequip);
-            Bus<SkillDetailSelectEvent>.Unsubscribe(HandleDetailSelect);
-            
-            _loadoutTween?.Kill();
+            Bus<SkillEquipEvent>.Unsubscribe(HandleSkillEquipped);
+            Bus<SkillUnequipEvent>.Unsubscribe(HandleSkillUnequipped);
+            Bus<SkillDetailSelectEvent>.Unsubscribe(HandleSkillSelect);
         }
 
         public override void Open()
         {
             base.Open();
-            
             if (_unit != null)
             {
-                RefreshUI();
-                ClearDetailArea();
+                RefreshSkillList();
+                RefreshDetail();
             }
         }
-        
+
         private void HandleCharacterInfo(CharacterInfoEvent evt)
         {
             _unit = evt.Unit.Data;
-
+            _selectedSkill = null;
             if (IsOpen)
             {
-                RefreshUI();
-                ClearDetailArea();
+                RefreshSkillList();
+                RefreshDetail();
             }
         }
-        
-        private void RefreshUI()
+
+        private void HandleSkillSelect(SkillDetailSelectEvent evt)
         {
-            foreach (var btn in _activeButtons)
-                btn.ReturnToPool();
-                
+            _selectedSkill = evt.Skill;
+            RefreshDetail();
+        }
+
+        private void RefreshSkillList()
+        {
+            if (_unit == null || _unit.OwnSkillStorage == null) return;
+
+            foreach (var btn in _activeButtons) btn.ReturnToPool();
             _activeButtons.Clear();
 
-            if (_poolManager == null)
+            foreach (var skillSO in _unit.OwnSkillStorage.skills)
             {
-                Debug.LogWarning("풀 매니저를 찾을 수 없습니다.");
-                return;
-            }
+                var btn = _poolManager.Pop<CharacterSkillButton>(skillButtonPoolingSO);
+                btn.transform.SetParent(ownSkillContainer);
+                btn.transform.SetAsLastSibling();
+                btn.transform.localScale = Vector3.one;
 
-            if (_unit == null)
-                return;
-
-            if (allSkillsDatabase == null || allSkillsDatabase.Count == 0)
-            {
-                Debug.LogWarning("스킬 데이터베이스가 비어있습니다. 인스펙터에서 스킬들을 연결해주세요.");
-                return;
-            }
-
-            var matchingSkills = allSkillsDatabase.Where(skill => skill.unitType == _unit.UnitType).ToList();
-
-            foreach (var skill in matchingSkills)
-            {
-                var skillButton = _poolManager.Pop<CharacterSkillButton>(skillButtonPoolingSO);
-                skillButton.transform.SetParent(skillTrm);
-                skillButton.transform.localScale = Vector3.one;
+                bool isEquipped = _unit.SkillStorage != null && _unit.SkillStorage.skills.Contains(skillSO);
+                btn.SetSkill(skillSO, isEquipped);
                 
-                bool isEquipped = false;
-                if (_unit.SkillStorage != null && _unit.SkillStorage.skills != null)
-                {
-                    isEquipped = _unit.SkillStorage.skills.Contains(skill);
-                }
-                
-                skillButton.SetSkill(skill, isEquipped);
-                _activeButtons.Add(skillButton);
+                _activeButtons.Add(btn);
             }
-            
-            RefreshLoadout();
         }
 
-        private void RefreshLoadout()
+        private void RefreshDetail()
         {
-            int currentCost = GetCurrentCost();
-            loadoutCostText.text = $"{currentCost} / {_unit.Cost}";
+            bool hasSkill = _selectedSkill != null;
 
-            float fillValue = _unit.Cost > 0 ? (float)currentCost / _unit.Cost : 0f;
+            if (detailIconImage != null) detailIconImage.gameObject.SetActive(hasSkill);
+            if (nameText != null) nameText.gameObject.SetActive(hasSkill);
+            if (descText != null) descText.gameObject.SetActive(hasSkill);
+            if (costText != null) costText.gameObject.SetActive(hasSkill);
+            if (damageText != null) damageText.gameObject.SetActive(hasSkill);
+            if (rangeText != null) rangeText.gameObject.SetActive(hasSkill);
 
-            _loadoutTween?.Kill();
-            _loadoutTween = loadoutFillImage
-                .DOFillAmount(fillValue, loadoutTweenTime)
-                .SetEase(Ease.OutCubic);
+            if (!hasSkill) return;
+
+            if (detailIconImage != null) detailIconImage.sprite = _selectedSkill.skillUIImage;
+            if (nameText != null) nameText.text = _selectedSkill.skillName;
+            if (descText != null) descText.text = _selectedSkill.SkillDescription;
+            if (costText != null) costText.text = $"{_selectedSkill.SkillCost}";
+            if (damageText != null) damageText.text = $"{_selectedSkill.SkillDamage}";
+            if (rangeText != null) rangeText.text = $"{_selectedSkill.SkillRange}";
         }
-        
-        private void SkillEquip(SkillEquipEvent evt)
-        {
-            if (_unit.SkillStorage == null || _unit.SkillStorage.skills == null)
-                return;
 
-            if (_unit.SkillStorage.skills.Contains(evt.Skill))
-                return;
-            
-            if (_unit.SkillStorage.skills.Count >= maxEquipCount)
+        private void HandleSkillEquipped(SkillEquipEvent evt)
+        {
+            if (_unit == null || _unit.SkillStorage == null) return;
+            if (!_unit.SkillStorage.skills.Contains(evt.Skill))
             {
-                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬은 최대 4개까지만 장착할 수 있습니다."));
-                return;
+                _unit.SkillStorage.skills.Add(evt.Skill);
+                if (IsOpen) RefreshSkillList();
             }
-            
-            if (GetCurrentCost() + evt.Skill.SkillCost > _unit.Cost)
-            {
-                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("코스트를 초과하여 스킬을 장착할 수 없습니다."));
-                return;
-            }
-            
-            _unit.SkillStorage.skills.Add(evt.Skill);
-            Bus<SkillEquippedEvent>.Raise(new SkillEquippedEvent(evt.Skill));
-            
-            RefreshUI();
         }
 
-        private void SkillUnequip(SkillUnequipEvent evt)
+        private void HandleSkillUnequipped(SkillUnequipEvent evt)
         {
-            if (_unit.SkillStorage == null || _unit.SkillStorage.skills == null)
-                return;
-
+            if (_unit == null || _unit.SkillStorage == null) return;
             if (_unit.SkillStorage.skills.Remove(evt.Skill))
             {
-                Bus<SkillUnequippedEvent>.Raise(new SkillUnequippedEvent(evt.Skill));
-                RefreshUI();
+                if (IsOpen) RefreshSkillList();
             }
-        }
-
-        private void HandleDetailSelect(SkillDetailSelectEvent evt)
-        {
-            var skill = evt.Skill;
-            if (skill == null)
-                return;
-
-            detailIcon.sprite = skill.skillUIImage;
-            detailIcon.color = Color.white;
-            detailNameText.text = skill.skillName;
-            detailDescText.text = skill.SkillDescription;
-            detailCostText.text = skill.SkillCost.ToString();
-            detailDamageText.text = skill.SkillDamage.ToString("F1");
-            detailRangeText.text = skill.SkillRange.ToString("F1");
-        }
-
-        private void ClearDetailArea()
-        {
-            detailIcon.color = Color.clear;
-            detailNameText.text = string.Empty;
-            detailDescText.text = string.Empty;
-            detailCostText.text = string.Empty;
-            detailDamageText.text = string.Empty;
-            detailRangeText.text = string.Empty;
-        }
-        
-        private int GetCurrentCost()
-        {
-            if (_unit == null || _unit.SkillStorage == null || _unit.SkillStorage.skills == null)
-                return 0;
-                
-            return _unit.SkillStorage.skills.Sum(skill => skill.SkillCost);
         }
     }
 }

@@ -8,12 +8,14 @@ namespace Code.Core.Events.Bus
         public SkillSO Skill { get; }
         public bool IsEquipped { get; }
         public Vector2 Position { get; }
+        public bool IsReadOnly { get; }
 
-        public SkillEquipPopupEvent(SkillSO skill, bool isEquipped, Vector2 position)
+        public SkillEquipPopupEvent(SkillSO skill, bool isEquipped, Vector2 position, bool isReadOnly = false)
         {
             Skill = skill;
             IsEquipped = isEquipped;
             Position = position;
+            IsReadOnly = isReadOnly;
         }
     }
 }

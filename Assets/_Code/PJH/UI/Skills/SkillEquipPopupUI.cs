@@ -61,6 +61,12 @@ namespace Code.UI
 
         private void HandlePopupEvent(SkillEquipPopupEvent evt)
         {
+            if (evt.Skill == null)
+            {
+                Hide();
+                return;
+            }
+
             _targetSkill = evt.Skill;
             _isCurrentlyEquipped = evt.IsEquipped;
             
@@ -69,8 +75,8 @@ namespace Code.UI
                 descriptionText.text = _isCurrentlyEquipped ? "스킬을\n해제하시겠습니까?" : "스킬을\n장착하시겠습니까?";
             }
 
-            equipButton.gameObject.SetActive(!_isCurrentlyEquipped);
-            unequipButton.gameObject.SetActive(_isCurrentlyEquipped);
+            equipButton.gameObject.SetActive(!_isCurrentlyEquipped && !evt.IsReadOnly);
+            unequipButton.gameObject.SetActive(_isCurrentlyEquipped && !evt.IsReadOnly);
 
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
@@ -92,7 +98,7 @@ namespace Code.UI
                 float pivotY = normalizedY > 0.5f ? 1f : 0f;
                 _rectTransform.pivot = new Vector2(pivotX, pivotY);
             }
-            
+
             if (_parentCanvas != null && _parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
             {
                 RectTransformUtility.ScreenPointToWorldPointInRectangle(

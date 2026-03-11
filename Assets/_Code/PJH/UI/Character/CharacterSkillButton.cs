@@ -7,112 +7,76 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class CharacterSkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPoolable
+    public class CharacterSkillButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IPoolable
     {
         [Header("Pooling Settings")]
         [SerializeField] private PoolingItemSO poolingType;
 
         [Header("UI Elements")]
-        [SerializeField] private Image skillImage;
-        [SerializeField] private GameObject frameImage;
+        [SerializeField] private Image iconImage;
 
-        private SkillSO _skillInfo;
+        private SkillSO _skill;
         private bool _isEquipped;
         private GondrLib.ObjectPool.Runtime.Pool _pool;
+
+        private readonly Color _unequippedColor = new Color(0.3f, 0.3f, 0.3f, 1f);
+        private readonly Color _hoverColor = new Color(0.65f, 0.65f, 0.65f, 1f);
+        private readonly Color _equippedColor = Color.white;
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
 
-        private void Awake()
-        {
-            Bus<SkillEquippedEvent>.Subscribe(HandleSkillEquipped);
-            Bus<SkillUnequippedEvent>.Subscribe(HandleSkillUnequipped);
-        }
-
-        private void OnDestroy()
-        {
-            Bus<SkillEquippedEvent>.Unsubscribe(HandleSkillEquipped);
-            Bus<SkillUnequippedEvent>.Unsubscribe(HandleSkillUnequipped);
-        }
-
-        public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool)
-        {
-            _pool = pool;
-        }
+        public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 
         public void ResetItem()
         {
-            _skillInfo = null;
+            _skill = null;
             _isEquipped = false;
-            if (frameImage != null)
-                frameImage.SetActive(false);
         }
 
         public void ReturnToPool()
         {
-            if (_pool != null)
-                _pool.Push(this);
-            else
-                Destroy(gameObject);
+            if (_pool != null) _pool.Push(this);
+            else Destroy(gameObject);
         }
 
         public void SetSkill(SkillSO skill, bool isEquipped)
         {
-            _skillInfo = skill;
-            skillImage.sprite = skill.skillUIImage;
+            _skill = skill;
+            iconImage.sprite = skill.skillUIImage;
             _isEquipped = isEquipped;
-
-            RefreshEquipState();
-        }
-        
-        public void OnPointerClick(PointerEventData eventData)
-        {
-            if (_skillInfo == null)
-                return;
-
-            if (eventData.button == PointerEventData.InputButton.Left)
-            {
-                Bus<SkillDetailSelectEvent>.Raise(new SkillDetailSelectEvent(_skillInfo));
-            }
-            else if (eventData.button == PointerEventData.InputButton.Right)
-            {
-                Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skillInfo, _isEquipped, eventData.position));
-            }
-        }
-        
-        private void HandleSkillEquipped(SkillEquippedEvent evt)
-        {
-            if (evt.Skill != _skillInfo)
-                return;
-
-            _isEquipped = true;
-            RefreshEquipState();
-        }
-        
-        private void HandleSkillUnequipped(SkillUnequippedEvent evt)
-        {
-            if (evt.Skill != _skillInfo)
-                return;
-
-            _isEquipped = false;
-            RefreshEquipState();
-        }
-        
-        private void RefreshEquipState()
-        {
-            if (frameImage != null)
-                frameImage.SetActive(_isEquipped);
+            
+            iconImage.color = _isEquipped ? _equippedColor : _unequippedColor;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_skillInfo != null)
-                Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skillInfo, (RectTransform)transform));
+            if (_skill != null) 
+            {
+                iconImage.color = _isEquipped ? _equippedColor : _hoverColor;
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+            if (_skill != null) 
+            {
+                iconImage.color = _isEquipped ? _equippedColor : _unequippedColor;
+            }
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (_skill == null) return;
+
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                Bus<SkillDetailSelectEvent>.Raise(new SkillDetailSelectEvent(_skill));
+            }
+            else if (eventData.button == PointerEventData.InputButton.Right)
+            {
+                Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, eventData.position));
+            }
         }
     }
 }

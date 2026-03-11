@@ -13,12 +13,14 @@ namespace Code.Core.Events.Bus
         public ArtifactSO Artifact { get; }
         public bool IsEquipped { get; }
         public Vector2 Position { get; }
+        public bool IsReadOnly { get; }
 
-        public ArtifactPopupEvent(ArtifactSO artifact, bool isEquipped, Vector2 position)
+        public ArtifactPopupEvent(ArtifactSO artifact, bool isEquipped, Vector2 position, bool isReadOnly = false)
         {
             Artifact = artifact;
             IsEquipped = isEquipped;
             Position = position;
+            IsReadOnly = isReadOnly;
         }
     }
 }

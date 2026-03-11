@@ -1,83 +1,47 @@
 ﻿using System.Collections.Generic;
-using Code.Core.Debugs;
 using Code.Core.Events.Bus;
-using Code.UnitSystem;
+using GondrLib.Dependencies;
+using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class PartyUI : Panel
+    public class PartyUI : MonoBehaviour
     {
-        [Header("Buttons")]
-        [SerializeField] private Button startButton;
+        [Header("Pool Settings")]
+        [SerializeField] private PoolingItemSO partySlotPoolingSO;
         
-        [Header("Slots")]
-        [SerializeField] private List<SelectedCharacterSlotUI> characterSlots;
-        
-        [Header("Data")]
-        [SerializeField] private UnitStorageSO unitStorage;
-        [SerializeField] private int maxUnitCount = 3;
+        [Header("Containers")]
+        [SerializeField] private Transform slotContainer;
 
-        private readonly List<UnitSO> _partyUnits = new();
+        [Inject] private PoolManagerMono _poolManager;
         
-        public override void Awake()
+        private List<PartyCharacterSlotUI> _activeSlots = new();
+
+        private void Awake()
         {
-            base.Awake();
-            Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
-            Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
-            
-            startButton.onClick.AddListener(HandleStartButton);
+            if (_poolManager == null)
+                _poolManager = FindFirstObjectByType<PoolManagerMono>();
         }
 
-        private void OnDestroy()
+        private void OnEnable()
         {
-            Bus<PartyCharacterSelectEvent>.Unsubscribe(HandleCharacterSelected);
-            Bus<PartyCharacterDeselectEvent>.Unsubscribe(HandleCharacterDeselected);
-            
-            startButton.onClick.RemoveListener(HandleStartButton);
+            Bus<PartyCharacterSelectEvent>.Subscribe(HandlePartySelectEvent);
         }
 
-        private void HandleCharacterSelected(PartyCharacterSelectEvent evt)
+        private void OnDisable()
         {
-            if (_partyUnits.Count >= maxUnitCount || _partyUnits.Contains(evt.Unit))
-                return;
-
-            _partyUnits.Add(evt.Unit);
-            RefreshSlots();
+            Bus<PartyCharacterSelectEvent>.Unsubscribe(HandlePartySelectEvent);
         }
         
-        private void HandleCharacterDeselected(PartyCharacterDeselectEvent evt)
+        private void HandlePartySelectEvent(PartyCharacterSelectEvent evt)
         {
-            if (_partyUnits.Remove(evt.Unit))
-                RefreshSlots();
+            RefreshPartyList();
         }
-        
-        private void RefreshSlots()
-        {
-            for (int i = 0; i < characterSlots.Count; ++i)
-                characterSlots[i].SetUnit(i < _partyUnits.Count ? _partyUnits[i] : null);
-        }
-        
-        private void HandleStartButton()
-        {
-            if (_partyUnits.Count == 0)
-            {
-                UnityLogger.Log("파티에 유닛이 없습니다.");
-                return;
-            }
 
-            unitStorage.units.Clear();
-            unitStorage.unitStates.Clear();
-            
-            foreach (var unit in _partyUnits)
-            {
-                unitStorage.units.Add(unit.UnitSpawn);
-                unitStorage.unitStates.Add(new UnitState(unit));
-            }
-
-            SceneManager.LoadScene("ExpeditionMapScene");
+        private void RefreshPartyList()
+        {
+            _activeSlots.Clear();
         }
     }
 }

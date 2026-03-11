@@ -1,27 +1,21 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using NUnit.Framework.Constraints;
-using UnitSystem;
+using Code.Map;
 using UnityEngine;
 
 namespace Code.UnitSystem
 {
     public class RangeComponent : MonoBehaviour, IUnitComponent
     {
-        [SerializeField] protected Vector3 _verticalCheckBoxSize;
-        [SerializeField] protected Vector3 _horizontalCheckBoxSize;
-        [SerializeField] protected LayerMask _whatIsTarget;
-
         public bool IsActive { get; protected set; }
         public bool isMove;
 
-        protected Collider[] _verticalCollider;
-        protected Collider[] _horizontalCollider;
-
         protected Action _resetTileEvent;
         protected Unit _owner;
+
+        protected readonly List<IMapTile> _tilesInRange = new();
 
         private UnitManageRangeCompo _rangeComponent;
 
@@ -43,49 +37,81 @@ namespace Code.UnitSystem
         {
         }
 
-        public void ResetTile()
-        {
-            if (_verticalCollider == null || _horizontalCollider == null)
-                return;
-            
-            ProcessTiles(_verticalCollider, false);
-            ProcessTiles(_horizontalCollider, false);
-
-            IsActive = false;
-
-            if (!isMove)
-            {
-                _horizontalCollider = null;
-                _verticalCollider = null;
-            }
-
-            _resetTileEvent?.Invoke();
-        }
-
-        public void ReCheckInRange()
-        {
-            if (_verticalCollider != null)
-                ReEnableTiles(_verticalCollider);
-
-            if (_horizontalCollider != null)
-                ReEnableTiles(_horizontalCollider);
-
-            IsActive = true;
-        }
-
         public void FindObjectInRange()
         {
             _rangeComponent.RemoveAllRange(); 
 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
 
-            _verticalCollider = Physics.OverlapBox(transform.position,
-                _verticalCheckBoxSize, Quaternion.identity, _whatIsTarget);
-            _horizontalCollider = Physics.OverlapBox(transform.position,
-                _horizontalCheckBoxSize, Quaternion.identity, _whatIsTarget);
+            CalculateRange();
+            ProcessTiles(_tilesInRange, true);
 
-            ProcessTiles(_verticalCollider, true);
-            ProcessTiles(_horizontalCollider, true);
+            IsActive = true;
+        }
+
+        private void CalculateRange()
+        {
+            _tilesInRange.Clear();
+            
+            Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
+            int range = _owner.unitSO.moveRange;
+
+            Queue<(Vector2Int pos, int dist)> queue = new();
+            HashSet<Vector2Int> visited = new();
+
+            queue.Enqueue((start, 0));
+            visited.Add(start);
+
+            Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+
+            while (queue.Count > 0)
+            {
+                var (pos, dist) = queue.Dequeue();
+
+                if (dist >= range)
+                    continue;
+
+                foreach (var dir in dirs)
+                {
+                    Vector2Int next = pos + dir;
+
+                    if (visited.Contains(next))
+                        continue;
+
+                    IMapTile tile = GridMap.Instance.GetTile(next);
+
+                    if (tile == null)
+                        continue;
+
+                    visited.Add(next);
+                    
+                    if (tile.HasEnemy || tile.HasObstacle)
+                        continue;
+
+                    _tilesInRange.Add(tile);
+                    queue.Enqueue((next, dist + 1));
+                }
+            }
+        }
+
+        public void ResetTile()
+        {
+            if (_tilesInRange.Count == 0)
+                return;
+
+            ProcessTiles(_tilesInRange, false);
+
+            IsActive = false;
+            _tilesInRange.Clear();
+
+            _resetTileEvent?.Invoke();
+        }
+
+        public void ReCheckInRange()
+        {
+            foreach (var tile in _tilesInRange)
+                if (!tile.HasObstacle)
+                    tile.SetWalkable(true);
 
             IsActive = true;
         }
@@ -95,44 +121,18 @@ namespace Code.UnitSystem
             IsActive = false;
         }
 
-        private void ProcessTiles(Collider[] colliders, bool enable)
+        private void ProcessTiles(List<IMapTile> tiles, bool enable)
         {
-            foreach (var col in colliders)
+            foreach (var tile in tiles)
             {
-                if (!col.TryGetComponent(out IMapTile tile))
-                    continue;
-
                 if (!isMove)
                     tile.SetEnemy(enable);
                 else
                 {
-                    if (tile.HasObstacle)
-                        continue;
-
-                    tile.SetWalkable(enable);
+                    if (!tile.HasObstacle)
+                        tile.SetWalkable(enable);
                 }
             }
-        }
-
-        private void ReEnableTiles(Collider[] colliders)
-        {
-            foreach (var col in colliders)
-            {
-                if (!col.TryGetComponent(out IMapTile tile))
-                    continue;
-
-                if (!tile.HasObstacle)
-                    tile.SetWalkable(true);
-            }
-        }
-
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, _verticalCheckBoxSize);
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, _horizontalCheckBoxSize);
         }
     }
 }

@@ -2,148 +2,137 @@
 using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using Code.UnitSystem;
 using UnitSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
     public class UnitBehaviorCompo : RangeComponent
     {
         [SerializeField] private UnitAnimation animationCompo;
         [SerializeField] private UnitRotation rotationCompo;
         [SerializeField] private UnitAnimationTrigger triggerCompo;
-        [field:SerializeField] public GameObject visualPrefabs { get; set; }
+        [field: SerializeField] public GameObject VisualPrefabs { get; set; }
         [SerializeField] private NavMeshAgent navMeshAgent;
-        
-        public GameObject _currentMapTile { get; set; }= null;
-        public UnitManageRangeCompo unitRangeCompo { get; private set; }
-        
-        private readonly List<GameObject> _movingTiles =  new();
+
+        public IMapTile CurrentMapTile { get; set; }
+        public UnitManageRangeCompo UnitRangeCompo { get; private set; }
+
+        private readonly List<IMapTile> _movingTiles = new();
+
         private CharacterUnit _unit;
-        private bool isMoving;
+        private bool _isMoving;
         private float _moveSpeed;
         private UnitCostComponent _unitCostComponentCompo;
-        private IMapTile nextTile;
-        
+        private IMapTile _nextTile;
+
         protected override void Start()
         {
             base.Start();
+
             _unit = _owner as CharacterUnit;
             _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
-            unitRangeCompo = _unit.GetUnitCompo<UnitManageRangeCompo>();
-            
-            
+            UnitRangeCompo = _unit.GetUnitCompo<UnitManageRangeCompo>();
+
             _moveSpeed = _unit.UnitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
+
             navMeshAgent.updatePosition = true;
             navMeshAgent.updateRotation = true;
             navMeshAgent.speed = _moveSpeed;
             navMeshAgent.acceleration = 999f;
             navMeshAgent.stoppingDistance = 0.05f;
             navMeshAgent.enabled = false;
-            
+
             _unit.InputSO.OnClickMoveEvent += Move;
             _unit.InputSO.OnCancelEvent += HandleResetTile;
 
-            
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
 
-            isMoving = false;
+            _isMoving = false;
         }
 
         private void OnDisable()
         {
-            nextTile?.SetEnemy(false);
+            _nextTile?.SetEnemy(false);
 
             _unit.InputSO.OnCancelEvent -= HandleResetTile;
             _unit.InputSO.OnClickMoveEvent -= Move;
+
             Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
         }
-        
+
         private void EndTargeting()
         {
-            nextTile?.SetEnemy(false);
-            visualPrefabs.SetActive(false);
+            _nextTile?.SetEnemy(false);
+            VisualPrefabs.SetActive(false);
         }
 
-        private void SetTargetEnemy(GameObject tileTrm)
+        private void SetTargetEnemy(IMapTile tile)
         {
-            nextTile?.SetEnemy(false);
-            
-            visualPrefabs.SetActive(true);
-            visualPrefabs.transform.rotation = _unit.transform.rotation; 
-            visualPrefabs.transform.position = tileTrm.transform.position;
-            nextTile = tileTrm.GetComponent<IMapTile>();
-            nextTile.SetEnemy(true);
+            _nextTile?.SetEnemy(false);
+
+            VisualPrefabs.SetActive(true);
+            VisualPrefabs.transform.rotation = _unit.transform.rotation;
+            VisualPrefabs.transform.position = tile.WorldPos;
+
+            _nextTile = tile;
+            _nextTile.SetEnemy(true);
         }
 
         private void CheckTilesCanMoving()
         {
             _movingTiles.Clear();
 
-            foreach (var tile in _horizontalCollider)
-            {
-                if (!tile.TryGetComponent(out IMapTile tiled))
-                    continue;
-                
-                if (!tiled.HasObstacle)
-                    _movingTiles.Add(tile.gameObject);
-            }
-
-            foreach (var tile in _verticalCollider)
-            {
-                if (!tile.TryGetComponent(out IMapTile tiled))
-                    continue;
-                
-                if (!tiled.HasObstacle)
-                    _movingTiles.Add(tile.gameObject);
-            }
+            foreach (var tile in _tilesInRange)
+                if (!tile.HasObstacle)
+                    _movingTiles.Add(tile);
         }
 
         private void Update()
         {
-            if (_unit.isMyTurn && IsActive && !isMoving)
+            if (_unit.isMyTurn && IsActive && !_isMoving)
             {
                 CheckTilesCanMoving();
-                
-                GameObject tileTrm = _unit.InputSO.GetWorldPosition();
-            
-                if (_movingTiles.Contains(tileTrm))
-                    SetTargetEnemy(tileTrm);
+
+                IMapTile tile = _unit.InputSO.GetSelectedTile();
+
+                if (tile != null && _movingTiles.Contains(tile))
+                    SetTargetEnemy(tile);
                 else
-                  EndTargeting();
+                    EndTargeting();
             }
             else if (!IsActive)
                 EndTargeting();
         }
-        
+
         public void StartWalk(UnitSetMoveEvent evt)
         {
-            if (_unit.isMyTurn  && !evt.isStart)
+            if (_unit.isMyTurn && !evt.isStart)
                 ResetTile();
             else if (_unit.isMyTurn && evt.isStart)
-               ReCheckInRange();
+                ReCheckInRange();
         }
-        
-        
+
+
         private void HandleResetTile()
         {
-            unitRangeCompo.RemoveAllRange();
+            UnitRangeCompo.RemoveAllRange();
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         }
-        
+
         private void Move()
         {
             if (!_unit.isMyTurn)
                 return;
+            
             if (!IsActive)
                 return;
 
-            if (isMoving)
+            if (_isMoving)
                 return;
-            
+
             if (_unitCostComponentCompo.GetCurrentCost() <= 0)
             {
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
@@ -151,83 +140,76 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
                 EndAct();
                 return;
             }
-            
-            IMapTile tile = _unit.InputSO.GetSelectedTile();
-            GameObject tileTrm = _unit.InputSO.GetWorldPosition();
 
-            visualPrefabs.SetActive(false);
+            IMapTile tile = _unit.InputSO.GetSelectedTile();
             
-            if (!_movingTiles.Contains(tileTrm))
+            VisualPrefabs.SetActive(false);
+
+            if (!_movingTiles.Contains(tile))
                 return;
-            
-            StartCoroutine(Move(tile, tileTrm));
+
+            StartCoroutine(Move(tile));
         }
-        
-        
-        
-        private void MoveStart(GameObject tile)
+
+
+        private void MoveStart(IMapTile tile)
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject,
                 true, new Vector3(0.1f, 0.1f, 0.1f)));
-            
+
             IsActive = false;
-            isMoving = true;
-            
-            rotationCompo.SetDir(tile.transform.position);
-            
+            _isMoving = true;
+
+            rotationCompo.SetDir(tile.WorldPos);
+
             navMeshAgent.enabled = true;
             navMeshAgent.isStopped = false;
             navMeshAgent.ResetPath();
-
-            rotationCompo.SetDir(tile.transform.position);
-            animationCompo.PlaySelectAnimation("MOVE");
             
-            navMeshAgent.SetDestination(tile.transform.position);
+            animationCompo.PlaySelectAnimation("MOVE");
+
+            navMeshAgent.SetDestination(tile.WorldPos);
         }
 
-        private void MoveEnd(GameObject tile)
+        private void MoveEnd(IMapTile tile)
         {
             navMeshAgent.isStopped = true;
             navMeshAgent.ResetPath();
             navMeshAgent.enabled = false;
 
-            isMoving = false;
+            _isMoving = false;
             IsActive = true;
-            
-            _currentMapTile = tile;
-            tile.TryGetComponent(out IMapTile endTile);
-            endTile.SetObstacle(true);
+
+            CurrentMapTile = tile;
+            tile.SetObstacle(true);
 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
                 false, new Vector3(0.1f, 0.1f, 0.1f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             animationCompo.PlaySelectAnimation("IDLE");
-            
+
             ResetTile();
             FindObjectInRange();
         }
-        
-        private IEnumerator Move(IMapTile tileInfo, GameObject tile)
+
+        private IEnumerator Move(IMapTile tileInfo)
         {
-            if (tile == null) 
-                yield break;
-            
-            if(tileInfo == null)
+            if (tileInfo == null)
                 yield break;
 
             if (!tileInfo.IsWalkable)
                 yield break;
-            
-            if (_currentMapTile != null)
+
+            if (CurrentMapTile != null)
             {
-                IMapTile tileInfos = _currentMapTile.GetComponent<IMapTile>();
+                IMapTile tileInfos = CurrentMapTile;
                 tileInfos.SetObstacle(false);
                 tileInfos.SetWalkable(true);
             }
-            
-            MoveStart(tile);
+
+            MoveStart(tileInfo);
 
             _unitCostComponentCompo.RemoveCost(15);
 
@@ -237,12 +219,12 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             while (navMeshAgent.remainingDistance > navMeshAgent.stoppingDistance)
             {
                 if (navMeshAgent.velocity.sqrMagnitude < 0.0001f && !navMeshAgent.pathPending)
-                    navMeshAgent.SetDestination(tile.transform.position);
-                
+                    navMeshAgent.SetDestination(tileInfo.WorldPos);
+
                 yield return null;
             }
-            
-            MoveEnd(tile);
+
+            MoveEnd(tileInfo);
         }
     }
 }

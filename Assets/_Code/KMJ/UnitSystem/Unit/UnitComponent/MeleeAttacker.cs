@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
-using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
@@ -36,14 +34,14 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
         {
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
             triggerCompo.OnAttackTrigger += AttackEnd;
-            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
+            atkCompo.attackEvent.AddListener(AttackAction);
         }
 
         private void OnDestroy()
         {
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             triggerCompo.OnAttackTrigger -= AttackEnd;
-            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
+            atkCompo.attackEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
@@ -106,7 +104,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
                 false,new Vector3(0.1f,0.1f,0.1f)));
             
             animtionCompo.PlaySelectAnimation("IDLE");
-            atkCompo.attckExecutor.attackEndEvent?.Invoke();
+            atkCompo.attackEndEvent?.Invoke();
             
              Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
@@ -117,7 +115,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.6f);  
             
             
-            _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo.attckExecutor.GetDamageData(), 
+            _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo.DamageData, 
                 _target.transform.position,transform.position,atkData,atkCompo.CharacterUnit);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 

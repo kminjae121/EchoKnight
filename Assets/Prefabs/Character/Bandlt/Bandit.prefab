@@ -348,11 +348,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be8419dfdc664cf982804c176f960981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 0.5, y: 1, z: 0.5}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 192
   isMove: 0
   <SkillImage>k__BackingField: {fileID: 0}
   attackData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
@@ -387,11 +382,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c06a190a9154bd9b5dc0f8dff1fdae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 7, y: 1, z: 20}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 320
   isMove: 0
   <SkillImage>k__BackingField: {fileID: 0}
   attackData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
@@ -1117,7 +1107,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitSystem.UnitTargeting
   atkCompo: {fileID: 2105293790733927659}
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  behaveCompo: {fileID: 2712662656777492302}
+  behaviorCompo: {fileID: 2712662656777492302}
   skillManager: {fileID: 8081901703055209266}
 --- !u!1 &2769272016940168851
 GameObject:
@@ -1195,16 +1185,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45deec369a844ea6b4a5206bd9235956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 14, y: 1, z: 14}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 64
   isMove: 1
   animationCompo: {fileID: 9205891533756388090}
   rotationCompo: {fileID: 3966720720610224676}
   triggerCompo: {fileID: 1924552953260626216}
-  <visualPrefabs>k__BackingField: {fileID: 4161862152606468413}
+  <VisualPrefabs>k__BackingField: {fileID: 4161862152606468413}
   navMeshAgent: {fileID: 1364905615837076402}
 --- !u!1 &2786405618907007983
 GameObject:
@@ -1952,9 +1937,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6921545869784076193}
   - component: {fileID: 2105293790733927659}
-  - component: {fileID: 6608923848544468781}
-  - component: {fileID: 2396869624004546662}
-  - component: {fileID: 8615923094609060839}
   m_Layer: 0
   m_Name: AttackCompo
   m_TagString: Untagged
@@ -1989,65 +1971,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a756be0c718b41b588cb881237e7bf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CriticalSpot>k__BackingField: {fileID: 8929876921273345976}
-  <atkPresenter>k__BackingField: {fileID: 2396869624004546662}
-  <attckExecutor>k__BackingField: {fileID: 8615923094609060839}
-  <attackTargetSelector>k__BackingField: {fileID: 6608923848544468781}
-  attackStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
---- !u!114 &6608923848544468781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6802218889458904197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cdcec963ee8042129d7f717d43187a55, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.AttackSystem.AttackTargetSelector
-  _verticalCheckBoxSize: {x: 15, y: 1, z: 15}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 320
   isMove: 0
---- !u!114 &2396869624004546662
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6802218889458904197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d8ecd03ee1d64c59a6f404c5e9c93c20, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.AttackSystem.AttackPresenter
---- !u!114 &8615923094609060839
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6802218889458904197}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f974a31570e94e809a0865d0ad1af66b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.AttackSystem.AttackExecutor
-  atkPresenter: {fileID: 2396869624004546662}
-  rotationCompo: {fileID: 3966720720610224676}
+  <RotationCompo>k__BackingField: {fileID: 3966720720610224676}
+  <CriticalSpot>k__BackingField: {fileID: 8929876921273345976}
+  triggerCompo: {fileID: 1924552953260626216}
+  whatIsBody:
+    serializedVersion: 2
+    m_Bits: 512
   ownCircleMesh: {fileID: 3114693496072462871}
+  CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
   basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
   attackEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1143128515452140542}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: SetThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  attackStartEvent:
     m_PersistentCalls:
       m_Calls: []
   attackEndEvent:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1143128515452140542}
+        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
+          Assembly-CSharp
+        m_MethodName: EndThisUnit
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7098300619018709920
 GameObject:
   m_ObjectHideFlags: 0

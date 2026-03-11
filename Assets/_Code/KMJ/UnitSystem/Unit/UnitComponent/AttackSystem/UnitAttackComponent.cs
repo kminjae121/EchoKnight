@@ -91,6 +91,7 @@ namespace Code.AttackSystem
 
         private void AttackEnded()
         {
+            CharacterUnit.BehaveCompo.ReCheckInRange();
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }

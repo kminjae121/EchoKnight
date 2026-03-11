@@ -30,17 +30,15 @@ namespace Code.AttackSystem
                 _targetingCompo?.OffTargeting();
             
             Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
-
-            Debug.Log(enemyPos);
             
             foreach (var tile in _tilesInRange)
             {
-                Debug.Log(_targetEnemy);
-                Debug.Log(tile.GridPos);
+                Debug.Log($"타일은 {tile.GridPos}");
+                Debug.Log($"적 위치는 {enemyPos}");
                 
                 if (tile.GridPos == enemyPos)
                 {
-                    Debug.Log(_targetEnemy);
+                    Debug.Log("드디어 됐다.");
                     _targetEnemy = enemy;
                     return;
                 }

@@ -60,7 +60,7 @@ namespace _Code.Core.Managers
                 Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(data.spawnCoord.x, data.spawnCoord.y);
                 GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
 
-                tile.SetObstacle(true);
+                tile.SetEnemy(true);
 
                 enemies.Add(enemyObj);
             }

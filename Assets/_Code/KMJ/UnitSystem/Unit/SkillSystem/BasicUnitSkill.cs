@@ -1,5 +1,6 @@
 ﻿using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.Map;
 using EnemySystem;
 using Input;
 using UnitSystem;
@@ -40,7 +41,10 @@ namespace Code.UnitSystem.SkillSystem
                 triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
                 _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
             }
+
+            skillEndEvent.AddListener(SetMovingTrue);
         }
+
 
         public override void OnDisable()
         {
@@ -48,6 +52,12 @@ namespace Code.UnitSystem.SkillSystem
             
             if (_inputReader != null)
                 _inputReader.OnAttackEvent -= UseSkill;
+            
+            skillEndEvent.RemoveListener(SetMovingTrue);
+        }
+        public void SetMovingTrue()
+        {
+            _characterUnit.BehaveCompo.ReCheckInRange();
         }
 
         public void SetEnemyTargeting(EnemyTargeting targeting)
@@ -72,14 +82,7 @@ namespace Code.UnitSystem.SkillSystem
                 skillEnd();
                 return;
             }
-
-            IMapTile tile = _inputReader.GetSelectedTile();
-
-            if (tile == null || !_tilesInRange.Contains(tile) || !tile.HasEnemy)
-            {
-                skillEnd();
-                return;
-            }
+            
 
             GameObject enemy = _inputReader.GetEnemy();
             
@@ -88,6 +91,18 @@ namespace Code.UnitSystem.SkillSystem
                 skillEnd();
                 return;
             }
+            
+            Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
+            
+            foreach (var tile in _tilesInRange)
+            {
+                if (tile.GridPos == enemyPos)
+                {
+                    _targetEnemy = enemy;
+                }
+            }
+
+            if (_targetEnemy == null) return;
 
             _targetEnemy = enemy;
 

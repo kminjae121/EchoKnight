@@ -143,17 +143,15 @@ namespace UnitSystem
 
                 if (atkCompo.attackTargetSelector._targetEnemy != null)
                 {
-                    atkCompo.attckExecutor.SetRotation(_targetEnemy);
-
-                    EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
-                    _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
-                    _targetUnit = _targetEnemy.GetComponent<Unit>();
-
+                    EntityHealth health = atkCompo.attackTargetSelector._targetEnemy.GetComponent<EntityHealth>();
+                    _targetingCompo = atkCompo.attackTargetSelector._targetEnemy.GetComponent<EnemyTargeting>();
+                    _targetUnit = atkCompo.attackTargetSelector._targetEnemy.GetComponent<Unit>();
+                    
+                    atkCompo.attckExecutor.SetRotation(_targetUnit.gameObject);
                     atkCompo.attackTargetSelector.SetTargeting(_targetingCompo);
-
                     _targetingCompo.Targeting();
 
-                    atkCompo.CriticalSpot.CheckEnemyBody(atkCompo.attckExecutor.GetDamageData(), _targetEnemy.gameObject,
+                    atkCompo.CriticalSpot.CheckEnemyBody(atkCompo.attckExecutor.GetDamageData(), _targetUnit.gameObject,
                         atkCompo.attckExecutor.AtkDamage, atkCompo.attckExecutor.AddDamage);
 
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(atkCompo.attckExecutor.AddDamage, health.CurrentHealth,

@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using Code.Core.Events.Bus;
 
 namespace Code.UI
 {
@@ -69,7 +70,12 @@ namespace Code.UI
                 .Append(mainTxt.RemoveText( 0.5f))
                 .AppendInterval(0.3f)
                 .Append(thisObjectImg.DOFade(0, 1f))
-                .OnComplete(() => DOTween.KillAll());
+                .OnComplete(() => 
+                {
+                    DOTween.KillAll();
+                    Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+                    gameObject.SetActive(false);
+                });
         }
 
         private void OnDisable()
@@ -93,7 +99,12 @@ namespace Code.UI
                     .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
                     .Append(thisObjectImg.DOFade(0, 0.5f))
-                    .OnComplete(() => DOTween.KillAll());
+                    .OnComplete(() => 
+                    {
+                        DOTween.KillAll();
+                        Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+                        gameObject.SetActive(false);
+                    });
                 
                 
                 storageSO.unitStates.ForEach(state =>
@@ -114,7 +125,12 @@ namespace Code.UI
                     .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
                     .Append(thisObjectImg.DOFade(0, 0.5f))
-                    .OnComplete(() => DOTween.KillAll());
+                    .OnComplete(() => 
+                    {
+                        DOTween.KillAll();
+                        Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+                        gameObject.SetActive(false);
+                    });
                  
                 storageSO.unitStates.ForEach(state =>
                 {

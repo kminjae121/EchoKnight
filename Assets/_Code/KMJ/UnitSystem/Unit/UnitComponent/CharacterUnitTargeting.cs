@@ -1,5 +1,6 @@
 ﻿using System;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
@@ -38,8 +39,9 @@ namespace UnitSystem
         {
             if (!unit.isMyTurn || inputSO == null) return;
             
-            if (atkCompo != null && atkCompo.IsActive)
+            if (atkCompo != null && atkCompo.attackTargetSelector.IsActive)
             {
+                Debug.Log("Targeting");
                 AttackTargeting();
             }
             if (skillManager.GetSkillInfo() != null && skillManager.GetSkillInfo().IsActive)
@@ -96,13 +98,15 @@ namespace UnitSystem
                         
                     EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                     _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    _targetUnit = _targetEnemy.GetComponent<Unit>();
                         
                     if (_targetingCompo != null) _targetingCompo.Targeting();
                         
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(skillManager.GetSkillInfo().AddDamage, health.CurrentHealth,
                         health.MaxHealth, skillManager.GetSkillInfo().DamageData.damage, true,
-                        _targetEnemy.GetComponent<Unit>().unitSO.UnitImage,true));
-
+                        _targetUnit.unitSO.UnitImage,true));
+                    
+                    atkCompo.attckExecutor.SetRotation(_targetEnemy);
                     skillManager.GetSkillInfo().SetEnemyTargeting(_targetingCompo);
                 }
             }
@@ -114,7 +118,6 @@ namespace UnitSystem
             
             GameObject enemy = inputSO.GetEnemy();
             
-
             if(enemy == null)
             {
                 if (_targetEnemy != null)
@@ -127,29 +130,27 @@ namespace UnitSystem
 
                     _targetingCompo = null;
 
-                    atkCompo.SetTargeting(null);
+                    atkCompo.attackTargetSelector.SetTargeting(null);
                 }
             }
             else
             {
-                atkCompo.FindEnemyIsThere(enemy);
+                atkCompo.attackTargetSelector.FindEnemyIsThere(enemy);
                     
-                if (_targetEnemy != null && _targetingCompo == null)
+                if (_targetEnemy != null)
                 {
-                    atkCompo.RotationCompo.SetDir(_targetEnemy.transform.position);
-                        
                     EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
                     _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
                     _targetUnit = _targetEnemy.GetComponent<Unit>();
                     
-                    atkCompo.SetTargeting(_targetingCompo);
-                        
+                    atkCompo.attackTargetSelector.SetTargeting(_targetingCompo);
                     _targetingCompo.Targeting();
-                        
-                    atkCompo.CriticalSpot.CheckEnemyBody(atkCompo.DamageData, _targetEnemy.gameObject, atkCompo.AtkDamage, atkCompo.AddDamage);
-                        
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(atkCompo.AddDamage,health.CurrentHealth, 
-                        health.MaxHealth,atkCompo.DamageData.damage, true,_targetUnit.unitSO.UnitImage,true));
+                    atkCompo.CriticalSpot.CheckEnemyBody(atkCompo.attckExecutor.GetDamageData(), _targetEnemy.gameObject
+                        , atkCompo.attckExecutor.AtkDamage, atkCompo.attckExecutor.AddDamage);
+                    atkCompo.attckExecutor.SetRotation(_targetEnemy);
+                    
+                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(atkCompo.attckExecutor.AddDamage,health.CurrentHealth, 
+                        health.MaxHealth,atkCompo.attckExecutor.GetDamageData().damage, true,_targetUnit.unitSO.UnitImage,true));
                 }
             }
         }

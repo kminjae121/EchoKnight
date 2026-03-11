@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class CharacterArtifactInfoUI : Panel
+    public class CharacterArtifactPanel : Panel
     {
         [Header("Pool Settings")]
         [SerializeField] private PoolingItemSO artifactButtonPoolingSO;
@@ -104,6 +104,7 @@ namespace Code.UI
             {
                 var btn = _poolManager.Pop<ArtifactButton>(artifactButtonPoolingSO);
                 btn.transform.SetParent(inventoryTrm);
+                btn.transform.SetAsLastSibling();
                 btn.transform.localScale = Vector3.one;
 
                 bool isEquipped = _unit.EquippedArtifacts != null && 

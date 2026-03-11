@@ -5,6 +5,7 @@ namespace Code.Core.Interfaces
     public interface IMapTile
     {
         Vector2Int GridPos { get; }
+        Vector3 WorldPos { get; }
         bool IsWalkable { get;  } 
         bool HasEnemy { get; }
         bool HasObstacle { get;  }

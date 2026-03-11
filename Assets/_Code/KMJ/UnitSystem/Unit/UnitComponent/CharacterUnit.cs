@@ -1,7 +1,7 @@
 using System.Collections;
 using _Code.Core.Managers;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.Managers;
 using Code.UI;
 using Code.UnitManaging;
@@ -55,7 +55,7 @@ namespace UnitSystem
             if (TriggerCompo != null)
                 TriggerCompo.OnDeadEvent += HandleDieAnimationEnd;
 
-            BehaveCompo._currentMapTile = _startTile;
+            BehaveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
             
             if(_startTile != null)
                 transform.position = _startTile.transform.position;

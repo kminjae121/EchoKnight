@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices.ComTypes;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
-using Code.AttackSystem;
+﻿using System.Collections;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
 using UnitSystem;
-using Unity.Cinemachine;
 using UnityEngine;
 
-namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
+namespace Code.AttackSystem
 {
     public class MeleeAttacker : MonoBehaviour
     {
@@ -117,7 +111,7 @@ namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
             atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.6f);  
             
             
-            _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo.attckExecutor.GetDamageData(), 
+            _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo.attckExecutor.DamageData, 
                 _target.transform.position,transform.position,atkData,atkCompo.CharacterUnit);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 

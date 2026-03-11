@@ -3,7 +3,7 @@ using Code.UnitSystem;
 using UnitSystem;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
     public class CriticalSpot : MonoBehaviour, IUnitComponent
     {

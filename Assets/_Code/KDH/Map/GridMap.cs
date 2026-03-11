@@ -32,7 +32,7 @@ namespace Code.Map
         public int Height => height;
         public float TileSize => tileSize;
 
-        private void Awake()
+        protected override void Awake()
         {
             RebuildTileArray();
         }

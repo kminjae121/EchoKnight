@@ -1,11 +1,7 @@
-﻿using _Code.KMJ.UnitSystem.Unit.UnitComponent;
-using Code.Core.Events.Bus;
-using Code.EntityComponent;
+﻿using Code.Core.Events.Bus;
 using Code.UnitSystem;
-using EnemySystem;
 using Input;
 using UnitSystem;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 

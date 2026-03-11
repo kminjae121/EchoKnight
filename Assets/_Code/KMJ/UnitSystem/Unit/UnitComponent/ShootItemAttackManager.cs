@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;

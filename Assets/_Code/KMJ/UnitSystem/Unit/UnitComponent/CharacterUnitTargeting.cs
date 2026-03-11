@@ -88,36 +88,33 @@ namespace UnitSystem
             }
             else
             {
-                if (_targetEnemy != enemy)
+                skillManager.GetSkillInfo().FindEnemyIsThere(enemy);
+                
+                if (skillManager.GetSkillInfo().GetEnemy() == null) return;
+                
+                _targetEnemy = enemy;
+                
+                var skill = skillManager.GetSkillInfo();
+                
+                if (skill != null)
                 {
-                    skillManager.GetSkillInfo().FindEnemyIsThere(enemy);
-
-                    if (skillManager.GetSkillInfo().GetEnemy() == null) return;
-                    
-                    _targetEnemy = enemy;
-
-                    var skill = skillManager.GetSkillInfo();
-
-                    if (skill != null)
-                    {
-                        skill.rotationCompo.SetDir(enemy.transform.position);
-                        skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.damage, skill.AddDamage);
-                    }
-
-                    EntityHealth health = enemy.GetComponent<EntityHealth>();
-                    _targetingCompo = enemy.GetComponent<EnemyTargeting>();
-
-                    if (_targetingCompo != null)
-                        _targetingCompo.Targeting();
-
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(skillManager.GetSkillInfo().AddDamage, health.CurrentHealth,
-                        health.MaxHealth,
-                        skillManager.GetSkillInfo().DamageData.damage, true,
-                        enemy.GetComponent<Unit>().unitSO.UnitImage, true));
-
-                    skillManager.GetSkillInfo().SetEnemyTargeting(_targetingCompo);
-                    skillManager.GetSkillInfo().SetEnemy(_targetEnemy);
+                    skill.rotationCompo.SetDir(enemy.transform.position);
+                    skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.damage, skill.AddDamage);
                 }
+                
+                EntityHealth health = enemy.GetComponent<EntityHealth>();
+                _targetingCompo = enemy.GetComponent<EnemyTargeting>();
+                
+                if (_targetingCompo != null)
+                    _targetingCompo.Targeting();
+                
+                Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(skillManager.GetSkillInfo().AddDamage, health.CurrentHealth,
+                    health.MaxHealth,
+                    skillManager.GetSkillInfo().DamageData.damage, true,
+                    enemy.GetComponent<Unit>().unitSO.UnitImage, true));
+                
+                skillManager.GetSkillInfo().SetEnemyTargeting(_targetingCompo);
+                skillManager.GetSkillInfo().SetEnemy(_targetEnemy);
             }
         }
 

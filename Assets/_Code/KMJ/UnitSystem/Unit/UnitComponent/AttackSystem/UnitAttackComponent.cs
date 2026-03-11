@@ -4,6 +4,7 @@ using Input;
 using UnitSystem;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 namespace Code.AttackSystem
 {
@@ -66,7 +67,7 @@ namespace Code.AttackSystem
         public void AttackEnemy()
         {
             if (!(CharacterUnit.isMyTurn && attackTargetSelector.IsActive)) return;
-
+            
             var enemy = _inputReader.GetEnemy();
             attackTargetSelector.FindEnemyIsThere(enemy);
             
@@ -89,6 +90,7 @@ namespace Code.AttackSystem
 
         private void AttackEnded()
         {
+            CharacterUnit.BehaveCompo.ReCheckInRange();
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }

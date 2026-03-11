@@ -57,7 +57,8 @@ namespace UnitSystem
 
             BehaveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
             
-            transform.position = _startTile.transform.position;
+            if(_startTile != null)
+                transform.position = _startTile.transform.position;
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }

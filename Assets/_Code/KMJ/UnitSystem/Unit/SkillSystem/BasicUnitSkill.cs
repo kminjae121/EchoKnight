@@ -1,5 +1,6 @@
 ﻿using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.Map;
 using EnemySystem;
 using Input;
 using UnitSystem;
@@ -40,7 +41,10 @@ namespace Code.UnitSystem.SkillSystem
                 triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
                 _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
             }
+
+            skillEndEvent.AddListener(SetMovingTrue);
         }
+
 
         public override void OnDisable()
         {
@@ -48,6 +52,13 @@ namespace Code.UnitSystem.SkillSystem
             
             if (_inputReader != null)
                 _inputReader.OnAttackEvent -= UseSkill;
+            
+            skillEndEvent.RemoveListener(SetMovingTrue);
+        }
+
+        public void SetMovingTrue()
+        {
+            _characterUnit.BehaveCompo.ReCheckInRange();
         }
 
         public void SetEnemyTargeting(EnemyTargeting targeting)
@@ -65,38 +76,21 @@ namespace Code.UnitSystem.SkillSystem
 
         public override void AttackEnemy()
         {
-            base.AttackEnemy();
-            
             if (!isCanUseSkill)
             {
                 skillEnd();
                 return;
             }
 
-            IMapTile tile = _inputReader.GetSelectedTile();
-
-            if (tile == null || !_tilesInRange.Contains(tile) || !tile.HasEnemy)
-            {
-                skillEnd();
-                return;
-            }
-
-            GameObject enemy = _inputReader.GetEnemy();
+            if (_targetEnemy == null) return;
             
-            if (enemy == null)
-            {
-                skillEnd();
-                return;
-            }
-
-            _targetEnemy = enemy;
 
             ownCircleMesh.material = basicMaterial;
             
             _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
             
             if (rotationCompo != null)
-                rotationCompo.SetDir(enemy.transform.position);
+                rotationCompo.SetDir(_targetEnemy.transform.position);
             
             if (_targetingCompo != null)
                 _targetingCompo.OffTargeting();
@@ -110,6 +104,11 @@ namespace Code.UnitSystem.SkillSystem
             _targetEnemy = null;
            
             skillEnd();
+        }
+
+        public void SetEnemy(GameObject target)
+        {
+            _targetEnemy = target;
         }
 
         public override void ShowSkillRange()
@@ -131,7 +130,6 @@ namespace Code.UnitSystem.SkillSystem
             if (ownSkill)
             {
                 _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
-                
                 SkillStartEvent();
                 skillEvent?.Invoke(null);
             }
@@ -141,6 +139,38 @@ namespace Code.UnitSystem.SkillSystem
                 CheckCanAttack();
                 CanUseThisSkill();
             }
+        }
+        
+        public void FindEnemyIsThere(GameObject enemy)
+        {
+            if (enemy == null)
+            {
+                _targetEnemy = null;
+                return;
+            }
+
+            Debug.Log(enemy);
+            
+            if (_targetEnemy != null && _targetEnemy != enemy)
+                _targetingCompo?.OffTargeting();
+            
+            Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
+            
+            foreach (var tile in _tilesInRange)
+            {
+                if (tile.GridPos == enemyPos)
+                {
+                    _targetEnemy = enemy;
+                    return;
+                }
+            }
+
+            _targetEnemy = null;
+        }
+
+        public GameObject GetEnemy()
+        {
+            return _targetEnemy;
         }
 
         private void SkillStartEvent()

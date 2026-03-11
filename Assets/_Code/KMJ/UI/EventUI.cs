@@ -21,6 +21,7 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI skipBtnTxt;
         [SerializeField] private TextMeshProUGUI popUpTxt;
         [SerializeField] private Image eventImg;
+        [SerializeField] private GameObject evtObject;
 
         [SerializeField] private Button skipBtn;
         [SerializeField] private Button selectBtn;
@@ -74,7 +75,7 @@ namespace Code.UI
                 {
                     DOTween.KillAll();
                     Bus<StageClearEvent>.Raise(new StageClearEvent(true));
-                    gameObject.SetActive(false);
+                    evtObject.SetActive(false);
                 });
         }
 
@@ -88,6 +89,11 @@ namespace Code.UI
         {
             if (value == 1)
             {
+                storageSO.unitStates.ForEach(state =>
+                {
+                    state.TakeDamage(eventTexts[randomValue].value);
+                });
+                
                 mainTxt.text = eventTexts[randomValue].FailTxt;
                 
                 skipBtn.gameObject.SetActive(false);
@@ -103,19 +109,19 @@ namespace Code.UI
                     {
                         DOTween.KillAll();
                         Bus<StageClearEvent>.Raise(new StageClearEvent(true));
-                        gameObject.SetActive(false);
+                        evtObject.SetActive(false);
                     });
                 
                 
-                storageSO.unitStates.ForEach(state =>
-                {
-                    state.TakeDamage(eventTexts[randomValue].value);
-                });
             }
             else
             {
                 mainTxt.text = eventTexts[randomValue].SuccessTxt;
                 
+                storageSO.unitStates.ForEach(state =>
+                {
+                    state.Heal(eventTexts[randomValue].value);
+                });
                 skipBtn.gameObject.SetActive(false);
                 selectBtn.gameObject.SetActive(false);
                 DOTween.Sequence()
@@ -129,13 +135,9 @@ namespace Code.UI
                     {
                         DOTween.KillAll();
                         Bus<StageClearEvent>.Raise(new StageClearEvent(true));
-                        gameObject.SetActive(false);
+                        evtObject.SetActive(false);
                     });
                  
-                storageSO.unitStates.ForEach(state =>
-                {
-                    state.Heal(eventTexts[randomValue].value);
-                });
             }
         }
         

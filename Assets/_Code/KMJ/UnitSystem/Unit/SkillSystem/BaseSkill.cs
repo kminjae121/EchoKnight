@@ -54,7 +54,6 @@ namespace Code.UnitSystem.SkillSystem
 
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
-            _resetTileEvent += skillEnd;
         }
 
         protected override void Start()
@@ -97,7 +96,6 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void OnDisable()
         {
             skillEndEvent.RemoveListener(CanUseSkillTrue);
-            _resetTileEvent -= skillEnd;
         }
         
         protected virtual void CanUseSkillTrue()
@@ -113,9 +111,11 @@ namespace Code.UnitSystem.SkillSystem
         {
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
-            
+
             FindObjectInRange();
         }
+        
+        
 
         public virtual void skillEnd()
         {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.involveUnitSO;
+using Code.Core.Events.Bus;
 using Code.Items;
 using Code.Managers;
 using Code.UnitSystem.SkillSystem;
@@ -16,6 +17,7 @@ namespace Code.UI
     {
         private int skillCount = 5;
         private int itemCount = 3;
+        [SerializeField] private GameObject storePanelObject;
         [SerializeField] private GameObject storeObject;
 
         [SerializeField] private Transform storePos;
@@ -62,9 +64,13 @@ namespace Code.UI
         {
             DOTween.Sequence()
                 .Append(storeObject.transform.DOMove(upPos.position, 1f))
-                .OnComplete(() => storeObject.SetActive(false));
+                .OnComplete(() =>
+                {
+                    storePanelObject.SetActive(false);
+                });
            
             GoodsManager.Instance.AddSkill();
+            Bus<StageClearEvent>.Raise(new StageClearEvent(true));
         }
 
 

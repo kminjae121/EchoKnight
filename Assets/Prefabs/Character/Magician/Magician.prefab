@@ -1373,11 +1373,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd8b90b09dbf4c50a53195465c73eef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 0.5, y: 1, z: 0.5}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 192
   isMove: 0
   <SkillImage>k__BackingField: {fileID: 0}
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
@@ -1412,11 +1407,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 011c4356ee7a44009b7de753cac75e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 26, y: 1, z: 26}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 320
   isMove: 0
   <SkillImage>k__BackingField: {fileID: 0}
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
@@ -2797,7 +2787,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UnitSystem.UnitTargeting
   atkCompo: {fileID: 3897272450828838402}
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  behaveCompo: {fileID: 346073034446612595}
+  behaviorCompo: {fileID: 346073034446612595}
   skillManager: {fileID: 7899156878848632344}
 --- !u!1 &7366538928604377655
 GameObject:
@@ -2843,16 +2833,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45deec369a844ea6b4a5206bd9235956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 14, y: 1, z: 14}
-  _horizontalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 64
   isMove: 1
   animationCompo: {fileID: 4608990689356498612}
   rotationCompo: {fileID: 5137460681628610011}
   triggerCompo: {fileID: 4918850842610012167}
-  <visualPrefabs>k__BackingField: {fileID: 7039681090636998597}
+  <VisualPrefabs>k__BackingField: {fileID: 7039681090636998597}
   navMeshAgent: {fileID: 2124457247866811024}
 --- !u!1 &7424601978593636424
 GameObject:
@@ -5689,11 +5674,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a756be0c718b41b588cb881237e7bf2b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 0, y: 0, z: 0}
-  _horizontalCheckBoxSize: {x: 20, y: 1, z: 20}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 320
   isMove: 0
   <RotationCompo>k__BackingField: {fileID: 5137460681628610011}
   <CriticalSpot>k__BackingField: {fileID: 7752189333861557116}

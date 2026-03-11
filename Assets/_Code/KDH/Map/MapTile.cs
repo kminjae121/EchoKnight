@@ -11,6 +11,7 @@ namespace Code.Map
         [SerializeField] private bool hasObstacle;
 
         public Vector2Int GridPos => gridPos;
+        public Vector3 WorldPos => transform.position;
         
         public bool IsWalkable => isWalkable;
         public bool HasEnemy => hasEnemy;

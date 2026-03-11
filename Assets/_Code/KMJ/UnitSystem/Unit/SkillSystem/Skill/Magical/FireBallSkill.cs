@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;

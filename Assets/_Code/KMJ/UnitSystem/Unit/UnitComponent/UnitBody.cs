@@ -1,7 +1,7 @@
 ﻿using Code.UnitSystem;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
     public enum BodyType
     {

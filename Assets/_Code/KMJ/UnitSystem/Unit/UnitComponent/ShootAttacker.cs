@@ -5,7 +5,7 @@ using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
     public class ShootAttacker : MonoBehaviour
     {

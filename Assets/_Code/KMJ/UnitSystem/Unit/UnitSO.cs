@@ -1,9 +1,6 @@
-using System.Collections.Generic;
 using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
 using Code.UnitSystem.ArtifactSystem;
-using Skill;
 using UnityEngine;
 
 public enum EntityType
@@ -58,6 +55,8 @@ public class UnitSO : ScriptableObject
 
     public float turnSpeed = 3f;
 
+    public int moveRange;
+    
     public bool isPlayerUnit = false;
     
     public float MoveSpeed;

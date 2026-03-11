@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
@@ -30,7 +31,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             triggerCompo.OnShootAttackTrigger += Shoot;
             triggerCompo.OnShootAttackEndTrigger += AttackEnd;
-            atkCompo.attackEvent.AddListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
             _shootItemManager = GetComponentInChildren<ShootItemAttackManager>();
         }
 
@@ -38,7 +39,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         {
             triggerCompo.OnShootAttackTrigger -= Shoot;
             triggerCompo.OnShootAttackEndTrigger -= AttackEnd;
-            atkCompo.attackEvent.RemoveListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
@@ -65,7 +66,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(atkCompo.DamageData);
+            _shootItemManager.SetDamageData(atkCompo.attckExecutor.GetDamageData());
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);
 
             atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.3f);
@@ -79,7 +80,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             
-            atkCompo.attackEndEvent?.Invoke();
+            atkCompo.attckExecutor.attackEndEvent?.Invoke();
         }
     }
 }

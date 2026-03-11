@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
@@ -28,14 +29,14 @@ public class LongRangeAttacker : MonoBehaviour
         {
             triggerCompo.OnLongRangeAttackTrigger += ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger += AttackEnd;
-            atkCompo.attackEvent.AddListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
         }
 
         private void OnDestroy()
         {
             triggerCompo.OnLongRangeAttackTrigger -= ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger -= AttackEnd;
-            atkCompo.attackEvent.RemoveListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
@@ -58,7 +59,7 @@ public class LongRangeAttacker : MonoBehaviour
             Vector3 dir = _target.transform.position;
             dir.y += 1.4f;
             
-            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo.DamageData);
+            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo.attckExecutor.GetDamageData());
             effectPrefab.transform.position = dir;
             effectPrefab.SetActive(true);
         }
@@ -67,7 +68,7 @@ public class LongRangeAttacker : MonoBehaviour
         private void AttackEnd()
         {
             animtionCompo.PlaySelectAnimation("IDLE");
-            atkCompo.attackEndEvent?.Invoke();
+            atkCompo.attckExecutor.attackEndEvent?.Invoke();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));

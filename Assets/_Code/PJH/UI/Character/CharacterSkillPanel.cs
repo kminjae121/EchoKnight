@@ -19,7 +19,7 @@ namespace Code.UI
         [SerializeField] private Transform ownSkillContainer;
 
         [Header("Detail Settings")]
-        [SerializeField] private Image detailIconImage; 
+        [SerializeField] private Image IconImage; 
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI descText;
         [SerializeField] private TextMeshProUGUI costText;
@@ -105,7 +105,7 @@ namespace Code.UI
         {
             bool hasSkill = _selectedSkill != null;
 
-            if (detailIconImage != null) detailIconImage.gameObject.SetActive(hasSkill);
+            if (IconImage != null) IconImage.gameObject.SetActive(hasSkill);
             if (nameText != null) nameText.gameObject.SetActive(hasSkill);
             if (descText != null) descText.gameObject.SetActive(hasSkill);
             if (costText != null) costText.gameObject.SetActive(hasSkill);
@@ -114,7 +114,7 @@ namespace Code.UI
 
             if (!hasSkill) return;
 
-            if (detailIconImage != null) detailIconImage.sprite = _selectedSkill.skillUIImage;
+            if (IconImage != null) IconImage.sprite = _selectedSkill.skillUIImage;
             if (nameText != null) nameText.text = _selectedSkill.skillName;
             if (descText != null) descText.text = _selectedSkill.SkillDescription;
             if (costText != null) costText.text = $"{_selectedSkill.SkillCost}";

@@ -16,8 +16,7 @@ namespace Code.UI
         [SerializeField] private List<Image> artifactIcons;
         [SerializeField] private Sprite emptyArtifactSlotSprite;
 
-        [Header("Visual & HP")]
-        [SerializeField] private Transform modelSpawnPoint;
+        [Header("Hp Bar")]
         [SerializeField] private Image hpBarFill;
         [SerializeField] private TextMeshProUGUI hpText;
         [SerializeField] private float hpTweenDuration = 0.3f;
@@ -32,7 +31,6 @@ namespace Code.UI
 
         private UnitState _currentUnit;
         private Tween _hpTween;
-        private GameObject _spawnedModel;
 
         public override void Awake()
         {
@@ -43,6 +41,7 @@ namespace Code.UI
             {
                 int index = i;
                 var trigger = skillIcons[i].gameObject.AddComponent<DoubleClickTrigger>();
+
                 trigger.CanDoubleClick = () => _currentUnit != null && 
                                                _currentUnit.Data.SkillStorage != null && 
                                                index < _currentUnit.Data.SkillStorage.skills.Count;
@@ -102,7 +101,6 @@ namespace Code.UI
             RefreshHpBar(0f, _currentUnit.CurrentHp.Value);
             RefreshSkillSlots();
             RefreshArtifactSlots();
-            SpawnCharacterModel();
         }
 
         private void RefreshInfoTexts()
@@ -163,39 +161,6 @@ namespace Code.UI
                 {
                     artifactIcons[i].sprite = emptyArtifactSlotSprite;
                 }
-            }
-        }
-
-        private void SpawnCharacterModel()
-        {
-            if (_spawnedModel != null)
-            {
-                Destroy(_spawnedModel);
-                _spawnedModel = null;
-            }
-
-            if (modelSpawnPoint == null) return;
-
-            var spawnData = _currentUnit.Data.UnitSpawn;
-            
-            if (spawnData != null && spawnData.UnitPrefab != null)
-            {
-                _spawnedModel = Instantiate(spawnData.UnitPrefab, modelSpawnPoint);
-                _spawnedModel.transform.localPosition = Vector3.zero;
-                _spawnedModel.transform.localRotation = Quaternion.identity;
-                
-                SetLayerRecursively(_spawnedModel, LayerMask.NameToLayer("UI"));
-            }
-        }
-
-        private void SetLayerRecursively(GameObject obj, int newLayer)
-        {
-            if (obj == null) return;
-            
-            obj.layer = newLayer;
-            foreach (Transform child in obj.transform)
-            {
-                SetLayerRecursively(child.gameObject, newLayer);
             }
         }
     }

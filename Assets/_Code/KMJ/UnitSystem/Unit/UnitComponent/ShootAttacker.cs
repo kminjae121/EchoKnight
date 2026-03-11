@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
@@ -25,16 +26,12 @@ namespace Code.UnitSystem
         private CinemachineImpulseSource impulseSource;
         
         private GameObject _target = null;
-        
-        public bool isRunningAttack = false;
-        
-        private Vector3 _ownTrm;
 
         private void Start()
         {
             triggerCompo.OnShootAttackTrigger += Shoot;
             triggerCompo.OnShootAttackEndTrigger += AttackEnd;
-            atkCompo.attackEvent.AddListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
             _shootItemManager = GetComponentInChildren<ShootItemAttackManager>();
         }
 
@@ -42,12 +39,11 @@ namespace Code.UnitSystem
         {
             triggerCompo.OnShootAttackTrigger -= Shoot;
             triggerCompo.OnShootAttackEndTrigger -= AttackEnd;
-            atkCompo.attackEvent.RemoveListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
         {
-            _ownTrm = transform.position;
             StartCoroutine(ShootAttackSet(target));
         }
 
@@ -70,7 +66,7 @@ namespace Code.UnitSystem
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(atkCompo.DamageData);
+            _shootItemManager.SetDamageData(atkCompo.attckExecutor.GetDamageData());
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);
 
             atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.3f);
@@ -84,7 +80,7 @@ namespace Code.UnitSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             
-            atkCompo.attackEndEvent?.Invoke();
+            atkCompo.attckExecutor.attackEndEvent?.Invoke();
         }
     }
 }

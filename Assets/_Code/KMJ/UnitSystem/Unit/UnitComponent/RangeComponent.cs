@@ -39,7 +39,7 @@ namespace Code.UnitSystem
 
         public void FindObjectInRange()
         {
-            _rangeComponent.RemoveAllRange();
+            _rangeComponent.RemoveAllRange(); 
 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
 

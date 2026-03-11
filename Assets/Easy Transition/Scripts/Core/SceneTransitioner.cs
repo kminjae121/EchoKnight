@@ -91,6 +91,51 @@ namespace PixeLadder.EasyTransition
             StartCoroutine(TransitionRoutine(sceneName, effectToUse));
         }
 
+        // =========================================================
+        // 씬 이동 없이 트랜지션 연출만 사용하며 중간에 UI 등을 켜주는 기능
+        // =========================================================
+        public void DoTransition(System.Action midTransitionAction, System.Action onCompleteAction = null, TransitionEffect effect = null)
+        {
+            if (isTransitioning)
+            {
+                Debug.LogWarning("SceneTransitioner: Transition already in progress.");
+                return;
+            }
+
+            var effectToUse = effect ?? defaultTransition;
+            if (effectToUse == null)
+            {
+                Debug.LogError("SceneTransitioner: No transition effect specified and no default is set.", this);
+                return;
+            }
+
+            StartCoroutine(ActionTransitionRoutine(midTransitionAction, onCompleteAction, effectToUse));
+        }
+
+        private IEnumerator ActionTransitionRoutine(System.Action midTransitionAction, System.Action onCompleteAction, TransitionEffect effect)
+        {
+            isTransitioning = true;
+            transitionImageInstance.gameObject.SetActive(true);
+
+            Material materialInstance = new Material(effect.transitionMaterial);
+            Rect rect = transitionImageInstance.rectTransform.rect;
+            materialInstance.SetVector(RectSizeID, new Vector4(rect.width, rect.height, 0, 0));
+            effect.SetEffectProperties(materialInstance);
+            transitionImageInstance.material = materialInstance;
+            
+            yield return effect.AnimateOut(transitionImageInstance);
+
+            midTransitionAction?.Invoke();
+
+            yield return effect.AnimateIn(transitionImageInstance);
+
+            transitionImageInstance.gameObject.SetActive(false);
+            Destroy(materialInstance);
+            isTransitioning = false;
+
+            onCompleteAction?.Invoke();
+        }
+
         private IEnumerator TransitionRoutine(string sceneName, TransitionEffect effect)
         {
             isTransitioning = true;

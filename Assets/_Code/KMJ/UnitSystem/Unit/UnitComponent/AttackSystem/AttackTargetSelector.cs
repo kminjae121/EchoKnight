@@ -23,10 +23,8 @@ namespace Code.AttackSystem
                 _targetEnemy = null;
                 return;
             }
-
-            Debug.Log(enemy);
             
-            if (_targetEnemy != null && _targetEnemy != enemy)
+            if (_targetEnemy != null)
                 _targetingCompo?.OffTargeting();
             
             Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);

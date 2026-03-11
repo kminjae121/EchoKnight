@@ -90,6 +90,10 @@ namespace UnitSystem
             {
                 if (_targetEnemy != enemy)
                 {
+                    skillManager.GetSkillInfo().FindEnemyIsThere(enemy);
+
+                    if (skillManager.GetSkillInfo().GetEnemy() == null) return;
+                    
                     _targetEnemy = enemy;
 
                     var skill = skillManager.GetSkillInfo();
@@ -112,10 +116,12 @@ namespace UnitSystem
                         enemy.GetComponent<Unit>().unitSO.UnitImage, true));
 
                     skillManager.GetSkillInfo().SetEnemyTargeting(_targetingCompo);
+                    skillManager.GetSkillInfo().SetEnemy(_targetEnemy);
                 }
             }
         }
 
+        
         private void AttackTargeting()
         {
             _unit.BehaveCompo.ResetTile();
@@ -209,5 +215,7 @@ namespace UnitSystem
             _targetEnemy = null;
             _targetingCompo = null;
         }
+        
+        
     }
 }

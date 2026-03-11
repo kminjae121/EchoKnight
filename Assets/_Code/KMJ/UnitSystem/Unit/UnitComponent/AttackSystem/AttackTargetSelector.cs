@@ -33,12 +33,9 @@ namespace Code.AttackSystem
             
             foreach (var tile in _tilesInRange)
             {
-                Debug.Log($"타일은 {tile.GridPos}");
-                Debug.Log($"적 위치는 {enemyPos}");
                 
                 if (tile.GridPos == enemyPos)
                 {
-                    Debug.Log("드디어 됐다.");
                     _targetEnemy = enemy;
                     return;
                 }

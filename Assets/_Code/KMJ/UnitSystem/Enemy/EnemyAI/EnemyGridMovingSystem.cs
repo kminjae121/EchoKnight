@@ -231,7 +231,7 @@ namespace EnemySystem
             {
                 if (hit.transform.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetObstacle(true);
+                    tile.SetEnemy(true);
                     _currentTileObj = hit.transform.gameObject;
                 }
             }

@@ -85,7 +85,7 @@ namespace Code.UnitSystem
 
                     visited.Add(next);
                     
-                    if (tile.HasEnemy || tile.HasObstacle)
+                    if (tile.HasObstacle)
                         continue;
 
                     _tilesInRange.Add(tile);

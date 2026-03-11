@@ -73,7 +73,6 @@ namespace Code.AttackSystem
             
             if (attackTargetSelector._targetEnemy == null) return;
             
-            Debug.Log("나이따");
             atkPresenter.ShowAttackUI(false);
             attackTargetSelector._targetingCompo?.OffTargeting();
             attackTargetSelector.ResetTile();   

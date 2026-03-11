@@ -1,4 +1,6 @@
-﻿using Code.Map;
+﻿using System.Runtime.CompilerServices;
+using Code.Core.Debugs;
+using Code.Map;
 using Code.UnitSystem;
 using EnemySystem;
 using UnityEngine;
@@ -22,15 +24,23 @@ namespace Code.AttackSystem
                 return;
             }
 
+            Debug.Log(enemy);
+            
             if (_targetEnemy != null && _targetEnemy != enemy)
                 _targetingCompo?.OffTargeting();
             
             Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
 
+            Debug.Log(enemyPos);
+            
             foreach (var tile in _tilesInRange)
             {
+                Debug.Log(_targetEnemy);
+                Debug.Log(tile.GridPos);
+                
                 if (tile.GridPos == enemyPos)
                 {
+                    Debug.Log(_targetEnemy);
                     _targetEnemy = enemy;
                     return;
                 }

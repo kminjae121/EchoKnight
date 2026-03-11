@@ -1,4 +1,5 @@
 ﻿using Code.AttackSystem;
+using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
@@ -36,17 +37,18 @@ namespace UnitSystem
             if (!_unit.isMyTurn || inputSO == null)
                 return;
 
+            if (atkCompo != null && atkCompo.attackTargetSelector.IsActive)
+            {
+                AttackTargeting();
+                return;
+            }
+            
             if (skillManager.GetSkillInfo() != null && skillManager.GetSkillInfo().IsActive)
             {
                 SetSkillTargeting();
                 return;
             }
 
-            if (atkCompo != null && atkCompo.attackTargetSelector.IsActive)
-            {
-                AttackTargeting();
-                return;
-            }
 
             EnemyInfoTargeting();
         }
@@ -139,7 +141,7 @@ namespace UnitSystem
             {
                 atkCompo.attackTargetSelector.FindEnemyIsThere(enemy);
 
-                if (_targetEnemy != null && _targetingCompo == null)
+                if (atkCompo.attackTargetSelector._targetEnemy != null)
                 {
                     atkCompo.attckExecutor.SetRotation(_targetEnemy);
 

@@ -4,6 +4,7 @@ using Input;
 using UnitSystem;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Rendering;
 
 namespace Code.AttackSystem
 {
@@ -66,12 +67,13 @@ namespace Code.AttackSystem
         public void AttackEnemy()
         {
             if (!(CharacterUnit.isMyTurn && attackTargetSelector.IsActive)) return;
-
+            
             var enemy = _inputReader.GetEnemy();
             attackTargetSelector.FindEnemyIsThere(enemy);
             
             if (attackTargetSelector._targetEnemy == null) return;
             
+            Debug.Log("나이따");
             atkPresenter.ShowAttackUI(false);
             attackTargetSelector._targetingCompo?.OffTargeting();
             attackTargetSelector.ResetTile();   

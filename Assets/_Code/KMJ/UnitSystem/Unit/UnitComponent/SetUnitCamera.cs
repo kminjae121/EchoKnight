@@ -1,18 +1,22 @@
 ﻿using System;
 using Code.Core.Events.Bus;
+using Code.UnitSystem;
 using Input;
+using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Code.AttackSystem
+namespace Code.UnitSystem
 {
     public class SetUnitCamera : MonoBehaviour
     {
         [SerializeField] private CinemachineCamera unitCam;
 
-        private GameObject ownCam;
         [SerializeField] private InputReader inputSO;
 
+        private GameObject _ownCam;
+        [SerializeField] private CharacterUnit _unit;
+        
         private void Start()
         {
             inputSO.OnInteractionEvent += HandleCam;
@@ -25,7 +29,7 @@ namespace Code.AttackSystem
 
         private void HandleCamEvent(TopCamEvent obj)
         {
-            ownCam = obj.cam;
+            _ownCam = obj.cam;
         }
 
         private void OnDisable()
@@ -35,7 +39,11 @@ namespace Code.AttackSystem
         
         private void HandleCam()
         {
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(this.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
+            if (_unit.isMyTurn)
+            {
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
+            }
         }
+
     }
 }

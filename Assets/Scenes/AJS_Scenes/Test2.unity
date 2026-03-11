@@ -36569,7 +36569,6 @@ GameObject:
   - component: {fileID: 733307262}
   - component: {fileID: 733307261}
   - component: {fileID: 733307260}
-  - component: {fileID: 733307259}
   - component: {fileID: 733307258}
   m_Layer: 11
   m_Name: TopCam
@@ -36609,20 +36608,6 @@ MonoBehaviour:
   battleCam: {fileID: 733307262}
   moveSpeed: 18
   positionComposer: {fileID: 0}
---- !u!114 &733307259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 733307256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0d24438a27f4091928471fcead4800e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unitCam: {fileID: 733307262}
-  inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
 --- !u!114 &733307260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -79851,6 +79836,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitCam: {fileID: 1567060467}
   inputSO: {fileID: 0}
+  _unit: {fileID: 0}
 --- !u!114 &1567060465
 MonoBehaviour:
   m_ObjectHideFlags: 0

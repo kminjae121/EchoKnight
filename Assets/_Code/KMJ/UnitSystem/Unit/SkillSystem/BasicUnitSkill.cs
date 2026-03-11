@@ -13,8 +13,8 @@ namespace Code.UnitSystem.SkillSystem
 {
     public class BasicUnitSkill : BaseSkill
     {
-        [Header("Basic Settings")] [field: SerializeField]
-        public CriticalSpot criticalSpot { get; private set; }
+        [Header("Basic Settings")]
+        [field: SerializeField] public CriticalSpot criticalSpot { get; private set; }
         protected CharacterUnit characterUnit;
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo = null;

@@ -11,7 +11,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class CharacterSkillInfoUI : Panel
+    public class CharacterSkillPanel : Panel
     {
         [Header("Database")]
         [SerializeField] private List<SkillSO> allSkillsDatabase;

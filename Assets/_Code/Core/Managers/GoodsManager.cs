@@ -9,8 +9,8 @@ namespace _Code.Core.Managers
     public class GoodsManager : MonoSingleton<GoodsManager>
     {
         public HavingSkillSO havingSkillSO;
-        public List<UnitOwnSkillStorageSO> ownSkillStorage;
-        private Dictionary<UnitType, UnitOwnSkillStorageSO> storageDict = new Dictionary<UnitType, UnitOwnSkillStorageSO>();
+        public List<UnitSkillStorageSO> ownSkillStorage;
+        private Dictionary<UnitType, UnitSkillStorageSO> storageDict = new Dictionary<UnitType, UnitSkillStorageSO>();
         public List<SkillSO> skills;
         public List<ItemSO> items;
         

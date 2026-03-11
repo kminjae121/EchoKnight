@@ -39,7 +39,7 @@ public class Panel : MonoBehaviour
         if (!IsInitialized)
             Initialize();
         
-        container.gameObject.SetActive(false);
+        //container.gameObject.SetActive(false);
         IsOpen = false;
     }
 }

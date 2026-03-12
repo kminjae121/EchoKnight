@@ -35,7 +35,7 @@ namespace Code.UnitSystem
             _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
             UnitRangeCompo = _unit.GetUnitCompo<UnitManageRangeCompo>();
 
-            _moveSpeed = _unit.UnitStatCompo.GetStat<float>(StatInfo.MoveSpeed);
+            _moveSpeed = 9;
 
             navMeshAgent.updatePosition = true;
             navMeshAgent.updateRotation = true;

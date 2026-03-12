@@ -279,7 +279,7 @@ MonoBehaviour:
   gridPos: {x: 2, y: 3}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &5474714
 GameObject:
   m_ObjectHideFlags: 0
@@ -1770,7 +1770,7 @@ MonoBehaviour:
   gridPos: {x: 11, y: 10}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &26266333
 GameObject:
   m_ObjectHideFlags: 0
@@ -4235,7 +4235,7 @@ MonoBehaviour:
   gridPos: {x: 5, y: 5}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &89086749
 GameObject:
   m_ObjectHideFlags: 0
@@ -4460,7 +4460,7 @@ MonoBehaviour:
   gridPos: {x: 2, y: 7}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &94406299
 GameObject:
   m_ObjectHideFlags: 0
@@ -5313,7 +5313,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -5694,7 +5694,7 @@ MonoBehaviour:
   gridPos: {x: 4, y: 5}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &129574143
 GameObject:
   m_ObjectHideFlags: 0
@@ -6657,7 +6657,7 @@ MonoBehaviour:
   gridPos: {x: 8, y: 1}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &170791073
 GameObject:
   m_ObjectHideFlags: 0
@@ -7178,7 +7178,7 @@ MonoBehaviour:
   gridPos: {x: 10, y: 12}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &179431937
 GameObject:
   m_ObjectHideFlags: 0
@@ -8081,6 +8081,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 202878543}
   m_Mesh: {fileID: -8678823145569952518, guid: 225fa02056d29994c85f7a60422ed4a6, type: 3}
+--- !u!1 &204948343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 204948344}
+  m_Layer: 0
+  m_Name: StartCamPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &204948344
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 204948343}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -45.45, y: -147.82, z: -119.59}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1866926025}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &206968623
 GameObject:
   m_ObjectHideFlags: 0
@@ -8142,7 +8173,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -12689,7 +12720,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -13358,7 +13389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -15135,7 +15166,7 @@ MonoBehaviour:
   gridPos: {x: 11, y: 7}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &313832182
 GameObject:
   m_ObjectHideFlags: 0
@@ -17571,7 +17602,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -23513,7 +23544,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -27216,7 +27247,7 @@ Transform:
   m_GameObject: {fileID: 533353559}
   serializedVersion: 2
   m_LocalRotation: {x: 0.31598538, y: -0.3596048, z: 0.1308854, w: 0.8681628}
-  m_LocalPosition: {x: -2.899994, y: -107.234886, z: -167.47752}
+  m_LocalPosition: {x: -7.5327396, y: -102.82489, z: -157.50725}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -28196,7 +28227,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -30181,7 +30212,7 @@ MonoBehaviour:
   gridPos: {x: 1, y: 3}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &606083352
 GameObject:
   m_ObjectHideFlags: 0
@@ -30841,7 +30872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -31947,7 +31978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -32515,7 +32546,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -32601,7 +32632,7 @@ MonoBehaviour:
   gridPos: {x: 11, y: 8}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &655753367
 GameObject:
   m_ObjectHideFlags: 0
@@ -34683,7 +34714,7 @@ MonoBehaviour:
   gridPos: {x: 0, y: 11}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &696811204
 GameObject:
   m_ObjectHideFlags: 0
@@ -34844,7 +34875,7 @@ MonoBehaviour:
   gridPos: {x: 0, y: 3}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &699835203
 GameObject:
   m_ObjectHideFlags: 0
@@ -34915,7 +34946,7 @@ MonoBehaviour:
   gridPos: {x: 1, y: 12}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &701253698
 GameObject:
   m_ObjectHideFlags: 0
@@ -36372,7 +36403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -36569,7 +36600,6 @@ GameObject:
   - component: {fileID: 733307262}
   - component: {fileID: 733307261}
   - component: {fileID: 733307260}
-  - component: {fileID: 733307259}
   - component: {fileID: 733307258}
   m_Layer: 11
   m_Name: TopCam
@@ -36587,7 +36617,7 @@ Transform:
   m_GameObject: {fileID: 733307256}
   serializedVersion: 2
   m_LocalRotation: {x: 0.31598538, y: -0.3596048, z: 0.13088542, w: 0.8681629}
-  m_LocalPosition: {x: -2.9, y: -107.234886, z: -167.47752}
+  m_LocalPosition: {x: -7.5327396, y: -102.82489, z: -157.50725}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -36609,20 +36639,6 @@ MonoBehaviour:
   battleCam: {fileID: 733307262}
   moveSpeed: 18
   positionComposer: {fileID: 0}
---- !u!114 &733307259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 733307256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e0d24438a27f4091928471fcead4800e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  unitCam: {fileID: 733307262}
-  inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
 --- !u!114 &733307260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36698,7 +36714,7 @@ MonoBehaviour:
   m_StreamingVersion: 20241001
   m_LegacyPriority: 0
   Target:
-    TrackingTarget: {fileID: 0}
+    TrackingTarget: {fileID: 204948344}
     LookAtTarget: {fileID: 0}
     CustomLookAtTarget: 0
   Lens:
@@ -39889,7 +39905,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -41892,7 +41908,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: enemySpawns.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: enemySpawns.Array.data[0].enemyPrefab
@@ -41900,6 +41916,10 @@ PrefabInstance:
       objectReference: {fileID: 1506547141851097540, guid: 36c5e805fd462a049a1b00d7beda73ed, type: 3}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: enemySpawns.Array.data[1].enemyPrefab
+      value: 
+      objectReference: {fileID: 1506547141851097540, guid: 36c5e805fd462a049a1b00d7beda73ed, type: 3}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: enemySpawns.Array.data[2].enemyPrefab
       value: 
       objectReference: {fileID: 1506547141851097540, guid: 36c5e805fd462a049a1b00d7beda73ed, type: 3}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
@@ -41916,7 +41936,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: enemySpawns.Array.data[1].spawnCoord.y
-      value: 11
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: enemySpawns.Array.data[2].spawnCoord.x
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: enemySpawns.Array.data[2].spawnCoord.y
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 4264538353261752983, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: m_Name
@@ -44754,7 +44782,7 @@ MonoBehaviour:
   gridPos: {x: 11, y: 12}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!65 &867232756
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -45378,7 +45406,7 @@ MonoBehaviour:
   gridPos: {x: 11, y: 5}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &879439700
 GameObject:
   m_ObjectHideFlags: 0
@@ -46652,7 +46680,7 @@ MonoBehaviour:
   gridPos: {x: 5, y: 6}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &899544153
 GameObject:
   m_ObjectHideFlags: 0
@@ -47173,7 +47201,7 @@ MonoBehaviour:
   gridPos: {x: 3, y: 1}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &909017509
 GameObject:
   m_ObjectHideFlags: 0
@@ -48122,7 +48150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -48478,7 +48506,7 @@ MonoBehaviour:
   gridPos: {x: 7, y: 1}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &929769997
 GameObject:
   m_ObjectHideFlags: 0
@@ -48549,7 +48577,7 @@ MonoBehaviour:
   gridPos: {x: 9, y: 1}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &933248797
 GameObject:
   m_ObjectHideFlags: 0
@@ -50295,7 +50323,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -50732,7 +50760,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -51056,7 +51084,7 @@ MonoBehaviour:
   gridPos: {x: 2, y: 2}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &995557165
 GameObject:
   m_ObjectHideFlags: 0
@@ -54650,7 +54678,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -60821,7 +60849,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -61625,7 +61653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -62785,7 +62813,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -63372,7 +63400,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -63715,7 +63743,7 @@ MonoBehaviour:
   gridPos: {x: 8, y: 2}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1247174321
 GameObject:
   m_ObjectHideFlags: 0
@@ -66838,7 +66866,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -66915,7 +66943,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -67956,7 +67984,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -70305,7 +70333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -70391,7 +70419,7 @@ MonoBehaviour:
   gridPos: {x: 11, y: 11}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1385611673
 GameObject:
   m_ObjectHideFlags: 0
@@ -72050,7 +72078,7 @@ MonoBehaviour:
   gridPos: {x: 11, y: 4}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1417075776
 GameObject:
   m_ObjectHideFlags: 0
@@ -76232,7 +76260,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -77903,7 +77931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -79851,6 +79879,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   unitCam: {fileID: 1567060467}
   inputSO: {fileID: 0}
+  _unit: {fileID: 0}
 --- !u!114 &1567060465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -81293,7 +81322,7 @@ MonoBehaviour:
   gridPos: {x: 9, y: 3}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1606461805
 GameObject:
   m_ObjectHideFlags: 0
@@ -82290,7 +82319,7 @@ MonoBehaviour:
   gridPos: {x: 4, y: 6}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1627846940
 GameObject:
   m_ObjectHideFlags: 0
@@ -82963,7 +82992,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -83648,7 +83677,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -86280,7 +86309,7 @@ MonoBehaviour:
   gridPos: {x: 0, y: 12}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1698277979
 GameObject:
   m_ObjectHideFlags: 0
@@ -86702,7 +86731,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -92715,7 +92744,7 @@ MonoBehaviour:
   gridPos: {x: 4, y: 11}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1861754963
 GameObject:
   m_ObjectHideFlags: 0
@@ -92786,7 +92815,7 @@ MonoBehaviour:
   gridPos: {x: 2, y: 8}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1862997605
 GameObject:
   m_ObjectHideFlags: 0
@@ -93090,6 +93119,7 @@ Transform:
   - {fileID: 1400098727}
   - {fileID: 533353560}
   - {fileID: 1567060462}
+  - {fileID: 204948344}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -89.999, z: 0}
 --- !u!1 &1869800963
@@ -93243,7 +93273,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -95855,7 +95885,7 @@ MonoBehaviour:
   gridPos: {x: 1, y: 11}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &1931441243
 GameObject:
   m_ObjectHideFlags: 0
@@ -95994,7 +96024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -103302,7 +103332,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -104879,7 +104909,7 @@ MonoBehaviour:
   gridPos: {x: 8, y: 3}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &2081240241
 GameObject:
   m_ObjectHideFlags: 0
@@ -105623,7 +105653,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0777d029ed3dffa4692f417d4aba19ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.DecalProjector
-  m_Material: {fileID: 2100000, guid: 5ca6cae2c491e544e9852498cb976592, type: 2}
+  m_Material: {fileID: 2100000, guid: 9126eed6bf1a2c441989fb739ff8e0e8, type: 2}
   m_DrawDistance: 1000
   m_FadeScale: 0.9
   m_StartAngleFade: 180
@@ -106159,7 +106189,7 @@ MonoBehaviour:
   gridPos: {x: 10, y: 11}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &2098192210
 GameObject:
   m_ObjectHideFlags: 0
@@ -106918,7 +106948,7 @@ MonoBehaviour:
   gridPos: {x: 5, y: 7}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &2106869474
 GameObject:
   m_ObjectHideFlags: 0
@@ -108276,7 +108306,7 @@ MonoBehaviour:
   gridPos: {x: 3, y: 11}
   isWalkable: 0
   hasEnemy: 0
-  hasObstacle: 0
+  hasObstacle: 1
 --- !u!1 &2147121145
 GameObject:
   m_ObjectHideFlags: 0

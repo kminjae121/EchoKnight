@@ -40,15 +40,19 @@ namespace Code.Expedition.Managers
         private static string _savedCurrentNodeName = "";
         private static HashSet<string> _savedClearedNodes = new HashSet<string>();
 
+        private Canvas canvas = null; 
+
         protected override void Awake()
         {
             base.Awake();
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
         {
             InitializeExpeditionScene();
+
+            canvas = FindAnyObjectByType<Canvas>();
         }
 
         private void Update()
@@ -290,6 +294,8 @@ namespace Code.Expedition.Managers
                         if (mapping.eventNodeData == currentEventData)
                         {
                             targetUI = mapping.uiPanel;
+                            GameObject ui = Instantiate(eventUIMappings[0].uiPanel,canvas.transform);
+                            ui.transform.localPosition = new Vector3(13, -82, -12f);
                             break;
                         }
                     }
@@ -297,6 +303,9 @@ namespace Code.Expedition.Managers
                     if (targetUI == null && eventUIMappings.Count > 0)
                     {
                         targetUI = eventUIMappings[0].uiPanel;
+                        GameObject ui = Instantiate(eventUIMappings[0].uiPanel,canvas.transform);
+                        ui.transform.localPosition = new Vector3(13, -82, -12f);
+                        
                         Debug.Log("매칭되는 EventNodeSO가 없어 기본 UI를 사용합니다.");
                     }
 

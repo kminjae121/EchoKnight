@@ -65,6 +65,8 @@ namespace EnemySystem
         {
             base.OnTurnStart();
             if (_ai != null) _ai.SetTurnState(true);
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject,
+                true, new Vector3(0.1f, 0.1f, 0.1f)));
         }
 
         public override void OnTurnEnd()
@@ -72,6 +74,9 @@ namespace EnemySystem
             if (_ai != null) _ai.SetTurnState(false);
             base.OnTurnEnd();
             Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+            
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, 
+                false,new Vector3(0.1f,0.1f,0.1f)));
         }
 
         #region [Commands]

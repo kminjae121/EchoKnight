@@ -30,7 +30,7 @@ public class UnitSO : ScriptableObject
     [Header("UnitImage")]
     public Sprite UnitImage;
 
-    [Header("WhatItIs")]        
+    [Header("UnitSpawn")]        
     public UnitSpawnSO UnitSpawn;
 
     [Header("SkillStorage")] public UnitSkillStorageSO SkillStorage;
@@ -43,8 +43,8 @@ public class UnitSO : ScriptableObject
     public ArtifactStorageSO EquippedArtifacts;
 
     [Space(4)]
-    [Header("CharacterOwnCost")]
-    public int Cost;
+    [Header("LoadOutCost")]
+    public int LoadOutCost;
 
     [Space(3)] 
     [TextArea]public string UnitDescription;

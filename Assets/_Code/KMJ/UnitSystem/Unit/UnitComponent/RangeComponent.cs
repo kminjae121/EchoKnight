@@ -121,7 +121,7 @@ namespace Code.UnitSystem
             IsActive = false;
         }
 
-        private void ProcessTiles(List<IMapTile> tiles, bool enable)
+        protected void ProcessTiles(List<IMapTile> tiles, bool enable)
         {
             foreach (var tile in tiles)
             {

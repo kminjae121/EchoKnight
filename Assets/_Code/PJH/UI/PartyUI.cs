@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
+using _00.Core._02.Scripts._01.Manager;
 using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Code.UI
 {
-    public class PartyUI : Panel
+    public class PartyUI : MonoBehaviour
     {
         [Header("Buttons")]
         [SerializeField] private Button startButton;
@@ -22,9 +22,8 @@ namespace Code.UI
 
         private readonly List<UnitSO> _partyUnits = new();
 
-        public override void Awake()
+        private void Awake()
         {
-            base.Awake();
             Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
 
@@ -77,7 +76,7 @@ namespace Code.UI
                 unitStorage.unitStates.Add(new UnitState(unit));
             }
 
-            SceneManager.LoadScene("ExpeditionMapScene");
+            SceneChangeManager.Instance.ChangeSelectScene("ExpeditionMapScene");
         }
     }
 }

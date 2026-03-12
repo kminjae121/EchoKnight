@@ -59,7 +59,6 @@ namespace _00.Core._02.Scripts._01.Manager
         {
             if (SceneTransitioner.Instance != null)
             {
-                GoodsManager.Instance.AddSkill();
                 SceneTransitioner.Instance.LoadScene(sceneName, defaultTransitionEffect);
             }
             else

@@ -22,18 +22,30 @@ namespace Code.UI
             Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
 
-            slotImage.sprite = characterInfo.UnitImage;
+            if (characterInfo != null && slotImage != null)
+            {
+                slotImage.sprite = characterInfo.UnitImage;
+            }
         }
 
         private void OnDestroy()
         {
-            slotButton.onClick.RemoveListener(HandleSlotButton);
+            if (slotButton != null)
+            {
+                slotButton.onClick.RemoveListener(HandleSlotButton);
+            }
             Bus<PartyCharacterSelectEvent>.Unsubscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Unsubscribe(HandleCharacterDeselected);
         }
 
         private void HandleSlotButton()
         {
+            if (characterInfo == null)
+            {
+                Debug.LogWarning("슬롯에 캐릭터 정보가 없습니다.");
+                return;
+            }
+
             if (_isSelected)
                 Bus<PartyCharacterDeselectEvent>.Raise(new PartyCharacterDeselectEvent(characterInfo));
             else
@@ -53,9 +65,19 @@ namespace Code.UI
         }
 
         public void OnPointerEnter(PointerEventData eventData)
-            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(characterInfo.UnitImage, characterInfo.UnitName, null));
+        {
+            if (characterInfo != null)
+            {
+                Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(
+                    characterInfo.UnitImage, 
+                    characterInfo.UnitName, 
+                    characterInfo.UnitDescription));
+            }
+        }
 
         public void OnPointerExit(PointerEventData eventData)
-            => Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(null, null, null));
+        {
+            Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(null, null, null));
+        }
     }
 }

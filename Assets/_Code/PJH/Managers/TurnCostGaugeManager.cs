@@ -32,6 +32,9 @@ namespace Code.Managers
         public void UseSkill(int skillValue)
             => currentGaugeValue.Value -= skillValue;
 
+        public void AddSkillPoint(int value)
+            => currentGaugeValue.Value += value;
+
         #region Test
 
         [ContextMenu("RaiseTurnEndEvent")]

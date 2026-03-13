@@ -21,6 +21,7 @@ namespace UnitSystem
                 return false;
 
             OwnUnitManage.Instance.currentCost += cost;
+            
             UpdateAPGauge();
             return true;
         }

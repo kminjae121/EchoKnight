@@ -48,7 +48,7 @@ namespace Code.UnitManaging
 
         private void Start()
         {
-            currentCost = 100;
+            currentCost = 80;
             SelectUnits();
             MakeGameUnit();
         }

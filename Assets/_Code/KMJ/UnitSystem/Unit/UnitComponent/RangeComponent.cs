@@ -102,7 +102,6 @@ namespace Code.UnitSystem
             ProcessTiles(_tilesInRange, false);
 
             IsActive = false;
-            //_tilesInRange.Clear();
 
             _resetTileEvent?.Invoke();
         }

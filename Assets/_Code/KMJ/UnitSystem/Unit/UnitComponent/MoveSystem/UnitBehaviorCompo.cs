@@ -213,7 +213,7 @@ namespace Code.UnitSystem
             MoveStart(tileInfo);
 
             _unitCostComponentCompo.RemoveCost(15);
-
+ 
             while (navMeshAgent.pathPending)
                 yield return null;
 

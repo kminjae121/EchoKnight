@@ -9,7 +9,7 @@ namespace Code.UnitSystem.SkillSystem
         public void AfterInitialize()
         {
             damage = 10f; 
-            useSkillPoint = 0; 
+            UseSkillPoint = 0; 
 
             if (_owner != null)
             {

@@ -1,202 +1,137 @@
 ﻿using System;
-using System.Linq;
+using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using NUnit.Framework.Constraints;
-using UnitSystem;
+using Code.Map;
 using UnityEngine;
 
 namespace Code.UnitSystem
 {
     public class RangeComponent : MonoBehaviour, IUnitComponent
     {
-        private UnitManageRangeCompo _rangeComponent;
+        public bool IsActive { get; protected set; }
+        public bool isMove;
 
+        protected Action _resetTileEvent;
         protected Unit _owner;
-        
-        [SerializeField] protected Vector3 _verticalCheckBoxSize;
-        [SerializeField] protected Vector3 _horizontalCheckBoxSize;
 
-        protected Collider[] _verticalCollider;
-        
-        protected Collider[] _horizontalCollider;
-        
-        [SerializeField] protected LayerMask _whatIsTarget;
+        protected readonly List<IMapTile> _tilesInRange = new();
 
-        protected Action ResetTileEvent;
-        
-        public bool _isAct { get; set; } = false;
-
-        public bool isMove = false;
+        private UnitManageRangeCompo _rangeComponent;
 
         public void Initialize(Unit owner)
         {
             _owner = owner;
             _rangeComponent = owner.GetUnitCompo<UnitManageRangeCompo>();
         }
+
         protected virtual void Awake()
         {
-            
         }
 
         protected virtual void Start()
         {
-            
         }
 
         protected virtual void OnDestroy()
         {
-            
         }
 
+        public void FindObjectInRange()
+        {
+            _rangeComponent.RemoveAllRange(); 
+
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+
+            CalculateRange();
+            ProcessTiles(_tilesInRange, true);
+
+            IsActive = true;
+        }
+
+        private void CalculateRange()
+        {
+            _tilesInRange.Clear();
+            
+            Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
+            int range = _owner.unitSO.moveRange;
+
+            Queue<(Vector2Int pos, int dist)> queue = new();
+            HashSet<Vector2Int> visited = new();
+
+            queue.Enqueue((start, 0));
+            visited.Add(start);
+
+            Vector2Int[] dirs = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
+
+            while (queue.Count > 0)
+            {
+                var (pos, dist) = queue.Dequeue();
+
+                if (dist >= range)
+                    continue;
+
+                foreach (var dir in dirs)
+                {
+                    Vector2Int next = pos + dir;
+
+                    if (visited.Contains(next))
+                        continue;
+
+                    IMapTile tile = GridMap.Instance.GetTile(next);
+
+                    if (tile == null)
+                        continue;
+
+                    visited.Add(next);
+                    
+                    if (tile.HasObstacle)
+                        continue;
+
+                    _tilesInRange.Add(tile);
+                    queue.Enqueue((next, dist + 1));
+                }
+            }
+        }
 
         public void ResetTile()
         {
-            if (_horizontalCollider == null)
+            if (_tilesInRange.Count == 0)
                 return;
-            
-            
-            _horizontalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!isMove)
-                    {
-                        tile.SetEnemy(false);
-                    }
-                    else
-                    {
-                        if (!tile.HasObstacle)
-                        {
-                            tile.SetWalkable(false);
-                        }   
-                    }
-                }
-            });
-            
-            if(_verticalCollider == null)
-                return;
-            
-            _verticalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!isMove)
-                    {
-                        tile.SetEnemy(false);
-                    }
-                    else
-                    {
-                        if (!tile.HasObstacle)
-                        {
-                            tile.SetWalkable(false);
-                        }   
-                    }
-                }
-            });
-            
-            _isAct = false;
- 
-            _horizontalCollider.ToList().Clear();
-            _verticalCollider.ToList().Clear();
-            if (!isMove)
-            {
-                _horizontalCollider = null;
-                _verticalCollider = null;
-            }
-            ResetTileEvent?.Invoke();
+
+            ProcessTiles(_tilesInRange, false);
+
+            IsActive = false;
+
+            _resetTileEvent?.Invoke();
         }
 
         public void ReCheckInRange()
         {
-            _verticalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)    
-                    {
-                        tile.SetWalkable(true);      
-                    }
-                }
-            });
-            
-            _horizontalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!tile.HasObstacle)
-                    {
-                        tile.SetWalkable(true);
-                    }
-                }
-            });
-            
-            _isAct = true;
-        }
+            foreach (var tile in _tilesInRange)
+                if (!tile.HasObstacle)
+                    tile.SetWalkable(true);
 
-
-        public void FindObjectInRange()
-        {
-            _rangeComponent.RemoveAllRange();
-            
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
-            
-            _verticalCollider = Physics.OverlapBox(transform.position, _verticalCheckBoxSize, Quaternion.identity, _whatIsTarget);
-            _horizontalCollider = Physics.OverlapBox(transform.position, _horizontalCheckBoxSize, Quaternion.identity, _whatIsTarget);
-
-            _verticalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!isMove)
-                    {
-                        tile.SetEnemy(true);    
-                    }
-                    else
-                    {
-                        if (!tile.HasObstacle)    
-                        {
-                            tile.SetWalkable(true);      
-                        }   
-                    }
-                }
-            });
-            
-            _horizontalCollider.ToList().ForEach(obj =>
-            {
-                if (obj.TryGetComponent(out IMapTile tile))
-                {
-                    if (!isMove)
-                    {
-                        tile.SetEnemy(true);    
-                    }
-                    else
-                    {
-                        if (!tile.HasObstacle)    
-                        {
-                            tile.SetWalkable(true);      
-                        }   
-                    }
-                }
-            });
-            
-            _isAct = true;
+            IsActive = true;
         }
 
         public void EndAct()
         {
-            _isAct = false;
+            IsActive = false;
         }
-        
-        
-        private void OnDrawGizmosSelected()
+
+        protected void ProcessTiles(List<IMapTile> tiles, bool enable)
         {
-            Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(transform.position, _verticalCheckBoxSize);
-
-            Gizmos.color = Color.blue;
-            Gizmos.DrawWireCube(transform.position, _horizontalCheckBoxSize);
+            foreach (var tile in tiles)
+            {
+                if (!isMove)
+                    tile.SetEnemy(enable);
+                else
+                {
+                    if (!tile.HasObstacle)
+                        tile.SetWalkable(enable);
+                }
+            }
         }
-
     }
 }

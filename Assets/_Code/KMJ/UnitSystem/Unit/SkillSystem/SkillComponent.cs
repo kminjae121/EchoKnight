@@ -28,10 +28,8 @@ namespace Code.UnitSystem.SkillSystem
             if (storageSO != null && storageSO.skills != null)
             {
                 foreach (var skillInfo in storageSO.skills)
-                {
                     if (!_skillList.Contains(skillInfo))
                         _skillList.Add(skillInfo);
-                }
             }
 
             foreach (var skillSo in _skillList)
@@ -53,26 +51,20 @@ namespace Code.UnitSystem.SkillSystem
                     BaseSkill component = components[0] as BaseSkill;
                     if (component != null)
                     {
-                        component.useSkillPoint = skillSo.UsingSkillCost;
+                        component.UseSkillPoint = skillSo.UsingSkillCost;
                         
                         if (!skills.ContainsKey(skillSo.skillName))
-                        {
                             skills.Add(skillSo.skillName, component);
-                        }
                     }
                 }
                 else
-                {
                     Debug.LogWarning($"[SkillComponent] '{_unit.name}'에 스킬 컴포넌트 '{type.Name}'가 부착되어 있지 않습니다.");
-                }
             }
 
             if (skills.Count > 0)
             {
                 foreach (var skill in skills.Values)
-                {
                     skill.InitializeSkill();
-                }
             }
         }
         
@@ -85,7 +77,7 @@ namespace Code.UnitSystem.SkillSystem
                 int idx = 0;
                 foreach (var skill in skills)
                 {
-                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.useSkillPoint,skill.Value.skillImage, this));
+                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.UseSkillPoint,skill.Value.SkillImage, this));
                     idx++;
                 }
             }
@@ -118,11 +110,6 @@ namespace Code.UnitSystem.SkillSystem
         private void BooleanSkill(UsingSkillEvent evt)
         {
             isUseSkill = evt.isUsingSkill;
-        }
-
-        public void InitializeSkills()
-        {
-            // Interface implementation
         }
         
         public void StartSkill(string skillName)

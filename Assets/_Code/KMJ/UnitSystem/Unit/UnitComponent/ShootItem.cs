@@ -5,11 +5,10 @@ using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
     public class ShootItem : MonoBehaviour
     {
-
         [field : SerializeField] public string itemName { get; private set; }
         
         [SerializeField] private LayerMask _whatIsEnemy;
@@ -18,7 +17,6 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         
 
         private GameObject _target = null;
-
         private ShootItemAttackManager _shootItemManager;
         
 
@@ -41,13 +39,11 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         private void OnTriggerEnter(Collider other)
         {
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
-            {
                 if (other.gameObject == _target)
                 {
                     _shootItemManager.hitEvent.Invoke();
                     gameObject.SetActive(false);   
                 }
-            }
         }
     }
 }

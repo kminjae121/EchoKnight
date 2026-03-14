@@ -10,7 +10,6 @@ using UnityEngine.Events;
 
 public class SwordFlagSkill : BaseSkill
 {
-    [SerializeField] private CinemachineImpulseSource impulseSource;
     [SerializeField] private Animator animator;
     private UnitAnimation animtionCompo;
 
@@ -23,7 +22,7 @@ public class SwordFlagSkill : BaseSkill
     protected override void Start()
     {
         skillEvent.AddListener(UseSkill);
-        _damageData.damage = 2.3456f;
+        DamageData.damage = 2.3456f;
         impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
         triggerCompo.OnSwordFlagSkillTrigger += MakeSlash;
         triggerCompo.OnSwordFlagSkillTrigger += CamShaking;

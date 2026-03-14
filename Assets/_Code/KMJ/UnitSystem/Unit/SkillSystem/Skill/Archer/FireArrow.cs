@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;
@@ -67,7 +67,7 @@ using UnityEngine;
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(_damageData);
+            _shootItemManager.SetDamageData(DamageData);
             _shootItemManager.CreateShootItem("FireArrow",pos, slashRot);
         }
     }

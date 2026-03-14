@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
-using Skill;
+using Code.UnitSystem.ArtifactSystem;
 using UnityEngine;
 
 public enum EntityType
@@ -32,16 +30,21 @@ public class UnitSO : ScriptableObject
     [Header("UnitImage")]
     public Sprite UnitImage;
 
-    [Header("WhatItIs")]        
+    [Header("UnitSpawn")]        
     public UnitSpawnSO UnitSpawn;
 
     [Header("SkillStorage")] public UnitSkillStorageSO SkillStorage;
     
     [Header("OwnSkillStorage")]
     public UnitOwnSkillStorageSO OwnSkillStorage;
+    
+    [Header("ArtifactStorage")]
+    public ArtifactStorageSO OwnArtifactStorage;
+    public ArtifactStorageSO EquippedArtifacts;
+
     [Space(4)]
-    [Header("CharacterOwnCost")]
-    public int Cost;
+    [Header("LoadOutCost")]
+    public int LoadOutCost;
 
     [Space(3)] 
     [TextArea]public string UnitDescription;
@@ -52,6 +55,8 @@ public class UnitSO : ScriptableObject
 
     public float turnSpeed = 3f;
 
+    public int moveRange;
+    
     public bool isPlayerUnit = false;
     
     public float MoveSpeed;
@@ -65,13 +70,11 @@ public class UnitSO : ScriptableObject
 
     public float DefensivePower;
 
-
     [Header("UnitType")] 
     public UnitInGameSO unitInGame;
     public EntityType EntityType = EntityType.MeleeAttacker;
 
     public UnitType UnitType = UnitType.None;
-
 
     private void OnValidate()
     {

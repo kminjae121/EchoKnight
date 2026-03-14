@@ -13,14 +13,18 @@ MonoBehaviour:
   m_Name: Bandit
   m_EditorClassIdentifier: 
   UnitName: Bandit
+  UnitClass: 
   UnitImage: {fileID: 21300000, guid: c56340dbc28c7264bb1b9f194866d876, type: 3}
   UnitSpawn: {fileID: 11400000, guid: 0458a1ab73a81ec4fb907ae3a1ceb906, type: 2}
   SkillStorage: {fileID: 11400000, guid: 9380b9c89da816143870c3f6246c846e, type: 2}
   OwnSkillStorage: {fileID: 11400000, guid: d863b61387956f640bbb8f75dd3c8442, type: 2}
-  Cost: 13
+  OwnArtifactStorage: {fileID: 11400000, guid: 6a961ca45a8809d49abf9662fa38722a, type: 2}
+  EquippedArtifacts: {fileID: 11400000, guid: d2fee10953d74564993d7de2aa53bb4e, type: 2}
+  LoadOutCost: 25
   UnitDescription: "\uAE30\uC2B5\uC5D0 \uC7A5\uC810\uC774 \uC788\uB294 \uB3C4\uC801\uC785\uB2C8\uB2E4."
   isLongRange: 0
   turnSpeed: 50
+  moveRange: 4
   isPlayerUnit: 1
   MoveSpeed: 9
   Maxhealth: 100

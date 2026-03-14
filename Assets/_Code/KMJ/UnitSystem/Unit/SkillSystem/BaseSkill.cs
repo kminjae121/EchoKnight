@@ -1,6 +1,6 @@
-﻿using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+﻿using Code.AttackSystem;
 using _Code.KMJ.Cam;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using UnitSystem;
@@ -13,22 +13,25 @@ namespace Code.UnitSystem.SkillSystem
     public abstract class BaseSkill : RangeComponent
     {
         [Header("Base Settings")]
+        [field: SerializeField] public Sprite SkillImage { get; set; }
         [SerializeField] protected AttackDataSO attackData;
-        [field: SerializeField] public Sprite skillImage { get; set; }
         [SerializeField] private float basicSkillDamage;
-        public int useSkillPoint;
         [SerializeField] protected bool ownSkill = false;
         
-        protected float damage;
-        protected DamageData _damageData;
-        public float addDamage { get; set; }
-        protected Unit _unitBase; 
+        public DamageData DamageData;
+        public int UseSkillPoint;
         public bool isCanUseSkill = false;
+        
+        public float AddDamage { get; private set; }
+        public UnitRotation rotationCompo { get; set; }
+        public float damage { get; set; }
+        
+        
+        protected Unit _unitBase; 
         protected GameObject _targetEnemy = null;
 
         [Header("Unit Component")]
         protected SkillComponent _skillCompo;
-        protected UnitRotation rotationCompo;
         protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
 
@@ -39,7 +42,6 @@ namespace Code.UnitSystem.SkillSystem
 
         [Header("Camera & Effects")]
         protected CinemachineImpulseSource impulseSource;
-        protected SetUnitCamera unitCam;
 
         [Header("Materials & Mesh")]
         [SerializeField] protected MeshRenderer ownCircleMesh;
@@ -52,21 +54,17 @@ namespace Code.UnitSystem.SkillSystem
 
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
-            ResetTileEvent += skillEnd;
         }
 
         protected override void Start()
         {
             base.Start();
-            
-            Bus<TopCamEvent>.Subscribe(HandleCamEvent);
 
             _unitBase = _owner;
 
             if (_unitBase != null && statCompo == null)
-            {
                 statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
-            }
+            
             
             if (statCompo != null)
             {
@@ -75,11 +73,9 @@ namespace Code.UnitSystem.SkillSystem
                 damage = (int)floatdamage;
             }
             else
-            {
                 damage = basicSkillDamage;
-            }
 
-            _damageData.damage = damage;
+            DamageData.damage = damage;
 
             if (_unitBase as CharacterUnit)
             {
@@ -87,11 +83,7 @@ namespace Code.UnitSystem.SkillSystem
                 impulseSource = unit.impulseSource;
             }
         }
-
-        private void HandleCamEvent(TopCamEvent obj)
-        {
-            unitCam =  obj.cam.GetComponent<SetUnitCamera>();
-        }
+        
 
         public virtual void InitializeSkill()
         {
@@ -103,9 +95,7 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void OnDisable()
         {
-            Bus<TopCamEvent>.Unsubscribe(HandleCamEvent);
             skillEndEvent.RemoveListener(CanUseSkillTrue);
-            ResetTileEvent -= skillEnd;
         }
         
         protected virtual void CanUseSkillTrue()
@@ -116,59 +106,21 @@ namespace Code.UnitSystem.SkillSystem
         {
         }
         
-        public void CheckEnemyBody(GameObject target)
-        {
-            _damageData.damage = damage;
-            addDamage = 0;
-            
-            Vector3 toAttacker = _unitBase.transform.position - target.transform.position;
-            toAttacker.y = 0f;
-
-            Vector3 enemyForward = target.transform.forward;
-            enemyForward.y = 0f;
-
-            toAttacker.Normalize();
-            enemyForward.Normalize();
-
-            float dot = Vector3.Dot(enemyForward, toAttacker);
-            
-            float deadZone = 0.2f;
-
-            BodyType type =
-                dot > deadZone ? BodyType.Head :
-                dot < -deadZone ? BodyType.Back :
-                BodyType.None;
-
-            if (_unitBase.unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else if (_unitBase.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
-            {
-                addDamage = _damageData.damage * 0.4f;
-                ownCircleMesh.material = CriticalMaterial;
-            }
-            else
-            {
-                addDamage = 0f;
-                ownCircleMesh.material = basicMaterial;
-            }
-        }
 
         public virtual void CheckCanAttack()
         {
-            if (unitCam != null) unitCam.SetThisUnit();
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+
             FindObjectInRange();
         }
+        
+        
 
         public virtual void skillEnd()
         {
             BlockThisSkill();
             ResetTile();
-            if (unitCam != null) unitCam.EndThisUnit();
             
             skillEndEvent?.Invoke();
         }

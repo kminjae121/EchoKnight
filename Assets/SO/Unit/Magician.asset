@@ -13,15 +13,19 @@ MonoBehaviour:
   m_Name: Magician
   m_EditorClassIdentifier: 
   UnitName: Magician
+  UnitClass: 
   UnitImage: {fileID: 21300000, guid: 1265dbcc4d33b8c40bdc3f1f1d0087a6, type: 3}
   UnitSpawn: {fileID: 11400000, guid: 4c0c769de3e5ca04887a3b6215f9e839, type: 2}
   SkillStorage: {fileID: 11400000, guid: d624d89f40569d541a7e874ce4a243bf, type: 2}
   OwnSkillStorage: {fileID: 11400000, guid: 8cfd9ac921219404188c75c7ed6f7925, type: 2}
-  Cost: 18
+  OwnArtifactStorage: {fileID: 11400000, guid: 6a961ca45a8809d49abf9662fa38722a, type: 2}
+  EquippedArtifacts: {fileID: 11400000, guid: b71e50581cca954449963fb8f29fff8e, type: 2}
+  LoadOutCost: 25
   UnitDescription: "\uB9C8\uBC95\uC744 \uC790\uC720\uC790\uC7AC\uB85C \uC0AC\uC6A9\uAC00\uB2A5\uD55C
     \uB9C8\uBC95\uC0AC\uC785\uB2C8\uB2E4."
   isLongRange: 1
   turnSpeed: 60
+  moveRange: 4
   isPlayerUnit: 1
   MoveSpeed: 7
   Maxhealth: 100

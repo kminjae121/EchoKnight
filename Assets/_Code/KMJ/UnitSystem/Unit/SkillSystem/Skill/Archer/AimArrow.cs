@@ -1,5 +1,5 @@
 ﻿using System.Collections;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;
@@ -48,35 +48,7 @@ public class AimArrow : BasicUnitSkill
         animtionCompo.PlaySelectAnimation("AIM");
     }
 
-    public override void Update()
-    {
-        base.Update();
-        if (UnityEngine.Input.GetKeyDown(KeyCode.R))
-        {
-            if (_isAct)
-            {
-                if (isHorizontal == false)
-                {
-                    float x = _verticalCheckBoxSize.x;
-
-                    _verticalCheckBoxSize.x = _verticalCheckBoxSize.z;
-                    _verticalCheckBoxSize.z = x;
-
-                    ShowSkillRange();
-                }
-                else
-                {
-                    float z = _verticalCheckBoxSize.z;
-
-                    _verticalCheckBoxSize.z = _verticalCheckBoxSize.x;
-                    _verticalCheckBoxSize.x = z;
-                    ShowSkillRange();
-                }
-            }
-        }
-    }
-
-    private void SkillEnd()
+    public void SkillEnd()
     {
         skillEndEvent?.Invoke();
         animtionCompo.PlaySelectAnimation("IDLE");
@@ -95,7 +67,7 @@ public class AimArrow : BasicUnitSkill
         Vector3 slashRot = transform.rotation.eulerAngles;
         
         _shootItemManager.SetTarget(_target);
-        _shootItemManager.SetDamageData(_damageData);
+        _shootItemManager.SetDamageData(DamageData);
         _shootItemManager.CreateShootItem("AimArrow",pos, slashRot);
     
         _target = null;

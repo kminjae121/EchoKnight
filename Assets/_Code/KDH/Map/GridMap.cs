@@ -1,10 +1,11 @@
-﻿using Code.Core.Interfaces;
+﻿using Code.Core;
+using Code.Core.Interfaces;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
 namespace Code.Map
 {
-    public class GridMap : MonoBehaviour, IGridMap
+    public class GridMap : MonoSingleton<GridMap>, IGridMap
     {
         [Header("Map Settings")]
         [SerializeField] private int width = 10;
@@ -31,61 +32,56 @@ namespace Code.Map
         public int Height => height;
         public float TileSize => tileSize;
 
-        private void Awake()
+        protected override void Awake()
         {
             RebuildTileArray();
         }
 
-        private void OnEnable()
-        {
-            RebuildTileArray();
-        }
+        // private void OnEnable()
+        // {
+        //     RebuildTileArray();
+        // }
 
         private void RebuildTileArray()
         {
-            if (serializedTiles == null || serializedTiles.Length == 0) return;
+            if (serializedTiles == null || serializedTiles.Length == 0)
+                return;
             
             if (tiles == null || tiles.GetLength(0) != width || tiles.GetLength(1) != height)
-            {
                 tiles = new MapTile[width, height];
-            }
             
             int count = Mathf.Min(serializedTiles.Length, width * height);
             
             for (int i = 0; i < count; i++)
             {
-                if (serializedTiles[i] == null) continue;
+                if (serializedTiles[i] == null)
+                    continue;
                 
                 int x = i % width;
                 int y = i / width;
                 
                 if (x < width && y < height)
-                {
                     tiles[x, y] = serializedTiles[i];
-                }
             }
         }
 
         public void GenerateMap()
         {
             ClearMap();
+            
             tiles = new MapTile[width, height];
             serializedTiles = new MapTile[width * height];
 
             for (int y = 0; y < height; y++)
-            {
                 for (int x = 0; x < width; x++)
-                {
                     CreateTile(x, y);
-                }
-            }
         }
 
         private void CreateTile(int x, int y)
         {
             Vector3 worldPosition = GridToWorldPosition(x, y);
-            
             GameObject tileObject;
+            
             if (tilePrefab != null)
             {
                 #if UNITY_EDITOR
@@ -103,10 +99,9 @@ namespace Code.Map
             }
 
             MapTile tile = tileObject.GetComponent<MapTile>();
+            
             if (tile == null)
-            {
                 tile = tileObject.AddComponent<MapTile>();
-            }
             
             tile.Initialize(new Vector2Int(x, y));
             tiles[x, y] = tile;
@@ -135,22 +130,15 @@ namespace Code.Map
         private void ClearMap()
         {
             if (serializedTiles != null)
-            {
                 foreach (var tile in serializedTiles)
-                {
                     if (tile != null)
-                    {
                         DestroyImmediate(tile.gameObject);
-                    }
-                }
-            }
             
             // 자식 오브젝트가 남아있을 경우를 대비한 안전 장치
             int childCount = transform.childCount;
+            
             for (int i = childCount - 1; i >= 0; i--)
-            {
                 DestroyImmediate(transform.GetChild(i).gameObject);
-            }
 
             tiles = null;
             serializedTiles = null;
@@ -166,6 +154,7 @@ namespace Code.Map
             Vector3 localPos = worldPosition - transform.position;
             int x = Mathf.RoundToInt(localPos.x / tileSize);
             int y = Mathf.RoundToInt(localPos.z / tileSize);
+            
             return new Vector2Int(x, y);
         }
 
@@ -176,17 +165,14 @@ namespace Code.Map
 
         public IMapTile GetTile(int x, int y)
         {
-            if (!IsValidPosition(new Vector2Int(x, y))) return null;
+            if (!IsValidPosition(new Vector2Int(x, y)))
+                return null;
             
             if (tiles == null)
-            {
                 RebuildTileArray();
-            }
-            
-            // Rebuild 실패 시 방어 코드
-            if (tiles == null) return null;
 
-            return tiles[x, y];
+            // Rebuild 실패 시 방어 코드
+            return tiles?[x, y];
         }
 
         public bool IsValidPosition(Vector2Int position)
@@ -198,8 +184,7 @@ namespace Code.Map
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);
-            if (tile == null) return false;
-            return tile.CanUnitPass;
+            return tile != null && tile.CanUnitPass;
         }
     }
 }

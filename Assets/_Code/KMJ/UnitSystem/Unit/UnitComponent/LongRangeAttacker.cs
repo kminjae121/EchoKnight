@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
+using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using UnitSystem;
@@ -20,8 +20,7 @@ public class LongRangeAttacker : MonoBehaviour
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
         [SerializeField] private GameObject effectPrefab;
-
-
+        
         private GameObject _target = null;
         
         public bool isRunningAttack = false;
@@ -32,45 +31,40 @@ public class LongRangeAttacker : MonoBehaviour
         {
             triggerCompo.OnLongRangeAttackTrigger += ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger += AttackEnd;
-            atkCompo.attackEvent.AddListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
         }
 
         private void OnDestroy()
         {
             triggerCompo.OnLongRangeAttackTrigger -= ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger -= AttackEnd;
-            atkCompo.attackEvent.RemoveListener(AttackAction);
+            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
         {
             _ownTrm = transform.position;
+            
             StartCoroutine(MeleeAttackAction(target));
         }
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
+            yield return new WaitForSeconds(0.4f);
             
-            yield return new WaitForSeconds(0.3f);
-            _target = null;
-            
-            yield return new WaitForSeconds(0.1f);
-            
-             animtionCompo.PlaySelectAnimation("ATTACK");
-
              _target = target;
+             
+             animtionCompo.PlaySelectAnimation("ATTACK");
         }
 
 
         private void ShootLongRangeAttack()
         {
             Vector3 dir = _target.transform.position;
-
             dir.y += 1.4f;
             
-            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo._damageData);
+            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo.attckExecutor.DamageData);
             effectPrefab.transform.position = dir;
-            
             effectPrefab.SetActive(true);
         }
 
@@ -78,7 +72,8 @@ public class LongRangeAttacker : MonoBehaviour
         private void AttackEnd()
         {
             animtionCompo.PlaySelectAnimation("IDLE");
-            atkCompo.attackEndEvent?.Invoke();
+            atkCompo.attckExecutor.attackEndEvent?.Invoke();
+            
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));

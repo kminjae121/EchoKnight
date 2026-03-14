@@ -15,12 +15,10 @@ namespace _Code.Core.Managers
             public Vector2Int spawnCoord;
         }
 
-        [Header("Enemy Spawning")]
-        [SerializeField] private GridMap gridMap;
-        [SerializeField] private List<EnemySpawnData> enemySpawns = new List<EnemySpawnData>();
+        [Header("Enemy Spawning")] [SerializeField]
+        private List<EnemySpawnData> enemySpawns = new();
 
-        [Header("State")]
-        [SerializeField] private List<GameObject> enemies = new List<GameObject>();
+        [Header("State")] [SerializeField] private List<GameObject> enemies = new();
 
         public int playerCount;
         public static StageManager Instance { get; private set; }
@@ -38,7 +36,7 @@ namespace _Code.Core.Managers
 
             Instance = this;
         }
-        
+
         private void Start()
         {
             SpawnEnemies();
@@ -46,23 +44,23 @@ namespace _Code.Core.Managers
 
         private void SpawnEnemies()
         {
-            if (gridMap == null) return;
-
             foreach (var data in enemySpawns)
             {
-                if (data.enemyPrefab == null) continue;
+                if (data.enemyPrefab == null)
+                    continue;
 
-                IMapTile tile = gridMap.GetTile(data.spawnCoord);
+                IMapTile tile = GridMap.Instance.GetTile(data.spawnCoord);
+
                 if (tile == null)
                 {
                     Debug.LogWarning($"적 스폰 좌표 {data.spawnCoord}가 유효하지 않습니다.");
                     continue;
                 }
 
-                Vector3 spawnPos = gridMap.GridToWorldPosition(data.spawnCoord.x, data.spawnCoord.y);
+                Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(data.spawnCoord.x, data.spawnCoord.y);
                 GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
 
-                tile.SetObstacle(true);
+                tile.SetEnemy(true);
 
                 enemies.Add(enemyObj);
             }
@@ -71,18 +69,14 @@ namespace _Code.Core.Managers
         public void RemoveEnemy(GameObject enemy)
         {
             if (enemies.Contains(enemy))
-            {
                 enemies.Remove(enemy);
-            }
-            
+
             if (enemies.Count <= 0)
-            {
                 if (gameClearUI != null)
                 {
                     Bus<StageClearEvent>.Raise(new StageClearEvent(true));
                     //gameClearUI.SetActive(true);
                 }
-            }
         }
 
         public void AddPlayerCnt()
@@ -94,10 +88,8 @@ namespace _Code.Core.Managers
         {
             playerCount -= 1;
 
-            if (playerCount <= 0)
-            {
-                if (gameOverUI != null) gameOverUI.SetActive(true); 
-            }
+            if (playerCount <= 0 && gameOverUI != null)
+                gameOverUI.SetActive(true);
         }
 
         private void OnDestroy()

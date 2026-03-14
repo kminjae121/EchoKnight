@@ -1,7 +1,7 @@
-﻿using Code.UnitSystem;
+using Code.UnitSystem;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
     public enum BodyType
     {
@@ -10,17 +10,7 @@ namespace _Code.KMJ.UnitSystem.Unit.UnitComponent
         Back
     }
 
-    public class UnitBody : MonoBehaviour, IUnitComponent
+    public class UnitBody : MonoBehaviour
     {
-        [SerializeField] private BodyType body;
-        public void Initialize(Code.UnitSystem.Unit owner)
-        {
-            
-        }
-
-        public BodyType GetBodyType()
-        {
-            return this.body;
-        }
     }
 }

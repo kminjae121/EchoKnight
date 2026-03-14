@@ -1,7 +1,7 @@
 using System.Collections;
 using _Code.Core.Managers;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.Managers;
 using Code.UI;
 using Code.UnitManaging;
@@ -22,23 +22,22 @@ namespace UnitSystem
         [SerializeField] private LayerMask whatIsGround;
         [SerializeField] private Image unitImage;
 
-        public UnitBehavaveCompo BehaveCompo { get; set; }
+        #region UnitCompo
+
+        public UnitBehaviorCompo BehaveCompo { get; set; }
         public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
-        
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
-        
         public UnitStatCompo UnitStatCompo { get; private set; }
-        
-        public UnitCost UnitCostCompo { get; private set; }
-        
-
-        public int PlayableUnitID { get; set; } = -1;
-        public GameObject _startTile = null;
-
-        private GameObject _targetEnemy = null;
-        private EnemyTargeting _targetingCompo = null;
+        public UnitCostComponent UnitCostComponentCompo { get; private set; }
         public TurnCostGaugeManager GaugeManager { get; set; }
+
+        #endregion
+        
+        public int PlayableUnitID { get; set; } = -1;
+        
+        public GameObject _startTile = null;
+        
         private Button endTurnBtn;
         public CinemachineImpulseSource impulseSource { get; private set; }
 
@@ -46,19 +45,20 @@ namespace UnitSystem
         {
             SkillCompo = GetUnitCompo<SkillComponent>();
             TriggerCompo = GetUnitCompo<UnitAnimationTrigger>();
-            BehaveCompo = GetUnitCompo<UnitBehavaveCompo>();
+            BehaveCompo = GetUnitCompo<UnitBehaviorCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
-            UnitCostCompo = GetUnitCompo<UnitCost>();
+            UnitCostComponentCompo = GetUnitCompo<UnitCostComponent>();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
             if (TriggerCompo != null)
                 TriggerCompo.OnDeadEvent += HandleDieAnimationEnd;
 
-            BehaveCompo._currentMapTile = _startTile;
+            BehaveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
             
-            transform.position = _startTile.transform.position;
+            if(_startTile != null)
+                transform.position = _startTile.transform.position;
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }
@@ -86,7 +86,7 @@ namespace UnitSystem
             if (OwnUnitManage.Instance != null)
                 OwnUnitManage.Instance.currentCost += 20;
 
-            UnitCostCompo.UpdateAPGauge();
+            UnitCostComponentCompo.UpdateAPGauge();
             SkillCompo.UpdateSkillUI();
 
             if (endTurnBtn != null)
@@ -135,6 +135,7 @@ namespace UnitSystem
             {
                 if (endTurnBtn != null)
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
+                
                 OnTurnEnd();
                 Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             }

@@ -5,21 +5,22 @@ namespace Code.Map
 {
     public class MapTile : MonoBehaviour, IMapTile
     {
-        [SerializeField] private Vector2Int gridPosition;
+        [SerializeField] private Vector2Int gridPos;
         [SerializeField] private bool isWalkable = true;
-        [SerializeField] private bool hasEnemy = false;
-        [SerializeField] private bool hasObstacle = false;
+        [SerializeField] private bool hasEnemy;
+        [SerializeField] private bool hasObstacle;
 
-        public Vector2Int GridPosition => gridPosition;
+        public Vector2Int GridPos => gridPos;
+        public Vector3 WorldPos => transform.position;
+        
         public bool IsWalkable => isWalkable;
         public bool HasEnemy => hasEnemy;
         public bool HasObstacle => hasObstacle;
-        
         public bool CanUnitPass => isWalkable && ! hasObstacle;
 
-        public void Initialize(Vector2Int position)
+        public void Initialize(Vector2Int pos)
         {
-            gridPosition = position;
+            gridPos = pos;
         }
 
         public void SetWalkable(bool walkable)

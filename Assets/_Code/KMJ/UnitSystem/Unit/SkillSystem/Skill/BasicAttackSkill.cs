@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent;
+using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
@@ -82,9 +82,9 @@ public class BasicAttackSkill : BasicUnitSkill
     public void TakeDamage()
     {
         Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-        characterUnit.impulseSource.GenerateImpulse(0.3f);
+        _characterUnit.impulseSource.GenerateImpulse(0.3f);
         
-        _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(_damageData, 
+        _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(DamageData, 
             _targetEnemy.transform.position,transform.position,attackData,_owner);
     }
 

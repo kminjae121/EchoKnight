@@ -1,5 +1,4 @@
-﻿using _Code.KMJ.UnitSystem.Unit.UnitComponent;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using Code.UI;
 using Code.UnitSystem;
 using EntityComponent;

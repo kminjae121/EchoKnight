@@ -3,12 +3,14 @@ using System.Collections;
 using System.Collections.Generic;
 using _Code.Core.Managers;
 using _Code.KMJ.SO;
+using Code.UnitSystem;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
+using Code.Core.Events.Bus;
 
 namespace Code.UI
 {
@@ -19,6 +21,7 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI skipBtnTxt;
         [SerializeField] private TextMeshProUGUI popUpTxt;
         [SerializeField] private Image eventImg;
+        [SerializeField] private GameObject evtObject;
 
         [SerializeField] private Button skipBtn;
         [SerializeField] private Button selectBtn;
@@ -29,6 +32,9 @@ namespace Code.UI
         [SerializeField] private List<EventTextSO> eventTexts;
 
         [SerializeField] private Image thisObjectImg;
+
+        [SerializeField] private UnitStorageSO storageSO;
+        
         private void OnEnable()
         {
             int randValue = Random.Range(0, eventTexts.Count);
@@ -64,7 +70,13 @@ namespace Code.UI
                 .Append(eventImg.DOFade(0, 0.5f))
                 .Append(mainTxt.RemoveText( 0.5f))
                 .AppendInterval(0.3f)
-                .Append(thisObjectImg.DOFade(0, 1f));
+                .Append(thisObjectImg.DOFade(0, 1f))
+                .OnComplete(() => 
+                {
+                    DOTween.KillAll();
+                    Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+                    evtObject.SetActive(false);
+                });
         }
 
         private void OnDisable()
@@ -77,6 +89,11 @@ namespace Code.UI
         {
             if (value == 1)
             {
+                storageSO.unitStates.ForEach(state =>
+                {
+                    state.TakeDamage(eventTexts[randomValue].value);
+                });
+                
                 mainTxt.text = eventTexts[randomValue].FailTxt;
                 
                 skipBtn.gameObject.SetActive(false);
@@ -87,12 +104,24 @@ namespace Code.UI
                     .Append(eventImg.DOFade(0, 0.5f))
                     .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
-                    .Append(thisObjectImg.DOFade(0, 0.5f));
+                    .Append(thisObjectImg.DOFade(0, 0.5f))
+                    .OnComplete(() => 
+                    {
+                        DOTween.KillAll();
+                        Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+                        evtObject.SetActive(false);
+                    });
+                
+                
             }
             else
             {
                 mainTxt.text = eventTexts[randomValue].SuccessTxt;
                 
+                storageSO.unitStates.ForEach(state =>
+                {
+                    state.Heal(eventTexts[randomValue].value);
+                });
                 skipBtn.gameObject.SetActive(false);
                 selectBtn.gameObject.SetActive(false);
                 DOTween.Sequence()
@@ -101,8 +130,14 @@ namespace Code.UI
                     .Append(eventImg.DOFade(0, 0.5f))
                     .Append(mainTxt.RemoveText( 0.5f))
                     .AppendInterval(0.2f)
-                    .Append(thisObjectImg.DOFade(0, 0.5f));
-                
+                    .Append(thisObjectImg.DOFade(0, 0.5f))
+                    .OnComplete(() => 
+                    {
+                        DOTween.KillAll();
+                        Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+                        evtObject.SetActive(false);
+                    });
+                 
             }
         }
         

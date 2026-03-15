@@ -3,15 +3,13 @@ using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
-using Code.UI;
-using Code.UnitManaging;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
-using EnemySystem;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
+using Unit = Code.UnitSystem.Unit;
 
 namespace UnitSystem
 {
@@ -82,11 +80,10 @@ namespace UnitSystem
         {
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            
-            if (OwnUnitManage.Instance != null)
-                OwnUnitManage.Instance.currentCost += 20;
 
-            UnitCostComponentCompo.UpdateAPGauge();
+            UnitCostComponentCompo.GetCost(30);
+            GaugeManager.AddSkillPoint(30);
+            
             SkillCompo.UpdateSkillUI();
 
             if (endTurnBtn != null)

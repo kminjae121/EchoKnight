@@ -25,6 +25,8 @@ namespace _Code.Core.Managers
         {
             if (skill == null) return;
 
+            if (!skills.Contains(skill)) return;
+
             var unitType = skill.unitType;
 
             if (!equipSkillDict.TryGetValue(unitType, out var list))

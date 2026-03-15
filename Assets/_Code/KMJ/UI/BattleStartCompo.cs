@@ -3,7 +3,7 @@ using Code.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TestBattle : MonoBehaviour
+public class BattleStartCompo : MonoBehaviour
 {
     [SerializeField] private TurnManager turnManager;
     [SerializeField] private Button thisBtn;

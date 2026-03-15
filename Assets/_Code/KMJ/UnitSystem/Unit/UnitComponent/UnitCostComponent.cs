@@ -21,6 +21,9 @@ namespace UnitSystem
                 return false;
 
             OwnUnitManage.Instance.currentCost += cost;
+
+            if (OwnUnitManage.Instance.currentCost >= 100)
+                OwnUnitManage.Instance.currentCost = 100;
             
             UpdateAPGauge();
             return true;

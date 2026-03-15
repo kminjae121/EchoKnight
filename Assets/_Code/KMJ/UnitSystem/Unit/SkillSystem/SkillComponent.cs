@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using _Code.Core.Managers;
-using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.Core.Events.Bus;
 using UnityEngine;
 
@@ -11,11 +9,9 @@ namespace Code.UnitSystem.SkillSystem
 {
     public class SkillComponent : MonoBehaviour, IUnitComponent
     {
-        [SerializeField] private List<SkillSO> _skillList = new List<SkillSO>();
-        public int currentSkillCost = 10;
+        [SerializeField] private List<SkillSO> _skillList;
         
-        
-        public Dictionary<string, BaseSkill> skills = new Dictionary<string, BaseSkill>();
+        public Dictionary<string, BaseSkill> skills;
 
         private Unit _unit;
         private bool isUseSkill = true;
@@ -29,7 +25,8 @@ namespace Code.UnitSystem.SkillSystem
             
             foreach (var skillSo in _skillList)
             {
-                if (skillSo == null || string.IsNullOrEmpty(skillSo.className)) continue;
+                if (skillSo == null || string.IsNullOrEmpty(skillSo.className))
+                    continue;
 
                 Type type = GetTypeByName(skillSo.className);
 
@@ -44,12 +41,11 @@ namespace Code.UnitSystem.SkillSystem
                 if (components.Length > 0)
                 {
                     BaseSkill component = components[0] as BaseSkill;
+                    
                     if (component != null)
                     {
                         component.UseSkillPoint = skillSo.UsingSkillCost;
-                        
-                        if (!skills.ContainsKey(skillSo.skillName))
-                            skills.Add(skillSo.skillName, component);
+                        skills.TryAdd(skillSo.skillName, component);
                     }
                 }
                 else
@@ -57,25 +53,17 @@ namespace Code.UnitSystem.SkillSystem
             }
 
             if (skills.Count > 0)
-            {
                 foreach (var skill in skills.Values)
                     skill.InitializeSkill();
-            }
         }
         
         public void UpdateSkillUI()
         {
-            for (int i = 0; i <= 2; i++) Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null,0, null, null));
+            for (int i = 0; i <= 2; i++)
+                Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null, null));
             
-            if (skills != null)
-            {
-                int idx = 0;
-                foreach (var skill in skills)
-                {
-                    Bus<SkillUIEvent>.Raise(new SkillUIEvent(idx, skill.Key, skill.Value.UseSkillPoint,skill.Value.SkillImage, this));
-                    idx++;
-                }
-            }
+            for (int i = 0; i < _skillList.Count; ++i)
+                Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, _skillList[i], this));
         }
         private void Awake()
         {
@@ -90,12 +78,16 @@ namespace Code.UnitSystem.SkillSystem
         private Type GetTypeByName(string className)
         {
             Type type = Type.GetType(className);
-            if (type != null) return type;
+            
+            if (type != null)
+                return type;
             
             foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
             {
                 type = assembly.GetTypes().FirstOrDefault(t => t.Name == className || t.FullName == className || t.FullName.EndsWith($".{className}"));
-                if (type != null) return type;
+                
+                if (type != null)
+                    return type;
             }
 
             return null;
@@ -111,10 +103,11 @@ namespace Code.UnitSystem.SkillSystem
         {
             if (isUseSkill)
             {
-                if(!skills.ContainsKey(skillName))
+                if (!skills.ContainsKey(skillName))
                     return;
             
                 BaseSkill skill = skills.GetValueOrDefault(skillName);
+                
                 if (skill != null)
                 {
                     skill.ShowSkillRange();
@@ -129,6 +122,7 @@ namespace Code.UnitSystem.SkillSystem
                 return;
             
             BaseSkill skill = skills.GetValueOrDefault(skillName);
+            
             if (skill != null)
             {
                 skill.BlockThisSkill();

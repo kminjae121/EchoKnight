@@ -274,10 +274,10 @@ namespace Code.UI
             int idx = evt.SkillIndex + 1;
 
             if (idx >= 0 && idx < skillsName.Count && skillsName[idx] != null)
-                skillsName[idx].text = evt.SkillName;
+                skillsName[idx].text = evt.SkillSO.skillName;
 
             if (idx >= 0 && idx < explainTxt.Count && explainTxt[idx] != null)
-                explainTxt[idx].text = $"코스트 - {evt.SkillCost}";
+                explainTxt[idx].text = $"코스트 - {evt.SkillSO.SkillCost}";
 
             if (_isActive)
                 ApplySelection();

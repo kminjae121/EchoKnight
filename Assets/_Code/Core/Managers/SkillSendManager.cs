@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Code.Core;
 using Code.UnitSystem.SkillSystem;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace _Code.Core.Managers
@@ -23,6 +25,8 @@ namespace _Code.Core.Managers
         {
             if (skill == null) return;
 
+            if (!skills.Contains(skill)) return;
+
             var unitType = skill.unitType;
 
             if (!equipSkillDict.TryGetValue(unitType, out var list))
@@ -39,6 +43,11 @@ namespace _Code.Core.Managers
         
         public void RemoveSkill(SkillSO skill)
         {
+            foreach (var skills in equipSkillDict.Values)
+            {
+                if (skills.Contains(skill))
+                    skills.Remove(skill);
+            }
         }
 
         public SkillSO[] GetEquipSkills(UnitType unitType)

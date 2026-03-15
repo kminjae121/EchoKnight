@@ -37,16 +37,13 @@ namespace Code.UI
         private void HandleClickRange(int idx)
         { 
             skillCompnent.CancelAllSkill();
-            
             skillCompnent.StartSkill(thisSkillName[idx]);
         }
 
         public void CancelSkill()
         {
             if (skillCompnent != null)
-            {
                 skillCompnent.CancelAllSkill();
-            }
             
             Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
         }
@@ -54,17 +51,14 @@ namespace Code.UI
         private void HandleSkillUIEvent(SkillUIEvent evt)
         {
             skillCompnent = evt.SkillComponent;
-            thisSkillName[evt.SkillIndex] = evt.SkillName;
-            
+            thisSkillName[evt.SkillIndex] = evt.SkillSO.skillName;
             
             skillbtn[evt.SkillIndex].onClick.RemoveAllListeners();
             
             int capturedIdx = evt.SkillIndex;
 
-            if (evt.SkillName != null)
-            {
+            if (evt.SkillSO.skillName != null)
                 skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
-            }
         }
     }
 }

@@ -14309,6 +14309,8 @@ MonoBehaviour:
   scaleTarget: {fileID: 725962061}
   panelNameCanvasGroup: {fileID: 1058682361}
   hoverArea: {fileID: 1077357338}
+  targetImage: {fileID: 0}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
   animationDuration: 0.3
   hoverScale: {x: 1.1, y: 1.1, z: 1.1}
   animationEase: 9
@@ -17217,6 +17219,8 @@ MonoBehaviour:
   scaleTarget: {fileID: 857538689}
   panelNameCanvasGroup: {fileID: 1008046026}
   hoverArea: {fileID: 13815797}
+  targetImage: {fileID: 0}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
   animationDuration: 0.3
   hoverScale: {x: 1.1, y: 1.1, z: 1.1}
   animationEase: 9
@@ -17576,6 +17580,8 @@ MonoBehaviour:
   scaleTarget: {fileID: 874573720}
   panelNameCanvasGroup: {fileID: 1478158429}
   hoverArea: {fileID: 200871487}
+  targetImage: {fileID: 0}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
   animationDuration: 0.3
   hoverScale: {x: 1.1, y: 1.1, z: 1.1}
   animationEase: 9
@@ -20364,6 +20370,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1037946119}
   - component: {fileID: 1037946120}
+  - component: {fileID: 1037946121}
   m_Layer: 0
   m_Name: GoodsManager
   m_TagString: Untagged
@@ -20400,13 +20407,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Code.Core.Managers.GoodsManager
   isDontDestroyOnLoad: 1
   havingSkillSO: {fileID: 11400000, guid: bc716ef9065256b458095aab342b515c, type: 2}
-  ownSkillStorage:
-  - {fileID: 11400000, guid: 1fcb7024abc920d4ca5613ef9316d5a1, type: 2}
-  - {fileID: 11400000, guid: 9380b9c89da816143870c3f6246c846e, type: 2}
-  - {fileID: 11400000, guid: 07500c7574825104b8dcfe1ae8f8de0a, type: 2}
-  - {fileID: 11400000, guid: d624d89f40569d541a7e874ce4a243bf, type: 2}
   skills: []
   items: []
+--- !u!114 &1037946121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037946118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1788d8498d8411e8b8f0c761dc9c4b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Code.Core.Managers.SkillSendManager
+  isDontDestroyOnLoad: 1
 --- !u!1 &1038755702
 GameObject:
   m_ObjectHideFlags: 0
@@ -35376,6 +35391,8 @@ MonoBehaviour:
   scaleTarget: {fileID: 1647258093}
   panelNameCanvasGroup: {fileID: 537813939}
   hoverArea: {fileID: 1415980614}
+  targetImage: {fileID: 0}
+  hoverColor: {r: 0, g: 0, b: 0, a: 1}
   animationDuration: 0.3
   hoverScale: {x: 1.1, y: 1.1, z: 1.1}
   animationEase: 9

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using _Code.Core.Managers;
 using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.Core.Events.Bus;
 using UnityEngine;
@@ -13,7 +14,6 @@ namespace Code.UnitSystem.SkillSystem
         [SerializeField] private List<SkillSO> _skillList = new List<SkillSO>();
         public int currentSkillCost = 10;
         
-        [SerializeField] private UnitSkillStorageSO storageSO = null;
         
         public Dictionary<string, BaseSkill> skills = new Dictionary<string, BaseSkill>();
 
@@ -23,15 +23,10 @@ namespace Code.UnitSystem.SkillSystem
         public void Initialize(Unit owner)
         {
             _unit = owner;
+            _skillList = SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType).ToList();
+            
             skills = new Dictionary<string, BaseSkill>();
             
-            if (storageSO != null && storageSO.skills != null)
-            {
-                foreach (var skillInfo in storageSO.skills)
-                    if (!_skillList.Contains(skillInfo))
-                        _skillList.Add(skillInfo);
-            }
-
             foreach (var skillSo in _skillList)
             {
                 if (skillSo == null || string.IsNullOrEmpty(skillSo.className)) continue;
@@ -82,6 +77,15 @@ namespace Code.UnitSystem.SkillSystem
                 }
             }
         }
+        private void Awake()
+        {
+            Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
+        }
+
+        private void OnDestroy()
+        {
+            Bus<UsingSkillEvent>.Unsubscribe(BooleanSkill);
+        }
 
         private Type GetTypeByName(string className)
         {
@@ -97,15 +101,6 @@ namespace Code.UnitSystem.SkillSystem
             return null;
         }
 
-        private void Awake()
-        {
-            Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
-        }
-
-        private void OnDestroy()
-        {
-            Bus<UsingSkillEvent>.Unsubscribe(BooleanSkill);
-        }
 
         private void BooleanSkill(UsingSkillEvent evt)
         {
@@ -150,37 +145,6 @@ namespace Code.UnitSystem.SkillSystem
                 skill.BlockThisSkill();
                 Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
             }
-        }
-
-        public void AddSkill(SkillSO skillSO)
-        {
-            if (skillSO == null) return;
-            
-            if (!_skillList.Contains(skillSO))
-                _skillList.Add(skillSO);
-
-            Type type = GetTypeByName(skillSO.className);
-            if (type == null) return;
-
-            var components = _unit.GetComponentsInChildren(type, true);
-
-            if (components.Length > 0)
-            {
-                BaseSkill component = components[0] as BaseSkill;
-                if (component != null && !skills.ContainsKey(skillSO.skillName))
-                {
-                    skills.Add(skillSO.skillName, component);
-                    component.InitializeSkill();
-                }
-            }
-        }
-
-        public void RemoveSkill(SkillSO skillSO)
-        {
-            if (skillSO == null) return;
-            
-            _skillList.Remove(skillSO);
-            skills.Remove(skillSO.skillName);
         }
     }
 }

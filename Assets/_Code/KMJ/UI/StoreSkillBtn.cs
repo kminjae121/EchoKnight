@@ -1,5 +1,6 @@
 ﻿using System;
 using _Code.Core.Managers;
+using Code.Core.Events.Bus;
 using Code.Managers;
 using Code.UnitSystem.SkillSystem;
 using TMPro;
@@ -44,17 +45,7 @@ namespace Code.UI
 
         private void HandleSkillPressed()
         {
-            if (skillso.skillPrice > PlayerManager.Instance.Gold)
-                return;
-            
-            PlayerManager.Instance.RemoveGold(skillso.skillPrice);
-            
-            GoodsManager.Instance.GetSkill(skillso);
-            
-            goldTxt.text = $"골드 : {PlayerManager.Instance.Gold.ToString()}";
-
-            skillso = null;
-            gameObject.SetActive(false);
+            Bus<SetChoiceUIEvent>.Raise(new SetChoiceUIEvent(skillso,null,goldTxt,this.gameObject));
         }
     }
 }

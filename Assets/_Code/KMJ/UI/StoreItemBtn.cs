@@ -1,5 +1,6 @@
 ﻿using System;
 using Code.Core.Debugs;
+using Code.Core.Events.Bus;
 using Code.Items;
 using Code.Managers;
 using TMPro;
@@ -40,32 +41,8 @@ namespace Code.UI
 
         private void HandleItemButton()
         {
-            if (item == null)
-                return;
-            
-           
-            switch (item)
-            {
-                case CurrencyItemSO currency:
-                    HandleCurrency(currency);
-                    break;
-                case EquipmentItemSO equipment:
-                    HandleEquipment(equipment);
-                    break;
-            }
-            
-            goldTxt.text = $"골드 : {PlayerManager.Instance.Gold.ToString()}";
-            gameObject.SetActive(false);
+            Bus<SetChoiceUIEvent>.Raise(new SetChoiceUIEvent(null,item,goldTxt,this.gameObject));
         }
-
-        private void HandleCurrency(CurrencyItemSO currency)
-        {
-            PlayerManager.Instance.AddGold(currency.amount);
-        }
-
-        private void HandleEquipment(EquipmentItemSO equipment)
-        {
-            PlayerManager.Instance.equipmentInventory.Add(equipment);
-        }
+        
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
+using Code.Items;
 using Code.UnitSystem;
 using Code.UnitSystem.ArtifactSystem;
 using GondrLib.Dependencies;
@@ -121,7 +122,7 @@ namespace Code.UI
 
         private void RefreshEquippedSlots()
         {
-            var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<ArtifactSO>();
+            var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
 
             for (int i = 0; i < equippedSlotImages.Count; i++)
             {
@@ -130,7 +131,7 @@ namespace Code.UI
 
                 if (hasArtifact)
                 {
-                    equippedSlotImages[i].sprite = equippedList[i].artifactIcon;
+                    equippedSlotImages[i].sprite = equippedList[i].itemIcon;
                 }
                 else
                 {
@@ -144,7 +145,7 @@ namespace Code.UI
         private void HandleEquip(ArtifactEquipEvent evt)
         {
             if (_unit.EquippedArtifacts == null) return;
-            if (_unit.EquippedArtifacts.artifacts.Contains(evt.Artifact)) return;
+            if (_unit.EquippedArtifacts.artifacts.Contains(evt.EquipmentItem)) return;
 
             if (_unit.EquippedArtifacts.artifacts.Count >= maxEquipCount)
             {
@@ -152,7 +153,7 @@ namespace Code.UI
                 return;
             }
 
-            _unit.EquippedArtifacts.artifacts.Add(evt.Artifact);
+            _unit.EquippedArtifacts.artifacts.Add(evt.EquipmentItem);
             RefreshUI();
         }
 
@@ -160,7 +161,7 @@ namespace Code.UI
         {
             if (_unit.EquippedArtifacts == null) return;
             
-            if (_unit.EquippedArtifacts.artifacts.Remove(evt.Artifact))
+            if (_unit.EquippedArtifacts.artifacts.Remove(evt.EquipmentItem))
             {
                 RefreshUI();
             }

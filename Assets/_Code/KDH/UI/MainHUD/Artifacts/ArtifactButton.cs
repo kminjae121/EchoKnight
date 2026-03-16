@@ -1,4 +1,5 @@
 ﻿using Code.Core.Events.Bus;
+using Code.Items;
 using Code.UnitSystem.ArtifactSystem;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Code.UI
         [SerializeField] private Image iconImage;
         [SerializeField] private GameObject hoverImage; 
 
-        private ArtifactSO _artifact;
+        private EquipmentItemSO _equipmentItem;
         private bool _isEquipped;
         private GondrLib.ObjectPool.Runtime.Pool _pool;
 
@@ -27,7 +28,7 @@ namespace Code.UI
 
         public void ResetItem()
         {
-            _artifact = null;
+            _equipmentItem = null;
             _isEquipped = false;
         }
 
@@ -37,10 +38,10 @@ namespace Code.UI
             else Destroy(gameObject);
         }
 
-        public void SetArtifact(ArtifactSO artifact, bool isEquipped)
+        public void SetArtifact(EquipmentItemSO equipmentItem, bool isEquipped)
         {
-            _artifact = artifact;
-            iconImage.sprite = artifact.artifactIcon;
+            _equipmentItem = equipmentItem;
+            iconImage.sprite = equipmentItem.itemIcon;
             _isEquipped = isEquipped;
 
             iconImage.color = Color.white; 
@@ -50,7 +51,7 @@ namespace Code.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_artifact != null && hoverImage != null) 
+            if (_equipmentItem != null && hoverImage != null) 
             {
                 hoverImage.SetActive(true);
             }
@@ -58,7 +59,7 @@ namespace Code.UI
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (_artifact != null && hoverImage != null) 
+            if (_equipmentItem != null && hoverImage != null) 
             {
                 hoverImage.SetActive(false);
             }
@@ -66,11 +67,11 @@ namespace Code.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (_artifact == null) return;
+            if (_equipmentItem == null) return;
 
             if (eventData.button == PointerEventData.InputButton.Right)
             {
-                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_artifact, _isEquipped, eventData.position));
+                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, eventData.position));
             }
         }
     }

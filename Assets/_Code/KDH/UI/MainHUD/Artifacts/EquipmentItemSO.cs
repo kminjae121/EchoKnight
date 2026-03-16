@@ -1,6 +1,7 @@
-﻿using UnityEngine;
+﻿using Code.Items;
+using UnityEngine;
 
-namespace Code.UnitSystem.ArtifactSystem
+namespace Code.Items
 {
     public enum ArtifactRarity
     {
@@ -12,12 +13,8 @@ namespace Code.UnitSystem.ArtifactSystem
     }
 
     [CreateAssetMenu(fileName = "ArtifactSO", menuName = "ArtifactSystem/ArtifactSO")]
-    public class ArtifactSO : ScriptableObject
+    public class EquipmentItemSO : ItemSO
     {
-        public string artifactName;
-        public Sprite artifactIcon;
-        [TextArea(3, 10)]
-        public string description;
         public ArtifactRarity rarity;
     }
 }

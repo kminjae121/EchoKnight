@@ -23,6 +23,7 @@ namespace Code.UnitSystem
         private void FixedUpdate()
         {
             transform.rotation = Quaternion.LookRotation(transform.position - _target.transform.position);
+            
             transform.position = Vector3.MoveTowards(transform.position, _target.transform.position, _moveSpeed * Time.fixedDeltaTime);
         }
 

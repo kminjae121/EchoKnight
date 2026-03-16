@@ -77,7 +77,7 @@ namespace Code.UnitSystem
             VisualPrefabs.transform.position = tile.WorldPos;
 
             _nextTile = tile;
-            _nextTile.SetEnemy(true);
+            //_nextTile.SetEnemy(true);
         }
 
         private void CheckTilesCanMoving()
@@ -147,11 +147,15 @@ namespace Code.UnitSystem
 
             if (!_movingTiles.Contains(tile))
                 return;
-
+            
             StartCoroutine(Move(tile));
         }
 
-
+        public void SetBehaviorTile()
+        {
+            ProcessTiles(_tilesInRange, false);
+        }
+        
         private void MoveStart(IMapTile tile)
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));

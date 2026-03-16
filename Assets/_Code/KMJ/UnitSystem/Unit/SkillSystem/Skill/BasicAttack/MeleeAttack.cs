@@ -5,17 +5,18 @@ using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
+using UnityEngine.AI;
 
-    public class MeleeAttack : BasicUnitSkill
+public class MeleeAttack : BasicUnitSkill
     { 
-        private UnitAnimation _animationCompo;
         
         [SerializeField] private Animator animator;
-        
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private float attackMoveDistance = 1.5f;
-
         [SerializeField] private AttackDataSO atkData;
+        [SerializeField] private NavMeshAgent agent;
+        
+        private UnitAnimation _animationCompo;
         
         public bool isRunningAttack = false;
         
@@ -44,6 +45,8 @@ using UnityEngine;
             _ownTrm = _unitBase.transform.position;
             _target = target;
             
+            _characterUnit.BehaveCompo.IsActive = false;
+            _characterUnit.BehaveCompo.SetBehaviorTile();
             StartCoroutine(MeleeAttackAction(target));
         }
 
@@ -65,12 +68,16 @@ using UnityEngine;
                     targetPos,
                     atkMoveSpeed * Time.deltaTime
                 );
-                if(isRunningAttack && Vector3.Distance(_unitBase.transform.position, target.transform.position) 
-                   < attackMoveDistance * 2.67)
-                    _animationCompo.PlaySelectAnimation("ATTACK");
+                if (isRunningAttack && Vector3.Distance(_unitBase.transform.position, target.transform.position) 
+                    < attackMoveDistance * 2f)
+                {
+                    break;
+                }
 
                 yield return null;
             }
+            _animationCompo.PlaySelectAnimation("ATTACK");
+            
             if(isRunningAttack == false)
              _animationCompo.PlaySelectAnimation("ATTACK");
         }
@@ -99,6 +106,8 @@ using UnityEngine;
                 false,new Vector3(0.1f,0.1f,0.1f)));
             
             _animationCompo.PlaySelectAnimation("IDLE");
+            _characterUnit.BehaveCompo.IsActive = true;
+            _characterUnit.BehaveCompo.FindObjectInRange();
             skillEndEvent?.Invoke();
             
              Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));

@@ -589,7 +589,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1.2, z: 1}
+  m_Size: {x: 1, y: 2.69, z: 1}
   m_Center: {x: 0, y: 0.77, z: 0}
 --- !u!114 &5425479551185800770
 MonoBehaviour:
@@ -732,8 +732,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _skillList:
   - {fileID: 11400000, guid: 13febbdf3a5be0f4492eca9203e8e1bb, type: 2}
-  currentSkillCost: 10
-  storageSO: {fileID: 0}
 --- !u!114 &3592431627684785612
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -746,11 +744,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2af12f64ded84ec3aa038eebe0a59ed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _verticalCheckBoxSize: {x: 6, y: 6, z: 6}
-  _horizontalCheckBoxSize: {x: 6, y: 6, z: 6}
-  _whatIsTarget:
-    serializedVersion: 2
-    m_Bits: 128
   isMove: 0
   <SkillImage>k__BackingField: {fileID: 0}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
@@ -758,6 +751,7 @@ MonoBehaviour:
   ownSkill: 0
   UseSkillPoint: 0
   isCanUseSkill: 0
+  triggerCompo: {fileID: 0}
   statCompo: {fileID: 6186055949998540070}
   skillStartEvent:
     m_PersistentCalls:
@@ -1898,7 +1892,7 @@ GameObject:
   - component: {fileID: 7841771292029286234}
   - component: {fileID: 8503053869134199577}
   - component: {fileID: 3416386629718883097}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: Render
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3329,7 +3323,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3069726555314939035}
   - component: {fileID: 3271404814452396326}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: ActionData
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3500,7 +3494,7 @@ GameObject:
   - component: {fileID: 5504087589305935666}
   - component: {fileID: 6717700381489142466}
   - component: {fileID: 7891160272618122240}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: TargetingSpere
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3908,7 +3902,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6793487557975282495}
   - component: {fileID: 6135131507164707475}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: HitFeedback
   m_TagString: Untagged
   m_Icon: {fileID: 0}

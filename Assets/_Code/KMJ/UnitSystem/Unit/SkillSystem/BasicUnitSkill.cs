@@ -134,12 +134,14 @@ namespace Code.UnitSystem.SkillSystem
 
             if (ownSkill)
             {
-                _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
                 SkillStartEvent();
+                _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
+                _characterUnit.BehaveCompo.ResetTile();
                 skillEvent?.Invoke(null);
             }
             else
             {
+                _characterUnit.BehaveCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
                 CanUseThisSkill();

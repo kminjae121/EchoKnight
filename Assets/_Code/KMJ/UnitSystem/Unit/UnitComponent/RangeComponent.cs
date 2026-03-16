@@ -9,7 +9,7 @@ namespace Code.UnitSystem
 {
     public class RangeComponent : MonoBehaviour, IUnitComponent
     {
-        public bool IsActive { get; protected set; }
+        public bool IsActive { get; set; }
         public bool isMove;
 
         protected Action _resetTileEvent;
@@ -87,7 +87,7 @@ namespace Code.UnitSystem
                     
                     if (tile.HasObstacle)
                         continue;
-
+                    
                     _tilesInRange.Add(tile);
                     queue.Enqueue((next, dist + 1));
                 }

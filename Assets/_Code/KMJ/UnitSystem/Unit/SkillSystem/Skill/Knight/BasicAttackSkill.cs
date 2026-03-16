@@ -1,13 +1,8 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using Code.AttackSystem;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
-using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;
-using Unity.Cinemachine;
 using UnityEngine;
 
 public class BasicAttackSkill : BasicUnitSkill

@@ -1,5 +1,4 @@
-﻿using Code.AttackSystem;
-using _Code.KMJ.Cam;
+﻿using _Code.KMJ.Cam;
 using Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
@@ -32,7 +31,7 @@ namespace Code.UnitSystem.SkillSystem
 
         [Header("Unit Component")]
         protected SkillComponent _skillCompo;
-        protected UnitAnimationTrigger triggerCompo;
+        [SerializeField] protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
 
         [Header("Skill Event")]

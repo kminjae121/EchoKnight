@@ -38,6 +38,8 @@ namespace UnitSystem
         
         private Button endTurnBtn;
         public CinemachineImpulseSource impulseSource { get; private set; }
+        
+        private Vector3 _dampingSpeed = new Vector3(1.5f,1.5f,1.5f);
 
         private void Start()
         {
@@ -78,31 +80,26 @@ namespace UnitSystem
 
         public override void OnTurnStart()
         {
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
+            base.OnTurnStart();
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
 
             UnitCostComponentCompo.GetCost(30);
             GaugeManager.AddSkillPoint(30);
             
             SkillCompo.UpdateSkillUI();
-
+            
             if (endTurnBtn != null)
                 endTurnBtn.onClick.AddListener(TurnEnd);
             
-            OnStartTurnEvent?.Invoke();
-            base.OnTurnStart();
-            
-            if (BehaveCompo != null)
+            if (BehaveCompo != null) 
                 BehaveCompo.FindObjectInRange();
-                
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-            
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            isMyTurn = true;
         }
 
         public override void OnTurnEnd()
         {
+            base.OnTurnEnd();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             
@@ -110,9 +107,7 @@ namespace UnitSystem
                 BehaveCompo.ResetTile();
             
             UnitRangeCompo.RemoveAllRange();
-            
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-            base.OnTurnEnd();
         }
 
         protected override void Hit()

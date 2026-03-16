@@ -50,14 +50,14 @@ namespace Code.UI
         
         private void HandleSkillUIEvent(SkillUIEvent evt)
         {
-            skillCompnent = evt.SkillComponent;
-            thisSkillName[evt.SkillIndex] = evt.SkillSO.skillName;
+            skillCompnent = evt.SkillCompo;
+            thisSkillName[evt.SkillIndex] = evt.Skills.skillName;
             
             skillbtn[evt.SkillIndex].onClick.RemoveAllListeners();
             
             int capturedIdx = evt.SkillIndex;
 
-            if (evt.SkillSO.skillName != null)
+            if (evt.Skills.skillName != null)
                 skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
         }
     }

@@ -156,7 +156,7 @@ namespace Code.UI
 
                 if (hasArtifact)
                 {
-                    artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].artifactIcon;
+                    artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].itemIcon;
                 }
                 else
                 {

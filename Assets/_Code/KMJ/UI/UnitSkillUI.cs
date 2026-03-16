@@ -21,44 +21,44 @@ namespace Code.UI
 
         [SerializeField] private List<string> thisSkillName;
         
-        private void Awake()
-        {
-            Bus<SkillUIEvent>.Subscribe(HandleSkillUIEvent);
-        }
-
-        private void OnDisable()
-        {
-            Bus<SkillUIEvent>.Unsubscribe(HandleSkillUIEvent);
-            
-            skillbtn.ToList().ForEach(btn =>
-                btn.onClick.RemoveAllListeners());
-        }
-
-        private void HandleClickRange(int idx)
-        { 
-            skillCompnent.CancelAllSkill();
-            skillCompnent.StartSkill(thisSkillName[idx]);
-        }
-
-        public void CancelSkill()
-        {
-            if (skillCompnent != null)
-                skillCompnent.CancelAllSkill();
-            
-            Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
-        }
-        
-        private void HandleSkillUIEvent(SkillUIEvent evt)
-        {
-            skillCompnent = evt.SkillCompo;
-            thisSkillName[evt.SkillIndex] = evt.Skills.skillName;
-            
-            skillbtn[evt.SkillIndex].onClick.RemoveAllListeners();
-            
-            int capturedIdx = evt.SkillIndex;
-
-            if (evt.Skills.skillName != null)
-                skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
-        }
+        // private void Awake()
+        // {
+        //     Bus<SkillUIEvent>.Subscribe(HandleSkillUIEvent);
+        // }
+        //
+        // private void OnDisable()
+        // {
+        //     Bus<SkillUIEvent>.Unsubscribe(HandleSkillUIEvent);
+        //     
+        //     skillbtn.ToList().ForEach(btn =>
+        //         btn.onClick.RemoveAllListeners());
+        // }
+        //
+        // private void HandleClickRange(int idx)
+        // { 
+        //     skillCompnent.CancelAllSkill();
+        //     skillCompnent.StartSkill(thisSkillName[idx]);
+        // }
+        //
+        // public void CancelSkill()
+        // {
+        //     if (skillCompnent != null)
+        //         skillCompnent.CancelAllSkill();
+        //     
+        //     Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+        // }
+        //
+        // private void HandleSkillUIEvent(SkillUIEvent evt)
+        // {
+        //     skillCompnent = evt.SkillCompo;
+        //     thisSkillName[evt.SkillIndex] = evt.Skills.skillName;
+        //     
+        //     skillbtn[evt.SkillIndex].onClick.RemoveAllListeners();
+        //     
+        //     int capturedIdx = evt.SkillIndex;
+        //
+        //     if (evt.Skills.skillName != null)
+        //         skillbtn[capturedIdx].onClick.AddListener(() => HandleClickRange(capturedIdx));
+        // }
     }
 }

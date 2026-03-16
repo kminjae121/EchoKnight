@@ -1,21 +1,21 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Code.Core.Events.Bus;
-using Code.EntityComponent;
 using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
+using UnityEngine.AI;
 
-    public class MeleeAttack : BasicUnitSkill
-    { 
-        private UnitAnimation _animationCompo;
-        
+public class MeleeAttack : BasicUnitSkill
+{ 
         [SerializeField] private Animator animator;
-        
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private float attackMoveDistance = 1.5f;
-
         [SerializeField] private AttackDataSO atkData;
+        [SerializeField] private NavMeshAgent agent;
+        
+        private UnitAnimation _animationCompo;
         
         public bool isRunningAttack = false;
         
@@ -65,12 +65,16 @@ using UnityEngine;
                     targetPos,
                     atkMoveSpeed * Time.deltaTime
                 );
-                if(isRunningAttack && Vector3.Distance(_unitBase.transform.position, target.transform.position) 
-                   < attackMoveDistance * 2.67)
-                    _animationCompo.PlaySelectAnimation("ATTACK");
+                if (isRunningAttack && Vector3.Distance(_unitBase.transform.position, target.transform.position) 
+                    < attackMoveDistance * 2f)
+                {
+                    break;
+                }
 
                 yield return null;
             }
+            _animationCompo.PlaySelectAnimation("ATTACK");
+            
             if(isRunningAttack == false)
              _animationCompo.PlaySelectAnimation("ATTACK");
         }
@@ -99,6 +103,8 @@ using UnityEngine;
                 false,new Vector3(0.1f,0.1f,0.1f)));
             
             _animationCompo.PlaySelectAnimation("IDLE");
+            _characterUnit.BehaveCompo.IsActive = true;
+            _characterUnit.BehaveCompo.FindObjectInRange();
             skillEndEvent?.Invoke();
             
              Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
@@ -110,9 +116,9 @@ using UnityEngine;
             _characterUnit.impulseSource.GenerateImpulse(0.6f);  
             
             
-            _target.GetComponent<EntityHealth>().ApplyDamage(DamageData, 
+            _target.GetComponent<UnitHealth>().ApplyDamage(DamageData, 
                 _target.transform.position,transform.position,atkData,_characterUnit);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
         }
-    }
+}

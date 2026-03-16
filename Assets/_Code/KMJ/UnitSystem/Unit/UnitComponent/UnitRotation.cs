@@ -1,6 +1,4 @@
-﻿using System;
-using Code.UnitSystem;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Code.UnitSystem
 {

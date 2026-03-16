@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using UnitSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -77,7 +76,7 @@ namespace Code.UnitSystem
             VisualPrefabs.transform.position = tile.WorldPos;
 
             _nextTile = tile;
-            _nextTile.SetEnemy(true);
+            //_nextTile.SetEnemy(true);
         }
 
         private void CheckTilesCanMoving()
@@ -147,17 +146,22 @@ namespace Code.UnitSystem
 
             if (!_movingTiles.Contains(tile))
                 return;
-
+            
             StartCoroutine(Move(tile));
         }
 
-
+        public void SetBehaviorTile()
+        {
+            ProcessTiles(_tilesInRange, false);
+        }
+        
         private void MoveStart(IMapTile tile)
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject,
                 true, new Vector3(0.1f, 0.1f, 0.1f)));
 
+            // 임시
             ProcessTiles(_tilesInRange, false);
             IsActive = false;
             _isMoving = true;

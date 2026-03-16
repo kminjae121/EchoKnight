@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Code.Core.Events.Bus;
-using Code.EntityComponent;
+using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
 
 
@@ -57,7 +56,7 @@ using UnityEngine;
 
         public void Heal()
         {
-            EntityHealth health = _owner.GetUnitCompo<EntityHealth>();
+            UnitHealth health = _owner.GetUnitCompo<UnitHealth>();
             
             health.HealHp(20);
             healPrefab.SetActive(true);

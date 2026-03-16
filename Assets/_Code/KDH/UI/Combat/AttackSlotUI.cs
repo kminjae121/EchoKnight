@@ -19,7 +19,7 @@ namespace Code.UI
         
         public GameObject GameObject => gameObject;
         
-        private BattleUI _owner;
+        private AttackUI _owner;
         private SkillSO _skill;
         private SkillComponent _skillCompo;
         private Button _button;
@@ -32,7 +32,7 @@ namespace Code.UI
             _button = GetComponent<Button>();
         }
 
-        public void Initialize(BattleUI owner)
+        public void Initialize(AttackUI owner)
         {
             _owner = owner;
         }
@@ -61,7 +61,7 @@ namespace Code.UI
         private void HandleSkill()
         {
             _skillCompo.CancelAllSkill();
-            _skillCompo.StartSkill(skillNameText.text);
+            _skillCompo.StartSkill(_skill);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

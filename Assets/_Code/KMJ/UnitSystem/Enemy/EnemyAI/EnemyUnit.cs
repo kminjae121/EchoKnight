@@ -117,7 +117,7 @@ namespace EnemySystem
             });
         }
 
-        public void OrderSkill(string skillName, GameObject target, Action onComplete)
+        public void OrderSkill(SkillSO skillso, GameObject target, Action onComplete)
         {
             if (_skillCompo == null)
             {
@@ -128,9 +128,9 @@ namespace EnemySystem
 
             BaseSkill skillToUse = null;
 
-            if (!string.IsNullOrEmpty(skillName) && _skillCompo.skills.ContainsKey(skillName))
+            if (!string.IsNullOrEmpty(skillso.skillName) && _skillCompo.skills.ContainsKey(skillso))
             {
-                skillToUse = _skillCompo.skills[skillName];
+                skillToUse = _skillCompo.skills[skillso];
             }
             else if (_skillCompo.skills.Count > 0)
             {
@@ -138,7 +138,7 @@ namespace EnemySystem
                 if (enumerator.MoveNext()) 
                 {
                     skillToUse = enumerator.Current;
-                    Debug.LogWarning($"[EnemyUnit] '{skillName}' 스킬을 찾지 못해 '{skillToUse.GetType().Name}'(으)로 대체하여 실행합니다.");
+                    Debug.LogWarning($"[EnemyUnit] '{skillso.skillName}' 스킬을 찾지 못해 '{skillToUse.GetType().Name}'(으)로 대체하여 실행합니다.");
                 }
             }
 

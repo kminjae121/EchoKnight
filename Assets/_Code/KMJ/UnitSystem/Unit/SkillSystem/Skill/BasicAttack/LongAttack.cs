@@ -2,18 +2,18 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
+using UnityEngine.AI;
 
-    public class LongAttack : BasicUnitSkill
+public class LongAttack : BasicUnitSkill
     {
         [SerializeField] private float atkMoveSpeed;
-
         [SerializeField] private Animator animator;
-
+        [SerializeField] private GameObject effectPrefab;
+        [SerializeField] private NavMeshAgent agent;
+        
         private UnitAnimation _animationCompo;
 
-        [SerializeField] private GameObject effectPrefab;
         
         private GameObject _target = null;
         
@@ -40,6 +40,7 @@ using UnityEngine;
 
         public void AttackAction(GameObject target)
         {
+            agent.enabled = false;
             _ownTrm = transform.position;
             
             StartCoroutine(MeleeAttackAction(target));
@@ -69,6 +70,7 @@ using UnityEngine;
         private void AttackEnd()
         {
             _animationCompo.PlaySelectAnimation("IDLE");
+            _characterUnit.BehaveCompo.IsActive = true;
             skillEndEvent?.Invoke();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));

@@ -1,10 +1,8 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using Code.Core.Interfaces;
+﻿using Code.Core.Events.Bus;
 using Code.Map;
+using Code.UnitSystem.Combat;
 using EnemySystem;
 using Input;
-using UnitSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem
@@ -134,12 +132,14 @@ namespace Code.UnitSystem.SkillSystem
 
             if (ownSkill)
             {
-                _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
                 SkillStartEvent();
+                _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
+                _characterUnit.BehaveCompo.ResetTile();
                 skillEvent?.Invoke(null);
             }
             else
             {
+                _characterUnit.BehaveCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
                 CanUseThisSkill();

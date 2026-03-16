@@ -1,16 +1,17 @@
 ﻿using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
+using UnityEngine.AI;
 
-    public class ShooterAttack : BasicUnitSkill
+public class ShooterAttack : BasicUnitSkill
     {
         [SerializeField] private float atkMoveSpeed;
-
         [SerializeField] private Animator animator;
-
+        [SerializeField] private NavMeshAgent agent;
+        
          private UnitAnimation _animationCompo;
 
         private ShootItemAttackManager _shootItemManager;
@@ -68,6 +69,8 @@ using UnityEngine;
         private void AttackEnd()
         {
             _animationCompo.PlaySelectAnimation("IDLE");
+            _characterUnit.BehaveCompo.IsActive = true;
+            
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));

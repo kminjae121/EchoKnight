@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using Code.Core.Events.Bus;
+using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
@@ -10,22 +11,25 @@ using UnityEngine;
 
         [SerializeField] private Animator animator;
 
-        [SerializeField] private UnitAnimation animtionCompo;
+         private UnitAnimation _animationCompo;
 
         private ShootItemAttackManager _shootItemManager;
         
         private GameObject _target = null;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             triggerCompo.OnShootAttackTrigger += Shoot;
             triggerCompo.OnShootAttackEndTrigger += AttackEnd;
             skillEvent.AddListener(AttackAction);
-            _shootItemManager = GetComponentInChildren<ShootItemAttackManager>();
+            _shootItemManager = _unitBase.GetUnitCompo<ShootItemAttackManager>();
+            _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             triggerCompo.OnShootAttackTrigger -= Shoot;
             triggerCompo.OnShootAttackEndTrigger -= AttackEnd;
             skillEvent.RemoveListener(AttackAction);
@@ -43,27 +47,27 @@ using UnityEngine;
             _target = null;
             _target = target;
             
-            animtionCompo.PlaySelectAnimation("ATTACK");
+            _animationCompo.PlaySelectAnimation("ATTACK");
         }
 
         private void Shoot()
         {
-            Vector3 pos = transform.position;
+            Vector3 pos = _unitBase.transform.position;
 
             pos.y += 1.6f;
             
-            Vector3 slashRot = transform.rotation.eulerAngles;
+            Vector3 slashRot = _unitBase.transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
             _shootItemManager.SetDamageData(DamageData);
-            _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);
+            _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);   
 
             _characterUnit.impulseSource.GenerateImpulse(0.3f);
         }
         
         private void AttackEnd()
         {
-            animtionCompo.PlaySelectAnimation("IDLE");
+            _animationCompo.PlaySelectAnimation("IDLE");
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));

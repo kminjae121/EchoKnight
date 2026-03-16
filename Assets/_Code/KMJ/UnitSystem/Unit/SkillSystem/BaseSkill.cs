@@ -75,12 +75,6 @@ namespace Code.UnitSystem.SkillSystem
                 damage = basicSkillDamage;
 
             DamageData.damage = damage;
-
-            if (_unitBase as CharacterUnit)
-            {
-                CharacterUnit unit = _unitBase as CharacterUnit;
-                impulseSource = unit.impulseSource;
-            }
         }
         
 

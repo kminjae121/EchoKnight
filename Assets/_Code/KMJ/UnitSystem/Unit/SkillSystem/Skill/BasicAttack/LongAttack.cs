@@ -11,7 +11,7 @@ using UnityEngine;
 
         [SerializeField] private Animator animator;
 
-        [SerializeField] private UnitAnimation animtionCompo;
+        private UnitAnimation _animationCompo;
 
         [SerializeField] private GameObject effectPrefab;
         
@@ -21,15 +21,18 @@ using UnityEngine;
         
         private Vector3 _ownTrm;
 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             triggerCompo.OnLongRangeAttackTrigger += ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger += AttackEnd;
             skillEvent.AddListener(AttackAction);
+            _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             triggerCompo.OnLongRangeAttackTrigger -= ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger -= AttackEnd;
             skillEvent.RemoveListener(AttackAction);
@@ -48,7 +51,7 @@ using UnityEngine;
             
              _target = target;
              
-             animtionCompo.PlaySelectAnimation("ATTACK");
+             _animationCompo.PlaySelectAnimation("ATTACK");
         }
 
 
@@ -65,7 +68,7 @@ using UnityEngine;
 
         private void AttackEnd()
         {
-            animtionCompo.PlaySelectAnimation("IDLE");
+            _animationCompo.PlaySelectAnimation("IDLE");
             skillEndEvent?.Invoke();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));

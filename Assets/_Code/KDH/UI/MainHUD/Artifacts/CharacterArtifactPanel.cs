@@ -37,9 +37,6 @@ namespace Code.UI
         {
             base.Awake();
 
-            if (_poolManager == null)
-                _poolManager = FindFirstObjectByType<PoolManagerMono>();
-
             sortButton.onClick.AddListener(ToggleSort);
 
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);

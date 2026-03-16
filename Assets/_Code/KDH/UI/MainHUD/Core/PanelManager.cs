@@ -16,7 +16,6 @@ public class PanelManager : MonoBehaviour
         {
             if (singleton == null)
             {
-                singleton = FindFirstObjectByType<PanelManager>();
                 if (singleton == null)
                 {
                     singleton = new GameObject("PanelManager").AddComponent<PanelManager>();

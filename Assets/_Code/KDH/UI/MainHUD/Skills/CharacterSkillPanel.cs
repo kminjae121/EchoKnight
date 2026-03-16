@@ -43,9 +43,6 @@ namespace Code.UI
         {
             base.Awake();
 
-            if (_poolManager == null)
-                _poolManager = FindFirstObjectByType<PoolManagerMono>();
-
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);
             Bus<SkillEquipEvent>.Subscribe(HandleSkillEquipped);
             Bus<SkillUnequipEvent>.Subscribe(HandleSkillUnequipped);

@@ -1,7 +1,6 @@
-using Code.UnitSystem;
 using UnityEngine;
 
-namespace Code.UnitSystem
+namespace Code.UnitSystem.Combat
 {
     public enum BodyType
     {

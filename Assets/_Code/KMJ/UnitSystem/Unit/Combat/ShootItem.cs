@@ -1,11 +1,6 @@
-﻿using Code.Core.Events.Bus;
-using Code.EntityComponent;
-using DG.Tweening;
-using UnitSystem;
-using Unity.Cinemachine;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Code.UnitSystem
+namespace Code.UnitSystem.Combat
 {
     public class ShootItem : MonoBehaviour
     {

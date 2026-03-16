@@ -1,4 +1,5 @@
 using System;
+using Code.UnitSystem.SkillSystem;
 using EnemySystem;
 using Unity.Behavior;
 using UnityEngine;
@@ -9,9 +10,9 @@ using Unity.Properties;
 [NodeDescription(name: "Enemy Skill Attack", story: "[Agent] uses skill [SkillName] on [Target]", category: "Action", id: "EnemyAttackAction")]
 public partial class EnemyAttackAction : Action
 {
+    [SerializeReference] public BlackboardVariable<SkillSO> skill;
     [SerializeReference] public BlackboardVariable<GameObject> Agent;
     [SerializeReference] public BlackboardVariable<GameObject> Target;
-    [SerializeReference] public BlackboardVariable<string> SkillName;
 
     private EnemyUnit _enemyUnit;
     private bool _isAttacking;
@@ -39,9 +40,7 @@ public partial class EnemyAttackAction : Action
 
         _isAttacking = true;
         
-        string skillToUse = SkillName.Value;
-        
-        _enemyUnit.OrderSkill(skillToUse, Target.Value, OnDone);
+        _enemyUnit.OrderSkill(skill, Target.Value, OnDone);
 
         return Status.Running;
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;

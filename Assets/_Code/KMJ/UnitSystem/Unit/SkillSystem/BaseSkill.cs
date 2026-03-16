@@ -1,8 +1,5 @@
-﻿using _Code.KMJ.Cam;
-using Code.UnitSystem;
-using Code.Core.Events.Bus;
-using Code.EntityComponent;
-using UnitSystem;
+﻿using Code.Core.Events.Bus;
+using Code.UnitSystem.Combat;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;

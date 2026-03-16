@@ -11,7 +11,7 @@ namespace Code.UnitSystem.SkillSystem
     {
         [SerializeField] private List<SkillSO> _skillList;
 
-        public Dictionary<string, BaseSkill> skills; 
+        public Dictionary<SkillSO, BaseSkill> skills; 
 
         private Unit _unit;
         private bool isUseSkill = true;
@@ -25,7 +25,7 @@ namespace Code.UnitSystem.SkillSystem
                 _skillList.Add(skill);
             });
             
-            skills = new Dictionary<string, BaseSkill>();
+            skills = new Dictionary<SkillSO, BaseSkill>();
 
             foreach (var skillSo in _skillList)
             {
@@ -50,7 +50,7 @@ namespace Code.UnitSystem.SkillSystem
                     if (component != null)
                     {
                         component.UseSkillPoint = skillSo.UsingSkillCost;
-                        skills.TryAdd(skillSo.skillName, component);
+                        skills.TryAdd(skillSo, component);
                     }
                 }
                 else
@@ -102,14 +102,14 @@ namespace Code.UnitSystem.SkillSystem
             isUseSkill = evt.isUsingSkill;
         }
 
-        public void StartSkill(string skillName)
+        public void StartSkill(SkillSO skillSO)
         {
             if (isUseSkill)
             {
-                if (!skills.ContainsKey(skillName))
+                if (!skills.ContainsKey(skillSO))
                     return;
 
-                BaseSkill skill = skills.GetValueOrDefault(skillName);
+                BaseSkill skill = skills.GetValueOrDefault(skillSO);
 
                 if (skill != null)
                 {
@@ -119,12 +119,12 @@ namespace Code.UnitSystem.SkillSystem
             }
         }
 
-        public void CancelSkill(string skillName)
+        public void CancelSkill(SkillSO skillSO)
         {
-            if (!skills.ContainsKey(skillName))
+            if (!skills.ContainsKey(skillSO))
                 return;
 
-            BaseSkill skill = skills.GetValueOrDefault(skillName);
+            BaseSkill skill = skills.GetValueOrDefault(skillSO);
 
             if (skill != null)
             {

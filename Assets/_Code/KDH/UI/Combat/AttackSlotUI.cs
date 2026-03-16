@@ -61,7 +61,7 @@ namespace Code.UI
         private void HandleSkill()
         {
             _skillCompo.CancelAllSkill();
-            _skillCompo.StartSkill(skillNameText.text);
+            _skillCompo.StartSkill(_skill);
         }
 
         public void OnPointerEnter(PointerEventData eventData)

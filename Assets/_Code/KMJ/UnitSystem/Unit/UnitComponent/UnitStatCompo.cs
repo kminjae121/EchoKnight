@@ -1,9 +1,6 @@
-﻿using System;
-using Code.UnitSystem;
-using EntityComponent;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public enum StatInfo
     {

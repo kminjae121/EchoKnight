@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using UnitSystem;
 using UnityEngine;
 using UnityEngine.AI;
 

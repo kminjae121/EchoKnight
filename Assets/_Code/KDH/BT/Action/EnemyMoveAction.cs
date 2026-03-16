@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Code.EntityComponent;
-using Code.Map;
+using Code.UnitSystem.Combat;
 using EnemySystem;
 using Unity.Behavior;
 using UnityEngine;
@@ -30,7 +29,7 @@ public partial class EnemyMoveAction : Action
         _enemyUnit = Agent.Value.GetComponent<EnemyUnit>();
         if (_enemyUnit == null) return Status.Failure;
 
-        var healthCompo = Agent.Value.GetComponent<EntityHealth>();
+        var healthCompo = Agent.Value.GetComponent<UnitHealth>();
         bool isLowHealth = healthCompo != null && (healthCompo.CurrentHealth / healthCompo.MaxHealth) <= 0.3f;
 
         Vector3 myPos = Agent.Value.transform.position;

@@ -9,7 +9,6 @@ using UnityEngine.AI;
 
 public class MeleeAttack : BasicUnitSkill
     { 
-        
         [SerializeField] private Animator animator;
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private float attackMoveDistance = 1.5f;
@@ -45,8 +44,6 @@ public class MeleeAttack : BasicUnitSkill
             _ownTrm = _unitBase.transform.position;
             _target = target;
             
-            _characterUnit.BehaveCompo.IsActive = false;
-            _characterUnit.BehaveCompo.SetBehaviorTile();
             StartCoroutine(MeleeAttackAction(target));
         }
 

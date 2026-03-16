@@ -19,7 +19,11 @@ namespace Code.UnitSystem.SkillSystem
         public void Initialize(Unit owner)
         {
             _unit = owner;
-            _skillList = SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType).ToList();
+            
+            SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType).ToList().ForEach(skill =>
+            {
+                _skillList.Add(skill);
+            });
             
             skills = new Dictionary<string, BaseSkill>();
             
@@ -59,11 +63,10 @@ namespace Code.UnitSystem.SkillSystem
         
         public void UpdateSkillUI()
         {
-            for (int i = 0; i <= 2; i++)
-                Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, null, null));
-            
             for (int i = 0; i < _skillList.Count; ++i)
+            {
                 Bus<SkillUIEvent>.Raise(new SkillUIEvent(i, _skillList[i], this));
+            }
         }
         private void Awake()
         {

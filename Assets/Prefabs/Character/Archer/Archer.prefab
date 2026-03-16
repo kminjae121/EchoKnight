@@ -477,7 +477,6 @@ GameObject:
   - component: {fileID: 6075876742358229832}
   - component: {fileID: 1222309613828550042}
   - component: {fileID: 5373079463382361699}
-  - component: {fileID: 7282391418071431946}
   m_Layer: 7
   m_Name: Archer
   m_TagString: Untagged
@@ -498,6 +497,7 @@ Transform:
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 3327451514017563556}
   - {fileID: 77579645504495796}
   - {fileID: 7329433671826857726}
   - {fileID: 7881144450595415259}
@@ -506,7 +506,6 @@ Transform:
   - {fileID: 7513396104360579884}
   - {fileID: 6989171418095134555}
   - {fileID: 615324017647595061}
-  - {fileID: 3327451514017563556}
   - {fileID: 7592776434047985852}
   - {fileID: 5893764491965683979}
   - {fileID: 6258129524169189087}
@@ -544,19 +543,6 @@ MonoBehaviour:
   OnEndTurnEvent:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 5058329776480125379}
-        m_TargetAssemblyTypeName: _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent.SetUnitCamera,
-          Assembly-CSharp
-        m_MethodName: EndThisUnit
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 206160635476135023}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -678,43 +664,6 @@ MonoBehaviour:
   - {fileID: 3328839309293825585, guid: 40681ef34cf38bc43bb30e622f0a31cb, type: 3}
   - {fileID: 3328839309293825585, guid: 37d6cf34f81c9ff4ba0c95a43dd6708f, type: 3}
   atkData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
---- !u!114 &7282391418071431946
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2074397246875815997}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1e26dbdf9b14ddfae3ea733ed9520c0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::ShooterAttack
-  isMove: 0
-  <SkillImage>k__BackingField: {fileID: 0}
-  attackData: {fileID: 0}
-  basicSkillDamage: 0
-  ownSkill: 0
-  UseSkillPoint: 0
-  isCanUseSkill: 0
-  triggerCompo: {fileID: 0}
-  statCompo: {fileID: 0}
-  skillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  skillEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  skillEndEvent:
-    m_PersistentCalls:
-      m_Calls: []
-  ownCircleMesh: {fileID: 0}
-  CriticalMaterial: {fileID: 0}
-  basicMaterial: {fileID: 0}
-  <criticalSpot>k__BackingField: {fileID: 0}
-  atkMoveSpeed: 0
-  animator: {fileID: 0}
-  animtionCompo: {fileID: 0}
 --- !u!1 &2261831170091435932
 GameObject:
   m_ObjectHideFlags: 0
@@ -1744,11 +1693,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7513396104360579884}
   - component: {fileID: 1436627432719690847}
-  - component: {fileID: 7333213160164719334}
   - component: {fileID: 2634193257307267230}
+  - component: {fileID: 7333213160164719334}
   - component: {fileID: 7892059421470948934}
   - component: {fileID: 2442742964246998859}
-  - component: {fileID: 3336499557782813848}
   m_Layer: 7
   m_Name: SkillComponent
   m_TagString: Untagged
@@ -1786,7 +1734,18 @@ MonoBehaviour:
   _skillList:
   - {fileID: 11400000, guid: 9b2ffd0514d0f6b4f8a31cce69681977, type: 2}
   - {fileID: 11400000, guid: cc8abb61a159ed94e925dbbe9ed92bbe, type: 2}
-  currentSkillCost: 10
+--- !u!114 &2634193257307267230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677092735934490779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f1416e31b2a44d2f82af213f940a3668, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.SkillManageComponent
 --- !u!114 &7333213160164719334
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1823,19 +1782,6 @@ MonoBehaviour:
   <criticalSpot>k__BackingField: {fileID: 7918537313758781247}
   atkMoveSpeed: 0
   animator: {fileID: 8657052352698793276}
-  animtionCompo: {fileID: 2254713222656228530}
---- !u!114 &2634193257307267230
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6677092735934490779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1416e31b2a44d2f82af213f940a3668, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.SkillManageComponent
 --- !u!114 &7892059421470948934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1904,21 +1850,6 @@ MonoBehaviour:
   CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
   basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
   <criticalSpot>k__BackingField: {fileID: 7918537313758781247}
---- !u!114 &3336499557782813848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6677092735934490779}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 529ba432cf36400192ff6c5b203544f3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UnitSystem.ShootItemAttackManager
-  shootItems:
-  - {fileID: 3328839309293825585, guid: 37d6cf34f81c9ff4ba0c95a43dd6708f, type: 3}
-  atkData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
 --- !u!1 &6793596474031118395
 GameObject:
   m_ObjectHideFlags: 0

@@ -40,8 +40,7 @@ namespace UnitSystem
                 SetSkillTargeting();
                 return;
             }
-
-
+            
             EnemyInfoTargeting();
         }
 
@@ -91,7 +90,7 @@ namespace UnitSystem
                 if (skill != null)
                 {
                     skill.rotationCompo.SetDir(enemy.transform.position);
-                    skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.damage, skill.AddDamage);
+                    //skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.damage, skill.AddDamage);
                 }
                 
                 EntityHealth health = enemy.GetComponent<EntityHealth>();

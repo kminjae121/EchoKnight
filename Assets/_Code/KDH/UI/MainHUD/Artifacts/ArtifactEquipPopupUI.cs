@@ -1,4 +1,5 @@
 ﻿using Code.Core.Events.Bus;
+using Code.Items;
 using Code.UnitSystem.ArtifactSystem;
 using TMPro;
 using UnityEngine;
@@ -16,7 +17,7 @@ namespace Code.UI
         [SerializeField] private Button unequipButton;
 
         private RectTransform _rectTransform;
-        private ArtifactSO _targetArtifact;
+        private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
         private Canvas _parentCanvas;
         private int _frameCountOnOpen;
@@ -62,22 +63,22 @@ namespace Code.UI
 
         private void HandlePopupEvent(ArtifactPopupEvent evt)
         {
-            if (evt.Artifact == null)
+            if (evt.EquipmentItem == null)
             {
                 Hide();
                 return;
             }
 
-            _targetArtifact = evt.Artifact;
+            _targetEquipmentItem = evt.EquipmentItem;
             _isCurrentlyEquipped = evt.IsEquipped;
 
-            nameText.text = _targetArtifact.artifactName;
-            descriptionText.text = _targetArtifact.description;
+            nameText.text = _targetEquipmentItem.itemName;
+            descriptionText.text = _targetEquipmentItem.itemDesc;
 
             if (tierText != null)
             {
-                tierText.text = _targetArtifact.rarity.ToString();
-                SetTierTextColor(_targetArtifact.rarity);
+                tierText.text = _targetEquipmentItem.rarity.ToString();
+                SetTierTextColor(_targetEquipmentItem.rarity);
             }
 
             equipButton.gameObject.SetActive(!_isCurrentlyEquipped && !evt.IsReadOnly);
@@ -130,22 +131,22 @@ namespace Code.UI
 
         private void HandleEquip()
         {
-            if (_targetArtifact != null && !_isCurrentlyEquipped)
-                Bus<ArtifactEquipEvent>.Raise(new ArtifactEquipEvent(_targetArtifact));
+            if (_targetEquipmentItem != null && !_isCurrentlyEquipped)
+                Bus<ArtifactEquipEvent>.Raise(new ArtifactEquipEvent(_targetEquipmentItem));
             Hide();
         }
 
         private void HandleUnequip()
         {
-            if (_targetArtifact != null && _isCurrentlyEquipped)
-                Bus<ArtifactUnequipEvent>.Raise(new ArtifactUnequipEvent(_targetArtifact));
+            if (_targetEquipmentItem != null && _isCurrentlyEquipped)
+                Bus<ArtifactUnequipEvent>.Raise(new ArtifactUnequipEvent(_targetEquipmentItem));
             Hide();
         }
 
         private void Hide()
         {
             gameObject.SetActive(false);
-            _targetArtifact = null;
+            _targetEquipmentItem = null;
         }
     }
 }

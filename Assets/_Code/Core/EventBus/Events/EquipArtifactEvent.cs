@@ -1,14 +1,15 @@
-﻿using Code.UnitSystem.ArtifactSystem;
+﻿using Code.Items;
+using Code.UnitSystem.ArtifactSystem;
 
 namespace Code.Core.Events.Bus
 {
     public struct EquipArtifactEvent : IEvent
     {
-        public ArtifactSO artifact;
+        public EquipmentItemSO EquipmentItem;
 
-        public EquipArtifactEvent(ArtifactSO artifact)
+        public EquipArtifactEvent(EquipmentItemSO equipmentItem)
         {
-            this.artifact = artifact;
+            this.EquipmentItem = equipmentItem;
         }
     }
 }

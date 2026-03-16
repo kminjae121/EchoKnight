@@ -27,21 +27,15 @@ namespace Code.Map
             UpdateVisual();
         }
 
-        public void Initialize(
-            Material walkable, 
-            Material nonWalkable, 
-            Material enemy, 
-            Material obstacle, 
-            float projectionDepth,
-            uint renderingLayerMask)
+        public void Initialize(Material walkable, Material nonWalkable, Material enemy, Material obstacle, float projectionDepth, uint renderingLayerMask)
         {
             walkableMaterial = walkable;
             nonWalkableMaterial = nonWalkable;
             enemyMaterial = enemy;
             obstacleMaterial = obstacle;
             
-            decalProjector = GetComponent<DecalProjector>();
-            mapTile = GetComponentInParent<MapTile>();
+            //decalProjector = GetComponent<DecalProjector>();
+            //mapTile = GetComponentInParent<MapTile>();
 
             Vector3 size = decalProjector.size;
             size.z = projectionDepth;
@@ -53,9 +47,18 @@ namespace Code.Map
             UpdateVisual();
         }
 
+        public void SetDecalActive(bool isActive)
+        {
+            if (decalProjector == null)
+                decalProjector = GetComponent<DecalProjector>();
+
+            decalProjector.enabled = isActive;
+        }
+
         private void UpdateVisual()
         {
-            if (decalProjector == null || mapTile == null) return;
+            if (decalProjector == null || mapTile == null)
+                return;
 
             decalProjector.material = GetTileMaterial();
         }

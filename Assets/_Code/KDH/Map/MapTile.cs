@@ -37,5 +37,13 @@ namespace Code.Map
         {
             hasObstacle = obstacle;
         }
+
+        public void SetDecalActive(bool isActive)
+        {
+            var visual = GetComponentInChildren<MapTileVisual>();
+            
+            if (visual != null)
+                visual.SetDecalActive(isActive);
+        }
     }
 }

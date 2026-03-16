@@ -37,11 +37,6 @@ namespace Code.Map
             RebuildTileArray();
         }
 
-        // private void OnEnable()
-        // {
-        //     RebuildTileArray();
-        // }
-
         private void RebuildTileArray()
         {
             if (serializedTiles == null || serializedTiles.Length == 0)
@@ -185,6 +180,16 @@ namespace Code.Map
         {
             IMapTile tile = GetTile(position);
             return tile != null && tile.CanUnitPass;
+        }
+        
+        public void SetGridVisible(bool isVisible)
+        {
+            if (tiles == null)
+                RebuildTileArray();
+            
+            for (int x = 0; x < width; ++x)
+                for (int y = 0; y < height; ++y)
+                    tiles[x, y]?.SetDecalActive(isVisible);
         }
     }
 }

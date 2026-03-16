@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.Map;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -149,20 +150,14 @@ namespace Code.UnitSystem
             
             StartCoroutine(Move(tile));
         }
-
-        public void SetBehaviorTile()
-        {
-            ProcessTiles(_tilesInRange, false);
-        }
         
         private void MoveStart(IMapTile tile)
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject,
                 true, new Vector3(0.1f, 0.1f, 0.1f)));
-
-            // 임시
-            ProcessTiles(_tilesInRange, false);
+            
+            GridMap.Instance.SetGridVisible(false);
             IsActive = false;
             _isMoving = true;
 
@@ -183,6 +178,7 @@ namespace Code.UnitSystem
             navMeshAgent.ResetPath();
             navMeshAgent.enabled = false;
 
+            GridMap.Instance.SetGridVisible(true);
             _isMoving = false;
             IsActive = true;
 

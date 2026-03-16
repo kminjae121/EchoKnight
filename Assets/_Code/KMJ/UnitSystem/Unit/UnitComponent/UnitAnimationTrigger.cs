@@ -1,5 +1,4 @@
 ﻿using System;
-using Code.UnitSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem

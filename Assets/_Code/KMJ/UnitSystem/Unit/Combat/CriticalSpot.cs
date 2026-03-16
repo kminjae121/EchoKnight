@@ -1,14 +1,12 @@
-﻿using Code.EntityComponent;
-using Code.UnitSystem;
-using UnitSystem;
-using UnityEngine;
-namespace Code.UnitSystem
+﻿using UnityEngine;
+
+namespace Code.UnitSystem.Combat
 {
     public class CriticalSpot : MonoBehaviour, IUnitComponent
     {
         private CharacterUnit _characterUnit;
         
-        public void Initialize(Code.UnitSystem.Unit owner)
+        public void Initialize(Unit owner)
         {
             _characterUnit = owner as CharacterUnit;
         }

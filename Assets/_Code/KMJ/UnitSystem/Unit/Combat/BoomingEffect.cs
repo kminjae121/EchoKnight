@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using Code.Core.Events.Bus;
-using Code.EntityComponent;
+using Code.UnitSystem.Combat;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -52,7 +51,7 @@ namespace Code.UnitSystem
                 Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
                 
-                other.GetComponent<EntityHealth>().ApplyDamage(_damageData,transform.position, transform.position,
+                other.GetComponent<UnitHealth>().ApplyDamage(_damageData,transform.position, transform.position,
                     atkData,null);
                 
                 _collider.enabled = false;

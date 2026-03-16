@@ -1,14 +1,14 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using Code.Core.Events.Bus;
-using Code.EntityComponent;
 using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class MeleeAttack : BasicUnitSkill
-    { 
+{ 
         [SerializeField] private Animator animator;
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private float attackMoveDistance = 1.5f;
@@ -116,9 +116,9 @@ public class MeleeAttack : BasicUnitSkill
             _characterUnit.impulseSource.GenerateImpulse(0.6f);  
             
             
-            _target.GetComponent<EntityHealth>().ApplyDamage(DamageData, 
+            _target.GetComponent<UnitHealth>().ApplyDamage(DamageData, 
                 _target.transform.position,transform.position,atkData,_characterUnit);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
         }
-    }
+}

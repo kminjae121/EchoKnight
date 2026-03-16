@@ -1,7 +1,4 @@
-﻿using UnitSystem;
-using UnityEngine;
-
-namespace Code.Core.Events.Bus
+﻿namespace Code.Core.Events.Bus
 {
     public struct UnitMoveEvent : IEvent
     {

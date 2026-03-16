@@ -6,7 +6,6 @@ using Code.Managers;
 using Code.Map;
 using Code.UnitSystem;
 using GameEventChannel;
-using UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;

@@ -1,7 +1,6 @@
 ﻿ using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
-using UnitSystem;
 using UnityEngine;
 
 namespace EnemySystem

@@ -55201,6 +55201,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1067618278}
   - component: {fileID: 1067618279}
+  - component: {fileID: 1067618280}
   m_Layer: 0
   m_Name: PlayerManager
   m_TagString: Untagged
@@ -55237,6 +55238,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isDontDestroyOnLoad: 1
   equipmentInventory: []
+--- !u!114 &1067618280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1067618277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1788d8498d8411e8b8f0c761dc9c4b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Code.Core.Managers.SkillSendManager
+  isDontDestroyOnLoad: 1
 --- !u!1 &1067924112
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,29 +1,18 @@
 ﻿using System.Collections;
-using Code.AttackSystem;
 using Code.Core.Events.Bus;
-using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
-using Unity.Cinemachine;
 using UnityEngine;
 
-namespace Code.UnitSystem
-{
-    public class ShootAttacker : MonoBehaviour
+    public class ShooterAttack : BasicUnitSkill
     {
-        [SerializeField] private UnitAttackComponent atkCompo;
-
         [SerializeField] private float atkMoveSpeed;
 
         [SerializeField] private Animator animator;
 
         [SerializeField] private UnitAnimation animtionCompo;
 
-        [SerializeField] private UnitAnimationTrigger triggerCompo;
-
         private ShootItemAttackManager _shootItemManager;
-        
-        
-        private CinemachineImpulseSource impulseSource;
         
         private GameObject _target = null;
 
@@ -31,7 +20,7 @@ namespace Code.UnitSystem
         {
             triggerCompo.OnShootAttackTrigger += Shoot;
             triggerCompo.OnShootAttackEndTrigger += AttackEnd;
-            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
+            skillEvent.AddListener(AttackAction);
             _shootItemManager = GetComponentInChildren<ShootItemAttackManager>();
         }
 
@@ -39,7 +28,7 @@ namespace Code.UnitSystem
         {
             triggerCompo.OnShootAttackTrigger -= Shoot;
             triggerCompo.OnShootAttackEndTrigger -= AttackEnd;
-            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
+            skillEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
@@ -66,10 +55,10 @@ namespace Code.UnitSystem
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(atkCompo.attckExecutor.GetDamageData());
+            _shootItemManager.SetDamageData(DamageData);
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);
 
-            atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.3f);
+            _characterUnit.impulseSource.GenerateImpulse(0.3f);
         }
         
         private void AttackEnd()
@@ -80,7 +69,6 @@ namespace Code.UnitSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             
-            atkCompo.attckExecutor.attackEndEvent?.Invoke();
+            skillEndEvent.Invoke();
         }
     }
-}

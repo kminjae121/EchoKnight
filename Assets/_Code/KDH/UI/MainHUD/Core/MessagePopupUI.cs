@@ -20,8 +20,10 @@ namespace Code.UI
             checkButton.onClick.AddListener(Hide);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             Bus<ShowMessageUIEvent>.Unsubscribe(HandleShowMessage);
             checkButton.onClick.RemoveListener(Hide);
         }

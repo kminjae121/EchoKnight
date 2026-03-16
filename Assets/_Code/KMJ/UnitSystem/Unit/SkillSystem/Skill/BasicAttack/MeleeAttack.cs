@@ -7,8 +7,8 @@ using UnitSystem;
 using UnityEngine;
 
     public class MeleeAttack : BasicUnitSkill
-    {
-        [SerializeField] private UnitAnimation animtionCompo;
+    { 
+        private UnitAnimation _animationCompo;
         
         [SerializeField] private Animator animator;
         
@@ -23,14 +23,16 @@ using UnityEngine;
 
         private GameObject _target = null;
         
-         private void Start()
+        protected override void Start()
         {
+            base.Start();
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
             triggerCompo.OnAttackTrigger += AttackEnd;
             skillEvent.AddListener(AttackAction);
+            _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             triggerCompo.OnAttackTrigger -= AttackEnd;
@@ -39,7 +41,7 @@ using UnityEngine;
 
         public void AttackAction(GameObject target)
         {
-            _ownTrm = transform.position;
+            _ownTrm = _unitBase.transform.position;
             _target = target;
             
             StartCoroutine(MeleeAttackAction(target));
@@ -49,28 +51,28 @@ using UnityEngine;
         {
             yield return new WaitForSeconds(0.4f);
             
-            animtionCompo.PlaySelectAnimation("MOVE");
+            _animationCompo.PlaySelectAnimation("MOVE");
             
-            while (Vector3.Distance(target.transform.position, gameObject.transform.position) > attackMoveDistance)
+            while (Vector3.Distance(target.transform.position, _unitBase.transform.position) > attackMoveDistance)
             {
-                Vector3 currentPos = gameObject.transform.position;
+                Vector3 currentPos = _unitBase.transform.position;
                 Vector3 targetPos = target.transform.position;
                 
                 targetPos.y = currentPos.y;
 
-                gameObject.transform.position = Vector3.MoveTowards(
+                _unitBase.transform.position = Vector3.MoveTowards(
                     currentPos,
                     targetPos,
                     atkMoveSpeed * Time.deltaTime
                 );
-                if(isRunningAttack && Vector3.Distance(gameObject.transform.position, target.transform.position) 
+                if(isRunningAttack && Vector3.Distance(_unitBase.transform.position, target.transform.position) 
                    < attackMoveDistance * 2.67)
-                    animtionCompo.PlaySelectAnimation("ATTACK");
+                    _animationCompo.PlaySelectAnimation("ATTACK");
 
                 yield return null;
             }
             if(isRunningAttack == false)
-             animtionCompo.PlaySelectAnimation("ATTACK");
+             _animationCompo.PlaySelectAnimation("ATTACK");
         }
 
         public void AttackEnd()
@@ -80,12 +82,12 @@ using UnityEngine;
 
         private IEnumerator ReturnOwnPos()
         {
-            animtionCompo.PlaySelectAnimation("MOVE");
+            _animationCompo.PlaySelectAnimation("MOVE");
 
-            while (Vector3.Distance(gameObject.transform.position, _ownTrm) > 0.01f)
+            while (Vector3.Distance(_unitBase.transform.position, _ownTrm) > 0.01f)
             {
-                gameObject.transform.position = Vector3.MoveTowards(
-                    gameObject.transform.position,
+                _unitBase.transform.position = Vector3.MoveTowards(
+                    _unitBase.transform.position,
                     _ownTrm,
                     atkMoveSpeed * Time.deltaTime
                 );
@@ -96,7 +98,7 @@ using UnityEngine;
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, 
                 false,new Vector3(0.1f,0.1f,0.1f)));
             
-            animtionCompo.PlaySelectAnimation("IDLE");
+            _animationCompo.PlaySelectAnimation("IDLE");
             skillEndEvent?.Invoke();
             
              Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));

@@ -19,8 +19,12 @@ namespace Code.UnitSystem.SkillSystem
         public void Initialize(Unit owner)
         {
             _unit = owner;
-            _skillList = SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType).ToList();
-
+            
+            SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType).ToList().ForEach(skill =>
+            {
+                _skillList.Add(skill);
+            });
+            
             skills = new Dictionary<string, BaseSkill>();
 
             foreach (var skillSo in _skillList)

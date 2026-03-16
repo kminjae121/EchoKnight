@@ -18,12 +18,16 @@ namespace Code.UnitSystem.SkillSystem
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
+        
 
-        private void OnEnable()
+        protected override void Start()
         {
             base.Start();
-
+            
             _characterUnit = _owner as CharacterUnit;
+            
+            if(_characterUnit != null)
+                impulseSource = _characterUnit.impulseSource;
 
             if (_characterUnit != null)
             {
@@ -86,7 +90,7 @@ namespace Code.UnitSystem.SkillSystem
             if (_targetEnemy == null) return;
             
 
-            ownCircleMesh.material = basicMaterial;
+            //ownCircleMesh.material = basicMaterial;
             
             _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
             

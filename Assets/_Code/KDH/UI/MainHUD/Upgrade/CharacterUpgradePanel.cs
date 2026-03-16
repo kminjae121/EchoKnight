@@ -32,10 +32,6 @@ namespace Code.UI
         public override void Awake()
         {
             base.Awake();
-            
-            if (_poolManager == null) 
-                _poolManager = FindFirstObjectByType<PoolManagerMono>();
-            
             upgradeButton.onClick.AddListener(HandleUpgradeClick);
         }
 

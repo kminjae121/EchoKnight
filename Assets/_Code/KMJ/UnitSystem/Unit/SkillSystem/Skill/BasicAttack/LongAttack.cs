@@ -1,23 +1,17 @@
-using System.Collections;
-using System.Collections.Generic;
-using Code.AttackSystem;
+﻿using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
-using UnityEngine.Experimental.GlobalIllumination;
 
-public class LongRangeAttacker : MonoBehaviour
-{
-        [SerializeField] private UnitAttackComponent atkCompo;
-
+    public class LongAttack : BasicUnitSkill
+    {
         [SerializeField] private float atkMoveSpeed;
 
         [SerializeField] private Animator animator;
 
         [SerializeField] private UnitAnimation animtionCompo;
-
-        [SerializeField] private UnitAnimationTrigger triggerCompo;
 
         [SerializeField] private GameObject effectPrefab;
         
@@ -31,14 +25,14 @@ public class LongRangeAttacker : MonoBehaviour
         {
             triggerCompo.OnLongRangeAttackTrigger += ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger += AttackEnd;
-            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
+            skillEvent.AddListener(AttackAction);
         }
 
         private void OnDestroy()
         {
             triggerCompo.OnLongRangeAttackTrigger -= ShootLongRangeAttack;
             triggerCompo.OnLongRangeAttackEndTrigger -= AttackEnd;
-            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
+            skillEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
@@ -63,7 +57,7 @@ public class LongRangeAttacker : MonoBehaviour
             Vector3 dir = _target.transform.position;
             dir.y += 1.4f;
             
-            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(atkCompo.attckExecutor.DamageData);
+            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(DamageData);
             effectPrefab.transform.position = dir;
             effectPrefab.SetActive(true);
         }
@@ -72,10 +66,10 @@ public class LongRangeAttacker : MonoBehaviour
         private void AttackEnd()
         {
             animtionCompo.PlaySelectAnimation("IDLE");
-            atkCompo.attckExecutor.attackEndEvent?.Invoke();
+            skillEndEvent?.Invoke();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
         }
-}
+    }

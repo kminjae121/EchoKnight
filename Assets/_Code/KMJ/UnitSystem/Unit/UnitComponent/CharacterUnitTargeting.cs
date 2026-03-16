@@ -1,5 +1,4 @@
-﻿using Code.AttackSystem;
-using Code.Core.Debugs;
+﻿using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
@@ -12,7 +11,6 @@ namespace UnitSystem
 {
     public class CharacterUnitTargeting : MonoBehaviour, IUnitComponent
     {
-        [SerializeField] private UnitAttackComponent atkCompo;
         [SerializeField] private InputReader inputSO;
         [SerializeField] private UnitBehaviorCompo behaviorCompo;
         [SerializeField] private SkillManageComponent skillManager;
@@ -36,12 +34,6 @@ namespace UnitSystem
         {
             if (!_unit.isMyTurn || inputSO == null)
                 return;
-
-            if (atkCompo != null && atkCompo.attackTargetSelector.IsActive)
-            {
-                AttackTargeting();
-                return;
-            }
             
             if (skillManager.GetSkillInfo() != null && skillManager.GetSkillInfo().IsActive)
             {
@@ -117,51 +109,7 @@ namespace UnitSystem
                 skillManager.GetSkillInfo().SetEnemy(_targetEnemy);
             }
         }
-
         
-        private void AttackTargeting()
-        {
-            _unit.BehaveCompo.ResetTile();
-
-            GameObject enemy = inputSO.GetEnemy();
-
-            if (enemy == null)
-            {
-                if (_targetEnemy != null)
-                {
-                    if (_targetingCompo != null)
-                        _targetingCompo.OffTargeting();
-
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0,
-                        0, false, null, true));
-
-                    _targetingCompo = null;
-
-                    atkCompo.attackTargetSelector.SetTargeting(null);
-                }
-            }
-            else
-            {
-                atkCompo.attackTargetSelector.FindEnemyIsThere(enemy);
-
-                if (atkCompo.attackTargetSelector._targetEnemy != null)
-                {
-                    EntityHealth health = atkCompo.attackTargetSelector._targetEnemy.GetComponent<EntityHealth>();
-                    _targetingCompo = atkCompo.attackTargetSelector._targetEnemy.GetComponent<EnemyTargeting>();
-                    _targetUnit = atkCompo.attackTargetSelector._targetEnemy.GetComponent<Unit>();
-                    
-                    atkCompo.attckExecutor.SetRotation(_targetUnit.gameObject);
-                    atkCompo.attackTargetSelector.SetTargeting(_targetingCompo);
-                    _targetingCompo.Targeting();
-
-                    atkCompo.CriticalSpot.CheckEnemyBody(atkCompo.attckExecutor.GetDamageData(), _targetUnit.gameObject,
-                        atkCompo.attckExecutor.AtkDamage, atkCompo.attckExecutor.AddDamage);
-
-                    Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(atkCompo.attckExecutor.AddDamage, health.CurrentHealth,
-                        health.MaxHealth, atkCompo.attckExecutor.DamageData.damage, true, _targetUnit.unitSO.UnitImage, true));
-                }
-            }
-        }
 
         private void SetTarget(GameObject enemy)
         {

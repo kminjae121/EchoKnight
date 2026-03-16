@@ -2,16 +2,13 @@
 using Code.Core.Events.Bus;
 using Code.EntityComponent;
 using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using UnitSystem;
 using UnityEngine;
 
-namespace Code.AttackSystem
-{
-    public class MeleeAttacker : MonoBehaviour
+    public class MeleeAttack : BasicUnitSkill
     {
-        [SerializeField] private UnitAttackComponent atkCompo;
         [SerializeField] private UnitAnimation animtionCompo;
-        [SerializeField] private UnitAnimationTrigger triggerCompo;
         
         [SerializeField] private Animator animator;
         
@@ -25,19 +22,19 @@ namespace Code.AttackSystem
         private Vector3 _ownTrm;
 
         private GameObject _target = null;
-
-        private void Start()
+        
+         private void Start()
         {
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
             triggerCompo.OnAttackTrigger += AttackEnd;
-            atkCompo.attckExecutor.attackEvent.AddListener(AttackAction);
+            skillEvent.AddListener(AttackAction);
         }
 
         private void OnDestroy()
         {
             triggerCompo.OnTakeDamageTrigger -= TakeDamage;
             triggerCompo.OnAttackTrigger -= AttackEnd;
-            atkCompo.attckExecutor.attackEvent.RemoveListener(AttackAction);
+            skillEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
@@ -100,7 +97,7 @@ namespace Code.AttackSystem
                 false,new Vector3(0.1f,0.1f,0.1f)));
             
             animtionCompo.PlaySelectAnimation("IDLE");
-            atkCompo.attckExecutor.attackEndEvent?.Invoke();
+            skillEndEvent?.Invoke();
             
              Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
@@ -108,13 +105,12 @@ namespace Code.AttackSystem
         public void TakeDamage()
         {
             Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-            atkCompo.CharacterUnit.impulseSource.GenerateImpulse(0.6f);  
+            _characterUnit.impulseSource.GenerateImpulse(0.6f);  
             
             
-            _target.GetComponent<EntityHealth>().ApplyDamage(atkCompo.attckExecutor.DamageData, 
-                _target.transform.position,transform.position,atkData,atkCompo.CharacterUnit);
+            _target.GetComponent<EntityHealth>().ApplyDamage(DamageData, 
+                _target.transform.position,transform.position,atkData,_characterUnit);
             
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
         }
     }
-}

@@ -1,4 +1,5 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using EnemySystem;
@@ -18,7 +19,7 @@ namespace Code.UnitSystem.SkillSystem
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
 
-        protected override void Start()
+        private void OnEnable()
         {
             base.Start();
 

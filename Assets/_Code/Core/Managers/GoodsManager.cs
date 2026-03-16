@@ -10,23 +10,16 @@ namespace _Code.Core.Managers
     {
         public HavingSkillSO havingSkillSO;
         public List<SkillSO> skills;
-        public List<ItemSO> items;
         
         public void AddSkill()
         {
             skills.ForEach(skill =>
             {
                 havingSkillSO.HaveSkills.Add(skill);
-                
                 SkillSendManager.Instance.AddSkillList(skill);
             });
 
             skills.Clear();
-        }
-        
-        public void GetItem(ItemSO item)
-        {
-            items.Add(item);
         }
 
         public void GetSkill(SkillSO skill)

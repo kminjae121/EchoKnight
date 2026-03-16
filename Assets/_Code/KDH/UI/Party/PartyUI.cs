@@ -2,6 +2,7 @@
 using _00.Core._02.Scripts._01.Manager;
 using Code.Core.Debugs;
 using Code.Core.Events.Bus;
+using Code.UnitManaging;
 using Code.UnitSystem;
 using UnityEngine;
 using UnityEngine.UI;

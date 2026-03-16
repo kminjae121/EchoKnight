@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using Code.Core.Debugs;
 using Code.Core.Events.Bus;
-using Code.EntityComponent;
-using Code.UnitSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem.Combat
 {
     public class ShootItemAttackManager : MonoBehaviour, IUnitComponent
     {

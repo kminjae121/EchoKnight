@@ -1,5 +1,4 @@
-﻿using Code.EntityComponent;
-using Code.UnitSystem;
+﻿using Code.UnitSystem.Combat;
 using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem

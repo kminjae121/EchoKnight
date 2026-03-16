@@ -1,19 +1,11 @@
 ﻿using Code.Core.Events.Bus;
 using Code.UnitManaging;
-using Code.UnitSystem;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitCostComponent : MonoBehaviour, IUnitComponent
     {
-        private Unit unit;
-        
-        public void Initialize(Unit owner)
-        {
-            unit = owner;
-        }
-        
         public bool GetCost(int cost)
         {
             if (OwnUnitManage.Instance == null) return false;
@@ -50,6 +42,11 @@ namespace UnitSystem
             float value = Mathf.Clamp01(OwnUnitManage.Instance.currentCost / 100);
             
             Bus<ActionGaugeEvent>.Raise(new ActionGaugeEvent(value));
+        }
+
+        public void Initialize(Unit owner)
+        {
+            
         }
     }
 }

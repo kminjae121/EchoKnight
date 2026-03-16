@@ -1,7 +1,7 @@
 ﻿using Code.UnitSystem;
 using UnityEngine;
 
-namespace Code.EntityComponent
+namespace Code.UnitSystem.Combat
 {
     public class ActionData : MonoBehaviour, IUnitComponent
     {

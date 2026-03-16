@@ -1,9 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using Code.UnitSystem;
 using Code.Core.Events.Bus;
+using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
 
     public class FireArrow : BasicUnitSkill

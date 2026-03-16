@@ -1,10 +1,8 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using Code.UnitSystem;
 using Code.Core.Events.Bus;
+using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
-using Unity.Cinemachine;
 using UnityEngine;
 
     public class ThrowKnifeSkill : BasicUnitSkill

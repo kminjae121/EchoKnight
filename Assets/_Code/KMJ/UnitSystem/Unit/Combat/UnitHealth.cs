@@ -1,14 +1,12 @@
 ﻿using Code.Core.Events.Bus;
 using Code.UI;
-using Code.UnitSystem;
 using EntityComponent;
 using GameEventChannel;
-using UnitSystem;
 using UnityEngine;
 
-namespace Code.EntityComponent
+namespace Code.UnitSystem.Combat
 {
-    public class EntityHealth : MonoBehaviour, IUnitComponent, IDamageable
+    public class UnitHealth : MonoBehaviour, IUnitComponent, IDamageable
     {
         [SerializeField] private StatSO hpStat;
         [SerializeField] private float maxHealth;

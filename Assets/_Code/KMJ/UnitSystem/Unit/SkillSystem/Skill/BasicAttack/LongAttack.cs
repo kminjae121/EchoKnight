@@ -2,7 +2,6 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
 using UnityEngine.AI;
 

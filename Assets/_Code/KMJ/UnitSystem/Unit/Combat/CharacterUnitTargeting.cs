@@ -1,13 +1,10 @@
-﻿using Code.Core.Debugs;
-using Code.Core.Events.Bus;
-using Code.EntityComponent;
-using Code.UnitSystem;
+﻿using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
 using EnemySystem;
 using Input;
 using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem.Combat
 {
     public class CharacterUnitTargeting : MonoBehaviour, IUnitComponent
     {
@@ -93,7 +90,7 @@ namespace UnitSystem
                     //skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.damage, skill.AddDamage);
                 }
                 
-                EntityHealth health = enemy.GetComponent<EntityHealth>();
+                UnitHealth health = enemy.GetComponent<UnitHealth>();
                 _targetingCompo = enemy.GetComponent<EnemyTargeting>();
                 
                 if (_targetingCompo != null)
@@ -124,7 +121,7 @@ namespace UnitSystem
                 if (_targetingCompo != null)
                     _targetingCompo.Targeting();
 
-                EntityHealth health = _targetEnemy.GetComponent<EntityHealth>();
+                UnitHealth health = _targetEnemy.GetComponent<UnitHealth>();
                 Unit unit = _targetEnemy.GetComponent<Unit>();
 
                 Sprite img = (unit != null && unit.unitSO != null) ? unit.unitSO.UnitImage : null;

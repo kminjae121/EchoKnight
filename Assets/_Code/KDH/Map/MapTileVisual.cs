@@ -22,9 +22,16 @@ namespace Code.Map
             mapTile = GetComponentInParent<MapTile>();
         }
 
-        private void Update()
+        private void OnEnable()
         {
-            UpdateVisual();
+            if (mapTile != null)
+                mapTile.OnTileStateChanged += HandleTileChanged;
+        }
+
+        private void OnDisable()
+        {
+            if (mapTile != null)
+                mapTile.OnTileStateChanged -= HandleTileChanged;
         }
 
         public void Initialize(Material walkable, Material nonWalkable, Material enemy, Material obstacle, float projectionDepth, uint renderingLayerMask)
@@ -44,7 +51,7 @@ namespace Code.Map
 
             decalProjector.renderingLayerMask = renderingLayerMask;
             
-            UpdateVisual();
+            decalProjector.material = GetTileMaterial(mapTile);
         }
 
         public void SetDecalActive(bool isActive)
@@ -55,26 +62,26 @@ namespace Code.Map
             decalProjector.enabled = isActive;
         }
 
-        private void UpdateVisual()
+        private Material GetTileMaterial(MapTile tile)
         {
-            if (decalProjector == null || mapTile == null)
-                return;
-
-            decalProjector.material = GetTileMaterial();
-        }
-
-        private Material GetTileMaterial()
-        {
-            if (mapTile.HasEnemy)
+            if (tile.HasEnemy)
                 return enemyMaterial;
             
-            if (mapTile.HasObstacle)
+            if (tile.HasObstacle)
                 return obstacleMaterial;
             
-            if (!mapTile.IsWalkable)
+            if (!tile.IsWalkable)
                 return nonWalkableMaterial;
             
             return walkableMaterial;
+        }
+        
+        private void HandleTileChanged(MapTile tile)
+        {
+            if (decalProjector == null)
+                return;
+            
+            decalProjector.material = GetTileMaterial(tile);
         }
     }
 }

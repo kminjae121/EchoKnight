@@ -45,8 +45,6 @@ public class MeleeAttack : BasicUnitSkill
             _ownTrm = _unitBase.transform.position;
             _target = target;
             
-            _characterUnit.BehaveCompo.IsActive = false;
-            _characterUnit.BehaveCompo.SetBehaviorTile();
             StartCoroutine(MeleeAttackAction(target));
         }
 

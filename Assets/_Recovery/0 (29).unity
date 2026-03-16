@@ -27368,7 +27368,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: -15
   far clip plane: 1000
   field of view: 20
   orthographic: 1
@@ -36650,11 +36650,6 @@ MonoBehaviour:
   battleCam: {fileID: 733307262}
   moveSpeed: 18
   positionComposer: {fileID: 0}
-  useMoveLimit: 1
-  minX: -110
-  maxX: 110
-  minZ: -110
-  maxZ: 110
 --- !u!114 &733307260
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -36736,7 +36731,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 20
     OrthographicSize: 24.1
-    NearClipPlane: 0.01
+    NearClipPlane: -15
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
@@ -79958,11 +79953,6 @@ MonoBehaviour:
   battleCam: {fileID: 1567060467}
   moveSpeed: 9
   positionComposer: {fileID: 0}
-  useMoveLimit: 1
-  minX: -50
-  maxX: 50
-  minZ: -50
-  maxZ: 50
 --- !u!114 &1567060464
 MonoBehaviour:
   m_ObjectHideFlags: 0

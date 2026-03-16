@@ -25,8 +25,10 @@ namespace Code.UI
             Bus<SkillUIHoverEvent>.Subscribe(HandleHoverUI);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             Bus<SkillUIHoverEvent>.Unsubscribe(HandleHoverUI);
         }
         

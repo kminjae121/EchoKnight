@@ -49,8 +49,10 @@ namespace Code.UI
             Bus<SkillDetailSelectEvent>.Subscribe(HandleSkillSelect);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             Bus<CharacterInfoEvent>.Unsubscribe(HandleCharacterInfo);
             Bus<SkillEquipEvent>.Unsubscribe(HandleSkillEquipped);
             Bus<SkillUnequipEvent>.Unsubscribe(HandleSkillUnequipped);

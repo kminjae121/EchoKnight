@@ -24,8 +24,10 @@ namespace Code.UI
             Bus<CharacterInfoEvent>.Subscribe(HandleUnitInfo);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             exitButton.onClick.RemoveListener(HandleExitButton);
             Bus<CharacterInfoEvent>.Unsubscribe(HandleUnitInfo);
         }

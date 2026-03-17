@@ -6,10 +6,11 @@ using UnityEngine;
 
 namespace Code.UI
 {
-    public class BattleUI : MonoBehaviour
+    public class AttackUI : MonoBehaviour
     {
         [SerializeField] private PoolingItemSO attackSlotPrefab;
         [SerializeField] private RectTransform attackTrm;
+        [SerializeField] private GameObject attackPanel;
         [Inject] private PoolManagerMono _poolManager;
 
         private readonly List<AttackSlotUI> _slots = new();
@@ -26,8 +27,17 @@ namespace Code.UI
             Bus<SetAtkUIEvent>.Unsubscribe(SetAttackUI);
         }
 
+        public void TogglePanel()
+        {
+            attackPanel.SetActive(!attackPanel.activeInHierarchy);
+        }
+
         private void SetAttackUI(SetAtkUIEvent evt)
         {
+            if (attackPanel == null)
+                return;
+
+            attackPanel.SetActive(!evt.IsLock);
         }
 
         private void SetSkill(SkillUIEvent evt)

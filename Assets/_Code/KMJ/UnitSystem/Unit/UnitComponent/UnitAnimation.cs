@@ -1,7 +1,6 @@
-﻿using Code.UnitSystem;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitAnimation : MonoBehaviour, IUnitComponent
     {

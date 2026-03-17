@@ -1,7 +1,5 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using Code.EntityComponent;
-using Unity.Cinemachine;
+﻿using Code.Core.Events.Bus;
+using Code.UnitSystem.Combat;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +10,7 @@ namespace EnemySystem
         [SerializeField] private Image healthUI;
         [SerializeField] private Image healthBackGroundUI;
 
-        [SerializeField] private EntityHealth healthCompo;
+        [SerializeField] private UnitHealth healthCompo;
 
         [SerializeField] private GameObject targetCamera;
         

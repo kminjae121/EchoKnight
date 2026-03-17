@@ -1,8 +1,8 @@
 using System.Collections;
 using Code.Core.Events.Bus;
-using Code.EntityComponent;
+using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
-using UnitSystem;
 using UnityEngine;
 
 public class BasicAttackSkill : BasicUnitSkill
@@ -79,7 +79,7 @@ public class BasicAttackSkill : BasicUnitSkill
         Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
         _characterUnit.impulseSource.GenerateImpulse(0.3f);
         
-        _targetEnemy.GetComponent<EntityHealth>().ApplyDamage(DamageData, 
+        _targetEnemy.GetComponent<UnitHealth>().ApplyDamage(DamageData, 
             _targetEnemy.transform.position,transform.position,attackData,_owner);
     }
 

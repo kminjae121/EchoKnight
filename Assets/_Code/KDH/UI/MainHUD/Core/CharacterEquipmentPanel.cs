@@ -88,8 +88,10 @@ namespace Code.UI
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             if (artifactSortButton != null)
                 artifactSortButton.onClick.RemoveListener(ToggleArtifactSort);
 

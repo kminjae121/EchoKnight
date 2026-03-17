@@ -33,7 +33,7 @@ namespace Code.UI
 
         private void HandleAttack()
         {
-            Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(true));
+            Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(true));  
         }
         
     }

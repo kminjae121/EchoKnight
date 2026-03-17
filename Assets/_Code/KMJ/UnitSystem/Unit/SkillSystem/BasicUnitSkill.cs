@@ -1,10 +1,8 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using Code.Core.Interfaces;
+﻿using Code.Core.Events.Bus;
 using Code.Map;
+using Code.UnitSystem.Combat;
 using EnemySystem;
 using Input;
-using UnitSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem

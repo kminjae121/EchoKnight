@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using _Code.Core.Managers;
 using _Code.KMJ.SO;
-using Code.UnitSystem;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
 using Code.Core.Events.Bus;
+using Code.UnitManaging;
 
 namespace Code.UI
 {

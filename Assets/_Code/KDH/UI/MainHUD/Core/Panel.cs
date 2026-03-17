@@ -13,6 +13,12 @@ public class Panel : MonoBehaviour
     public virtual void Awake()
     {
         Initialize();
+        PanelManager.Register(this);
+    }
+
+    protected virtual void OnDestroy()
+    {
+        PanelManager.Unregister(this);
     }
 
     public virtual void Initialize()
@@ -30,7 +36,10 @@ public class Panel : MonoBehaviour
             Initialize();
         
         transform.SetAsLastSibling();
-        container.gameObject.SetActive(true);
+        
+        if (container != null)
+            container.gameObject.SetActive(true);
+            
         IsOpen = true;
     }
 
@@ -39,7 +48,9 @@ public class Panel : MonoBehaviour
         if (!IsInitialized)
             Initialize();
         
-        //container.gameObject.SetActive(false);
+        if (container != null)
+            container.gameObject.SetActive(false);
+            
         IsOpen = false;
     }
 }

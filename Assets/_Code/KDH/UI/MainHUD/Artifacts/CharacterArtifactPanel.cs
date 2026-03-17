@@ -60,8 +60,10 @@ namespace Code.UI
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             sortButton.onClick.RemoveListener(ToggleSort);
 
             Bus<CharacterInfoEvent>.Unsubscribe(HandleCharacterInfo);

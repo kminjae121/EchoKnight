@@ -35,8 +35,10 @@ namespace Code.UI
             upgradeButton.onClick.AddListener(HandleUpgradeClick);
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             upgradeButton.onClick.RemoveListener(HandleUpgradeClick);
         }
 

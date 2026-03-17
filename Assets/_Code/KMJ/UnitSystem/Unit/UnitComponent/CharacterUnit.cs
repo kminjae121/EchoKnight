@@ -3,15 +3,13 @@ using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
-using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
-using Unit = Code.UnitSystem.Unit;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class CharacterUnit : Unit
     {

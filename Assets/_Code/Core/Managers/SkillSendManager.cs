@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Code.Core;
 using Code.UnitSystem.SkillSystem;
@@ -8,10 +9,16 @@ namespace _Code.Core.Managers
 {
     public class SkillSendManager : MonoSingleton<SkillSendManager>
     {
-        private readonly List<SkillSO> skills = new List<SkillSO>();
+        public List<SkillSO> skills = new List<SkillSO>();
         
         private readonly Dictionary<UnitType, List<SkillSO>> equipSkillDict = new Dictionary<UnitType, List<SkillSO>>();
-        
+
+        protected override void Awake()
+        {
+            base.Awake();
+            SetDiction();
+        }
+
         public void AddSkillList(SkillSO skill)
         {
             if (skill == null) return;
@@ -19,7 +26,12 @@ namespace _Code.Core.Managers
 
             skills.Add(skill);
         }
-        
+
+
+        public void SetDiction()
+        {
+            EquipSkill(skills[0]);
+        }
         public void EquipSkill(SkillSO skill)
         {
             if (skill == null) return;

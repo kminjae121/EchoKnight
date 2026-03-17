@@ -9,8 +9,7 @@ namespace Code.Core.Managers
     public class SkillSendManager : MonoSingleton<SkillSendManager>
     {
         [Header("Skill Storage")]
-        public List<SkillSO> skills = new List<SkillSO>();
-        
+        private readonly List<SkillSO> skills = new List<SkillSO>();
         private readonly Dictionary<UnitType, List<SkillSO>> _equipSkillDict = new Dictionary<UnitType, List<SkillSO>>();
         
         public void AddSkillList(SkillSO skill)

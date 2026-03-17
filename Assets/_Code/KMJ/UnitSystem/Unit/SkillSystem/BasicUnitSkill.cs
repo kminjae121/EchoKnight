@@ -87,9 +87,6 @@ namespace Code.UnitSystem.SkillSystem
 
             if (_targetEnemy == null) return;
             
-
-            //ownCircleMesh.material = basicMaterial;
-            
             _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
             
             if (rotationCompo != null)

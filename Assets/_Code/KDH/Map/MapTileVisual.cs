@@ -8,7 +8,6 @@ namespace Code.Map
     public class MapTileVisual : MonoBehaviour
     {
         private DecalProjector decalProjector;
-        private MapTile mapTile;
 
         [Header("Materials")]
         [SerializeField] private Material walkableMaterial;
@@ -19,19 +18,6 @@ namespace Code.Map
         private void Awake()
         {
             decalProjector = GetComponent<DecalProjector>();
-            mapTile = GetComponentInParent<MapTile>();
-        }
-
-        private void OnEnable()
-        {
-            if (mapTile != null)
-                mapTile.OnTileStateChanged += HandleTileChanged;
-        }
-
-        private void OnDisable()
-        {
-            if (mapTile != null)
-                mapTile.OnTileStateChanged -= HandleTileChanged;
         }
 
         public void Initialize(Material walkable, Material nonWalkable, Material enemy, Material obstacle, float projectionDepth, uint renderingLayerMask)
@@ -50,14 +36,12 @@ namespace Code.Map
             decalProjector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
 
             decalProjector.renderingLayerMask = renderingLayerMask;
-            
-            decalProjector.material = GetTileMaterial(mapTile);
         }
 
         public void SetDecalActive(bool isActive)
         {
             if (decalProjector == null)
-                decalProjector = GetComponent<DecalProjector>();
+                return;
 
             decalProjector.enabled = isActive;
         }
@@ -75,8 +59,8 @@ namespace Code.Map
             
             return walkableMaterial;
         }
-        
-        private void HandleTileChanged(MapTile tile)
+
+        public void HandleTileChanged(MapTile tile)
         {
             if (decalProjector == null)
                 return;

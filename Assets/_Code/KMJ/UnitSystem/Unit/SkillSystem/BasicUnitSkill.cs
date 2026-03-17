@@ -87,9 +87,6 @@ namespace Code.UnitSystem.SkillSystem
 
             if (_targetEnemy == null) return;
             
-
-            //ownCircleMesh.material = basicMaterial;
-            
             _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
             
             if (rotationCompo != null)
@@ -103,6 +100,7 @@ namespace Code.UnitSystem.SkillSystem
                 null,true));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
             
+            GridMap.Instance.SetGridVisible(false);
             skillEvent?.Invoke(_targetEnemy);
             _targetEnemy = null;
            

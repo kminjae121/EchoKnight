@@ -11,10 +11,9 @@ namespace Code.UnitSystem.Combat
             _characterUnit = owner as CharacterUnit;
         }
         
-        public void CheckEnemyBody(DamageData damageData,GameObject target, float atkDamage, float addDamage)
+        public float CheckEnemyBody(DamageData damageData, GameObject target, float atkDamage)
         {
             damageData.damage = atkDamage;
-            addDamage = 0;
             
             Vector3 toAttacker = _characterUnit.transform.position - target.transform.position;
             toAttacker.y = 0f;
@@ -35,18 +34,11 @@ namespace Code.UnitSystem.Combat
                 BodyType.None;
 
             if (_characterUnit.unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
-            {
-                addDamage = damageData.damage * 0.4f;
-            }
+                return damageData.damage * 0.4f;
             else if (_characterUnit.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
-            {
-                addDamage = damageData.damage * 0.4f;
-            }
+                return damageData.damage * 0.4f;
             else
-            {
-                addDamage = 0f;
-            }
+                return 0;
         }
-
     }
 }

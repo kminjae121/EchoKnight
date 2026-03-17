@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
+using Code.Core.Managers;
 using Code.Items;
 using Code.UnitSystem.ArtifactSystem;
 using Code.UnitSystem.SkillSystem;
@@ -23,6 +24,7 @@ namespace Code.UI
         [SerializeField] private Transform artifactInventoryTrm; 
         [SerializeField] private TextMeshProUGUI artifactCountText;
         [SerializeField] private Button artifactSortButton;
+        [SerializeField] private TextMeshProUGUI artifactSortText;
         [SerializeField] private int maxArtifactInventoryCapacity = 20;
 
         [Header("Artifact Equipped Area")]
@@ -38,20 +40,11 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI skillLoadoutText;
         [SerializeField] private float fillAnimationDuration = 0.3f;
 
-        [Header("Skill Detail Settings")]
-        [SerializeField] private Image skillIconImage; 
-        [SerializeField] private TextMeshProUGUI skillNameText;
-        [SerializeField] private TextMeshProUGUI skillDescText;
-        [SerializeField] private TextMeshProUGUI skillCostText;
-        [SerializeField] private TextMeshProUGUI skillDamageText;
-        [SerializeField] private TextMeshProUGUI skillRangeText;
-
         [Inject] private PoolManagerMono _poolManager;
         
         private UnitSO _unit;
         private List<ArtifactButton> _activeArtifactButtons = new();
         private List<CharacterSkillButton> _activeSkillButtons = new();
-        private SkillSO _selectedSkill;
         private bool _isArtifactSortedByRarity = false; 
         private Coroutine _fillCoroutine;
 
@@ -70,14 +63,13 @@ namespace Code.UI
             Bus<ArtifactUnequipEvent>.Subscribe(HandleArtifactUnequip);
             Bus<SkillEquipEvent>.Subscribe(HandleSkillEquipped);
             Bus<SkillUnequipEvent>.Subscribe(HandleSkillUnequipped);
-            Bus<SkillDetailSelectEvent>.Subscribe(HandleSkillSelect);
 
             for (int i = 0; i < equippedArtifactSlotImages.Count; i++)
             {
                 int index = i;
                 var trigger = equippedArtifactSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 trigger.useHoverVisuals = false;
-                trigger.OnRightClick = (pos) =>
+                trigger.OnLeftClick = (pos) =>
                 {
                     if (_unit != null && _unit.EquippedArtifacts != null && index < _unit.EquippedArtifacts.artifacts.Count)
                     {
@@ -100,7 +92,6 @@ namespace Code.UI
             Bus<ArtifactUnequipEvent>.Unsubscribe(HandleArtifactUnequip);
             Bus<SkillEquipEvent>.Unsubscribe(HandleSkillEquipped);
             Bus<SkillUnequipEvent>.Unsubscribe(HandleSkillUnequipped);
-            Bus<SkillDetailSelectEvent>.Unsubscribe(HandleSkillSelect);
         }
 
         public override void Open()
@@ -110,7 +101,6 @@ namespace Code.UI
             {
                 RefreshArtifactUI();
                 RefreshSkillList();
-                RefreshSkillDetail();
                 RefreshSkillLoadoutUI(true);
             }
         }
@@ -118,21 +108,23 @@ namespace Code.UI
         private void HandleCharacterInfo(CharacterInfoEvent evt)
         {
             _unit = evt.Unit.Data;
-            _selectedSkill = null;
             if (IsOpen)
             {
                 RefreshArtifactUI();
                 RefreshSkillList();
-                RefreshSkillDetail();
                 RefreshSkillLoadoutUI(true);
             }
         }
 
-        #region Artifact Logic
-
         private void ToggleArtifactSort()
         {
             _isArtifactSortedByRarity = !_isArtifactSortedByRarity;
+            
+            if (artifactSortText != null)
+            {
+                artifactSortText.text = _isArtifactSortedByRarity ? "희귀도순" : "획득순";
+            }
+            
             RefreshArtifactUI();
         }
 
@@ -217,56 +209,37 @@ namespace Code.UI
             }
         }
 
-        #endregion
-
-        #region Skill Logic
-
-        private void HandleSkillSelect(SkillDetailSelectEvent evt)
-        {
-            _selectedSkill = evt.Skill;
-            RefreshSkillDetail();
-        }
-
         private void RefreshSkillList()
         {
-            if (_unit == null || _unit.OwnSkillStorage == null) return;
+            if (_unit == null) return;
+            if (SkillSendManager.Instance == null) return;
 
             foreach (var btn in _activeSkillButtons) btn.ReturnToPool();
             _activeSkillButtons.Clear();
 
-            foreach (var skillSO in _unit.OwnSkillStorage.skills)
+            var availableSkills = SkillSendManager.Instance.GetSkillList(_unit.UnitType);
+            var equippedSkills = SkillSendManager.Instance.GetEquipSkills(_unit.UnitType);
+
+            foreach (var skillSO in availableSkills)
             {
                 var btn = _poolManager.Pop<CharacterSkillButton>(skillButtonPoolingSO);
                 btn.transform.SetParent(ownSkillContainer);
-                btn.transform.SetAsLastSibling();
                 btn.transform.localScale = Vector3.one;
 
-                bool isEquipped = _unit.SkillStorage != null && _unit.SkillStorage.skills.Contains(skillSO);
+                bool isEquipped = equippedSkills.Contains(skillSO);
                 btn.SetSkill(skillSO, isEquipped);
+                
+                if (isEquipped)
+                {
+                    btn.transform.SetAsFirstSibling();
+                }
+                else
+                {
+                    btn.transform.SetAsLastSibling();
+                }
                 
                 _activeSkillButtons.Add(btn);
             }
-        }
-
-        private void RefreshSkillDetail()
-        {
-            bool hasSkill = _selectedSkill != null;
-
-            if (skillIconImage != null) skillIconImage.gameObject.SetActive(hasSkill);
-            if (skillNameText != null) skillNameText.gameObject.SetActive(hasSkill);
-            if (skillDescText != null) skillDescText.gameObject.SetActive(hasSkill);
-            if (skillCostText != null) skillCostText.gameObject.SetActive(hasSkill);
-            if (skillDamageText != null) skillDamageText.gameObject.SetActive(hasSkill);
-            if (skillRangeText != null) skillRangeText.gameObject.SetActive(hasSkill);
-
-            if (!hasSkill) return;
-
-            if (skillIconImage != null) skillIconImage.sprite = _selectedSkill.skillUIImage;
-            if (skillNameText != null) skillNameText.text = _selectedSkill.skillName;
-            if (skillDescText != null) skillDescText.text = _selectedSkill.SkillDescription;
-            if (skillCostText != null) skillCostText.text = $"{_selectedSkill.SkillCost}";
-            if (skillDamageText != null) skillDamageText.text = $"{_selectedSkill.SkillDamage}";
-            if (skillRangeText != null) skillRangeText.text = $"{_selectedSkill.SkillRange}";
         }
 
         private void RefreshSkillLoadoutUI(bool instant = false)
@@ -333,9 +306,10 @@ namespace Code.UI
         private int GetCurrentSkillLoadoutCost()
         {
             int totalCost = 0;
-            if (_unit.SkillStorage != null)
+            if (SkillSendManager.Instance != null && _unit != null)
             {
-                foreach (var skill in _unit.SkillStorage.skills)
+                var equippedSkills = SkillSendManager.Instance.GetEquipSkills(_unit.UnitType);
+                foreach (var skill in equippedSkills)
                 {
                     if (skill != null) totalCost += skill.SkillCost;
                 }
@@ -345,23 +319,26 @@ namespace Code.UI
 
         private void HandleSkillEquipped(SkillEquipEvent evt)
         {
-            if (_unit == null || _unit.SkillStorage == null) return;
-            if (_unit.SkillStorage.skills.Contains(evt.Skill)) return;
+            if (_unit == null || evt.Skill == null || evt.Skill.unitType != _unit.UnitType) return;
+            if (SkillSendManager.Instance == null) return;
 
-            if (_unit.SkillStorage.skills.Count >= 4)
+            var equippedSkills = SkillSendManager.Instance.GetEquipSkills(_unit.UnitType);
+
+            if (equippedSkills.Length > 4)
             {
-                Debug.LogWarning("스킬은 최대 4개까지만 장착할 수 있습니다.");
+                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬은 최대 4개까지만 장착할 수 있습니다."));
+                SkillSendManager.Instance.RemoveSkill(evt.Skill); 
                 return;
             }
 
             int currentCost = GetCurrentSkillLoadoutCost();
-            if (currentCost + evt.Skill.SkillCost > _unit.LoadOutCost)
+            if (currentCost > _unit.LoadOutCost)
             {
-                Debug.LogWarning("스킬 코스트 총량을 초과하여 장착할 수 없습니다.");
+                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬 코스트 총량을 초과하여 장착할 수 없습니다."));
+                SkillSendManager.Instance.RemoveSkill(evt.Skill); 
                 return;
             }
 
-            _unit.SkillStorage.skills.Add(evt.Skill);
             if (IsOpen)
             {
                 RefreshSkillList();
@@ -371,18 +348,13 @@ namespace Code.UI
 
         private void HandleSkillUnequipped(SkillUnequipEvent evt)
         {
-            if (_unit == null || _unit.SkillStorage == null) return;
+            if (_unit == null || evt.Skill == null || evt.Skill.unitType != _unit.UnitType) return;
             
-            if (_unit.SkillStorage.skills.Remove(evt.Skill))
+            if (IsOpen)
             {
-                if (IsOpen)
-                {
-                    RefreshSkillList();
-                    RefreshSkillLoadoutUI();
-                }
+                RefreshSkillList();
+                RefreshSkillLoadoutUI();
             }
         }
-
-        #endregion
     }
 }

@@ -14,17 +14,44 @@ namespace Code.UI
 
         [Header("UI Elements")]
         [SerializeField] private Image iconImage;
+        [SerializeField] private GameObject hoverImage;
+
+        [Header("Hover Settings")]
+        [SerializeField] private GameObject customHoverArea;
 
         private SkillSO _skill;
         private bool _isEquipped;
+        private bool _isTooltipSuppressed;
+        private bool _isHovering;
         private GondrLib.ObjectPool.Runtime.Pool _pool;
-
-        private readonly Color _unequippedColor = new Color(0.3f, 0.3f, 0.3f, 1f);
-        private readonly Color _hoverColor = new Color(0.65f, 0.65f, 0.65f, 1f);
-        private readonly Color _equippedColor = Color.white;
+        private HoverDetector _hoverDetector;
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
+
+        private void Awake()
+        {
+            if (customHoverArea != null)
+            {
+                _hoverDetector = customHoverArea.GetComponent<HoverDetector>();
+                if (_hoverDetector == null)
+                {
+                    _hoverDetector = customHoverArea.AddComponent<HoverDetector>();
+                }
+
+                _hoverDetector.OnEnter += HandleHoverEnter;
+                _hoverDetector.OnExit += HandleHoverExit;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            if (_hoverDetector != null)
+            {
+                _hoverDetector.OnEnter -= HandleHoverEnter;
+                _hoverDetector.OnExit -= HandleHoverExit;
+            }
+        }
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 
@@ -32,6 +59,9 @@ namespace Code.UI
         {
             _skill = null;
             _isEquipped = false;
+            _isTooltipSuppressed = false;
+            _isHovering = false;
+            UpdateHoverState();
         }
 
         public void ReturnToPool()
@@ -40,28 +70,79 @@ namespace Code.UI
             else Destroy(gameObject);
         }
 
+        private void OnDisable()
+        {
+            _isHovering = false;
+            _isTooltipSuppressed = false;
+            UpdateHoverState();
+            
+            if (_skill != null)
+            {
+                Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+            }
+        }
+
         public void SetSkill(SkillSO skill, bool isEquipped)
         {
             _skill = skill;
-            iconImage.sprite = skill.skillUIImage;
-            _isEquipped = isEquipped;
             
-            iconImage.color = _isEquipped ? _equippedColor : _unequippedColor;
+            if (iconImage != null)
+            {
+                iconImage.sprite = skill.skillUIImage;
+                iconImage.color = Color.white;
+            }
+            
+            _isEquipped = isEquipped;
+            UpdateHoverState();
+        }
+
+        private void UpdateHoverState()
+        {
+            if (hoverImage != null)
+            {
+                hoverImage.SetActive(_isEquipped || _isHovering);
+            }
+        }
+
+        private void HandleHoverEnter()
+        {
+            if (_skill != null) 
+            {
+                _isHovering = true;
+                UpdateHoverState();
+                
+                if (!_isTooltipSuppressed)
+                {
+                    Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skill, transform as RectTransform));
+                }
+            }
+        }
+
+        private void HandleHoverExit()
+        {
+            if (_skill != null) 
+            {
+                _isHovering = false;
+                UpdateHoverState();
+                
+                _isTooltipSuppressed = false;
+                Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_skill != null) 
+            if (customHoverArea == null)
             {
-                iconImage.color = _isEquipped ? _equippedColor : _hoverColor;
+                HandleHoverEnter();
             }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (_skill != null) 
+            if (customHoverArea == null)
             {
-                iconImage.color = _isEquipped ? _equippedColor : _unequippedColor;
+                HandleHoverExit();
             }
         }
 
@@ -71,11 +152,20 @@ namespace Code.UI
 
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                Bus<SkillDetailSelectEvent>.Raise(new SkillDetailSelectEvent(_skill));
+                Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+                Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, eventData.position));
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, eventData.position));
+                if (!_isTooltipSuppressed)
+                {
+                    _isTooltipSuppressed = true;
+                    Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+                }
+                else
+                {
+                    Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, eventData.position));
+                }
             }
         }
     }

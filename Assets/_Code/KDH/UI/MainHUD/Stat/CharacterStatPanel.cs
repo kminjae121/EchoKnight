@@ -38,7 +38,7 @@ namespace Code.UI
             {
                 var trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 trigger.useHoverVisuals = false;
-                trigger.OnClick = () => OpenTargetPanel("SkillPanel");
+                trigger.OnClick = () => OpenTargetPanel("EquipPanel");
             }
 
             for (int i = 0; i < artifactIcons.Count; i++)
@@ -47,7 +47,7 @@ namespace Code.UI
                 var trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 trigger.useHoverVisuals = false;
                 
-                trigger.OnClick = () => OpenTargetPanel("ArtifactPanel");
+                trigger.OnClick = () => OpenTargetPanel("EquipPanel");
                 trigger.OnHoverEnter = (pos) =>
                 {
                     if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null && index < _currentUnit.Data.EquippedArtifacts.artifacts.Count)

@@ -16,10 +16,6 @@ namespace Code.UI
         [SerializeField] private Transform scaleTarget;
         [SerializeField] private CanvasGroup panelNameCanvasGroup;
         [SerializeField] private GameObject hoverArea;
-        
-        [Header("Image Color Settings")]
-        [SerializeField] private Image targetImage;
-        [SerializeField] private Color hoverColor = Color.black;
 
         [Header("Hover Animation Settings")]
         [SerializeField] private float animationDuration = 0.3f;
@@ -28,10 +24,8 @@ namespace Code.UI
         
         private Button _navButton;
         private Vector3 _originalScale;
-        private Color _originalColor;
         private Tween _scaleTween;
         private Tween _fadeTween;
-        private Tween _colorTween;
         private HoverDetector _detector;
 
         private void Awake()
@@ -42,11 +36,6 @@ namespace Code.UI
                 scaleTarget = transform;
                 
             _originalScale = scaleTarget.localScale;
-
-            if (targetImage != null)
-            {
-                _originalColor = targetImage.color;
-            }
 
             if (panelNameCanvasGroup != null)
             {
@@ -84,7 +73,6 @@ namespace Code.UI
 
             _scaleTween?.Kill();
             _fadeTween?.Kill();
-            _colorTween?.Kill();
         }
 
         private void PlayHoverEnter()
@@ -97,12 +85,6 @@ namespace Code.UI
                 _fadeTween?.Kill();
                 _fadeTween = panelNameCanvasGroup.DOFade(1f, animationDuration).SetEase(animationEase);
             }
-
-            if (targetImage != null)
-            {
-                _colorTween?.Kill();
-                _colorTween = targetImage.DOColor(hoverColor, animationDuration).SetEase(animationEase);
-            }
         }
 
         private void PlayHoverExit()
@@ -114,12 +96,6 @@ namespace Code.UI
             {
                 _fadeTween?.Kill();
                 _fadeTween = panelNameCanvasGroup.DOFade(0f, animationDuration).SetEase(animationEase);
-            }
-
-            if (targetImage != null)
-            {
-                _colorTween?.Kill();
-                _colorTween = targetImage.DOColor(_originalColor, animationDuration).SetEase(animationEase);
             }
         }
 

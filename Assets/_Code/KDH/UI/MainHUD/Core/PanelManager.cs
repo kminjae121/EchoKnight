@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PanelManager : MonoBehaviour
 {
-    
     private Dictionary<string, Panel> panels = new Dictionary<string, Panel>();
-    private bool initialized = false;
-    private Canvas[] canvas = null;
     private static PanelManager singleton = null;
     
     public static PanelManager Singleton
@@ -16,40 +12,37 @@ public class PanelManager : MonoBehaviour
         {
             if (singleton == null)
             {
+                singleton = FindFirstObjectByType<PanelManager>();
                 if (singleton == null)
                 {
                     singleton = new GameObject("PanelManager").AddComponent<PanelManager>();
                 }
-                singleton.Initialize();
             }
             return singleton; 
         }
     }
 
-    private void Initialize()
+    public static void Register(Panel panel)
     {
-        if (initialized) { return; }
-        initialized = true;
-        panels.Clear();
-        canvas = FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
-        if (canvas != null)
+        if (panel == null || string.IsNullOrEmpty(panel.ID)) return;
+
+        if (!Singleton.panels.ContainsKey(panel.ID))
         {
-            for (int i = 0; i < canvas.Length; i++)
-            {
-                Panel[] list = canvas[i].gameObject.GetComponentsInChildren<Panel>(true);
-                if (list != null)
-                {
-                    for (int j = 0; j < list.Length; j++)
-                    {
-                        if (string.IsNullOrEmpty(list[j].ID) == false && panels.ContainsKey(list[j].ID) == false)
-                        {
-                            list[j].Initialize();
-                            list[j].Canvas = canvas[i];
-                            panels.Add(list[j].ID, list[j]);
-                        }
-                    }
-                }
-            }
+            Singleton.panels.Add(panel.ID, panel);
+        }
+        else
+        {
+            Singleton.panels[panel.ID] = panel;
+        }
+    }
+
+    public static void Unregister(Panel panel)
+    {
+        if (panel == null || string.IsNullOrEmpty(panel.ID)) return;
+
+        if (singleton != null && singleton.panels.ContainsKey(panel.ID))
+        {
+            singleton.panels.Remove(panel.ID);
         }
     }
     
@@ -67,6 +60,8 @@ public class PanelManager : MonoBehaviour
         {
             return Singleton.panels[id];
         }
+        
+        Debug.LogWarning($"패널 매니저에 '{id}' ID를 가진 패널이 등록되어 있지 않습니다.");
         return null;
     }
     
@@ -107,5 +102,4 @@ public class PanelManager : MonoBehaviour
             }
         }
     }
-    
 }

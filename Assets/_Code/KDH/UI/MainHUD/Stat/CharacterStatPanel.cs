@@ -60,8 +60,10 @@ namespace Code.UI
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
+            
             Bus<CharacterInfoEvent>.Unsubscribe(HandleCharacterInfo);
             UnsubscribeHpEvent();
         }

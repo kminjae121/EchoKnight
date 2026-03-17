@@ -78,14 +78,17 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void InitializeSkill()
         {
         }
+        public virtual void OnDisable()
+        {
+            skillEndEvent.RemoveListener(CanUseSkillTrue);
+        }
 
         private void StartSkill(GameObject arg0)
         {
         }
-
-        public virtual void OnDisable()
+        public void SetAddDamage(float addDamage)
         {
-            skillEndEvent.RemoveListener(CanUseSkillTrue);
+            this.AddDamage = addDamage;
         }
         
         protected virtual void CanUseSkillTrue()
@@ -110,9 +113,7 @@ namespace Code.UnitSystem.SkillSystem
         public virtual void skillEnd()
         {
             BlockThisSkill();
-            ResetTile();
-            
-            //skillEndEvent?.Invoke();
+            ResetTile();    
         }
 
         public virtual void AttackEnemy()

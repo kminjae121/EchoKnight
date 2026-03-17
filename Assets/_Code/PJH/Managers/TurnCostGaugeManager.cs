@@ -33,7 +33,12 @@ namespace Code.Managers
             => currentGaugeValue.Value -= skillValue;
 
         public void AddSkillPoint(int value)
-            => currentGaugeValue.Value += value;
+        {
+            currentGaugeValue.Value += value;
+
+            if (currentGaugeValue.Value >= 100)
+                currentGaugeValue.Value = 100;
+        }
 
         #region Test
 

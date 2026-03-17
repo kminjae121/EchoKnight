@@ -111,7 +111,10 @@ namespace Code.UnitSystem
             if (_unit.isMyTurn && !evt.isStart)
                 ResetTile();
             else if (_unit.isMyTurn && evt.isStart)
+            {
                 ReCheckInRange();
+                GridMap.Instance.SetGridVisible(true);
+            }
         }
 
 

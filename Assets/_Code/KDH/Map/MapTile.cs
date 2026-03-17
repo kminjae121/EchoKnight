@@ -1,5 +1,4 @@
-﻿using System;
-using Code.Core.Interfaces;
+﻿using Code.Core.Interfaces;
 using UnityEngine;
 
 namespace Code.Map
@@ -10,8 +9,6 @@ namespace Code.Map
         [SerializeField] private bool isWalkable = true;
         [SerializeField] private bool hasEnemy;
         [SerializeField] private bool hasObstacle;
-
-        public event Action<MapTile> OnTileStateChanged; 
         
         public Vector2Int GridPos => gridPos;
         public Vector3 WorldPos => transform.position;
@@ -20,6 +17,13 @@ namespace Code.Map
         public bool HasEnemy => hasEnemy;
         public bool HasObstacle => hasObstacle;
         public bool CanUnitPass => isWalkable && !hasObstacle;
+
+        private MapTileVisual _visual;
+
+        private void Awake()
+        {
+            _visual = GetComponentInChildren<MapTileVisual>();
+        }
 
         public void Initialize(Vector2Int pos)
         {
@@ -32,7 +36,7 @@ namespace Code.Map
                 return;
             
             isWalkable = walkable;
-            OnTileStateChanged?.Invoke(this);
+            _visual.HandleTileChanged(this);
         }
 
         public void SetEnemy(bool enemy)
@@ -41,7 +45,7 @@ namespace Code.Map
                 return;
             
             hasEnemy = enemy;
-            OnTileStateChanged?.Invoke(this);
+            _visual.HandleTileChanged(this);
         }
 
         public void SetObstacle(bool obstacle)
@@ -50,7 +54,12 @@ namespace Code.Map
                 return;
             
             hasObstacle = obstacle;
-            OnTileStateChanged?.Invoke(this);
+            _visual.HandleTileChanged(this);
+        }
+        
+        public void SetDecalActive(bool isActive)
+        {
+            _visual?.SetDecalActive(isActive);
         }
     }
 }

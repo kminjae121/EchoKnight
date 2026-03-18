@@ -87,8 +87,7 @@ namespace Code.UnitSystem
                     
                     if (tile.HasState(TileState.Obstacle))
                     {
-                        if (isMove)
-                            _tilesInRange.Add(tile);
+                        _tilesInRange.Add(tile);
 
                         continue;
                     }
@@ -135,9 +134,7 @@ namespace Code.UnitSystem
             {
                 tile.SetDecalActive(enable);
 
-                if (!isMove)
-                    tile.SetState(TileState.Enemy | TileState.Obstacle, enable);
-                else
+                if (isMove)
                 {
                     if (!tile.HasState(TileState.Obstacle))
                         tile.SetState(TileState.Walkable, enable);

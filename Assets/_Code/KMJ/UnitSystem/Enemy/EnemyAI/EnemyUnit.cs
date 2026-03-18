@@ -66,12 +66,6 @@ namespace EnemySystem
             OnIdleRequested();
         }
 
-        private void Update()
-        {
-            if(!currentTile.HasState(TileState.Enemy))
-                currentTile.SetState(TileState.Enemy,true);
-        }
-
         public override void OnTurnStart()
         {
             base.OnTurnStart();

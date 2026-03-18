@@ -65,7 +65,11 @@ namespace Code.UI
         {
             if (evt.EquipmentItem == null)
             {
-                Hide();
+                if (gameObject.activeSelf)
+                {
+                    gameObject.SetActive(false);
+                    _targetEquipmentItem = null;
+                }
                 return;
             }
 
@@ -145,8 +149,12 @@ namespace Code.UI
 
         private void Hide()
         {
+            if (!gameObject.activeSelf && _targetEquipmentItem == null) return;
+            
             gameObject.SetActive(false);
             _targetEquipmentItem = null;
+            
+            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, Vector2.zero));
         }
     }
 }

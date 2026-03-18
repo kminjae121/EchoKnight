@@ -225,13 +225,13 @@ namespace EnemySystem
         private void UpdateCurrentTile(Vector3 pos)
         {
             if (_currentTileObj != null)
-                _currentTileObj.GetComponent<IMapTile>().SetObstacle(false);
+                _currentTileObj.GetComponent<IMapTile>().SetState(TileState.Obstacle, false);
 
             if (Physics.Raycast(pos + Vector3.up * 5f, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
             {
                 if (hit.transform.TryGetComponent(out IMapTile tile))
                 {
-                    tile.SetEnemy(true);
+                    tile.SetState(TileState.Enemy | TileState.Obstacle, true);
                     _currentTileObj = hit.transform.gameObject;
                 }
             }

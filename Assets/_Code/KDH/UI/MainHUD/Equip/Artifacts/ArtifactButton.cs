@@ -16,13 +16,32 @@ namespace Code.UI
         [Header("UI Elements")]
         [SerializeField] private Image iconImage;
         [SerializeField] private GameObject hoverImage; 
+        [SerializeField] private Image rarityImage;
+
+        [Header("Rarity Sprites")]
+        [SerializeField] private Sprite commonSprite;
+        [SerializeField] private Sprite uncommonSprite;
+        [SerializeField] private Sprite rareSprite;
+        [SerializeField] private Sprite epicSprite;
+        [SerializeField] private Sprite legendarySprite;
 
         private EquipmentItemSO _equipmentItem;
         private bool _isEquipped;
+        private bool _isSelected;
         private GondrLib.ObjectPool.Runtime.Pool _pool;
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
+
+        private void Awake()
+        {
+            Bus<ArtifactPopupEvent>.Subscribe(HandlePopupEvent);
+        }
+
+        private void OnDestroy()
+        {
+            Bus<ArtifactPopupEvent>.Unsubscribe(HandlePopupEvent);
+        }
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 
@@ -30,6 +49,10 @@ namespace Code.UI
         {
             _equipmentItem = null;
             _isEquipped = false;
+            _isSelected = false;
+            
+            if (hoverImage != null) hoverImage.SetActive(false);
+            if (rarityImage != null) rarityImage.sprite = null;
         }
 
         public void ReturnToPool()
@@ -47,6 +70,47 @@ namespace Code.UI
             iconImage.color = Color.white; 
 
             if (hoverImage != null) hoverImage.SetActive(false);
+            
+            ApplyRaritySprite(equipmentItem.rarity);
+        }
+
+        private void ApplyRaritySprite(ArtifactRarity rarity)
+        {
+            if (rarityImage == null) return;
+
+            switch (rarity)
+            {
+                case ArtifactRarity.Legendary:
+                    rarityImage.sprite = legendarySprite;
+                    break;
+                case ArtifactRarity.Epic:
+                    rarityImage.sprite = epicSprite;
+                    break;
+                case ArtifactRarity.Rare:
+                    rarityImage.sprite = rareSprite;
+                    break;
+                case ArtifactRarity.Uncommon:
+                    rarityImage.sprite = uncommonSprite;
+                    break;
+                case ArtifactRarity.Common:
+                default:
+                    rarityImage.sprite = commonSprite;
+                    break;
+            }
+        }
+
+        private void HandlePopupEvent(ArtifactPopupEvent evt)
+        {
+            if (_equipmentItem != null && evt.EquipmentItem == _equipmentItem)
+            {
+                _isSelected = true;
+                if (hoverImage != null) hoverImage.SetActive(true);
+            }
+            else
+            {
+                _isSelected = false;
+                if (hoverImage != null) hoverImage.SetActive(false);
+            }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -59,7 +123,7 @@ namespace Code.UI
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (_equipmentItem != null && hoverImage != null) 
+            if (_equipmentItem != null && hoverImage != null && !_isSelected) 
             {
                 hoverImage.SetActive(false);
             }
@@ -69,7 +133,7 @@ namespace Code.UI
         {
             if (_equipmentItem == null) return;
 
-            if (eventData.button == PointerEventData.InputButton.Right)
+            if (eventData.button == PointerEventData.InputButton.Left)
             {
                 Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, eventData.position));
             }

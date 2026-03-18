@@ -27,7 +27,6 @@ namespace Code.Map
         [SerializeField, HideInInspector] private MapTile[] serializedTiles;
 
         private MapTile[,] tiles;
-        private MapTileVisual[,] visuals;
 
         public int Width => width;
         public int Height => height;
@@ -36,6 +35,7 @@ namespace Code.Map
         protected override void Awake()
         {
             RebuildTileArray();
+            SetGridVisible(false);
         }
 
         private void RebuildTileArray()
@@ -44,7 +44,6 @@ namespace Code.Map
                 return;
 
             tiles = new MapTile[width, height];
-            visuals = new MapTileVisual[width, height];
 
             int count = Mathf.Min(serializedTiles.Length, width * height);
 
@@ -59,7 +58,6 @@ namespace Code.Map
                 int y = i / width;
 
                 tiles[x, y] = tile;
-                visuals[x, y] = tile.GetComponentInChildren<MapTileVisual>();
             }
         }
 
@@ -68,7 +66,6 @@ namespace Code.Map
             ClearMap();
 
             tiles = new MapTile[width, height];
-            visuals = new MapTileVisual[width, height];
             serializedTiles = new MapTile[width * height];
 
             for (int y = 0; y < height; y++)
@@ -128,8 +125,6 @@ namespace Code.Map
 
             visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial,
                 projectionDepth, decalRenderingLayerMask);
-
-            visuals[x, y] = visual;
         }
 
         private void ClearMap()
@@ -145,18 +140,20 @@ namespace Code.Map
                 DestroyImmediate(transform.GetChild(i).gameObject);
 
             tiles = null;
-            visuals = null;
             serializedTiles = null;
         }
 
         public void SetGridVisible(bool visible)
         {
-            if (visuals == null)
+            if (tiles == null)
                 RebuildTileArray();
+
+            if (tiles == null)
+                return;
 
             for (int x = 0; x < width; ++x)
                 for (int y = 0; y < height; ++y)
-                    visuals[x, y]?.SetDecalActive(visible);
+                    tiles[x, y]?.SetDecalActive(visible);
         }
 
         public Vector3 GridToWorldPosition(int x, int y)
@@ -199,7 +196,7 @@ namespace Code.Map
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);
-            return tile != null && tile.CanUnitPass;
+            return tile != null && tile.HasState(TileState.Walkable) && !tile.HasState(TileState.Obstacle);
         }
     }
 }

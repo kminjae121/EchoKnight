@@ -82,7 +82,7 @@ namespace Code.UnitManaging
                     Quaternion.identity
                 );
 
-                tile.SetObstacle(true);
+                tile.SetState(TileState.Obstacle, true);
 
                 Unit unit = spawnUnit.GetComponent<Unit>();
 

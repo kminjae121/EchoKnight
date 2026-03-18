@@ -102,6 +102,7 @@ namespace Code.UnitSystem.SkillSystem
                 null,true));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
             
+            GridMap.Instance.SetGridVisible(false);
             skillEvent?.Invoke(_targetEnemy);
             _targetEnemy = null;
            

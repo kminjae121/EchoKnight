@@ -8,6 +8,7 @@ namespace Code.UI
     public class SlotHoverClickTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
         public Action OnClick;
+        public Action<Vector2> OnLeftClick;
         public Action<Vector2> OnRightClick;
         public Action<Vector2> OnHoverEnter;
         public Action OnHoverExit;
@@ -73,9 +74,14 @@ namespace Code.UI
             if (!_isInteractable) return;
 
             if (eventData.button == PointerEventData.InputButton.Left)
+            {
                 OnClick?.Invoke();
+                OnLeftClick?.Invoke(eventData.position);
+            }
             else if (eventData.button == PointerEventData.InputButton.Right)
+            {
                 OnRightClick?.Invoke(eventData.position);
+            }
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using Code.Core.Events.Bus;
+﻿using _Code.Core.Managers;
+using Code.Core.Events.Bus;
+using Code.Core.Managers;
 using Code.UnitSystem.SkillSystem;
 using TMPro;
 using UnityEngine;
@@ -114,14 +116,26 @@ namespace Code.UI
         private void HandleEquip()
         {
             if (_targetSkill != null && !_isCurrentlyEquipped)
+            {
+                if (SkillSendManager.Instance != null)
+                {
+                    SkillSendManager.Instance.EquipSkill(_targetSkill);
+                }
                 Bus<SkillEquipEvent>.Raise(new SkillEquipEvent(_targetSkill));
+            }
             Hide();
         }
 
         private void HandleUnequip()
         {
             if (_targetSkill != null && _isCurrentlyEquipped)
+            {
+                if (SkillSendManager.Instance != null)
+                {
+                    SkillSendManager.Instance.RemoveSkill(_targetSkill);
+                }
                 Bus<SkillUnequipEvent>.Raise(new SkillUnequipEvent(_targetSkill));
+            }
             Hide();
         }
 

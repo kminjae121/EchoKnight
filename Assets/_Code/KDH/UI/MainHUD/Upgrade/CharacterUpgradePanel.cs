@@ -32,14 +32,26 @@ namespace Code.UI
         public override void Awake()
         {
             base.Awake();
-            upgradeButton.onClick.AddListener(HandleUpgradeClick);
+            
+            if (_poolManager == null)
+            {
+                _poolManager = FindFirstObjectByType<PoolManagerMono>();
+            }
+
+            if (upgradeButton != null)
+            {
+                upgradeButton.onClick.AddListener(HandleUpgradeClick);
+            }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             
-            upgradeButton.onClick.RemoveListener(HandleUpgradeClick);
+            if (upgradeButton != null)
+            {
+                upgradeButton.onClick.RemoveListener(HandleUpgradeClick);
+            }
         }
 
         public override void Open()
@@ -51,6 +63,34 @@ namespace Code.UI
 
         private void RefreshTree()
         {
+            if (TreeData == null || TreeData.Count == 0)
+            {
+                Debug.LogWarning("트리 데이터가 존재하지 않습니다.");
+                return;
+            }
+
+            if (_poolManager == null)
+            {
+                _poolManager = FindFirstObjectByType<PoolManagerMono>();
+                if (_poolManager == null)
+                {
+                    Debug.LogError("풀 매니저를 찾을 수 없습니다.");
+                    return;
+                }
+            }
+
+            if (nodeButtonPoolSO == null)
+            {
+                Debug.LogError("노드 버튼 풀링 데이터가 할당되지 않았습니다.");
+                return;
+            }
+
+            if (treeContainer == null)
+            {
+                Debug.LogError("트리 컨테이너가 할당되지 않았습니다.");
+                return;
+            }
+
             foreach (var node in _activeNodes) node.ReturnToPool();
             _activeNodes.Clear();
 
@@ -77,12 +117,12 @@ namespace Code.UI
                 iconImage.gameObject.SetActive(true);
             }
             
-            nameText.text = nodeData.upgradeName;
-            descriptionText.text = nodeData.description;
-            statInfoText.text = $"{nodeData.statOrSkillInfo}";
-            costText.text = $"{nodeData.cost}";
+            if (nameText != null) nameText.text = nodeData.upgradeName;
+            if (descriptionText != null) descriptionText.text = nodeData.description;
+            if (statInfoText != null) statInfoText.text = $"{nodeData.statOrSkillInfo}";
+            if (costText != null) costText.text = $"{nodeData.cost}";
             
-            upgradeButton.interactable = !nodeData.isUnlocked; 
+            if (upgradeButton != null) upgradeButton.interactable = !nodeData.isUnlocked; 
         }
 
         private void ClearDetailView()
@@ -92,11 +132,11 @@ namespace Code.UI
             if (iconImage != null)
                 iconImage.gameObject.SetActive(false);
             
-            nameText.text = "업그레이드 선택";
-            descriptionText.text = "위 트리에서 업그레이드 항목을 선택해주세요.";
-            statInfoText.text = "-";
-            costText.text = "-";
-            upgradeButton.interactable = false;
+            if (nameText != null) nameText.text = "업그레이드 선택";
+            if (descriptionText != null) descriptionText.text = "위 트리에서 업그레이드 항목을 선택해주세요.";
+            if (statInfoText != null) statInfoText.text = "-";
+            if (costText != null) costText.text = "-";
+            if (upgradeButton != null) upgradeButton.interactable = false;
         }
 
         private void HandleUpgradeClick()

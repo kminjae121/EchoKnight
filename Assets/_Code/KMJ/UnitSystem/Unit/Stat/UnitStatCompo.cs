@@ -12,9 +12,7 @@ namespace Code.UnitSystem
     }
     public class UnitStatCompo : MonoBehaviour, IUnitComponent
     {
-        private UnitSO unitSO;
-
-         private UnitInGameSO unitInGameSO;
+        [SerializeField] private UnitSO unitSO;
 
         private float MoveSpeed => unitSO.MoveSpeed;
 
@@ -28,7 +26,8 @@ namespace Code.UnitSystem
 
         public void Initialize(Unit owner)
         {
-            unitSO = owner.unitSO;
+            if(unitSO == null)
+                unitSO = owner.unitSO;
         }
 
         public T GetStat<T>(StatInfo statInfo)

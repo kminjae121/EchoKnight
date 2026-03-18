@@ -128,7 +128,7 @@ namespace Code.UnitSystem
                     tile.SetEnemy(enable);
                 else
                 {
-                    if (!tile.HasObstacle)
+                    if (!tile.HasObstacle && !tile.HasEnemy)
                         tile.SetWalkable(enable);
                 }
             }

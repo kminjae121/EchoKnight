@@ -1,12 +1,28 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Code.UnitSystem.SkillSystem;
+using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem
 {
     public class KnightOperation : GimicOperation
     {
+        [SerializeField] private List<int> _addDamageList;
+        
+        private int _addDamage = 0;
+
+        private int _operationLevel = 0;
+        
         public override void StartOperation()
         {
-            
+            _addDamage = _addDamageList[_operationLevel];
+            _skillCompo.SetAddSkillDamage(_addDamage,SkillType.ActiveSkill);
+            _operationLevel++;
+        }
+
+        public override void ResetOpration()
+        {
+            _addDamage = 0;
+            _skillCompo.SetAddSkillDamage(_addDamage,SkillType.ActiveSkill);    
         }
     }
 }

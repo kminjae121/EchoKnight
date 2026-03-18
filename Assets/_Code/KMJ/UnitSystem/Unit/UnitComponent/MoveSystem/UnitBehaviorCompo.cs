@@ -85,7 +85,7 @@ namespace Code.UnitSystem
             _movingTiles.Clear();
 
             foreach (var tile in _tilesInRange)
-                if (!tile.HasObstacle)
+                if (!tile.HasObstacle && !tile.HasEnemy)
                     _movingTiles.Add(tile);
         }
 

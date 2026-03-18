@@ -15,6 +15,7 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
+            SkillType = SkillType.ActiveSkill;
             triggerCompo.OnHealTrigger += Heal;
             triggerCompo.OnHealEndTrigger += SkillEnd;
             skillEvent.AddListener(HealAction);

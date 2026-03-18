@@ -16,6 +16,7 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
+            SkillType = SkillType.ActiveSkill;
             triggerCompo.OnFireBallTrigger += MakeArrow;
             triggerCompo.OnFireBallEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);

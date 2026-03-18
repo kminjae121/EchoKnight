@@ -1,9 +1,11 @@
 using System;
 using System.Collections;
 using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace EnemySystem
 {
@@ -20,6 +22,8 @@ namespace EnemySystem
 
         [Header("VFX")]
         [SerializeField] private ParticleSystem _bloodEffect;
+        
+        public IMapTile currentTile { get; set; }
 
         protected override void OnEnable()
         {
@@ -59,6 +63,12 @@ namespace EnemySystem
 
             Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(this));
             OnIdleRequested();
+        }
+
+        private void Update()
+        {
+            if(!currentTile.HasEnemy)
+                currentTile.SetEnemy(true);
         }
 
         public override void OnTurnStart()

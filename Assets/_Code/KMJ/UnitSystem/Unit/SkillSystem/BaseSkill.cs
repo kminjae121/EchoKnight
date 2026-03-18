@@ -6,13 +6,20 @@ using UnityEngine.Events;
 
 namespace Code.UnitSystem.SkillSystem
 {
+    public enum SkillType
+    {
+        BasicSkill,
+        ActiveSkill,
+    }
     public abstract class BaseSkill : RangeComponent
     {
         [Header("Base Settings")]
         [field: SerializeField] public Sprite SkillImage { get; set; }
         [SerializeField] protected AttackDataSO attackData;
-        [SerializeField] private float basicSkillDamage;
+        [field: SerializeField] public float basicSkillDamage { get; private set; }
         [SerializeField] protected bool ownSkill = false;
+
+        [field: SerializeField] public SkillType SkillType { get; protected set; } = SkillType.ActiveSkill;
         
         public DamageData DamageData;
         public int UseSkillPoint;
@@ -43,44 +50,28 @@ namespace Code.UnitSystem.SkillSystem
         [SerializeField] protected MeshRenderer ownCircleMesh;
         [SerializeField] protected Material CriticalMaterial;
         [SerializeField] protected Material basicMaterial;
-        
+
         protected override void Awake()
         {
-            base.Awake();
-
-            skillEndEvent.AddListener(CanUseSkillTrue);
-            skillEvent.AddListener(StartSkill);
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-
             _unitBase = _owner;
-
-            if (_unitBase != null && statCompo == null)
-                statCompo = _unitBase.GetUnitCompo<UnitStatCompo>();
-            
-            
-            if (statCompo != null)
-            {
-                float skillDamageValue = statCompo.GetStat<float>(StatInfo.SkillDamage);
-                float floatdamage = basicSkillDamage * skillDamageValue;
-                damage = (int)floatdamage;
-            }
-            else
-                damage = basicSkillDamage;
-
-            DamageData.damage = damage;
+            base.Awake();
         }
-        
 
         public virtual void InitializeSkill()
         {
+            skillEndEvent.AddListener(CanUseSkillTrue);
+            skillEvent.AddListener(StartSkill);
         }
+        
+        
         public virtual void OnDisable()
         {
             skillEndEvent.RemoveListener(CanUseSkillTrue);
+        }
+        
+        public void SetDamage(float damage)
+        {
+            DamageData.damage = damage;
         }
 
         private void StartSkill(GameObject arg0)

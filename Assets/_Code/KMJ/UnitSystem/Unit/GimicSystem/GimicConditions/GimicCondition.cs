@@ -2,7 +2,7 @@
 
 namespace Code.UnitSystem.GimicSystem
 {
-    public abstract class GimicCondition : MonoBehaviour
+    public abstract class GimicCondition : MonoBehaviour,IGimicComponent
     {
         public virtual bool CheckCondition()
         {

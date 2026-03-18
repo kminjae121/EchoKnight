@@ -45,6 +45,7 @@ public class MeleeAttack : BasicUnitSkill
             _target = target;
             
             StartCoroutine(MeleeAttackAction(target));
+            Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(_characterUnit.unitSO.UnitType));
         }
 
         private IEnumerator MeleeAttackAction(GameObject target)

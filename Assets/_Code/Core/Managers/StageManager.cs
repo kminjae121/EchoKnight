@@ -2,7 +2,9 @@
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
+using EnemySystem;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace _Code.Core.Managers
 {
@@ -60,6 +62,8 @@ namespace _Code.Core.Managers
                 Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(data.spawnCoord.x, data.spawnCoord.y);
                 GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
 
+                enemyObj.GetComponent<EnemyUnit>().currentTile = tile;
+                
                 tile.SetEnemy(true);
 
                 enemies.Add(enemyObj);

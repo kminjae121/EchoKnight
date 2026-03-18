@@ -19,6 +19,7 @@ public class BasicAttackSkill : BasicUnitSkill
     protected override void Start()
     {
         base.Start();
+        SkillType = SkillType.ActiveSkill;
         skillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
@@ -81,6 +82,8 @@ public class BasicAttackSkill : BasicUnitSkill
         
         _targetEnemy.GetComponent<UnitHealth>().ApplyDamage(DamageData, 
             _targetEnemy.transform.position,transform.position,attackData,_owner);
+        
+        Bus<UseGimicEvent>.Raise(new UseGimicEvent(_characterUnit.unitSO.UnitType));
     }
 
     public void AttackEnd()

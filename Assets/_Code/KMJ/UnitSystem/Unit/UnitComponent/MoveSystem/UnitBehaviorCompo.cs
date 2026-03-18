@@ -54,7 +54,7 @@ namespace Code.UnitSystem
 
         private void OnDisable()
         {
-            _nextTile?.SetState(TileState.Enemy, false);
+            _nextTile?.SetState(TileState.Enemy,false);
 
             _unit.InputSO.OnCancelEvent -= HandleResetTile;
             _unit.InputSO.OnClickMoveEvent -= Move;
@@ -64,19 +64,20 @@ namespace Code.UnitSystem
 
         private void EndTargeting()
         {
-            _nextTile?.SetState(TileState.Enemy, false);
+            _nextTile?.SetState(TileState.Enemy,false);
             VisualPrefabs.SetActive(false);
         }
 
         private void SetTargetEnemy(IMapTile tile)
         {
-            _nextTile?.SetState(TileState.Enemy, false);
+            _nextTile?.SetState(TileState.Enemy,false);
 
             VisualPrefabs.SetActive(true);
             VisualPrefabs.transform.rotation = _unit.transform.rotation;
             VisualPrefabs.transform.position = tile.WorldPos;
 
             _nextTile = tile;
+            //_nextTile.SetEnemy(true);
         }
 
         private void CheckTilesCanMoving()
@@ -84,7 +85,7 @@ namespace Code.UnitSystem
             _movingTiles.Clear();
 
             foreach (var tile in _tilesInRange)
-                if (!tile.HasState(TileState.Obstacle))
+                if (!tile.HasState(TileState.Obstacle) && !tile.HasState(TileState.Enemy))
                     _movingTiles.Add(tile);
         }
 
@@ -177,11 +178,12 @@ namespace Code.UnitSystem
             navMeshAgent.ResetPath();
             navMeshAgent.enabled = false;
 
+            GridMap.Instance.SetGridVisible(true);
             _isMoving = false;
             IsActive = true;
 
             CurrentMapTile = tile;
-            tile.SetState(TileState.Obstacle, true);
+            tile.SetState(TileState.Obstacle,true);
 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
@@ -204,8 +206,8 @@ namespace Code.UnitSystem
             if (CurrentMapTile != null)
             {
                 IMapTile tileInfos = CurrentMapTile;
-                tileInfos.SetState(TileState.Obstacle, false);
-                tileInfos.SetState(TileState.Walkable, true);
+                tileInfos.SetState(TileState.Obstacle,false);
+                tileInfos.SetState(TileState.Walkable,true);
             }
 
             MoveStart(tileInfo);

@@ -2,7 +2,7 @@
 
 namespace Code.UnitSystem.GimicSystem
 {
-    public class GimicEventComponent : MonoBehaviour
+    public class GimicEventComponent : MonoBehaviour,IGimicComponent
     {
         
     }

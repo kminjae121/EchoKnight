@@ -4,6 +4,7 @@ using System.Linq;
 using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
+using Code.UnitSystem.Combat;
 using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem
@@ -12,14 +13,20 @@ namespace Code.UnitSystem.SkillSystem
     {
         [SerializeField] private List<SkillSO> _skillList;
 
-        public Dictionary<SkillSO, BaseSkill> skills; 
+        public Dictionary<SkillSO, BaseSkill> skills;
 
+        private UnitStatCompo _statCompo;
         private Unit _unit;
+
+        private float basicDamage = 0;
         private bool isUseSkill = true;
 
         public void Initialize(Unit owner)
         {
             _unit = owner;
+            
+            if (_unit != null && _statCompo == null)
+                _statCompo = _unit.GetUnitCompo<UnitStatCompo>();
             
             SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType).ToList().ForEach(skill =>
             {
@@ -27,6 +34,7 @@ namespace Code.UnitSystem.SkillSystem
             });
             
             skills = new Dictionary<SkillSO, BaseSkill>();
+            
 
             foreach (var skillSo in _skillList)
             {
@@ -57,19 +65,38 @@ namespace Code.UnitSystem.SkillSystem
                 else
                     Debug.LogWarning($"[SkillComponent] '{_unit.name}'에 스킬 컴포넌트 '{type.Name}'가 부착되어 있지 않습니다.");
             }
+            
 
             if (skills.Count > 0)
                 foreach (var skill in skills.Values)
+                {
+                    if (skill.SkillType == SkillType.ActiveSkill)
+                    {
+                        if (_statCompo != null)
+                        {
+                            float skillDamageValue = _statCompo.GetStat<float>(StatInfo.SkillDamage);
+                            float floatdamage = skill.basicSkillDamage * skillDamageValue;
+                            basicDamage = (int)floatdamage;
+                        }
+                        else
+                            basicDamage = skill.basicSkillDamage;
+                    }
+                    else if(skill.SkillType == SkillType.BasicSkill)
+                    {
+                        if (_statCompo != null)
+                        {
+                            float atkDamage = _statCompo.GetStat<float>(StatInfo.AtkDamage);
+                            float floatdamage = atkDamage;
+                            basicDamage = (int)floatdamage;
+                        }
+                        else
+                            basicDamage = skill.basicSkillDamage;
+                    }
+                    
                     skill.InitializeSkill();
-        }
-
-        public void UpdateSkillUI()
-        {
-            Bus<SkillUIEvent>.Raise(new SkillUIEvent(_skillList, this));
-        }
-
-        private void Awake()
-        {
+                    skill.SetDamage(basicDamage);   
+                }
+            
             Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
         }
 
@@ -77,6 +104,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             Bus<UsingSkillEvent>.Unsubscribe(BooleanSkill);
         }
+        
 
         private Type GetTypeByName(string className)
         {
@@ -102,7 +130,23 @@ namespace Code.UnitSystem.SkillSystem
         {
             isUseSkill = evt.isUsingSkill;
         }
+        
+        public void UpdateSkillUI()
+        {
+            Bus<SkillUIEvent>.Raise(new SkillUIEvent(_skillList, this));
+        }
 
+        public void SetAddSkillDamage(float addDamage,SkillType skillType)
+        {
+            foreach (var skill in skills.Values)
+            {
+                if (skill.SkillType == skillType)
+                {
+                    float damage = basicDamage + addDamage;
+                    skill.SetDamage(damage);
+                }
+            }
+        }
         public void StartSkill(SkillSO skillSO)
         {
             if (isUseSkill)
@@ -117,21 +161,6 @@ namespace Code.UnitSystem.SkillSystem
                     skill.ShowSkillRange();
                     Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(false));
                 }
-            }
-        }
-
-        public void CancelSkill(SkillSO skillSO)
-        {
-            if (!skills.ContainsKey(skillSO))
-                return;
-
-            BaseSkill skill = skills.GetValueOrDefault(skillSO);
-
-            if (skill != null)
-            {
-                skill.BlockThisSkill();
-                skill.skillEnd();
-                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
             }
         }
 

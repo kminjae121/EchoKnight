@@ -13,6 +13,7 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
+            SkillType = SkillType.ActiveSkill;
             skillEvent.AddListener(AddAP);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
             triggerCompo.OnAddAPTrigger += PlusAP;

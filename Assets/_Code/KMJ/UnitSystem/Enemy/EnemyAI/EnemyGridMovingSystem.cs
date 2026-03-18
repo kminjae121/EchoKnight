@@ -190,7 +190,7 @@ namespace EnemySystem
             SetMovementState(false);
             
             SnapToTileCenterAndRegister();
-
+            
             onComplete?.Invoke();
         }
 

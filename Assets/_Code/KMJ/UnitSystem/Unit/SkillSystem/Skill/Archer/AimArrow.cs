@@ -19,6 +19,7 @@ public class AimArrow : BasicUnitSkill
     protected override void Start()
     {
         base.Start();
+        SkillType = SkillType.ActiveSkill;
         triggerCompo.OnAimArrowTrigger += MakeArrow;
         triggerCompo.OnAimArrowEndTrigger += SkillEnd;
         skillEvent.AddListener(AttackAction);

@@ -16,13 +16,16 @@ namespace Code.UnitSystem.SkillSystem
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
-        
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _characterUnit = _owner as CharacterUnit;
+        }
 
         protected override void Start()
         {
             base.Start();
-            
-            _characterUnit = _owner as CharacterUnit;
             
             if(_characterUnit != null)
                 impulseSource = _characterUnit.impulseSource;
@@ -47,7 +50,6 @@ namespace Code.UnitSystem.SkillSystem
 
             skillEndEvent.AddListener(SetMovingTrue);
         }
-
 
         public override void OnDisable()
         {
@@ -151,8 +153,6 @@ namespace Code.UnitSystem.SkillSystem
                 _targetEnemy = null;
                 return;
             }
-
-            Debug.Log(enemy);
             
             if (_targetEnemy != null && _targetEnemy != enemy)
                 _targetingCompo?.OffTargeting();

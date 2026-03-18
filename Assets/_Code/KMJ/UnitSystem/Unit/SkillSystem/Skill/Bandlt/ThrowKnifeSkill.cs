@@ -16,6 +16,7 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
+            SkillType = SkillType.ActiveSkill;
             triggerCompo.OnThrowKnifeTrigger += MakeThrowKnife;
             triggerCompo.OnThrowKnifeEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);

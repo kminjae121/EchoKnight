@@ -85,8 +85,12 @@ namespace Code.UnitSystem
 
                     visited.Add(next);
                     
-                    if (tile.HasObstacle)
+                    if (tile.HasState(TileState.Obstacle))
+                    {
+                        _tilesInRange.Add(tile);
+
                         continue;
+                    }
                     
                     _tilesInRange.Add(tile);
                     queue.Enqueue((next, dist + 1));
@@ -109,8 +113,12 @@ namespace Code.UnitSystem
         public void ReCheckInRange()
         {
             foreach (var tile in _tilesInRange)
-                if (!tile.HasObstacle)
-                    tile.SetWalkable(true);
+            {
+                if (!tile.HasState(TileState.Obstacle))
+                    tile.SetState(TileState.Walkable, true);
+
+                tile.SetDecalActive(true);
+            }
 
             IsActive = true;
         }
@@ -124,12 +132,12 @@ namespace Code.UnitSystem
         {
             foreach (var tile in tiles)
             {
-                if (!isMove)
-                    tile.SetEnemy(enable);
-                else
+                tile.SetDecalActive(enable);
+
+                if (isMove)
                 {
-                    if (!tile.HasObstacle)
-                        tile.SetWalkable(enable);
+                    if (!tile.HasState(TileState.Obstacle))
+                        tile.SetState(TileState.Walkable, enable);
                 }
             }
         }

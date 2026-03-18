@@ -18,6 +18,7 @@ namespace Code.Map
         private void Awake()
         {
             decalProjector = GetComponent<DecalProjector>();
+            SetDecalActive(false);
         }
 
         public void Initialize(Material walkable, Material nonWalkable, Material enemy, Material obstacle, float projectionDepth, uint renderingLayerMask)
@@ -36,6 +37,7 @@ namespace Code.Map
             decalProjector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
 
             decalProjector.renderingLayerMask = renderingLayerMask;
+            decalProjector.enabled = false;
         }
 
         public void SetDecalActive(bool isActive)
@@ -48,13 +50,13 @@ namespace Code.Map
 
         private Material GetTileMaterial(MapTile tile)
         {
-            if (tile.HasEnemy)
+            if (tile.HasState(TileState.Enemy))
                 return enemyMaterial;
             
-            if (tile.HasObstacle)
+            if (tile.HasState(TileState.Obstacle))
                 return obstacleMaterial;
             
-            if (!tile.IsWalkable)
+            if (!tile.HasState(TileState.Walkable))
                 return nonWalkableMaterial;
             
             return walkableMaterial;

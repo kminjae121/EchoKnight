@@ -6,60 +6,55 @@ namespace Code.Map
     public class MapTile : MonoBehaviour, IMapTile
     {
         [SerializeField] private Vector2Int gridPos;
-        [SerializeField] private bool isWalkable = true;
-        [SerializeField] private bool hasEnemy;
-        [SerializeField] private bool hasObstacle;
-        
+        [SerializeField] private TileState tileState;
+
         public Vector2Int GridPos => gridPos;
         public Vector3 WorldPos => transform.position;
-        
-        public bool IsWalkable => isWalkable;
-        public bool HasEnemy => hasEnemy;
-        public bool HasObstacle => hasObstacle;
-        public bool CanUnitPass => isWalkable && !hasObstacle;
 
         private MapTileVisual _visual;
 
         private void Awake()
         {
             _visual = GetComponentInChildren<MapTileVisual>();
+            RefreshVisual();
+        }
+
+        private void OnValidate()
+        {
+            RefreshVisual();
         }
 
         public void Initialize(Vector2Int pos)
         {
             gridPos = pos;
+
+            if (tileState == TileState.None)
+                tileState = TileState.Walkable;
+
+            RefreshVisual();
         }
 
-        public void SetWalkable(bool walkable)
+        public bool HasState(TileState state)
+            => (tileState & state) == state;
+
+        public void SetState(TileState state, bool value)
         {
-            if (isWalkable == walkable)
-                return;
-            
-            isWalkable = walkable;
-            _visual.HandleTileChanged(this);
+            if (value)
+                tileState |= state;
+            else
+                tileState &= ~state;
+
+            RefreshVisual();
         }
 
-        public void SetEnemy(bool enemy)
-        {
-            if (hasEnemy == enemy)
-                return;
-            
-            hasEnemy = enemy;
-            _visual.HandleTileChanged(this);
-        }
-
-        public void SetObstacle(bool obstacle)
-        {
-            if (hasObstacle == obstacle)
-                return;
-            
-            hasObstacle = obstacle;
-            _visual.HandleTileChanged(this);
-        }
-        
         public void SetDecalActive(bool isActive)
         {
             _visual?.SetDecalActive(isActive);
+        }
+
+        private void RefreshVisual()
+        {
+            _visual?.HandleTileChanged(this);
         }
     }
 }

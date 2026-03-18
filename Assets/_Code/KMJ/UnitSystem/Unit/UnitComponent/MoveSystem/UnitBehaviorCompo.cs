@@ -54,7 +54,7 @@ namespace Code.UnitSystem
 
         private void OnDisable()
         {
-            _nextTile?.SetEnemy(false);
+            _nextTile?.SetState(TileState.Enemy, false);
 
             _unit.InputSO.OnCancelEvent -= HandleResetTile;
             _unit.InputSO.OnClickMoveEvent -= Move;
@@ -64,20 +64,19 @@ namespace Code.UnitSystem
 
         private void EndTargeting()
         {
-            _nextTile?.SetEnemy(false);
+            _nextTile?.SetState(TileState.Enemy, false);
             VisualPrefabs.SetActive(false);
         }
 
         private void SetTargetEnemy(IMapTile tile)
         {
-            _nextTile?.SetEnemy(false);
+            _nextTile?.SetState(TileState.Enemy, false);
 
             VisualPrefabs.SetActive(true);
             VisualPrefabs.transform.rotation = _unit.transform.rotation;
             VisualPrefabs.transform.position = tile.WorldPos;
 
             _nextTile = tile;
-            //_nextTile.SetEnemy(true);
         }
 
         private void CheckTilesCanMoving()
@@ -85,7 +84,7 @@ namespace Code.UnitSystem
             _movingTiles.Clear();
 
             foreach (var tile in _tilesInRange)
-                if (!tile.HasObstacle)
+                if (!tile.HasState(TileState.Obstacle))
                     _movingTiles.Add(tile);
         }
 
@@ -111,10 +110,7 @@ namespace Code.UnitSystem
             if (_unit.isMyTurn && !evt.isStart)
                 ResetTile();
             else if (_unit.isMyTurn && evt.isStart)
-            {
                 ReCheckInRange();
-                GridMap.Instance.SetGridVisible(true);
-            }
         }
 
 
@@ -181,12 +177,11 @@ namespace Code.UnitSystem
             navMeshAgent.ResetPath();
             navMeshAgent.enabled = false;
 
-            GridMap.Instance.SetGridVisible(true);
             _isMoving = false;
             IsActive = true;
 
             CurrentMapTile = tile;
-            tile.SetObstacle(true);
+            tile.SetState(TileState.Obstacle, true);
 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
@@ -203,14 +198,14 @@ namespace Code.UnitSystem
             if (tileInfo == null)
                 yield break;
 
-            if (!tileInfo.IsWalkable)
+            if (!tileInfo.HasState(TileState.Walkable))
                 yield break;
 
             if (CurrentMapTile != null)
             {
                 IMapTile tileInfos = CurrentMapTile;
-                tileInfos.SetObstacle(false);
-                tileInfos.SetWalkable(true);
+                tileInfos.SetState(TileState.Obstacle, false);
+                tileInfos.SetState(TileState.Walkable, true);
             }
 
             MoveStart(tileInfo);

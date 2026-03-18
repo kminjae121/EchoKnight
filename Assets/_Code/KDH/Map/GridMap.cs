@@ -35,6 +35,7 @@ namespace Code.Map
         protected override void Awake()
         {
             RebuildTileArray();
+            SetGridVisible(false);
         }
 
         private void RebuildTileArray()
@@ -144,6 +145,12 @@ namespace Code.Map
 
         public void SetGridVisible(bool visible)
         {
+            if (tiles == null)
+                RebuildTileArray();
+
+            if (tiles == null)
+                return;
+
             for (int x = 0; x < width; ++x)
                 for (int y = 0; y < height; ++y)
                     tiles[x, y]?.SetDecalActive(visible);
@@ -189,7 +196,7 @@ namespace Code.Map
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);
-            return tile != null && tile.CanUnitPass;
+            return tile != null && tile.HasState(TileState.Walkable) && !tile.HasState(TileState.Obstacle);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Code.Map;
+using UnityEngine;
 
 namespace Code.Core.Interfaces
 {
@@ -6,14 +7,12 @@ namespace Code.Core.Interfaces
     {
         Vector2Int GridPos { get; }
         Vector3 WorldPos { get; }
-        bool IsWalkable { get;  } 
-        bool HasEnemy { get; }
-        bool HasObstacle { get;  }
-        bool CanUnitPass { get;  }
-    
-        void SetWalkable(bool walkable);
-        void SetEnemy(bool hasEnemy);
-        void SetObstacle(bool hasObstacle);
+        
+        bool HasState(TileState state);
+
+        void SetState(TileState state, bool value);
+
+        void SetDecalActive(bool isActive);
     }
 }
 

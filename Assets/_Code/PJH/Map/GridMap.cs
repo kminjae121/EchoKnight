@@ -35,7 +35,6 @@ namespace Code.Map
         protected override void Awake()
         {
             RebuildTileArray();
-            SetGridVisible(false);
         }
 
         private void RebuildTileArray()
@@ -47,7 +46,7 @@ namespace Code.Map
 
             int count = Mathf.Min(serializedTiles.Length, width * height);
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < count; ++i)
             {
                 var tile = serializedTiles[i];
                 
@@ -68,8 +67,8 @@ namespace Code.Map
             tiles = new MapTile[width, height];
             serializedTiles = new MapTile[width * height];
 
-            for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; ++y)
+                for (int x = 0; x < width; ++x)
                     CreateTile(x, y);
         }
 
@@ -136,7 +135,7 @@ namespace Code.Map
 
             int childCount = transform.childCount;
 
-            for (int i = childCount - 1; i >= 0; i--)
+            for (int i = childCount - 1; i >= 0; --i)
                 DestroyImmediate(transform.GetChild(i).gameObject);
 
             tiles = null;
@@ -196,7 +195,8 @@ namespace Code.Map
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);
-            return tile != null && tile.HasState(TileState.Walkable) && !tile.HasState(TileState.Obstacle);
+            return tile != null && tile.HasState(TileState.Walkable) 
+                                && !tile.HasState(TileState.Obstacle);
         }
     }
 }

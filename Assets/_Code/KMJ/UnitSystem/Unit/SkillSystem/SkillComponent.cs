@@ -158,6 +158,7 @@ namespace Code.UnitSystem.SkillSystem
 
                 if (skill != null)
                 {
+                    skill.ConfigureSkillRange(skillSO);
                     skill.ShowSkillRange();
                     Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(false));
                 }

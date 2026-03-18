@@ -225,7 +225,12 @@ namespace EnemySystem
         private void UpdateCurrentTile(Vector3 pos)
         {
             if (_currentTileObj != null)
-                _currentTileObj.GetComponent<IMapTile>().SetState(TileState.Obstacle, false);
+            {
+                IMapTile previousTile = _currentTileObj.GetComponent<IMapTile>();
+                previousTile.SetState(TileState.Enemy, false);
+                previousTile.SetState(TileState.Obstacle, false);
+                previousTile.SetState(TileState.Walkable, true);
+            }
 
             if (Physics.Raycast(pos + Vector3.up * 5f, Vector3.down, out RaycastHit hit, Mathf.Infinity, _whatIsGround))
             {

@@ -13,6 +13,8 @@ namespace Code.Core.Interfaces
         void SetState(TileState state, bool value);
 
         void SetDecalActive(bool isActive);
+        void SetOverlay(TileOverlayType overlayType);
+        void ClearOverlay();
     }
 }
 

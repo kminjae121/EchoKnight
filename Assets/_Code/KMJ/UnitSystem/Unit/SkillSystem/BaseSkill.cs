@@ -1,4 +1,6 @@
 ﻿using Code.Core.Events.Bus;
+using Code.Core.Interfaces;
+using Code.Map;
 using Code.UnitSystem.Combat;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -28,6 +30,7 @@ namespace Code.UnitSystem.SkillSystem
         public float AddDamage { get; private set; }
         public UnitRotation rotationCompo { get; set; }
         public float damage { get; set; }
+        protected int SkillRange { get; private set; }
         
         
         protected Unit _unitBase; 
@@ -61,6 +64,11 @@ namespace Code.UnitSystem.SkillSystem
         {
             skillEndEvent.AddListener(CanUseSkillTrue);
             skillEvent.AddListener(StartSkill);
+        }
+
+        public void ConfigureSkillRange(SkillSO skillData)
+        {
+            SkillRange = skillData == null ? 0 : Mathf.Max(0, Mathf.RoundToInt(skillData.SkillRange));
         }
         
         
@@ -145,6 +153,35 @@ namespace Code.UnitSystem.SkillSystem
                 rotationCompo.SetDir(target.transform.position);
 
             skillEvent?.Invoke(_targetEnemy);
+        }
+
+        protected override int GetRange()
+            => SkillRange;
+
+        protected override void CalculateRange()
+        {
+            _tilesInRange.Clear();
+
+            Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
+            int range = GetRange();
+
+            for (int x = -range; x <= range; x++)
+            {
+                int remain = range - Mathf.Abs(x);
+
+                for (int y = -remain; y <= remain; y++)
+                {
+                    if (x == 0 && y == 0)
+                        continue;
+
+                    Vector2Int position = start + new Vector2Int(x, y);
+                    IMapTile tile = GridMap.Instance.GetTile(position);
+
+                    if (tile != null)
+                        _tilesInRange.Add(tile);
+                }
+            }
+
         }
     }
 }

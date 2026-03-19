@@ -11,7 +11,6 @@ namespace Code.Navigation
     {
         [SerializeField] private GridMap gridMap;
         [SerializeField] private BakedDataSO bakedData;
-
         [SerializeField] private bool isDrawGizmo = true;
         [SerializeField] private bool isCornerCheck = true;
         [SerializeField] private Color nodeColor, edgeColor;
@@ -35,14 +34,16 @@ namespace Code.Navigation
         private void WritePointData()
         {
             bakedData.ClearPoints();
-
+            
             for (int x = 0; x < gridMap.Width; ++x)
-            for (int y = 0; y < gridMap.Height; ++y)
             {
-                var gridPos = new Vector2Int(x, y);
+                for (int y = 0; y < gridMap.Height; ++y)
+                {
+                    var gridPos = new Vector2Int(x, y);
 
-                if (CanMovePosition(gridPos))
-                    AddPoint(gridPos);
+                    if (CanMovePosition(gridPos))
+                        AddPoint(gridPos);
+                }
             }
 
             bakedData.Initialize();

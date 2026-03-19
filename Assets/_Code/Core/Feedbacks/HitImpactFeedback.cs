@@ -1,11 +1,11 @@
-using Blade.Effects;
+using Code.Effects;
 using Code.UnitSystem.Combat;
 using DG.Tweening;
 using GondrLib.Dependencies;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 
-namespace Blade.Feedbacks
+namespace Code.Feedbacks
 {
     public class HitImpactFeedback : Feedback
     {

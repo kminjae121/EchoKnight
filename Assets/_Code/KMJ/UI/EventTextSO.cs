@@ -1,5 +1,4 @@
-﻿using System;
-using Code.Items;
+﻿using Code.Items;
 using UnityEngine;
 
 
@@ -8,7 +7,7 @@ public enum EventType
     Health,
     Item
 }
-namespace _Code.KMJ.SO
+namespace Code.UI
 {
     [CreateAssetMenu(fileName = "EventSO", menuName = "EventSO", order = 0)]
     public class EventTextSO : ScriptableObject

@@ -4,7 +4,7 @@ using Code.Core.Interfaces;
 using Code.Map;
 using UnityEngine;
 
-namespace _Code.Core.Managers
+namespace Code.Core.Managers
 {
     public class StageManager : MonoBehaviour
     {

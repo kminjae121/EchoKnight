@@ -1,11 +1,7 @@
-﻿using System;
-using Code.Core.Debugs;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using Code.Items;
-using Code.Managers;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Code.UI

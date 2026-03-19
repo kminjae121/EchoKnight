@@ -5,7 +5,7 @@ using Code.Core.Managers;
 using Code.Items;
 using Code.UnitSystem.SkillSystem;
 
-namespace _Code.Core.Managers
+namespace Code.Core.Managers
 {
     public class GoodsManager : MonoSingleton<GoodsManager>
     {

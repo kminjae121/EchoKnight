@@ -2,18 +2,18 @@ using System;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 
-namespace Blade.Effects
+namespace Code.Effects
 {
     public class PoolingEffect : MonoBehaviour, IPoolable
     {
         [field: SerializeField] public PoolingItemSO PoolingType { get; private set; }
         public GameObject GameObject => gameObject;
 
-        private Pool _myPool;
+        private GondrLib.ObjectPool.Runtime.Pool _myPool;
         [SerializeField] private GameObject effectObject;
         private IPlayableVFX _playableVFX;
         
-        public void SetUpPool(Pool pool)
+        public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool)
         {
             _myPool = pool;
             _playableVFX = effectObject.GetComponent<IPlayableVFX>();

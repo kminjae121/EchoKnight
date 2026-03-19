@@ -1,7 +1,4 @@
-﻿using System;
-using _Code.Core.Managers;
-using Code.Core.Events.Bus;
-using Code.Managers;
+﻿using Code.Core.Events.Bus;
 using Code.UnitSystem.SkillSystem;
 using TMPro;
 using UnityEngine;

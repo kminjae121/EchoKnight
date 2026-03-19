@@ -15,7 +15,7 @@ namespace Code.UI
         [SerializeField] private RewardItemButton reawardButtonPrefab;
         [SerializeField] private Transform rewardTrm;
 
-        private List<RewardItemButton> spawnedButtons = new();
+        private readonly List<RewardItemButton> spawnedButtons = new();
 
         private void Awake()
         {

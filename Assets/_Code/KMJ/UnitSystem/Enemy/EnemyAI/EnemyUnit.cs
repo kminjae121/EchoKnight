@@ -227,8 +227,8 @@ namespace EnemySystem
         private void OnDeathAnimationFinished()
         {
             gameObject.SetActive(false);
-            if (_Code.Core.Managers.StageManager.Instance != null)
-                _Code.Core.Managers.StageManager.Instance.RemoveEnemy(this.gameObject);
+            if (Code.Core.Managers.StageManager.Instance != null)
+                Code.Core.Managers.StageManager.Instance.RemoveEnemy(this.gameObject);
         }
     }
 }

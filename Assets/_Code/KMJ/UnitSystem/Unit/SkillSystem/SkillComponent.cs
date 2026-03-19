@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using _Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem.Combat;
@@ -158,6 +157,7 @@ namespace Code.UnitSystem.SkillSystem
 
                 if (skill != null)
                 {
+                    skill.ConfigureSkillRange(skillSO);
                     skill.ShowSkillRange();
                     Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(false));
                 }

@@ -49,12 +49,12 @@ namespace Code.UnitSystem
             IsActive = true;
         }
 
-        private void CalculateRange()
+        protected virtual void CalculateRange()
         {
             _tilesInRange.Clear();
             
             Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
-            int range = _owner.unitSO.moveRange;
+            int range = GetRange();
 
             Queue<(Vector2Int pos, int dist)> queue = new();
             HashSet<Vector2Int> visited = new();
@@ -114,10 +114,10 @@ namespace Code.UnitSystem
         {
             foreach (var tile in _tilesInRange)
             {
-                if (!tile.HasState(TileState.Obstacle))
+                if (isMove && !tile.HasState(TileState.Obstacle) && !tile.HasState(TileState.Enemy))
                     tile.SetState(TileState.Walkable, true);
 
-                tile.SetDecalActive(true);
+                ApplyOverlay(tile);
             }
 
             IsActive = true;
@@ -132,14 +132,29 @@ namespace Code.UnitSystem
         {
             foreach (var tile in tiles)
             {
-                tile.SetDecalActive(enable);
+                if (isMove && !tile.HasState(TileState.Obstacle) && !tile.HasState(TileState.Enemy))
+                    tile.SetState(TileState.Walkable, enable);
 
-                if (isMove)
-                {
-                    if (!tile.HasState(TileState.Obstacle))
-                        tile.SetState(TileState.Walkable, enable);
-                }
+                if (enable)
+                    ApplyOverlay(tile);
+                else
+                    tile.ClearOverlay();
             }
+        }
+
+        protected virtual int GetRange()
+            => _owner.unitSO.moveRange;
+
+        private void ApplyOverlay(IMapTile tile)
+        {
+            tile.SetDecalActive(true);
+
+            if (tile.HasState(TileState.Obstacle))
+                tile.SetOverlay(TileOverlayType.Blocked);
+            else if (isMove)
+                tile.SetOverlay(TileOverlayType.Move);
+            else
+                tile.SetOverlay(TileOverlayType.Attack);
         }
     }
 }

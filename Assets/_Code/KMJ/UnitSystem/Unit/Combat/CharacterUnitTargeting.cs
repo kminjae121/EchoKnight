@@ -55,7 +55,6 @@ namespace Code.UnitSystem.Combat
         private void SetSkillTargeting()
         {
             GameObject enemy = inputSO.GetEnemy();
-            _unit.BehaveCompo.ResetTile();
 
             if (enemy == null)
             {

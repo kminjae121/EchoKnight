@@ -35,7 +35,6 @@ namespace Code.Map
         protected override void Awake()
         {
             RebuildTileArray();
-            SetGridVisible(false);
         }
 
         private void RebuildTileArray()
@@ -47,7 +46,7 @@ namespace Code.Map
 
             int count = Mathf.Min(serializedTiles.Length, width * height);
 
-            for (int i = 0; i < count; i++)
+            for (int i = 0; i < count; ++i)
             {
                 var tile = serializedTiles[i];
                 
@@ -68,8 +67,8 @@ namespace Code.Map
             tiles = new MapTile[width, height];
             serializedTiles = new MapTile[width * height];
 
-            for (int y = 0; y < height; y++)
-                for (int x = 0; x < width; x++)
+            for (int y = 0; y < height; ++y)
+                for (int x = 0; x < width; ++x)
                     CreateTile(x, y);
         }
 
@@ -90,12 +89,17 @@ namespace Code.Map
             }
             else
             {
-                tileObject = new GameObject($"Tile_{x}_{y}");
-                tileObject.transform.position = worldPosition;
-                tileObject.transform.parent = transform;
+                tileObject = new GameObject($"Tile_{x}_{y}")
+                {
+                    transform =
+                    {
+                        position = worldPosition,
+                        parent = transform
+                    }
+                };
             }
 
-            MapTile tile = tileObject.GetComponent<MapTile>();
+            var tile = tileObject.GetComponent<MapTile>();
 
             if (tile == null)
                 tile = tileObject.AddComponent<MapTile>();
@@ -110,18 +114,22 @@ namespace Code.Map
 
         private void CreateDecal(GameObject tileObject, int x, int y)
         {
-            GameObject decalObject = new GameObject("Decal");
+            var decalObject = new GameObject("Decal")
+            {
+                transform =
+                {
+                    parent = tileObject.transform,
+                    localPosition = Vector3.up * decalHeight,
+                    localRotation = Quaternion.Euler(90f, 0f, 0f)
+                }
+            };
 
-            decalObject.transform.parent = tileObject.transform;
-            decalObject.transform.localPosition = Vector3.up * decalHeight;
-            decalObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-
-            DecalProjector projector = decalObject.AddComponent<DecalProjector>();
+            var projector = decalObject.AddComponent<DecalProjector>();
 
             projector.size = new Vector3(tileSize * 0.9f, tileSize * 0.9f, projectionDepth);
             projector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
 
-            MapTileVisual visual = decalObject.AddComponent<MapTileVisual>();
+            var visual = decalObject.AddComponent<MapTileVisual>();
 
             visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial,
                 projectionDepth, decalRenderingLayerMask);
@@ -136,7 +144,7 @@ namespace Code.Map
 
             int childCount = transform.childCount;
 
-            for (int i = childCount - 1; i >= 0; i--)
+            for (int i = childCount - 1; i >= 0; --i)
                 DestroyImmediate(transform.GetChild(i).gameObject);
 
             tiles = null;
@@ -196,7 +204,8 @@ namespace Code.Map
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);
-            return tile != null && tile.HasState(TileState.Walkable) && !tile.HasState(TileState.Obstacle);
+            return tile != null && tile.HasState(TileState.Walkable) 
+                                && !tile.HasState(TileState.Obstacle);
         }
     }
 }

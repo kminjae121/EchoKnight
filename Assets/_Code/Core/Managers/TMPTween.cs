@@ -1,7 +1,7 @@
 ﻿using DG.Tweening;
 using TMPro;
 
-namespace _Code.Core.Managers
+namespace Code.Core.Managers
 {
     public static class TMPTween
     {

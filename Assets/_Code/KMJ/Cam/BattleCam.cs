@@ -3,7 +3,7 @@ using Input;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace _Code.KMJ.Cam
+namespace Code.Cam
 {
     public class BattleCam : MonoBehaviour
     {

@@ -1,5 +1,4 @@
-﻿using _Code.Core.Managers;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem.SkillSystem;
 using TMPro;

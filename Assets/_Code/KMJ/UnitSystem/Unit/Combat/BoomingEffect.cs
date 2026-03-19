@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem.Combat;
+using Code.UnitSystem.GimicSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -48,11 +49,8 @@ namespace Code.UnitSystem
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
             {
                 impulseSource.GenerateImpulse(0.3f);
-                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-                Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
                 
-                other.GetComponent<UnitHealth>().ApplyDamage(_damageData,transform.position, transform.position,
-                    atkData,null);
+                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject));
                 
                 _collider.enabled = false;
                 gameObject.SetActive(false);

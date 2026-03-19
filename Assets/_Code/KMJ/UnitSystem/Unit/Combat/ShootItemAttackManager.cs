@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Core.Events.Bus;
+using Code.UnitSystem.GimicSystem;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -79,13 +80,9 @@ namespace Code.UnitSystem.Combat
 
         private void GiveDamage()
         {
-            Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-            
-            impulseSource.GenerateImpulse(0.4f);  
-            
-            _target.GetComponent<IDamageable>().ApplyDamage(_damageData,_target.transform.position, transform.position,
-                atkData,_unit);
+            impulseSource.GenerateImpulse(0.4f);
+
+            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target));
         }
     }
 }

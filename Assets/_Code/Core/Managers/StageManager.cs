@@ -2,9 +2,10 @@
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
+using EnemySystem;
 using UnityEngine;
 
-namespace _Code.Core.Managers
+namespace Code.Core.Managers
 {
     public class StageManager : MonoBehaviour
     {
@@ -61,6 +62,8 @@ namespace _Code.Core.Managers
                 GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
 
                 tile.SetState(TileState.Enemy | TileState.Obstacle, true);
+                EnemyUnit enemy = enemyObj.GetComponent<EnemyUnit>();
+                enemy.currentTile = tile;
 
                 enemies.Add(enemyObj);
             }

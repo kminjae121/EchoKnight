@@ -52,6 +52,16 @@ namespace Code.Map
             _visual?.SetDecalActive(isActive);
         }
 
+        public void SetOverlay(TileOverlayType overlayType)
+        {
+            _visual?.SetOverlay(overlayType);
+        }
+
+        public void ClearOverlay()
+        {
+            _visual?.ClearOverlay();
+        }
+
         private void RefreshVisual()
         {
             _visual?.HandleTileChanged(this);

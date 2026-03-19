@@ -89,12 +89,17 @@ namespace Code.Map
             }
             else
             {
-                tileObject = new GameObject($"Tile_{x}_{y}");
-                tileObject.transform.position = worldPosition;
-                tileObject.transform.parent = transform;
+                tileObject = new GameObject($"Tile_{x}_{y}")
+                {
+                    transform =
+                    {
+                        position = worldPosition,
+                        parent = transform
+                    }
+                };
             }
 
-            MapTile tile = tileObject.GetComponent<MapTile>();
+            var tile = tileObject.GetComponent<MapTile>();
 
             if (tile == null)
                 tile = tileObject.AddComponent<MapTile>();
@@ -109,18 +114,22 @@ namespace Code.Map
 
         private void CreateDecal(GameObject tileObject, int x, int y)
         {
-            GameObject decalObject = new GameObject("Decal");
+            var decalObject = new GameObject("Decal")
+            {
+                transform =
+                {
+                    parent = tileObject.transform,
+                    localPosition = Vector3.up * decalHeight,
+                    localRotation = Quaternion.Euler(90f, 0f, 0f)
+                }
+            };
 
-            decalObject.transform.parent = tileObject.transform;
-            decalObject.transform.localPosition = Vector3.up * decalHeight;
-            decalObject.transform.localRotation = Quaternion.Euler(90f, 0f, 0f);
-
-            DecalProjector projector = decalObject.AddComponent<DecalProjector>();
+            var projector = decalObject.AddComponent<DecalProjector>();
 
             projector.size = new Vector3(tileSize * 0.9f, tileSize * 0.9f, projectionDepth);
             projector.pivot = new Vector3(0f, 0f, projectionDepth * 0.5f);
 
-            MapTileVisual visual = decalObject.AddComponent<MapTileVisual>();
+            var visual = decalObject.AddComponent<MapTileVisual>();
 
             visual.Initialize(walkableMaterial, nonWalkableMaterial, enemyMaterial, obstacleMaterial,
                 projectionDepth, decalRenderingLayerMask);

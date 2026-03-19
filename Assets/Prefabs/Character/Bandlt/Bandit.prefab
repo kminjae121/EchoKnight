@@ -820,6 +820,7 @@ GameObject:
   - component: {fileID: 1364905615837076402}
   - component: {fileID: 7062266341635414419}
   - component: {fileID: 7021340276383001583}
+  - component: {fileID: 8789895838781552923}
   m_Layer: 7
   m_Name: Bandit
   m_TagString: Untagged
@@ -853,6 +854,7 @@ Transform:
   - {fileID: 4282370355982358629}
   - {fileID: 4381050496694511362}
   - {fileID: 8999164334913300090}
+  - {fileID: 4817241397350440807}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2682628836158502387
@@ -1006,6 +1008,18 @@ MonoBehaviour:
   shootItems:
   - {fileID: 3328839309293825585, guid: 9ba78afe5783aa647b95bd3c0c5c2af4, type: 3}
   atkData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
+--- !u!114 &8789895838781552923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333293328105742335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 776c93e1cd1b410f896debe554d3a772, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Combat.AttackApplyCompo
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1116,6 +1130,95 @@ MonoBehaviour:
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   behaviorCompo: {fileID: 2712662656777492302}
   skillManager: {fileID: 8081901703055209266}
+--- !u!1 &2708508128988086321
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4817241397350440807}
+  - component: {fileID: 1269211429030348699}
+  - component: {fileID: 186765895236097103}
+  - component: {fileID: 6781606782256285230}
+  - component: {fileID: 7752894650181887457}
+  m_Layer: 0
+  m_Name: Gimics
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4817241397350440807
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2708508128988086321}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.19880001, y: 0, z: -0.56264335}
+  m_LocalScale: {x: 0.33333334, y: 0.33333334, z: 0.33333334}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 663893733135974173}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1269211429030348699
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2708508128988086321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0779899037cd4b4b9d2b276cb86f5e3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.RogueCondition
+--- !u!114 &186765895236097103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2708508128988086321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2065f9867844122b1613b7b8e5ec65c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.RogueOperation
+  unit: {fileID: 2682628836158502387}
+  atkData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
+--- !u!114 &6781606782256285230
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2708508128988086321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28266d3707924ecea6f4283782fcff29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.GimicComponent
+  GimicOption: 1
+  _condition: {fileID: 1269211429030348699}
+  _operation: {fileID: 186765895236097103}
+  _eventCompo: {fileID: 7752894650181887457}
+--- !u!114 &7752894650181887457
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2708508128988086321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffcce7ae716249f79039a2ba0874c747, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.GimicEventComponent
 --- !u!1 &2769272016940168851
 GameObject:
   m_ObjectHideFlags: 0

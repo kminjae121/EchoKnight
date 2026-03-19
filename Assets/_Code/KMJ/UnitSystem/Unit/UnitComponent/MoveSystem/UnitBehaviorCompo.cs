@@ -202,6 +202,12 @@ namespace Code.UnitSystem
 
             if (!tileInfo.HasState(TileState.Walkable))
                 yield break;
+            
+            int x = Mathf.Abs(CurrentMapTile.GridPos.x - tileInfo.GridPos.x);
+            int y = Mathf.Abs(CurrentMapTile.GridPos.y - tileInfo.GridPos.y);
+
+            int useCost = x + y * 5;
+            
 
             if (CurrentMapTile != null)
             {
@@ -212,7 +218,7 @@ namespace Code.UnitSystem
 
             MoveStart(tileInfo);
 
-            _unitCostComponentCompo.RemoveCost(15);
+            _unitCostComponentCompo.RemoveCost(useCost);
  
             while (navMeshAgent.pathPending)
                 yield return null;

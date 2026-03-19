@@ -19,7 +19,7 @@ namespace Code.UnitSystem.GimicSystem
             _operationLevel++;
         }
 
-        public override void ResetOpration()
+        public override void ResetOperation()
         {
             _addDamage = 0;
             _skillCompo.SetAddSkillDamage(_addDamage,SkillType.ActiveSkill);    

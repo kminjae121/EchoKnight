@@ -3,8 +3,10 @@ using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem
 {
+    
     public abstract class GimicOperation : MonoBehaviour, IGimicComponent
     {
+        
         protected SkillComponent _skillCompo;
 
         public void InitializeOperation(SkillComponent skillCompo)
@@ -17,7 +19,17 @@ namespace Code.UnitSystem.GimicSystem
             
         }
 
-        public virtual void ResetOpration()
+        public virtual void ResetOperation()
+        {
+            
+        }
+
+        public virtual void ResetOperation(GameObject target)
+        {
+            
+        }
+
+        public virtual void StartOperation(GameObject target)
         {
             
         }

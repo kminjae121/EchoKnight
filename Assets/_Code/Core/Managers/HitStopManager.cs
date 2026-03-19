@@ -24,7 +24,7 @@ namespace _00.Core._02.Scripts._01.Manager
             {
                 StopCoroutine(_hitStopCoroutine);
             }
-
+            
             _hitStopCoroutine = StartCoroutine(ProcessHitStop(evt));
         }
 

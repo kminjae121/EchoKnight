@@ -3,23 +3,21 @@ using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem
 {
-    // enum의 값이 곧 stackValues 인덱스가 되도록 맞춤
     public enum KnightPhase
     {
-        None = 0,
-        OnePhase = 1,
-        TwoPhase = 2,
-        ThreePhase = 3,
-        FourPhase = 4,
+        OnePhase = 0,
+        TwoPhase = 1,
+        LastPage = 2,
     }
 
     public class KnightCondition : GimicCondition
     {
         [SerializeField] private int stack = 0;
-        
-        [SerializeField] private List<float> stackValues = new List<float>();
 
-        [SerializeField] private KnightPhase phase = KnightPhase.None;
+        [SerializeField] private KnightPhase phase = KnightPhase.OnePhase;
+        
+        private readonly int[] BonusStacks = { 3, 6, 10 };
+        
 
         public override void SetCondition()
         {
@@ -28,16 +26,23 @@ namespace Code.UnitSystem.GimicSystem
 
         public override bool CheckCondition()
         {
-            int idx = (int)phase;
+            int idx = (int)phase; 
             
-            if (stackValues == null || idx < 0 || idx >= stackValues.Count)
+            if (phase == KnightPhase.LastPage)
                 return false;
-
-            return stack >= stackValues[idx];
+            
+            if (stack >= BonusStacks[idx])
+            {
+                phase = (KnightPhase)(idx + 1);
+                return true;
+            }
+            
+            return false;
         }
 
         public override void RemoveCondition()
         {
+            phase = KnightPhase.OnePhase;
             stack = 0;
         }
     }

@@ -45,7 +45,6 @@ public class MeleeAttack : BasicUnitSkill
             _target = target;
             
             StartCoroutine(MeleeAttackAction(target));
-            Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(_characterUnit.unitSO.UnitType));
         }
 
         private IEnumerator MeleeAttackAction(GameObject target)
@@ -74,6 +73,7 @@ public class MeleeAttack : BasicUnitSkill
 
                 yield return null;
             }
+            
             _animationCompo.PlaySelectAnimation("ATTACK");
             
             if(isRunningAttack == false)
@@ -113,13 +113,8 @@ public class MeleeAttack : BasicUnitSkill
         
         public void TakeDamage()
         {
-            Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
             _characterUnit.impulseSource.GenerateImpulse(0.6f);  
             
-            
-            _target.GetComponent<UnitHealth>().ApplyDamage(DamageData, 
-                _target.transform.position,transform.position,atkData,_characterUnit);
-            
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
+            Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target));
         }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -17,7 +15,6 @@ namespace Code.UI
 
         private void OnDisable()
         {
-            
             returnBtn.onClick.RemoveListener(ReturnHome);
         }
 

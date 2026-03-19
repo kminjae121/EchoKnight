@@ -39,21 +39,5 @@ namespace Code.Managers
             if (currentGaugeValue.Value >= 100)
                 currentGaugeValue.Value = 100;
         }
-
-        #region Test
-
-        [ContextMenu("RaiseTurnEndEvent")]
-        private void RaiseTurnEndEvent()
-        {
-            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(null));
-        }
-
-        [ContextMenu("AddGaugeValue")]
-        private void AddGaugeValue()
-        {
-            currentGaugeValue.Value += 5;
-        }
-
-        #endregion
     }
 }

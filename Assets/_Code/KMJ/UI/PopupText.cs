@@ -1,10 +1,9 @@
-﻿using Code.UI;
-using DG.Tweening;
+﻿using DG.Tweening;
 using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;
 
-namespace Code.Pool
+namespace Code.UI
 {
     public class PopupText : MonoBehaviour, IPoolable
     {

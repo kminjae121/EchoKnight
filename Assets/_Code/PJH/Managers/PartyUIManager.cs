@@ -21,17 +21,13 @@ namespace Code.Managers
         private void BindPartyUnits()
         {
             for (int i = 0; i < characterUIList.Count; ++i)
-            {
                 if (i < unitStorage.unitStates.Count)
                 {
                     characterUIList[i].gameObject.SetActive(true);
                     characterUIList[i].SetUnit(unitStorage.unitStates[i]);
                 }
                 else
-                {
                     characterUIList[i].gameObject.SetActive(false);
-                }
-            }
         }
     }
 }

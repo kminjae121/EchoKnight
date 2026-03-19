@@ -1,5 +1,4 @@
-﻿using Code.Items;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Code.Items
 {

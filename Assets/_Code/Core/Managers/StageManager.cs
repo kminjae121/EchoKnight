@@ -6,7 +6,7 @@ using Code.UI;
 using EnemySystem;
 using UnityEngine;
 
-namespace _Code.Core.Managers
+namespace Code.Core.Managers
 {
     public class StageManager : MonoBehaviour
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Code.UnitSystem;
 using UnityEngine;
 
-namespace _Code.Core.Managers
+namespace Code.Core.Managers
 {
     public class SetUnitInGameInfo : MonoBehaviour
     {

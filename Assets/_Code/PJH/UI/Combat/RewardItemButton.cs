@@ -1,7 +1,6 @@
 ﻿using Code.Core.Debugs;
 using Code.Items;
 using Code.Managers;
-using Code.UnitSystem.ArtifactSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

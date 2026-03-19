@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using _Code.Core.Managers;
-using _Code.KMJ.SO;
+using Code.Core.Managers;
+using Code.UI;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;

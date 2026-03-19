@@ -2,6 +2,7 @@ using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
+using Code.UnitSystem.GimicSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
@@ -77,13 +78,9 @@ public class BasicAttackSkill : BasicUnitSkill
     
     public void TakeDamage()
     {
-        Bus<HitStopEvent>.Raise(new HitStopEvent(0.2f,0.25f));
         _characterUnit.impulseSource.GenerateImpulse(0.3f);
         
-        _targetEnemy.GetComponent<UnitHealth>().ApplyDamage(DamageData, 
-            _targetEnemy.transform.position,transform.position,attackData,_owner);
-        
-        Bus<UseGimicEvent>.Raise(new UseGimicEvent(_characterUnit.unitSO.UnitType));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_targetEnemy));
     }
 
     public void AttackEnd()
@@ -105,7 +102,6 @@ public class BasicAttackSkill : BasicUnitSkill
             yield return null;
         }
         animtionCompo.PlaySelectAnimation("IDLE");
-        Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
         skillEndEvent.Invoke();
         Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));

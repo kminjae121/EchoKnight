@@ -9,12 +9,27 @@ namespace Code.UnitSystem.GimicSystem
             return true;
         }
 
+        public virtual bool CheckCondition(GameObject target)
+        {
+            return true;
+        }
+
         public virtual void SetCondition()
         {
             
         }
 
+        public virtual void SetCondition(GameObject target)
+        {
+            
+        }
+
         public virtual void RemoveCondition()
+        {
+            
+        }
+
+        public virtual void RemoveCondition(GameObject target)
         {
             
         }

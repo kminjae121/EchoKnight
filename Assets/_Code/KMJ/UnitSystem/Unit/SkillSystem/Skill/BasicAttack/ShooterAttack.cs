@@ -60,7 +60,7 @@ public class ShooterAttack : BasicUnitSkill
             Vector3 slashRot = _unitBase.transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(DamageData);
+            _shootItemManager.SetDamageData(DamageData,AddDamage);
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);   
 
             _characterUnit.impulseSource.GenerateImpulse(0.3f);

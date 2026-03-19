@@ -61,7 +61,7 @@ public class LongAttack : BasicUnitSkill
             Vector3 dir = _target.transform.position;
             dir.y += 1.4f;
             
-            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(DamageData);
+            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(DamageData,AddDamage);
             effectPrefab.transform.position = dir;
             effectPrefab.SetActive(true);
         }

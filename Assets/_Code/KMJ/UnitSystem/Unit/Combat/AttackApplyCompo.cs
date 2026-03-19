@@ -7,14 +7,10 @@ using UnityEngine;
 
 namespace Code.UnitSystem.Combat
 {
-    public class AttackApplyCompo : MonoBehaviour, IUnitComponent
+    public class AttackApplyCompo : MonoBehaviour
     {
-        private Unit _owner;
-        
-        public void Initialize(Unit owner)
+        private void Start()
         {
-            _owner = owner;
-            
             Bus<DamageEvent>.Subscribe(GetApplyDamage);
         }
 
@@ -26,17 +22,18 @@ namespace Code.UnitSystem.Combat
         public void GetApplyDamage(DamageEvent evt)
         {
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+
+            if (evt.target.GetComponent<markComponent>().isMarking == true ||
+                (evt.Owner.unitSO.UnitType == UnitType.Bandlt && evt.addDamage != 0))
+            {
+                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target,GimicOption.TargetGimic));
+            }
             
-            //if(evt.target.GetComponent<markComponent>().isMarking == true || _owner.unitSO.UnitType == UnitType.Bandlt)
-            //    Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target));
+            if(evt.Owner.unitSO.UnitType == UnitType.Knight && evt.isUseOwnGimic)
+                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Knight,null,GimicOption.OwnGimic));
             
-            
-            
-            if(_owner.unitSO.UnitType == UnitType.Knight)
-                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Knight));
-            
-            evt.target.GetComponent<IDamageable>().ApplyDamage(evt.DamageData, evt.target.transform.position,
-                evt.target.transform.position, evt.atkData, _owner);
+            evt.target.GetComponent<UnitHealth>().ApplyDamage(evt.DamageData, evt.target.transform.position,
+                evt.target.transform.position, evt.atkData, evt.Owner);
         }
     }
 }

@@ -22,6 +22,8 @@ namespace Code.UnitSystem.Combat
 
         public Action hitEvent;
 
+        private float _addDamage;
+
         
         public void Initialize(Unit owner)
         {
@@ -54,9 +56,10 @@ namespace Code.UnitSystem.Combat
             _target = target;
         }
 
-        public void SetDamageData(DamageData damageData)
+        public void SetDamageData(DamageData damageData, float addDamage)
         {
             _damageData = damageData;
+            _addDamage = addDamage;
         }
 
         public void CreateShootItem(string itemName, Vector3 pos, Vector3 rotation)
@@ -82,7 +85,7 @@ namespace Code.UnitSystem.Combat
         {
             impulseSource.GenerateImpulse(0.4f);
 
-            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target));
+            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target,_addDamage,_unit));
         }
     }
 }

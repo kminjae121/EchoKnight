@@ -2,6 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
+using Code.UI;
 using EnemySystem;
 using UnityEngine;
 
@@ -26,6 +27,8 @@ namespace _Code.Core.Managers
 
         [SerializeField] private GameObject gameClearUI;
         [SerializeField] private GameObject gameOverUI;
+
+        [SerializeField] private GameObject cam;
 
         private void Awake()
         {
@@ -64,6 +67,7 @@ namespace _Code.Core.Managers
                 tile.SetState(TileState.Enemy | TileState.Obstacle, true);
                 EnemyUnit enemy = enemyObj.GetComponent<EnemyUnit>();
                 enemy.currentTile = tile;
+                enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
 
                 enemies.Add(enemyObj);
             }

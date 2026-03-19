@@ -115,6 +115,6 @@ public class MeleeAttack : BasicUnitSkill
         {
             _characterUnit.impulseSource.GenerateImpulse(0.6f);  
             
-            Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target));
+            Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target,AddDamage, _characterUnit));
         }
 }

@@ -1,4 +1,5 @@
-﻿using Code.UnitSystem.Combat;
+﻿using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using UnityEngine;
 
 namespace Code.Core.Events.Bus
@@ -10,12 +11,19 @@ namespace Code.Core.Events.Bus
         public AttackDataSO atkData;
 
         public GameObject target;
+        public float addDamage;
 
-        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target)
+        public Unit Owner;
+
+        public bool isUseOwnGimic;
+        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target, float addDamage, Unit Owenr, bool isUseOwnGimic = true)
         {
             DamageData = data;
             this.atkData = atkData;
             this.target = target;
+            this.addDamage = addDamage;
+            this.Owner = Owenr;
+            this.isUseOwnGimic = isUseOwnGimic;
         }
     }
 }

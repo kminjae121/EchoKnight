@@ -39,33 +39,39 @@ namespace Code.UnitSystem.GimicSystem
 
         public void SetCondition(UnitGimicEvent evt)
         {
-            if (evt.unitType == _unitType && GimicOption ==  GimicOption.OwnGimic)
+            if (_unitType == evt.unitType)
             {
-                _condition.SetCondition();
+                if (evt.gimicOption == GimicOption.OwnGimic)
+                {
+                    _condition.SetCondition();
                 
-                if (_condition.CheckCondition())
-                    _operation.StartOperation();
-            }
-            else if (evt.unitType == _unitType && GimicOption == GimicOption.TargetGimic)
-            {
-                _condition.SetCondition(evt.target);
-                
-                if(_condition.CheckCondition())
-                    _operation.StartOperation(evt.target);
+                    if (_condition.CheckCondition())
+                        _operation.StartOperation();
+                }
+                else if (evt.gimicOption == GimicOption.TargetGimic)
+                {
+                    _condition.SetCondition(evt.target);
+
+                    if (_condition.CheckCondition(evt.target))
+                        _operation.StartOperation(evt.target);
+                }   
             }
         }
 
         public void UseCondition(UseGimicEvent evt)
         {
-            if (evt.unitType == _unitType &&  GimicOption == GimicOption.OwnGimic)
+            if (_unitType == evt.unitType)
             {
-                _condition.RemoveCondition();
-                _operation.ResetOperation();
-            }
-            else if (evt.unitType == _unitType && GimicOption == GimicOption.TargetGimic)
-            {
-                _condition.RemoveCondition(evt.target);
-                _operation.ResetOperation(evt.target);
+                if (GimicOption == GimicOption.OwnGimic)
+                {
+                    _condition.RemoveCondition();
+                    _operation.ResetOperation();
+                }
+                else if (evt.unitType == _unitType && GimicOption == GimicOption.TargetGimic)
+                {
+                    _condition.RemoveCondition(evt.target);
+                    _operation.ResetOperation(evt.target);
+                }
             }
         }
 

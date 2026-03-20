@@ -6,28 +6,32 @@ namespace Code.UnitSystem.GimicSystem
 {
     public class RogueCondition : GimicCondition
     {
-        private Dictionary<GameObject, int> _markDictionary = new Dictionary<GameObject, int>();
-
+        private readonly Dictionary<GameObject, int> _markDictionary = new Dictionary<GameObject, int>();
         public override bool CheckCondition(GameObject target)
         {
-            if (_markDictionary.GetValueOrDefault(target) == 5)
+            if (_markDictionary[target] >= 5)
+            {
+                Debug.Log(_markDictionary[target]);
                 return true;
-
+            }
             return false;
         }
 
         public override void SetCondition(GameObject target)
         {
-            if (_markDictionary.ContainsKey(target))
-                _markDictionary[target] += 1;
+            if (_markDictionary.TryGetValue(target, out var count))
+                _markDictionary[target] = count + 1;
             else
-                _markDictionary.Add(target, 1);
+                _markDictionary[target] = 1;
+            
             
             Bus<SetMarkEvent>.Raise(new SetMarkEvent(target));
         }
-        
+
         public override void RemoveCondition(GameObject target)
         {
+            if (!target) return;
+
             _markDictionary.Remove(target);
         }
     }

@@ -79,8 +79,9 @@ public class BasicAttackSkill : BasicUnitSkill
     public void TakeDamage()
     {
         _characterUnit.impulseSource.GenerateImpulse(0.3f);
-        
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_targetEnemy));
+
+        ;
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_targetEnemy,AddDamage,_characterUnit,false));
     }
 
     public void AttackEnd()
@@ -102,6 +103,7 @@ public class BasicAttackSkill : BasicUnitSkill
             yield return null;
         }
         animtionCompo.PlaySelectAnimation("IDLE");
+        Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Knight, null));
         skillEndEvent.Invoke();
         Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));

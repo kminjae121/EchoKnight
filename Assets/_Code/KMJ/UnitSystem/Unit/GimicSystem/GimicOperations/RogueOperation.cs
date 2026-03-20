@@ -18,7 +18,8 @@ namespace Code.UnitSystem.GimicSystem
 
         public override void StartOperation(GameObject target)
         {
-            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,target));
+            target.GetComponent<UnitHealth>().ApplyDamage(_damageData, target.transform.position,
+                target.transform.position,atkData, null);
         }
 
         public override void ResetOperation(GameObject target)

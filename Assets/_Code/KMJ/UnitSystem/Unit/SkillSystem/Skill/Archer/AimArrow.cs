@@ -68,7 +68,7 @@ public class AimArrow : BasicUnitSkill
         Vector3 slashRot = transform.rotation.eulerAngles;
         
         _shootItemManager.SetTarget(_target);
-        _shootItemManager.SetDamageData(DamageData);
+        _shootItemManager.SetDamageData(DamageData,AddDamage);
         _shootItemManager.CreateShootItem("AimArrow",pos, slashRot);
     
         _target = null;

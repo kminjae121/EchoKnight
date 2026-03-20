@@ -71,6 +71,7 @@ namespace Code.UnitSystem.Combat
 
                     _targetingCompo = null;
                     skillManager.GetSkillInfo().SetEnemyTargeting(null);
+                    skillManager.GetSkillInfo().SetEnemy(null);
                 }
             }
             else

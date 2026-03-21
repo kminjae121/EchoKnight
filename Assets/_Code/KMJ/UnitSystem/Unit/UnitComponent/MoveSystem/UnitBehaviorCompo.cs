@@ -24,7 +24,9 @@ namespace Code.UnitSystem
         private CharacterUnit _unit;
         private bool _isMoving;
         private float _moveSpeed;
-        private UnitCostComponent _unitCostComponentCompo;
+
+        public float moveCount { get; set; }
+        
         private IMapTile _nextTile;
 
         protected override void Start()
@@ -32,7 +34,6 @@ namespace Code.UnitSystem
             base.Start();
 
             _unit = _owner as CharacterUnit;
-            _unitCostComponentCompo = _unit.GetUnitCompo<UnitCostComponent>();
             UnitRangeCompo = _unit.GetUnitCompo<UnitManageRangeCompo>();
 
             _moveSpeed = 9;
@@ -133,14 +134,9 @@ namespace Code.UnitSystem
             if (_isMoving)
                 return;
 
-            if (_unitCostComponentCompo.GetCurrentCost() <= 0)
-            {
-                Bus<WarningUIEvent>.Raise(new WarningUIEvent("AP가 부족합니다"));
-                ResetTile();
-                EndAct();
+            if (moveCount >= 1)
                 return;
-            }
-
+            
             IMapTile tile = _unit.InputSO.GetSelectedTile();
             
             VisualPrefabs.SetActive(false);
@@ -217,8 +213,6 @@ namespace Code.UnitSystem
             }
 
             MoveStart(tileInfo);
-
-            _unitCostComponentCompo.RemoveCost(useCost);
  
             while (navMeshAgent.pathPending)
                 yield return null;
@@ -230,6 +224,8 @@ namespace Code.UnitSystem
 
                 yield return null;
             }
+
+            moveCount++;
 
             MoveEnd(tileInfo);
         }

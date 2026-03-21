@@ -49,13 +49,11 @@ public class AimArrow : BasicUnitSkill
         animtionCompo.PlaySelectAnimation("AIM");
     }
 
-    public void SkillEnd()
+    protected override void SkillEnd()
     {
+        base.SkillEnd();
         skillEndEvent?.Invoke();
         animtionCompo.PlaySelectAnimation("IDLE");
-        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-        Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
     }
     
     public void MakeArrow()

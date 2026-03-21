@@ -25,7 +25,7 @@ public class LongAttack : BasicUnitSkill
         {
             base.Start();
             triggerCompo.OnLongRangeAttackTrigger += ShootLongRangeAttack;
-            triggerCompo.OnLongRangeAttackEndTrigger += AttackEnd;
+            triggerCompo.OnLongRangeAttackEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
         }
@@ -34,7 +34,7 @@ public class LongAttack : BasicUnitSkill
         {
             base.OnDestroy();
             triggerCompo.OnLongRangeAttackTrigger -= ShootLongRangeAttack;
-            triggerCompo.OnLongRangeAttackEndTrigger -= AttackEnd;
+            triggerCompo.OnLongRangeAttackEndTrigger -= SkillEnd;
             skillEvent.RemoveListener(AttackAction);
         }
 
@@ -67,14 +67,11 @@ public class LongAttack : BasicUnitSkill
         }
 
 
-        private void AttackEnd()
+        protected override void SkillEnd()
         {
+            base.SkillEnd();
             _animationCompo.PlaySelectAnimation("IDLE");
             _characterUnit.BehaveCompo.IsActive = true;
             skillEndEvent?.Invoke();
-            
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
         }
     }

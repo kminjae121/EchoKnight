@@ -79,6 +79,14 @@ namespace Code.UnitSystem.SkillSystem
             Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
         }
 
+        protected virtual void SkillEnd()
+        {
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            _characterUnit.TurnEnd();
+        }
+
         public override void AttackEnemy()
         {
             if (!isCanUseSkill)

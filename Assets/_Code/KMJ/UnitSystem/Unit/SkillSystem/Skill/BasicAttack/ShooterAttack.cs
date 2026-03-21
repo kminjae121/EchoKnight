@@ -22,7 +22,7 @@ public class ShooterAttack : BasicUnitSkill
         {
             base.Start();
             triggerCompo.OnShootAttackTrigger += Shoot;
-            triggerCompo.OnShootAttackEndTrigger += AttackEnd;
+            triggerCompo.OnShootAttackEndTrigger += SkillEnd;
             skillEvent.AddListener(AttackAction);
             _shootItemManager = _unitBase.GetUnitCompo<ShootItemAttackManager>();
             _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
@@ -32,7 +32,7 @@ public class ShooterAttack : BasicUnitSkill
         {
             base.OnDestroy();
             triggerCompo.OnShootAttackTrigger -= Shoot;
-            triggerCompo.OnShootAttackEndTrigger -= AttackEnd;
+            triggerCompo.OnShootAttackEndTrigger -= SkillEnd;
             skillEvent.RemoveListener(AttackAction);
         }
 
@@ -65,16 +65,12 @@ public class ShooterAttack : BasicUnitSkill
 
             _characterUnit.impulseSource.GenerateImpulse(0.3f);
         }
-        
-        private void AttackEnd()
+
+        protected override void SkillEnd()
         {
+            base.SkillEnd();
             _animationCompo.PlaySelectAnimation("IDLE");
             _characterUnit.BehaveCompo.IsActive = true;
-            
-            
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             
             skillEndEvent.Invoke();
         }

@@ -104,10 +104,13 @@ public class BasicAttackSkill : BasicUnitSkill
         }
         animtionCompo.PlaySelectAnimation("IDLE");
         Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Knight, null));
-        skillEndEvent.Invoke();
-        Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-        Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-        Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         _targetEnemy = null;
+        SkillEnd();
+    }
+
+    protected override void SkillEnd()
+    {
+        base.SkillEnd();
+        skillEndEvent.Invoke();
     }
 }

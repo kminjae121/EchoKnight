@@ -98,19 +98,20 @@ public class MeleeAttack : BasicUnitSkill
                 );
                 yield return null;
             }
-
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, 
-                false,new Vector3(0.1f,0.1f,0.1f)));
             
             _animationCompo.PlaySelectAnimation("IDLE");
             _characterUnit.BehaveCompo.IsActive = true;
             _characterUnit.BehaveCompo.FindObjectInRange();
-            skillEndEvent?.Invoke();
-            
-             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+
+            SkillEnd();
         }
-        
+
+        protected override void SkillEnd()
+        {
+            base.SkillEnd();
+            skillEndEvent?.Invoke();
+        }
+
         public void TakeDamage()
         {
             _characterUnit.impulseSource.GenerateImpulse(0.6f);  

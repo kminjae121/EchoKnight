@@ -23,8 +23,6 @@ namespace Code.UnitManaging
         [Header("Spawn Settings")]
         [SerializeField] public List<Vector2Int> startingCoords = new List<Vector2Int>();
 
-        public float currentCost { get; set; } = 100;
-
         public List<UnitSpawnSO> _selectedUnits { get; private set; } = new List<UnitSpawnSO>();
 
         private readonly List<Unit> _myOwnUnitList = new List<Unit>();
@@ -47,7 +45,6 @@ namespace Code.UnitManaging
 
         private void Start()
         {
-            currentCost = 100;
             SelectUnits();
             MakeGameUnit();
         }

@@ -25,7 +25,6 @@ namespace Code.UnitSystem
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
-        public UnitCostComponent UnitCostComponentCompo { get; private set; }
         public TurnCostGaugeManager GaugeManager { get; set; }
 
         #endregion
@@ -46,7 +45,6 @@ namespace Code.UnitSystem
             BehaveCompo = GetUnitCompo<UnitBehaviorCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
-            UnitCostComponentCompo = GetUnitCompo<UnitCostComponent>();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
@@ -82,17 +80,19 @@ namespace Code.UnitSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-
-            UnitCostComponentCompo.GetCost(30);
+            
             GaugeManager.AddSkillPoint(30);
             
             SkillCompo.UpdateSkillUI();
             
             if (endTurnBtn != null)
                 endTurnBtn.onClick.AddListener(TurnEnd);
-            
-            if (BehaveCompo != null) 
+
+            if (BehaveCompo != null)
+            {
                 BehaveCompo.FindObjectInRange();
+                BehaveCompo.moveCount = 0;
+            }
         }
 
         public override void OnTurnEnd()

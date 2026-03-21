@@ -45,14 +45,12 @@ using UnityEngine;
             animtionCompo.PlaySelectAnimation("HEAL");
         }
 
-        private void SkillEnd()
+        protected override void SkillEnd()
         {
+            base.SkillEnd();
             skillEndEvent?.Invoke();
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
         }
 
         public void Heal()

@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Code.Core.Events.Bus;
+using Code.Core.Managers;
 using Code.UnitSystem;
+using Code.UnitSystem.SkillSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,9 +38,24 @@ namespace Code.UI
 
             for (int i = 0; i < skillIcons.Count; i++)
             {
+                int index = i;
                 var trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 trigger.useHoverVisuals = false;
+                
                 trigger.OnClick = () => OpenTargetPanel("EquipPanel");
+                trigger.OnHoverEnter = (pos) =>
+                {
+                    if (_currentUnit != null && SkillSendManager.Instance != null)
+                    {
+                        var equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.Data.UnitType);
+                        if (index < equippedSkills.Length)
+                        {
+                            var skill = equippedSkills[index];
+                            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(skill, null));
+                        }
+                    }
+                };
+                trigger.OnHoverExit = () => Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
             }
 
             for (int i = 0; i < artifactIcons.Count; i++)
@@ -53,7 +70,7 @@ namespace Code.UI
                     if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null && index < _currentUnit.Data.EquippedArtifacts.artifacts.Count)
                     {
                         var artifact = _currentUnit.Data.EquippedArtifacts.artifacts[index];
-                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pos, true));
+                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, Vector2.zero, true));
                     }
                 };
                 trigger.OnHoverExit = () => Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, Vector2.zero, true));
@@ -128,15 +145,21 @@ namespace Code.UI
         private void RefreshSkillSlots()
         {
             var data = _currentUnit.Data;
+            SkillSO[] equippedSkills = null;
+
+            if (SkillSendManager.Instance != null && data != null)
+            {
+                equippedSkills = SkillSendManager.Instance.GetEquipSkills(data.UnitType);
+            }
             
             for (int i = 0; i < skillIcons.Count; i++)
             {
                 var trigger = skillIcons[i].GetComponent<SlotHoverClickTrigger>();
-                bool hasSkill = data.SkillStorage != null && i < data.SkillStorage.skills.Count;
+                bool hasSkill = equippedSkills != null && i < equippedSkills.Length;
 
                 if (hasSkill)
                 {
-                    skillIcons[i].sprite = data.SkillStorage.skills[i].skillUIImage;
+                    skillIcons[i].sprite = equippedSkills[i].skillUIImage;
                 }
                 else
                 {

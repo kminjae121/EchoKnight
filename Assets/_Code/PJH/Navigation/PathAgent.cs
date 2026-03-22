@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Code.Core.Debugs;
+using Code.UnitSystem;
 using Code.Utils;
 using UnityEngine;
 
@@ -15,7 +16,7 @@ namespace Code.Navigation
 
         private CancellationTokenSource _cts = new();
         private bool _isCalculating;
-
+        
         public async Task<int> GetPath(Vector3Int startPos, Vector3Int destination, Vector3[] pointArr)
         {
             if (_isCalculating && _cts != null)

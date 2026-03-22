@@ -64,8 +64,7 @@ namespace Code.Navigation
             Vector2Int[] directions =
             {
                 Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right,
-                new(1, 1), new(1, -1),
-                new(-1, 1), new(-1, -1)
+                new(1, 1), new(1, -1), new(-1, 1), new(-1, -1)
             };
 
             foreach (NodeData nodeData in bakedData.points)
@@ -156,6 +155,7 @@ namespace Code.Navigation
             Vector3 arrowStart = end - dir.normalized * 0.25f;
             Vector3 arrowEnd = end - dir.normalized * 0.15f;
             Vector3 right = Vector3.Cross(Vector3.up, dir.normalized);
+            
             const float arrowSize = 0.05f;
             Vector3 trianglePointA = arrowStart + right * arrowSize;
             Vector3 trianglePointB = arrowStart - right * arrowSize;

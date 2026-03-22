@@ -26,8 +26,8 @@ namespace Code.UnitSystem.SkillSystem
         public DamageData DamageData;
         public int UseSkillPoint;
         public bool isCanUseSkill = false;
-        
-        public float AddDamage { get; private set; }
+
+        public float AddDamage { get; private set; } = 0;
         public UnitRotation rotationCompo { get; set; }
         public float damage { get; set; }
         protected int SkillRange { get; private set; }
@@ -79,7 +79,7 @@ namespace Code.UnitSystem.SkillSystem
         
         public void SetDamage(float damage)
         {
-            DamageData.damage = damage;
+            DamageData.damage = damage += AddDamage;
         }
 
         private void StartSkill(GameObject arg0)
@@ -87,7 +87,7 @@ namespace Code.UnitSystem.SkillSystem
         }
         public void SetAddDamage(float addDamage)
         {
-            this.AddDamage = addDamage;
+            AddDamage = addDamage;
         }
         
         protected virtual void CanUseSkillTrue()

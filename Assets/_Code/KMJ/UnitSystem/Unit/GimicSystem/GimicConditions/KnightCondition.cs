@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Code.Core.Events.Bus;
 using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem
@@ -7,7 +8,8 @@ namespace Code.UnitSystem.GimicSystem
     {
         OnePhase = 0,
         TwoPhase = 1,
-        LastPage = 2,
+        ThreePhase = 2,
+        LastPage = 3,
     }
 
     public class KnightCondition : GimicCondition
@@ -21,7 +23,11 @@ namespace Code.UnitSystem.GimicSystem
 
         public override void SetCondition()
         {
+            if (stack >= 10)
+                return;
+            
             stack += 1;
+            Bus<KnightGimicBarEvent>.Raise(new KnightGimicBarEvent(stack));
         }
 
         public override bool CheckCondition()
@@ -42,6 +48,7 @@ namespace Code.UnitSystem.GimicSystem
 
         public override void RemoveCondition()
         {
+            Bus<KnightGimicBarEvent>.Raise(new KnightGimicBarEvent(0));
             phase = KnightPhase.OnePhase;
             stack = 0;
         }

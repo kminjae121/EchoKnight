@@ -49,13 +49,11 @@ using UnityEngine;
             animtionCompo.PlaySelectAnimation("FIREBALL");
         }
         
-        private void SkillEnd()
+        protected override void SkillEnd()
         {
+            base.SkillEnd();
             skillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
         
         public void MakeArrow()
@@ -68,7 +66,7 @@ using UnityEngine;
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(DamageData);
+            _shootItemManager.SetDamageData(DamageData,AddDamage);
             _shootItemManager.CreateShootItem("FireBall",pos, slashRot);
             
             _target = null;

@@ -1493,7 +1493,6 @@ GameObject:
   - component: {fileID: 6613513605220735348}
   - component: {fileID: 8882597909042103306}
   - component: {fileID: 4754169522647606861}
-  - component: {fileID: 1300588624815013489}
   m_Layer: 7
   m_Name: Knight
   m_TagString: Untagged
@@ -1665,18 +1664,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 1, z: 0.5}
   m_Center: {x: 0, y: 0.83, z: 0}
---- !u!114 &1300588624815013489
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2333293328105742335}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 776c93e1cd1b410f896debe554d3a772, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Combat.AttackApplyCompo
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -6645,11 +6632,46 @@ PrefabInstance:
       propertyPath: m_Name
       value: OHS03
       objectReference: {fileID: 0}
+    - target: {fileID: 6259195511646583590, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: 012989368fd02e44b972975ae2140e6d, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5610884078883986163, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8597471472207871141}
   m_SourcePrefab: {fileID: 100100000, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
+--- !u!23 &3334377181943597215 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 6259195511646583590, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
+  m_PrefabInstance: {fileID: 8690600683210240953}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &3839013092227098954 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5610884078883986163, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}
+  m_PrefabInstance: {fileID: 8690600683210240953}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8597471472207871141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3839013092227098954}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 548547bfa1a3496e8137b5aeb38d85c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.KnightSword
+  swordMaterials:
+  - {fileID: 2100000, guid: 012989368fd02e44b972975ae2140e6d, type: 2}
+  - {fileID: 2100000, guid: e3d40fc196e2a3446846e803d13189d7, type: 2}
+  - {fileID: 2100000, guid: 6a24cc4d4aabeca468dc072a23466a71, type: 2}
+  - {fileID: 2100000, guid: 47d51c5e97bda024fb1e69d60e31b8a9, type: 2}
+  meshRenderer: {fileID: 3334377181943597215}
 --- !u!4 &4471294592111965168 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5086268201243115593, guid: 9fbe61d1f4bc091439f25f985dd189a5, type: 3}

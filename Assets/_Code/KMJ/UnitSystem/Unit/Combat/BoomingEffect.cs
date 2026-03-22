@@ -19,6 +19,8 @@ namespace Code.UnitSystem
 
         [SerializeField] private AttackDataSO atkData;
 
+        private float _addDamage;
+
         private void Awake()
         {
             _collider = GetComponent<Collider>();
@@ -32,9 +34,10 @@ namespace Code.UnitSystem
             StartCoroutine(StartEffect());
         }
 
-        public void SetDamageData(DamageData damageData)
+        public void SetDamageData(DamageData damageData,float addDamage)
         {
             _damageData = damageData;
+            _addDamage = addDamage;
         }
 
         private IEnumerator StartEffect()
@@ -50,7 +53,7 @@ namespace Code.UnitSystem
             {
                 impulseSource.GenerateImpulse(0.3f);
                 
-                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject));
+                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null));
                 
                 _collider.enabled = false;
                 gameObject.SetActive(false);

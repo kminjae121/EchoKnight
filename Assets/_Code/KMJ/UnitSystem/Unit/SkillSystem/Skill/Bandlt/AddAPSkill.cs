@@ -49,16 +49,13 @@ using UnityEngine;
         {
             CharacterUnit unit = _owner as CharacterUnit;
 
-            unit.UnitCostComponentCompo.GetCost(25);
         }
         
-        private void SkillEnd()
+        protected override void SkillEnd()
         {
+            base.SkillEnd();
             skillEndEvent?.Invoke();
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }

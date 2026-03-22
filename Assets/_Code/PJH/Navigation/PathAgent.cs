@@ -174,7 +174,17 @@ namespace Code.Navigation
 
         private float CalculateH(Vector3Int startPoint, Vector3Int destination)
         {
+            // 유클리드
             return Vector3Int.Distance(startPoint, destination);
+            
+            // 옥타일
+            // int dx = Mathf.Abs(startPoint.x - destination.x);
+            // int dy = Mathf.Abs(startPoint.y - destination.y);
+            //
+            // int min = Mathf.Min(dx, dy);
+            // int max = Mathf.Max(dx, dy);
+            //
+            // return min * Mathf.Sqrt(2)+ (max - min);
         }
     }
 }

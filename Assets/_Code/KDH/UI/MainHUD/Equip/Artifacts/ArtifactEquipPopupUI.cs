@@ -19,8 +19,8 @@ namespace Code.UI
         private RectTransform _rectTransform;
         private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
-        private Canvas _parentCanvas;
         private int _frameCountOnOpen;
+        private Canvas _parentCanvas;
 
         private void Awake()
         {
@@ -91,34 +91,6 @@ namespace Code.UI
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
             _frameCountOnOpen = Time.frameCount;
-
-            if (_parentCanvas != null)
-            {
-                RectTransform canvasRect = _parentCanvas.transform as RectTransform;
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                    canvasRect, 
-                    evt.Position, 
-                    _parentCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : _parentCanvas.worldCamera, 
-                    out Vector2 localPoint);
-
-                float normalizedX = (localPoint.x - canvasRect.rect.xMin) / canvasRect.rect.width;
-                float normalizedY = (localPoint.y - canvasRect.rect.yMin) / canvasRect.rect.height;
-
-                float pivotX = normalizedX > 0.5f ? 1f : 0f;
-                float pivotY = normalizedY > 0.5f ? 1f : 0f;
-                _rectTransform.pivot = new Vector2(pivotX, pivotY);
-            }
-
-            if (_parentCanvas != null && _parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
-            {
-                RectTransformUtility.ScreenPointToWorldPointInRectangle(
-                    _parentCanvas.transform as RectTransform, evt.Position, _parentCanvas.worldCamera, out Vector3 worldPoint);
-                _rectTransform.position = worldPoint;
-            }
-            else
-            {
-                _rectTransform.position = evt.Position;
-            }
         }
 
         private void SetTierTextColor(ArtifactRarity rarity)

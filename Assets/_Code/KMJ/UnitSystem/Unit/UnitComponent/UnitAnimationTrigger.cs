@@ -26,6 +26,13 @@ namespace Code.UnitSystem
         public Action OnHealEndTrigger;
         #endregion
 
+        #region Knight
+
+        public Action OnSheldEvent;
+        public Action OnSheldEndEvent;
+
+        #endregion
+
         public Action OnDeadEvent;
         public Action OnAnimationEndTrigger;
         public Action OnEnemyAnimationEndTrigger;
@@ -81,6 +88,12 @@ namespace Code.UnitSystem
         private void FireBallEnd() => OnFireBallEndTrigger?.Invoke();
         private void Heal() => OnHealTrigger?.Invoke();
         private void HealEnd() => OnHealEndTrigger?.Invoke();
+        #endregion
+
+        #region Knight
+        private void Sheld() => OnSheldEvent?.Invoke();
+        private void SheldEnd() => OnSheldEndEvent?.Invoke();
+
         #endregion
         
         private void Dead() => OnDeadEvent?.Invoke();

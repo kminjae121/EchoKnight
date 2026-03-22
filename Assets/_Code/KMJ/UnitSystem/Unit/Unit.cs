@@ -32,6 +32,7 @@ namespace Code.UnitSystem
         public Action OnHitEvent;
         public UnityEvent OnStartTurnEvent;
         public UnityEvent OnEndTurnEvent;
+        public float AddDefensivePower { get; set; }
 
         protected virtual void OnEnable()
         {
@@ -82,6 +83,13 @@ namespace Code.UnitSystem
         public virtual void OnTurnStart()
         {
             isMyTurn = true;
+            if (AddDefensivePower != 0)
+            {
+                unitSO.DefensivePower -= AddDefensivePower;
+            }
+
+            AddDefensivePower = 0;
+            
             OnStartTurnEvent?.Invoke();
         }
 

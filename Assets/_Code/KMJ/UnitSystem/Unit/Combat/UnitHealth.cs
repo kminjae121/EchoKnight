@@ -38,8 +38,7 @@ namespace Code.UnitSystem.Combat
         {
             maxHealth = currentHealth = _statCompo.GetStat<float>(StatInfo.MaxHealth);
             _defensivePower =  _statCompo.GetStat<float>(StatInfo.DefensivePower);
-            
-            unitStateCompo = new UnitState(_entity.unitSO);
+             unitStateCompo = new UnitState(_entity.unitSO);
         }
 
         public void HealHp(float amount)
@@ -68,6 +67,7 @@ namespace Code.UnitSystem.Combat
             _actionData.HitByPowerAttack = attackData.isPowerAttack;
             _actionData.LastDamageData = damageData; //데미지 데이터도 기록
             //넉백은 나중에 처리한다.
+            _defensivePower = _entity.AddDefensivePower;
 
             float damage = damageData.damage;
             float CalculateDamage = damage * (_defensivePower / 100);

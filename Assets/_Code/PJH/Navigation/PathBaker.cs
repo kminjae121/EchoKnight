@@ -1,3 +1,4 @@
+using Code.Core.Debugs;
 using Code.Core.Interfaces;
 using Code.Map;
 #if UNITY_EDITOR
@@ -9,35 +10,38 @@ namespace Code.Navigation
 {
     public class PathBaker : MonoBehaviour
     {
-        [SerializeField] private GridMap gridMap;
         [SerializeField] private BakedDataSO bakedData;
         [SerializeField] private bool isDrawGizmo = true;
         [SerializeField] private bool isCornerCheck = true;
         [SerializeField] private Color nodeColor, edgeColor;
 
+        private GridMap _gridMap;
+        
         [ContextMenu("Bake map data")]
         private void BakeMapData()
         {
-            gridMap ??= FindFirstObjectByType<GridMap>();
+            _gridMap = GridMap.Instance;
 
-            Debug.Assert(gridMap != null, "GridMap is null");
+            Debug.Assert(_gridMap != null, "GridMap is null");
             Debug.Assert(bakedData != null, "BakedDataSO is null");
 
-            if (gridMap == null || bakedData == null)
+            if (_gridMap == null || bakedData == null)
                 return;
 
             WritePointData();
             RecordNeighbors();
             WriteIfInUnityEditor();
+            
+            UnityLogger.Log("맵 베이크 완료");
         }
 
         private void WritePointData()
         {
             bakedData.ClearPoints();
             
-            for (int x = 0; x < gridMap.Width; ++x)
+            for (int x = 0; x < _gridMap.Width; ++x)
             {
-                for (int y = 0; y < gridMap.Height; ++y)
+                for (int y = 0; y < _gridMap.Height; ++y)
                 {
                     var gridPos = new Vector2Int(x, y);
 
@@ -51,11 +55,11 @@ namespace Code.Navigation
 
         private void AddPoint(Vector2Int gridPos)
         {
-            IMapTile tile = gridMap.GetTile(gridPos);
+            IMapTile tile = _gridMap.GetTile(gridPos);
 
             if (tile == null)
                 return;
-
+            
             bakedData.AddPoint(tile.WorldPos, GridToCell(gridPos));
         }
 
@@ -102,14 +106,15 @@ namespace Code.Navigation
 
         private bool CanMovePosition(Vector2Int gridPos)
         {
-            if (gridMap == null || !gridMap.IsValidPosition(gridPos))
+            if (_gridMap == null || !_gridMap.IsValidPosition(gridPos))
                 return false;
+            
+            IMapTile tile = _gridMap.GetTile(gridPos);
 
-            IMapTile tile = gridMap.GetTile(gridPos);
-
-            return tile != null &&
-                   tile.HasState(TileState.Walkable) &&
-                   !tile.HasState(TileState.Obstacle);
+            UnityLogger.Log(tile != null &&
+                            !tile.HasState(TileState.Obstacle));
+            
+            return tile != null && !tile.HasState(TileState.Obstacle);
         }
 
         private static Vector3Int GridToCell(Vector2Int gridPos)

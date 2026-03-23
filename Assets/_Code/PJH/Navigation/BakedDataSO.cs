@@ -24,6 +24,7 @@ namespace Code.Navigation
         public void ClearPoints()
         {
             points?.Clear();
+            _pointDict?.Clear();
         }
         
         public void AddPoint(Vector3 worldPos, Vector3Int cellPos)

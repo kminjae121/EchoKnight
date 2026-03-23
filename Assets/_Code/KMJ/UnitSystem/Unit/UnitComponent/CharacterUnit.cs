@@ -93,6 +93,8 @@ namespace Code.UnitSystem
                 BehaveCompo.FindObjectInRange();
                 BehaveCompo.moveCount = 0;
             }
+            
+            Bus<WhatUnitTurnEvent>.Raise(new  WhatUnitTurnEvent(unitSO.UnitType));
         }
 
         public override void OnTurnEnd()

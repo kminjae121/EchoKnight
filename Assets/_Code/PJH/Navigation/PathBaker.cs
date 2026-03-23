@@ -110,9 +110,6 @@ namespace Code.Navigation
                 return false;
             
             IMapTile tile = _gridMap.GetTile(gridPos);
-
-            UnityLogger.Log(tile != null &&
-                            !tile.HasState(TileState.Obstacle));
             
             return tile != null && !tile.HasState(TileState.Obstacle);
         }

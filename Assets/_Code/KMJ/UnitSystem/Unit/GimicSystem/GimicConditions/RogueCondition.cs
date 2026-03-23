@@ -25,7 +25,7 @@ namespace Code.UnitSystem.GimicSystem
                 _markDictionary[target] = 1;
             
             
-            Bus<SetMarkEvent>.Raise(new SetMarkEvent(target));
+            Bus<SetMarkEvent>.Raise(new SetMarkEvent(target, _markDictionary[target]));
         }
 
         public override void RemoveCondition(GameObject target)

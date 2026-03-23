@@ -12,7 +12,7 @@ namespace Code.Navigation
 
         private void OnEnable()
         {
-            Initialize();
+            //Initialize();
         }
         
         public void Initialize()

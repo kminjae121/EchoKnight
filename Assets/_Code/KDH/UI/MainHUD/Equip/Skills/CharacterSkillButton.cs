@@ -19,9 +19,13 @@ namespace Code.UI
         [Header("Hover Settings")]
         [SerializeField] private GameObject customHoverArea;
 
-        [Header("Popup Settings")]
+        [Header("Normal Popup Settings")]
         [SerializeField] private RectTransform popupPivot;
         [SerializeField] private Vector2 popupOffset;
+
+        [Header("Equipped Popup Settings")]
+        [SerializeField] private RectTransform equippedPopupPivot;
+        [SerializeField] private Vector2 equippedPopupOffset;
 
         private SkillSO _skill;
         private bool _isEquipped;
@@ -58,7 +62,8 @@ namespace Code.UI
             }
         }
 
-        public RectTransform GetPivot() => popupPivot != null ? popupPivot : _rectTransform;
+        public RectTransform GetPivot() => _isEquipped && equippedPopupPivot != null ? equippedPopupPivot : (popupPivot != null ? popupPivot : _rectTransform);
+        public Vector2 GetOffset() => _isEquipped ? equippedPopupOffset : popupOffset;
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 
@@ -83,10 +88,7 @@ namespace Code.UI
             _isTooltipSuppressed = false;
             UpdateHoverState();
             
-            if (_skill != null)
-            {
-                Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
-            }
+            if (_skill != null) Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
         }
 
         public void SetSkill(SkillSO skill, bool isEquipped)
@@ -115,7 +117,7 @@ namespace Code.UI
                 
                 if (!_isTooltipSuppressed)
                 {
-                    Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skill, GetPivot(), popupOffset));
+                    Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skill, GetPivot(), GetOffset()));
                 }
             }
         }
@@ -149,7 +151,7 @@ namespace Code.UI
             if (eventData.button == PointerEventData.InputButton.Left)
             {
                 Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
-                Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, GetPivot(), popupOffset));
+                Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, GetPivot(), GetOffset()));
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
@@ -160,7 +162,7 @@ namespace Code.UI
                 }
                 else
                 {
-                    Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, GetPivot(), popupOffset));
+                    Bus<SkillEquipPopupEvent>.Raise(new SkillEquipPopupEvent(_skill, _isEquipped, GetPivot(), GetOffset()));
                 }
             }
         }

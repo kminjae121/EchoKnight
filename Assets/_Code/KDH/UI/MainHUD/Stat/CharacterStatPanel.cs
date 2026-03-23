@@ -3,6 +3,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
+using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,10 +12,14 @@ namespace Code.UI
 {
     public class CharacterStatPanel : Panel
     {
+        [Header("Pool Settings")]
+        [SerializeField] private PoolingItemSO artifactButtonPoolingSO;
+
         [Header("Equipped Items")]
         [SerializeField] private List<Image> skillIcons;
         [SerializeField] private Sprite emptySkillSlotSprite;
         [SerializeField] private List<Image> artifactIcons;
+        [SerializeField] private List<Image> artifactRarityIcons;
         [SerializeField] private Sprite emptyArtifactSlotSprite;
 
         [Header("HP Bar")]
@@ -39,10 +44,11 @@ namespace Code.UI
             for (int i = 0; i < skillIcons.Count; i++)
             {
                 int index = i;
-                var trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
-                trigger.useHoverVisuals = false;
+                var trigger = skillIcons[i].gameObject.GetComponent<SlotHoverClickTrigger>();
+                if (trigger == null) trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 
-                trigger.OnClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
+                trigger.useHoverVisuals = false;
+                trigger.OnLeftClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
                 trigger.OnHoverEnter = (pivot, offset) =>
                 {
                     if (_currentUnit != null && SkillSendManager.Instance != null)
@@ -61,10 +67,11 @@ namespace Code.UI
             for (int i = 0; i < artifactIcons.Count; i++)
             {
                 int index = i;
-                var trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
-                trigger.useHoverVisuals = false;
+                var trigger = artifactIcons[i].gameObject.GetComponent<SlotHoverClickTrigger>();
+                if (trigger == null) trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 
-                trigger.OnClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
+                trigger.useHoverVisuals = false;
+                trigger.OnLeftClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
                 trigger.OnHoverEnter = (pivot, offset) =>
                 {
                     if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null)
@@ -90,6 +97,11 @@ namespace Code.UI
 
         private void OpenTargetPanel(string targetPanelId)
         {
+            if (string.IsNullOrEmpty(targetPanelId))
+            {
+                Debug.LogWarning("이동할 대상 패널 ID가 지정되지 않았습니다.");
+                return;
+            }
             PanelManager.Close("StatPanel");
             PanelManager.Open(targetPanelId);
         }
@@ -151,9 +163,7 @@ namespace Code.UI
             SkillSO[] equippedSkills = System.Array.Empty<SkillSO>();
 
             if (SkillSendManager.Instance != null && data != null)
-            {
                 equippedSkills = SkillSendManager.Instance.GetEquipSkills(data.UnitType);
-            }
             
             for (int i = 0; i < skillIcons.Count; i++)
             {
@@ -170,14 +180,37 @@ namespace Code.UI
         private void RefreshArtifactSlots()
         {
             var data = _currentUnit.Data;
+            ArtifactButton prefabBtn = null;
+
+            if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
+                prefabBtn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
 
             for (int i = 0; i < artifactIcons.Count; i++)
             {
                 var trigger = artifactIcons[i].GetComponent<SlotHoverClickTrigger>();
                 bool hasArtifact = data.EquippedArtifacts != null && i < data.EquippedArtifacts.artifacts.Count;
 
-                if (hasArtifact) artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].itemIcon;
-                else artifactIcons[i].sprite = emptyArtifactSlotSprite;
+                if (hasArtifact)
+                {
+                    artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].itemIcon;
+                    
+                    if (artifactRarityIcons != null && i < artifactRarityIcons.Count && artifactRarityIcons[i] != null)
+                    {
+                        if (prefabBtn != null)
+                            artifactRarityIcons[i].sprite = prefabBtn.GetRaritySprite(data.EquippedArtifacts.artifacts[i].rarity);
+                        artifactRarityIcons[i].gameObject.SetActive(true);
+                    }
+                }
+                else
+                {
+                    artifactIcons[i].sprite = emptyArtifactSlotSprite;
+                    
+                    if (artifactRarityIcons != null && i < artifactRarityIcons.Count && artifactRarityIcons[i] != null)
+                    {
+                        artifactRarityIcons[i].sprite = null;
+                        artifactRarityIcons[i].gameObject.SetActive(false);
+                    }
+                }
                 
                 if (trigger != null) trigger.SetInteractable(hasArtifact);
             }

@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class ArtifactEquipPopupUI : MonoBehaviour
     {
         [Header("UI Elements")]
@@ -17,12 +18,16 @@ namespace Code.UI
         [SerializeField] private Button unequipButton;
 
         private RectTransform _rectTransform;
+        private CanvasGroup _canvasGroup;
+        private Canvas _parentCanvas;
         private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
+        private int _frameCountOnOpen;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
+            _canvasGroup = GetComponent<CanvasGroup>();
 
             Bus<ArtifactPopupEvent>.Subscribe(HandlePopupEvent);
             
@@ -39,6 +44,28 @@ namespace Code.UI
             unequipButton.onClick.RemoveListener(HandleUnequip);
         }
 
+        private void Update()
+        {
+            if (!gameObject.activeSelf || Time.frameCount == _frameCountOnOpen) return;
+
+            if (UnityEngine.Input.GetMouseButtonDown(0) || UnityEngine.Input.GetMouseButtonDown(1))
+            {
+                if (_parentCanvas == null)
+                    _parentCanvas = transform.root.GetComponentInChildren<Canvas>();
+
+                Camera cam = null;
+                if (_parentCanvas != null && (_parentCanvas.renderMode == RenderMode.ScreenSpaceCamera || _parentCanvas.renderMode == RenderMode.WorldSpace))
+                {
+                    cam = _parentCanvas.worldCamera;
+                }
+
+                if (!RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, UnityEngine.Input.mousePosition, cam))
+                {
+                    Hide();
+                }
+            }
+        }
+
         private void HandlePopupEvent(ArtifactPopupEvent evt)
         {
             if (evt.EquipmentItem == null)
@@ -49,6 +76,8 @@ namespace Code.UI
 
             _targetEquipmentItem = evt.EquipmentItem;
             _isCurrentlyEquipped = evt.IsEquipped;
+
+            _canvasGroup.blocksRaycasts = !evt.IsReadOnly;
 
             nameText.text = _targetEquipmentItem.itemName;
             descriptionText.text = _targetEquipmentItem.itemDesc;
@@ -70,6 +99,7 @@ namespace Code.UI
 
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
+            _frameCountOnOpen = Time.frameCount;
         }
 
         private void SetTierTextColor(ArtifactRarity rarity)

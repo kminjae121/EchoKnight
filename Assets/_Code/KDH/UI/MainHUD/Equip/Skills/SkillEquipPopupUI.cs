@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class SkillEquipPopupUI : MonoBehaviour
     {
         [Header("UI Elements")]
@@ -15,12 +16,16 @@ namespace Code.UI
         [SerializeField] private Button unequipButton;
         
         private RectTransform _rectTransform;
+        private CanvasGroup _canvasGroup;
+        private Canvas _parentCanvas;
         private SkillSO _targetSkill;
         private bool _isCurrentlyEquipped;
+        private int _frameCountOnOpen;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
+            _canvasGroup = GetComponent<CanvasGroup>();
 
             Bus<SkillEquipPopupEvent>.Subscribe(HandlePopupEvent);
             
@@ -37,6 +42,28 @@ namespace Code.UI
             unequipButton.onClick.RemoveListener(HandleUnequip);
         }
 
+        private void Update()
+        {
+            if (!gameObject.activeSelf || Time.frameCount == _frameCountOnOpen) return;
+
+            if (UnityEngine.Input.GetMouseButtonDown(0) || UnityEngine.Input.GetMouseButtonDown(1))
+            {
+                if (_parentCanvas == null)
+                    _parentCanvas = transform.root.GetComponentInChildren<Canvas>();
+
+                Camera cam = null;
+                if (_parentCanvas != null && (_parentCanvas.renderMode == RenderMode.ScreenSpaceCamera || _parentCanvas.renderMode == RenderMode.WorldSpace))
+                {
+                    cam = _parentCanvas.worldCamera;
+                }
+
+                if (!RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, UnityEngine.Input.mousePosition, cam))
+                {
+                    Hide();
+                }
+            }
+        }
+
         private void HandlePopupEvent(SkillEquipPopupEvent evt)
         {
             if (evt.Skill == null)
@@ -48,6 +75,8 @@ namespace Code.UI
             _targetSkill = evt.Skill;
             _isCurrentlyEquipped = evt.IsEquipped;
             
+            _canvasGroup.blocksRaycasts = !evt.IsReadOnly;
+
             if (descriptionText != null)
                 descriptionText.text = _isCurrentlyEquipped ? "스킬을\n해제하시겠습니까?" : "스킬을\n장착하시겠습니까?";
 
@@ -62,6 +91,7 @@ namespace Code.UI
 
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
+            _frameCountOnOpen = Time.frameCount;
         }
 
         private void HandleEquip()
@@ -84,6 +114,8 @@ namespace Code.UI
 
         private void Hide()
         {
+            if (!gameObject.activeSelf && _targetSkill == null) return;
+
             gameObject.SetActive(false);
             _targetSkill = null;
         }

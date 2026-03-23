@@ -29,6 +29,7 @@ namespace Code.UI
 
         [Header("Artifact Equipped Area")]
         [SerializeField] private List<Image> equippedArtifactSlotImages; 
+        [SerializeField] private List<Image> equippedArtifactRarityImages;
         [SerializeField] private Sprite emptyArtifactSlotSprite;
         [SerializeField] private int maxArtifactEquipCount = 2;
 
@@ -67,7 +68,9 @@ namespace Code.UI
             for (int i = 0; i < equippedArtifactSlotImages.Count; i++)
             {
                 int index = i;
-                var trigger = equippedArtifactSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                var trigger = equippedArtifactSlotImages[i].gameObject.GetComponent<SlotHoverClickTrigger>();
+                if (trigger == null) trigger = equippedArtifactSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                
                 trigger.useHoverVisuals = false;
                 trigger.OnLeftClick = (pivot, offset) =>
                 {
@@ -126,10 +129,7 @@ namespace Code.UI
         private void ToggleArtifactSort()
         {
             _isArtifactSortedByRarity = !_isArtifactSortedByRarity;
-            
-            if (artifactSortText != null)
-                artifactSortText.text = _isArtifactSortedByRarity ? "희귀도순" : "획득순";
-            
+            if (artifactSortText != null) artifactSortText.text = _isArtifactSortedByRarity ? "희귀도순" : "획득순";
             RefreshArtifactUI();
         }
 
@@ -138,8 +138,7 @@ namespace Code.UI
             if (_unit == null || _unit.OwnArtifactStorage == null) return;
 
             int currentCount = _unit.OwnArtifactStorage.artifacts.Count;
-            if (artifactCountText != null)
-                artifactCountText.text = $"{currentCount}/{maxArtifactInventoryCapacity}";
+            if (artifactCountText != null) artifactCountText.text = $"{currentCount}/{maxArtifactInventoryCapacity}";
 
             foreach (var btn in _activeArtifactButtons) btn.ReturnToPool();
             _activeArtifactButtons.Clear();
@@ -148,8 +147,7 @@ namespace Code.UI
                 .Where(a => _unit.EquippedArtifacts == null || !_unit.EquippedArtifacts.artifacts.Contains(a))
                 .ToList();
 
-            if (_isArtifactSortedByRarity)
-                displayList = displayList.OrderByDescending(a => a.rarity).ToList();
+            if (_isArtifactSortedByRarity) displayList = displayList.OrderByDescending(a => a.rarity).ToList();
 
             foreach (var artifact in displayList)
             {
@@ -168,14 +166,37 @@ namespace Code.UI
         private void RefreshEquippedArtifactSlots()
         {
             var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
+            ArtifactButton prefabBtn = null;
+
+            if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
+                prefabBtn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
 
             for (int i = 0; i < equippedArtifactSlotImages.Count; i++)
             {
                 var trigger = equippedArtifactSlotImages[i].GetComponent<SlotHoverClickTrigger>();
                 bool hasArtifact = i < equippedList.Count;
 
-                if (hasArtifact) equippedArtifactSlotImages[i].sprite = equippedList[i].itemIcon;
-                else equippedArtifactSlotImages[i].sprite = emptyArtifactSlotSprite;
+                if (hasArtifact)
+                {
+                    equippedArtifactSlotImages[i].sprite = equippedList[i].itemIcon;
+                    
+                    if (equippedArtifactRarityImages != null && i < equippedArtifactRarityImages.Count && equippedArtifactRarityImages[i] != null)
+                    {
+                        if (prefabBtn != null)
+                            equippedArtifactRarityImages[i].sprite = prefabBtn.GetRaritySprite(equippedList[i].rarity);
+                        equippedArtifactRarityImages[i].gameObject.SetActive(true);
+                    }
+                }
+                else
+                {
+                    equippedArtifactSlotImages[i].sprite = emptyArtifactSlotSprite;
+                    
+                    if (equippedArtifactRarityImages != null && i < equippedArtifactRarityImages.Count && equippedArtifactRarityImages[i] != null)
+                    {
+                        equippedArtifactRarityImages[i].sprite = null;
+                        equippedArtifactRarityImages[i].gameObject.SetActive(false);
+                    }
+                }
 
                 if (trigger != null) trigger.SetInteractable(hasArtifact);
             }
@@ -199,17 +220,12 @@ namespace Code.UI
         private void HandleArtifactUnequip(ArtifactUnequipEvent evt)
         {
             if (_unit == null || _unit.EquippedArtifacts == null) return;
-            
-            if (_unit.EquippedArtifacts.artifacts.Remove(evt.EquipmentItem))
-            {
-                RefreshArtifactUI();
-            }
+            if (_unit.EquippedArtifacts.artifacts.Remove(evt.EquipmentItem)) RefreshArtifactUI();
         }
 
         private void RefreshSkillList()
         {
-            if (_unit == null) return;
-            if (SkillSendManager.Instance == null) return;
+            if (_unit == null || SkillSendManager.Instance == null) return;
 
             foreach (var btn in _activeSkillButtons) btn.ReturnToPool();
             _activeSkillButtons.Clear();
@@ -240,8 +256,7 @@ namespace Code.UI
             int currentCost = GetCurrentSkillLoadoutCost();
             int maxCost = _unit.LoadOutCost;
 
-            if (skillLoadoutText != null)
-                skillLoadoutText.text = $"{currentCost} / {maxCost}";
+            if (skillLoadoutText != null) skillLoadoutText.text = $"{currentCost} / {maxCost}";
 
             if (skillLoadoutFillImage != null)
             {

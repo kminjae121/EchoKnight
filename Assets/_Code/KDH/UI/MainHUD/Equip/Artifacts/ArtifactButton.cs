@@ -25,9 +25,16 @@ namespace Code.UI
         [SerializeField] private Sprite epicSprite;
         [SerializeField] private Sprite legendarySprite;
 
-        [Header("Popup Settings")]
+        [Header("Normal Popup Settings")]
         [SerializeField] private RectTransform popupPivot;
         [SerializeField] private Vector2 popupOffset;
+
+        [Header("Equipped Popup Settings")]
+        [SerializeField] private RectTransform equippedPopupPivot;
+        [SerializeField] private Vector2 equippedPopupOffset;
+
+        [Header("Behavior Settings")]
+        [SerializeField] private bool openPopupOnHover = false; 
 
         private EquipmentItemSO _equipmentItem;
         private bool _isEquipped;
@@ -49,7 +56,8 @@ namespace Code.UI
             Bus<ArtifactPopupEvent>.Unsubscribe(HandlePopupEvent);
         }
 
-        public RectTransform GetPivot() => popupPivot != null ? popupPivot : _rectTransform;
+        public RectTransform GetPivot() => _isEquipped && equippedPopupPivot != null ? equippedPopupPivot : (popupPivot != null ? popupPivot : _rectTransform);
+        public Vector2 GetOffset() => _isEquipped ? equippedPopupOffset : popupOffset;
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 
@@ -60,7 +68,7 @@ namespace Code.UI
             _isSelected = false;
             
             if (hoverImage != null) hoverImage.SetActive(false);
-            if (rarityImage != null) rarityImage.sprite = null;
+            if (rarityImage != null) rarityImage.gameObject.SetActive(false);
         }
 
         public void ReturnToPool()
@@ -73,24 +81,31 @@ namespace Code.UI
         {
             _equipmentItem = equipmentItem;
             iconImage.sprite = equipmentItem.itemIcon;
+            iconImage.color = Color.white; 
             _isEquipped = isEquipped;
 
-            iconImage.color = Color.white; 
             if (hoverImage != null) hoverImage.SetActive(false);
             ApplyRaritySprite(equipmentItem.rarity);
+        }
+
+        public Sprite GetRaritySprite(ArtifactRarity rarity)
+        {
+            switch (rarity)
+            {
+                case ArtifactRarity.Legendary: return legendarySprite;
+                case ArtifactRarity.Epic: return epicSprite;
+                case ArtifactRarity.Rare: return rareSprite;
+                case ArtifactRarity.Uncommon: return uncommonSprite;
+                case ArtifactRarity.Common: default: return commonSprite;
+            }
         }
 
         private void ApplyRaritySprite(ArtifactRarity rarity)
         {
             if (rarityImage == null) return;
-            switch (rarity)
-            {
-                case ArtifactRarity.Legendary: rarityImage.sprite = legendarySprite; break;
-                case ArtifactRarity.Epic: rarityImage.sprite = epicSprite; break;
-                case ArtifactRarity.Rare: rarityImage.sprite = rareSprite; break;
-                case ArtifactRarity.Uncommon: rarityImage.sprite = uncommonSprite; break;
-                case ArtifactRarity.Common: default: rarityImage.sprite = commonSprite; break;
-            }
+            
+            rarityImage.gameObject.SetActive(true);
+            rarityImage.sprite = GetRaritySprite(rarity);
         }
 
         private void HandlePopupEvent(ArtifactPopupEvent evt)
@@ -110,19 +125,30 @@ namespace Code.UI
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (_equipmentItem != null && hoverImage != null) hoverImage.SetActive(true);
+            
+            if (openPopupOnHover && _equipmentItem != null)
+            {
+                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), GetOffset(), true));
+            }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (_equipmentItem != null && hoverImage != null && !_isSelected) hoverImage.SetActive(false);
+
+            if (openPopupOnHover && _equipmentItem != null)
+            {
+                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, null));
+            }
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (_equipmentItem == null) return;
+            
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), popupOffset));
+                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), GetOffset(), openPopupOnHover));
             }
         }
     }

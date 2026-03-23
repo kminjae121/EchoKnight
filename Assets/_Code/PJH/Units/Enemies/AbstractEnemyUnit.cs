@@ -31,7 +31,7 @@ namespace Code.UnitSystem.Enemies
 
         protected virtual void Start()
         {
-            SetVariableValue(BTVars.Enemy, this);
+            //SetVariableValue(BTVars.Enemy, this);
 
             if (GetVariableValue(BTVars.TurnChannel, out BlackboardVariable<TurnChannel> targetChannel))
                 TurnChannel = targetChannel.Value;
@@ -41,6 +41,13 @@ namespace Code.UnitSystem.Enemies
         {
             _hasEndedTurn = false;
             base.OnTurnStart();
+
+            if (!PrepareTurnStart())
+            {
+                OnTurnEnd();
+                return;
+            }
+
             TurnChannel?.SendEventMessage();
         }
 
@@ -53,6 +60,9 @@ namespace Code.UnitSystem.Enemies
             base.OnTurnEnd();
             Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
         }
+
+        protected virtual bool PrepareTurnStart()
+            => true;
 
         public void SetVariableValue<T>(string variableName, T value)
         {

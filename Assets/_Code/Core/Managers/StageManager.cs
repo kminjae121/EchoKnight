@@ -3,6 +3,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using Code.UI;
+using Code.UnitSystem.Enemies;
 using EnemySystem;
 using UnityEngine;
 
@@ -65,8 +66,9 @@ namespace Code.Core.Managers
                 GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
 
                 tile.SetState(TileState.Enemy | TileState.Obstacle, true);
-                EnemyUnit enemy = enemyObj.GetComponent<EnemyUnit>();
-                enemy.currentTile = tile;
+                AbstractEnemyUnit enemy = enemyObj.GetComponent<AbstractEnemyUnit>();
+                Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(enemy));
+                //enemy.currentTile = tile;
                 enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
 
                 enemies.Add(enemyObj);

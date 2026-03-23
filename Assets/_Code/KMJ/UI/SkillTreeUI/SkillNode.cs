@@ -1,4 +1,5 @@
 ﻿using Code.Core.Managers;
+using Code.Managers;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
@@ -9,9 +10,15 @@ namespace Code.UI.SkillTreeUI
         [SerializeField] private UnitType unitType;
 
         [SerializeField] private SkillSO skillSO;
+
+        [SerializeField] private int nodePrice;
        
         public void UseNode()
         {
+            if (nodePrice > PlayerManager.Instance.Gold)
+                return;
+            
+            PlayerManager.Instance.RemoveGold(nodePrice);
             SkillSendManager.Instance.AddSkillList(skillSO);
         }
     }

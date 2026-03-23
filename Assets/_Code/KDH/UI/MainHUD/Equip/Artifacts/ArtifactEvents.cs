@@ -1,27 +1,36 @@
-﻿using Code.Items;
-using Code.UnitSystem.ArtifactSystem;
+﻿using Code.Core.Events.Bus;
+using Code.Items;
 using UnityEngine;
 
-namespace Code.Core.Events.Bus
+namespace Code.UI
 {
-    public class ArtifactEquipEvent : IEvent
-    { public EquipmentItemSO EquipmentItem { get; } public ArtifactEquipEvent(EquipmentItemSO a) => EquipmentItem = a; }
-    public class ArtifactUnequipEvent : IEvent
-    { public EquipmentItemSO EquipmentItem { get; } public ArtifactUnequipEvent(EquipmentItemSO a) => EquipmentItem = a; }
-    
     public class ArtifactPopupEvent : IEvent
     {
         public EquipmentItemSO EquipmentItem { get; }
         public bool IsEquipped { get; }
-        public Vector2 Position { get; }
+        public RectTransform Pivot { get; }
+        public Vector2 Offset { get; }
         public bool IsReadOnly { get; }
 
-        public ArtifactPopupEvent(EquipmentItemSO equipmentItem, bool isEquipped, Vector2 position, bool isReadOnly = false)
+        public ArtifactPopupEvent(EquipmentItemSO equipmentItem, bool isEquipped, RectTransform pivot, Vector2 offset = default, bool isReadOnly = false)
         {
             EquipmentItem = equipmentItem;
             IsEquipped = isEquipped;
-            Position = position;
+            Pivot = pivot;
+            Offset = offset;
             IsReadOnly = isReadOnly;
         }
+    }
+
+    public class ArtifactEquipEvent : IEvent
+    {
+        public EquipmentItemSO EquipmentItem { get; }
+        public ArtifactEquipEvent(EquipmentItemSO equipmentItem) => EquipmentItem = equipmentItem;
+    }
+
+    public class ArtifactUnequipEvent : IEvent
+    {
+        public EquipmentItemSO EquipmentItem { get; }
+        public ArtifactUnequipEvent(EquipmentItemSO equipmentItem) => EquipmentItem = equipmentItem;
     }
 }

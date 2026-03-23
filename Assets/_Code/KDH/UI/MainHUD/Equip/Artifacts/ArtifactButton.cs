@@ -25,16 +25,22 @@ namespace Code.UI
         [SerializeField] private Sprite epicSprite;
         [SerializeField] private Sprite legendarySprite;
 
+        [Header("Popup Settings")]
+        [SerializeField] private RectTransform popupPivot;
+        [SerializeField] private Vector2 popupOffset;
+
         private EquipmentItemSO _equipmentItem;
         private bool _isEquipped;
         private bool _isSelected;
         private GondrLib.ObjectPool.Runtime.Pool _pool;
+        private RectTransform _rectTransform;
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
 
         private void Awake()
         {
+            _rectTransform = GetComponent<RectTransform>();
             Bus<ArtifactPopupEvent>.Subscribe(HandlePopupEvent);
         }
 
@@ -42,6 +48,8 @@ namespace Code.UI
         {
             Bus<ArtifactPopupEvent>.Unsubscribe(HandlePopupEvent);
         }
+
+        public RectTransform GetPivot() => popupPivot != null ? popupPivot : _rectTransform;
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 
@@ -68,34 +76,20 @@ namespace Code.UI
             _isEquipped = isEquipped;
 
             iconImage.color = Color.white; 
-
             if (hoverImage != null) hoverImage.SetActive(false);
-            
             ApplyRaritySprite(equipmentItem.rarity);
         }
 
         private void ApplyRaritySprite(ArtifactRarity rarity)
         {
             if (rarityImage == null) return;
-
             switch (rarity)
             {
-                case ArtifactRarity.Legendary:
-                    rarityImage.sprite = legendarySprite;
-                    break;
-                case ArtifactRarity.Epic:
-                    rarityImage.sprite = epicSprite;
-                    break;
-                case ArtifactRarity.Rare:
-                    rarityImage.sprite = rareSprite;
-                    break;
-                case ArtifactRarity.Uncommon:
-                    rarityImage.sprite = uncommonSprite;
-                    break;
-                case ArtifactRarity.Common:
-                default:
-                    rarityImage.sprite = commonSprite;
-                    break;
+                case ArtifactRarity.Legendary: rarityImage.sprite = legendarySprite; break;
+                case ArtifactRarity.Epic: rarityImage.sprite = epicSprite; break;
+                case ArtifactRarity.Rare: rarityImage.sprite = rareSprite; break;
+                case ArtifactRarity.Uncommon: rarityImage.sprite = uncommonSprite; break;
+                case ArtifactRarity.Common: default: rarityImage.sprite = commonSprite; break;
             }
         }
 
@@ -115,27 +109,20 @@ namespace Code.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_equipmentItem != null && hoverImage != null) 
-            {
-                hoverImage.SetActive(true);
-            }
+            if (_equipmentItem != null && hoverImage != null) hoverImage.SetActive(true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (_equipmentItem != null && hoverImage != null && !_isSelected) 
-            {
-                hoverImage.SetActive(false);
-            }
+            if (_equipmentItem != null && hoverImage != null && !_isSelected) hoverImage.SetActive(false);
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
             if (_equipmentItem == null) return;
-
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, eventData.position));
+                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), popupOffset));
             }
         }
     }

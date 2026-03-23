@@ -19,13 +19,10 @@ namespace Code.UI
         private RectTransform _rectTransform;
         private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
-        private int _frameCountOnOpen;
-        private Canvas _parentCanvas;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
-            _parentCanvas = GetComponentInParent<Canvas>();
 
             Bus<ArtifactPopupEvent>.Subscribe(HandlePopupEvent);
             
@@ -42,34 +39,11 @@ namespace Code.UI
             unequipButton.onClick.RemoveListener(HandleUnequip);
         }
 
-        private void Update()
-        {
-            if (Time.frameCount == _frameCountOnOpen) return;
-
-            if (UnityEngine.Input.GetMouseButtonDown(0) || UnityEngine.Input.GetMouseButtonDown(1))
-            {
-                Camera cam = null;
-                if (_parentCanvas != null && _parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
-                {
-                    cam = _parentCanvas.worldCamera;
-                }
-
-                if (!RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, UnityEngine.Input.mousePosition, cam))
-                {
-                    Hide();
-                }
-            }
-        }
-
         private void HandlePopupEvent(ArtifactPopupEvent evt)
         {
             if (evt.EquipmentItem == null)
             {
-                if (gameObject.activeSelf)
-                {
-                    gameObject.SetActive(false);
-                    _targetEquipmentItem = null;
-                }
+                Hide();
                 return;
             }
 
@@ -88,9 +62,14 @@ namespace Code.UI
             equipButton.gameObject.SetActive(!_isCurrentlyEquipped && !evt.IsReadOnly);
             unequipButton.gameObject.SetActive(_isCurrentlyEquipped && !evt.IsReadOnly);
 
+            if (evt.Pivot != null)
+            {
+                _rectTransform.position = evt.Pivot.position;
+                _rectTransform.anchoredPosition += new Vector2(evt.Offset.x, evt.Offset.y);
+            }
+
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
-            _frameCountOnOpen = Time.frameCount;
         }
 
         private void SetTierTextColor(ArtifactRarity rarity)
@@ -126,7 +105,7 @@ namespace Code.UI
             gameObject.SetActive(false);
             _targetEquipmentItem = null;
             
-            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, Vector2.zero));
+            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, null));
         }
     }
 }

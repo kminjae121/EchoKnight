@@ -3,15 +3,17 @@ using UnityEngine;
 
 namespace Code.Core.Events.Bus
 {
-    public struct SkillUIHoverEvent : IEvent
+    public class SkillUIHoverEvent : IEvent
     {
         public SkillSO Skill { get; }
-        public RectTransform Transform { get; }
+        public RectTransform Pivot { get; }
+        public Vector2 Offset { get; }
 
-        public SkillUIHoverEvent(SkillSO skill, RectTransform transform)
+        public SkillUIHoverEvent(SkillSO skill, RectTransform pivot, Vector2 offset = default)
         {
             Skill = skill;
-            Transform = transform;
+            Pivot = pivot;
+            Offset = offset;
         }
     }
 }

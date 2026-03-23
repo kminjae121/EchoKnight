@@ -7,28 +7,34 @@ namespace Code.UI
 {
     public class SlotHoverClickTrigger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
-        public Action OnClick;
-        public Action<Vector2> OnLeftClick;
-        public Action<Vector2> OnRightClick;
-        public Action<Vector2> OnHoverEnter;
+        public Action<RectTransform, Vector2> OnClick;
+        public Action<RectTransform, Vector2> OnLeftClick;
+        public Action<RectTransform, Vector2> OnRightClick;
+        public Action<RectTransform, Vector2> OnHoverEnter;
         public Action OnHoverExit;
 
         [Header("Hover Effect")]
         public GameObject hoverImage; 
         public bool useHoverVisuals = true;
 
+        [Header("Popup Settings")]
+        [SerializeField] private RectTransform popupPivot;
+        [SerializeField] private Vector2 popupOffset;
+
         private Image _image;
         private Color _normalColor = new Color(0.7f, 0.7f, 0.7f, 1f);
         private Color _hoverColor = Color.white;
         private bool _isInteractable = true;
+        private RectTransform _rectTransform;
 
         private void Awake()
         {
             _image = GetComponent<Image>();
-            
-            if (hoverImage != null) 
-                hoverImage.SetActive(false);
+            _rectTransform = GetComponent<RectTransform>();
+            if (hoverImage != null) hoverImage.SetActive(false);
         }
+
+        public RectTransform GetPivot() => popupPivot != null ? popupPivot : _rectTransform;
 
         public void SetInteractable(bool interactable)
         {
@@ -53,7 +59,7 @@ namespace Code.UI
                 else if (_image != null) _image.color = _hoverColor;
             }
             
-            OnHoverEnter?.Invoke(eventData.position);
+            OnHoverEnter?.Invoke(GetPivot(), popupOffset);
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -75,12 +81,12 @@ namespace Code.UI
 
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                OnClick?.Invoke();
-                OnLeftClick?.Invoke(eventData.position);
+                OnClick?.Invoke(GetPivot(), popupOffset);
+                OnLeftClick?.Invoke(GetPivot(), popupOffset);
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                OnRightClick?.Invoke(eventData.position);
+                OnRightClick?.Invoke(GetPivot(), popupOffset);
             }
         }
     }

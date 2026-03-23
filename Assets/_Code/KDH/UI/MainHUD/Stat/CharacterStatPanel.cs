@@ -42,8 +42,8 @@ namespace Code.UI
                 var trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 trigger.useHoverVisuals = false;
                 
-                trigger.OnClick = () => OpenTargetPanel("EquipPanel");
-                trigger.OnHoverEnter = (pos) =>
+                trigger.OnClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
+                trigger.OnHoverEnter = (pivot, offset) =>
                 {
                     if (_currentUnit != null && SkillSendManager.Instance != null)
                     {
@@ -51,7 +51,7 @@ namespace Code.UI
                         if (index < equippedSkills.Length)
                         {
                             var skill = equippedSkills[index];
-                            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(skill, null));
+                            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(skill, pivot, offset));
                         }
                     }
                 };
@@ -64,23 +64,26 @@ namespace Code.UI
                 var trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 trigger.useHoverVisuals = false;
                 
-                trigger.OnClick = () => OpenTargetPanel("EquipPanel");
-                trigger.OnHoverEnter = (pos) =>
+                trigger.OnClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
+                trigger.OnHoverEnter = (pivot, offset) =>
                 {
-                    if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null && index < _currentUnit.Data.EquippedArtifacts.artifacts.Count)
+                    if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null)
                     {
-                        var artifact = _currentUnit.Data.EquippedArtifacts.artifacts[index];
-                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, Vector2.zero, true));
+                        var artifacts = _currentUnit.Data.EquippedArtifacts.artifacts;
+                        if (index < artifacts.Count)
+                        {
+                            var artifact = artifacts[index];
+                            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pivot, offset, true));
+                        }
                     }
                 };
-                trigger.OnHoverExit = () => Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, Vector2.zero, true));
+                trigger.OnHoverExit = () => Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, null));
             }
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            
             Bus<CharacterInfoEvent>.Unsubscribe(HandleCharacterInfo);
             UnsubscribeHpEvent();
         }
@@ -94,10 +97,12 @@ namespace Code.UI
         private void HandleCharacterInfo(CharacterInfoEvent evt)
         {
             UnsubscribeHpEvent();
-
             _currentUnit = evt.Unit;
             if (_currentUnit != null)
             {
+                if (SkillSendManager.Instance != null)
+                    SkillSendManager.Instance.SyncEquippedSkills(_currentUnit.Data);
+
                 _currentUnit.CurrentHp.OnValueChanged += RefreshHpBar;
                 if (IsOpen) RefreshAllUI();
             }
@@ -111,8 +116,7 @@ namespace Code.UI
 
         private void UnsubscribeHpEvent()
         {
-            if (_currentUnit != null)
-                _currentUnit.CurrentHp.OnValueChanged -= RefreshHpBar;
+            if (_currentUnit != null) _currentUnit.CurrentHp.OnValueChanged -= RefreshHpBar;
         }
 
         private void RefreshAllUI()
@@ -126,7 +130,6 @@ namespace Code.UI
         private void RefreshInfoTexts()
         {
             var data = _currentUnit.Data;
-            
             nameText.text = data.UnitName;
             classText.text = data.UnitClass;
             atkText.text = data.AtkDamage.ToString("F1");
@@ -145,7 +148,7 @@ namespace Code.UI
         private void RefreshSkillSlots()
         {
             var data = _currentUnit.Data;
-            SkillSO[] equippedSkills = null;
+            SkillSO[] equippedSkills = System.Array.Empty<SkillSO>();
 
             if (SkillSendManager.Instance != null && data != null)
             {
@@ -155,16 +158,10 @@ namespace Code.UI
             for (int i = 0; i < skillIcons.Count; i++)
             {
                 var trigger = skillIcons[i].GetComponent<SlotHoverClickTrigger>();
-                bool hasSkill = equippedSkills != null && i < equippedSkills.Length;
+                bool hasSkill = i < equippedSkills.Length;
 
-                if (hasSkill)
-                {
-                    skillIcons[i].sprite = equippedSkills[i].skillUIImage;
-                }
-                else
-                {
-                    skillIcons[i].sprite = emptySkillSlotSprite;
-                }
+                if (hasSkill) skillIcons[i].sprite = equippedSkills[i].skillUIImage;
+                else skillIcons[i].sprite = emptySkillSlotSprite;
                 
                 if (trigger != null) trigger.SetInteractable(hasSkill);
             }
@@ -179,14 +176,8 @@ namespace Code.UI
                 var trigger = artifactIcons[i].GetComponent<SlotHoverClickTrigger>();
                 bool hasArtifact = data.EquippedArtifacts != null && i < data.EquippedArtifacts.artifacts.Count;
 
-                if (hasArtifact)
-                {
-                    artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].itemIcon;
-                }
-                else
-                {
-                    artifactIcons[i].sprite = emptyArtifactSlotSprite;
-                }
+                if (hasArtifact) artifactIcons[i].sprite = data.EquippedArtifacts.artifacts[i].itemIcon;
+                else artifactIcons[i].sprite = emptyArtifactSlotSprite;
                 
                 if (trigger != null) trigger.SetInteractable(hasArtifact);
             }

@@ -1,5 +1,40 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &768811426486315306
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4552420786505364384}
+  m_Layer: 5
+  m_Name: Popup_Pivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &4552420786505364384
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 768811426486315306}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1088506756063686692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 1, y: 0}
 --- !u!1 &950971955962768545
 GameObject:
   m_ObjectHideFlags: 0
@@ -36,6 +71,7 @@ RectTransform:
   - {fileID: 306440069397363659}
   - {fileID: 1373840881766324671}
   - {fileID: 123845899832694430}
+  - {fileID: 4552420786505364384}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -128,6 +164,8 @@ MonoBehaviour:
   rareSprite: {fileID: 21300000, guid: 72e6c437fdf67ef49b4eaaf5d4105aac, type: 3}
   epicSprite: {fileID: 21300000, guid: 7a5624437ea57434281dc88092b8aff4, type: 3}
   legendarySprite: {fileID: 21300000, guid: 6bed449d5398b1b48944a85f96aca516, type: 3}
+  popupPivot: {fileID: 4552420786505364384}
+  popupOffset: {x: -0.5, y: 0.5}
 --- !u!1 &1852728075095654850
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +258,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1373840881766324671
 RectTransform:
   m_ObjectHideFlags: 0

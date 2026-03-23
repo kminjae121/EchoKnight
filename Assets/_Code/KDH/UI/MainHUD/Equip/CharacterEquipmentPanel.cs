@@ -69,12 +69,12 @@ namespace Code.UI
                 int index = i;
                 var trigger = equippedArtifactSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
                 trigger.useHoverVisuals = false;
-                trigger.OnLeftClick = (pos) =>
+                trigger.OnLeftClick = (pivot, offset) =>
                 {
                     if (_unit != null && _unit.EquippedArtifacts != null && index < _unit.EquippedArtifacts.artifacts.Count)
                     {
                         var artifact = _unit.EquippedArtifacts.artifacts[index];
-                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pos));
+                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pivot, offset));
                     }
                 };
             }
@@ -99,6 +99,9 @@ namespace Code.UI
             base.Open();
             if (_unit != null)
             {
+                if (SkillSendManager.Instance != null)
+                    SkillSendManager.Instance.SyncEquippedSkills(_unit);
+
                 RefreshArtifactUI();
                 RefreshSkillList();
                 RefreshSkillLoadoutUI(true);
@@ -108,6 +111,10 @@ namespace Code.UI
         private void HandleCharacterInfo(CharacterInfoEvent evt)
         {
             _unit = evt.Unit.Data;
+            
+            if (_unit != null && SkillSendManager.Instance != null)
+                SkillSendManager.Instance.SyncEquippedSkills(_unit);
+
             if (IsOpen)
             {
                 RefreshArtifactUI();
@@ -121,9 +128,7 @@ namespace Code.UI
             _isArtifactSortedByRarity = !_isArtifactSortedByRarity;
             
             if (artifactSortText != null)
-            {
                 artifactSortText.text = _isArtifactSortedByRarity ? "희귀도순" : "획득순";
-            }
             
             RefreshArtifactUI();
         }
@@ -144,9 +149,7 @@ namespace Code.UI
                 .ToList();
 
             if (_isArtifactSortedByRarity)
-            {
                 displayList = displayList.OrderByDescending(a => a.rarity).ToList();
-            }
 
             foreach (var artifact in displayList)
             {
@@ -171,14 +174,8 @@ namespace Code.UI
                 var trigger = equippedArtifactSlotImages[i].GetComponent<SlotHoverClickTrigger>();
                 bool hasArtifact = i < equippedList.Count;
 
-                if (hasArtifact)
-                {
-                    equippedArtifactSlotImages[i].sprite = equippedList[i].itemIcon;
-                }
-                else
-                {
-                    equippedArtifactSlotImages[i].sprite = emptyArtifactSlotSprite;
-                }
+                if (hasArtifact) equippedArtifactSlotImages[i].sprite = equippedList[i].itemIcon;
+                else equippedArtifactSlotImages[i].sprite = emptyArtifactSlotSprite;
 
                 if (trigger != null) trigger.SetInteractable(hasArtifact);
             }
@@ -229,14 +226,8 @@ namespace Code.UI
                 bool isEquipped = equippedSkills.Contains(skillSO);
                 btn.SetSkill(skillSO, isEquipped);
                 
-                if (isEquipped)
-                {
-                    btn.transform.SetAsFirstSibling();
-                }
-                else
-                {
-                    btn.transform.SetAsLastSibling();
-                }
+                if (isEquipped) btn.transform.SetAsFirstSibling();
+                else btn.transform.SetAsLastSibling();
                 
                 _activeSkillButtons.Add(btn);
             }
@@ -250,9 +241,7 @@ namespace Code.UI
             int maxCost = _unit.LoadOutCost;
 
             if (skillLoadoutText != null)
-            {
                 skillLoadoutText.text = $"{currentCost} / {maxCost}";
-            }
 
             if (skillLoadoutFillImage != null)
             {
@@ -273,10 +262,7 @@ namespace Code.UI
                 }
                 else
                 {
-                    if (_fillCoroutine != null)
-                    {
-                        StopCoroutine(_fillCoroutine);
-                    }
+                    if (_fillCoroutine != null) StopCoroutine(_fillCoroutine);
                     _fillCoroutine = StartCoroutine(CoSmoothFill(targetFillAmount));
                 }
             }
@@ -324,20 +310,23 @@ namespace Code.UI
 
             var equippedSkills = SkillSendManager.Instance.GetEquipSkills(_unit.UnitType);
 
-            if (equippedSkills.Length > 4)
+            if (equippedSkills.Length >= 4)
             {
                 Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬은 최대 4개까지만 장착할 수 있습니다."));
-                SkillSendManager.Instance.RemoveSkill(evt.Skill); 
                 return;
             }
 
             int currentCost = GetCurrentSkillLoadoutCost();
-            if (currentCost > _unit.LoadOutCost)
+            if (currentCost + evt.Skill.SkillCost > _unit.LoadOutCost)
             {
                 Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬 코스트 총량을 초과하여 장착할 수 없습니다."));
-                SkillSendManager.Instance.RemoveSkill(evt.Skill); 
                 return;
             }
+
+            if (_unit.SkillStorage != null && !_unit.SkillStorage.skills.Contains(evt.Skill))
+                _unit.SkillStorage.skills.Add(evt.Skill);
+
+            SkillSendManager.Instance.SyncEquippedSkills(_unit);
 
             if (IsOpen)
             {
@@ -349,6 +338,12 @@ namespace Code.UI
         private void HandleSkillUnequipped(SkillUnequipEvent evt)
         {
             if (_unit == null || evt.Skill == null || evt.Skill.unitType != _unit.UnitType) return;
+            
+            if (_unit.SkillStorage != null)
+                _unit.SkillStorage.skills.Remove(evt.Skill);
+
+            if (SkillSendManager.Instance != null)
+                SkillSendManager.Instance.SyncEquippedSkills(_unit);
             
             if (IsOpen)
             {

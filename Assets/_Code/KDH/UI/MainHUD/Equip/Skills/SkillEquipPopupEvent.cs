@@ -1,20 +1,23 @@
-﻿using Code.UnitSystem.SkillSystem;
+﻿using Code.Core.Events.Bus;
+using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-namespace Code.Core.Events.Bus
+namespace Code.UI
 {
     public class SkillEquipPopupEvent : IEvent
     {
         public SkillSO Skill { get; }
         public bool IsEquipped { get; }
-        public Vector2 Position { get; }
+        public RectTransform Pivot { get; }
+        public Vector2 Offset { get; }
         public bool IsReadOnly { get; }
 
-        public SkillEquipPopupEvent(SkillSO skill, bool isEquipped, Vector2 position, bool isReadOnly = false)
+        public SkillEquipPopupEvent(SkillSO skill, bool isEquipped, RectTransform pivot, Vector2 offset = default, bool isReadOnly = false)
         {
             Skill = skill;
             IsEquipped = isEquipped;
-            Position = position;
+            Pivot = pivot;
+            Offset = offset;
             IsReadOnly = isReadOnly;
         }
     }

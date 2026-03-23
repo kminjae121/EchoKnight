@@ -17,10 +17,12 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI skillRangeText;
 
         private CanvasGroup _canvasGroup;
+        private RectTransform _rectTransform;
         
         private void Awake()
         {
             _canvasGroup = GetComponent<CanvasGroup>();
+            _rectTransform = GetComponent<RectTransform>();
             
             _canvasGroup.blocksRaycasts = false;
             _canvasGroup.interactable = false;
@@ -33,14 +35,6 @@ namespace Code.UI
         private void OnDestroy()
         {
             Bus<SkillUIHoverEvent>.Unsubscribe(HandleHoverUI);
-        }
-
-        private void Update()
-        {
-            if (gameObject.activeSelf && UnityEngine.Input.GetMouseButtonDown(0))
-            {
-                Hide();
-            }
         }
 
         private void HandleHoverUI(SkillUIHoverEvent evt)
@@ -62,6 +56,12 @@ namespace Code.UI
             if (skillCostText != null) skillCostText.text = evt.Skill.SkillCost.ToString();
             if (skillDamageText != null) skillDamageText.text = evt.Skill.SkillDamage.ToString();
             if (skillRangeText != null) skillRangeText.text = evt.Skill.SkillRange.ToString();
+
+            if (evt.Pivot != null)
+            {
+                _rectTransform.position = evt.Pivot.position;
+                _rectTransform.anchoredPosition += new Vector2(evt.Offset.x, evt.Offset.y);
+            }
             
             Show();
         }

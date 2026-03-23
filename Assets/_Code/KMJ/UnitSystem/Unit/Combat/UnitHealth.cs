@@ -36,8 +36,8 @@ namespace Code.UnitSystem.Combat
         
         private void Start()
         {
-            maxHealth = currentHealth = _statCompo.GetStat<float>(StatInfo.MaxHealth);
-            _defensivePower =  _statCompo.GetStat<float>(StatInfo.DefensivePower);
+            maxHealth = currentHealth = _statCompo.GetStat(StatInfo.MaxHealth);
+            _defensivePower =  _statCompo.GetStat(StatInfo.DefensivePower);
              unitStateCompo = new UnitState(_entity.unitSO);
         }
 

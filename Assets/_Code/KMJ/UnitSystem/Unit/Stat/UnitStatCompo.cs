@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Code.KMJ.UnitSystem;
+using UnityEngine;
 
 namespace Code.UnitSystem
 {
@@ -30,22 +31,34 @@ namespace Code.UnitSystem
                 unitSO = owner.unitSO;
         }
 
-        public T GetStat<T>(StatInfo statInfo)
+        public float GetStat(StatInfo statInfo)
         {
-            object value = statInfo switch
-            {
-                StatInfo.MoveSpeed => MoveSpeed,
-                StatInfo.AtkDamage => AtkDamage,
-                StatInfo.MaxHealth => MaxHealth,
-                StatInfo.SkillDamage => SkillDamage,
-                StatInfo.DefensivePower => DefensivePower,
-                _ => default(T)
-            };
+            float value = 0f;
             
-            if (value is T typedValue)
-                return typedValue;
-
-            return default;
+            switch (statInfo)
+            {
+                case StatInfo.MoveSpeed:
+                    value = MoveSpeed;
+                    break;
+                case StatInfo.AtkDamage:
+                    value = AtkDamage;
+                    break;
+                case StatInfo.MaxHealth:
+                    value = MaxHealth;
+                    break;
+                case StatInfo.SkillDamage:
+                    value =SkillDamage;
+                    break;
+                case StatInfo.DefensivePower:
+                    value = DefensivePower;
+                    break;
+            }
+    
+            Debug.Log(InGameStatCompo.Instance.GetStat(statInfo, unitSO.UnitType));
+            
+            value += InGameStatCompo.Instance.GetStat(statInfo, unitSO.UnitType);
+            
+            return (float)value;
         }
     }
 }

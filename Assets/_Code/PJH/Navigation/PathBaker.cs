@@ -1,3 +1,4 @@
+using Code.Core.Debugs;
 using Code.Core.Interfaces;
 using Code.Map;
 #if UNITY_EDITOR
@@ -9,40 +10,44 @@ namespace Code.Navigation
 {
     public class PathBaker : MonoBehaviour
     {
-        [SerializeField] private GridMap gridMap;
         [SerializeField] private BakedDataSO bakedData;
-
         [SerializeField] private bool isDrawGizmo = true;
         [SerializeField] private bool isCornerCheck = true;
         [SerializeField] private Color nodeColor, edgeColor;
 
+        private GridMap _gridMap;
+        
         [ContextMenu("Bake map data")]
         private void BakeMapData()
         {
-            gridMap ??= FindFirstObjectByType<GridMap>();
+            _gridMap = GridMap.Instance;
 
-            Debug.Assert(gridMap != null, "GridMap is null");
+            Debug.Assert(_gridMap != null, "GridMap is null");
             Debug.Assert(bakedData != null, "BakedDataSO is null");
 
-            if (gridMap == null || bakedData == null)
+            if (_gridMap == null || bakedData == null)
                 return;
 
             WritePointData();
             RecordNeighbors();
             WriteIfInUnityEditor();
+            
+            UnityLogger.Log("맵 베이크 완료");
         }
 
         private void WritePointData()
         {
             bakedData.ClearPoints();
-
-            for (int x = 0; x < gridMap.Width; ++x)
-            for (int y = 0; y < gridMap.Height; ++y)
+            
+            for (int x = 0; x < _gridMap.Width; ++x)
             {
-                var gridPos = new Vector2Int(x, y);
+                for (int y = 0; y < _gridMap.Height; ++y)
+                {
+                    var gridPos = new Vector2Int(x, y);
 
-                if (CanMovePosition(gridPos))
-                    AddPoint(gridPos);
+                    if (CanMovePosition(gridPos))
+                        AddPoint(gridPos);
+                }
             }
 
             bakedData.Initialize();
@@ -50,11 +55,11 @@ namespace Code.Navigation
 
         private void AddPoint(Vector2Int gridPos)
         {
-            IMapTile tile = gridMap.GetTile(gridPos);
+            IMapTile tile = _gridMap.GetTile(gridPos);
 
             if (tile == null)
                 return;
-
+            
             bakedData.AddPoint(tile.WorldPos, GridToCell(gridPos));
         }
 
@@ -63,8 +68,7 @@ namespace Code.Navigation
             Vector2Int[] directions =
             {
                 Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right,
-                new(1, 1), new(1, -1),
-                new(-1, 1), new(-1, -1)
+                new(1, 1), new(1, -1), new(-1, 1), new(-1, -1)
             };
 
             foreach (NodeData nodeData in bakedData.points)
@@ -102,14 +106,12 @@ namespace Code.Navigation
 
         private bool CanMovePosition(Vector2Int gridPos)
         {
-            if (gridMap == null || !gridMap.IsValidPosition(gridPos))
+            if (_gridMap == null || !_gridMap.IsValidPosition(gridPos))
                 return false;
-
-            IMapTile tile = gridMap.GetTile(gridPos);
-
-            return tile != null &&
-                   tile.HasState(TileState.Walkable) &&
-                   !tile.HasState(TileState.Obstacle);
+            
+            IMapTile tile = _gridMap.GetTile(gridPos);
+            
+            return tile != null && !tile.HasState(TileState.Obstacle);
         }
 
         private static Vector3Int GridToCell(Vector2Int gridPos)
@@ -155,6 +157,7 @@ namespace Code.Navigation
             Vector3 arrowStart = end - dir.normalized * 0.25f;
             Vector3 arrowEnd = end - dir.normalized * 0.15f;
             Vector3 right = Vector3.Cross(Vector3.up, dir.normalized);
+            
             const float arrowSize = 0.05f;
             Vector3 trianglePointA = arrowStart + right * arrowSize;
             Vector3 trianglePointB = arrowStart - right * arrowSize;

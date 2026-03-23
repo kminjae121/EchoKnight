@@ -15,32 +15,35 @@ namespace Code.UnitSystem
         [field: SerializeField] public float TurnGauge { get; set; }
 
         [Header("Status")]
-        public bool isMyTurn { get; set; } = false;
-        public bool IsPlayerUnit { get; set; }
+        public bool isMyTurn { get; private set; }
+        public bool IsPlayerUnit { get; private set; }
         public float TurnSpeed { get; private set; }
         public Sprite UnitImage { get; private set; }
         public bool IsReadyDoAct => TurnGauge >= 100f;
         public string UnitName => unitSO != null ? unitSO.UnitName : "Unknown";
 
         [Header("Components")]
-        protected readonly Dictionary<Type, IUnitComponent> _components = new();
+        protected Dictionary<Type, IUnitComponent> _components;
         public UnitManageRangeCompo RangesCompo { get; set; }
         public UnitAnimation AnimationCompo { get; private set; }
 
         [Header("Events")]
-        public Action OnDeathEvent { get; set; }
+        public Action OnDeathEvent;
         public Action OnHitEvent;
         public UnityEvent OnStartTurnEvent;
         public UnityEvent OnEndTurnEvent;
         public float AddDefensivePower { get; set; }
 
+        protected virtual void Awake()
+        {
+            AddUnitComponents();
+            InitComponents();
+            AfterInitComponents();
+        }
+        
         protected virtual void OnEnable()
         {
             InitializeData();
-            AddUnitComponents();
-            InitializeUnitComponents();
-            AfterInitializeComponents();
-            
             RegisterEvents();
         }
         
@@ -51,7 +54,6 @@ namespace Code.UnitSystem
 
         protected virtual void OnDestroy()
         {
-
         }
 
         private void InitializeData()
@@ -62,6 +64,7 @@ namespace Code.UnitSystem
                 IsPlayerUnit = unitSO.isPlayerUnit;
                 UnitImage = unitSO.UnitImage;
             }
+            
             TurnGauge = 0f;
         }
 
@@ -99,7 +102,9 @@ namespace Code.UnitSystem
             OnEndTurnEvent?.Invoke();
         }
 
-        protected virtual void Hit() { }
+        protected virtual void Hit()
+        {
+        }
 
         protected virtual void Dead()
         {
@@ -108,32 +113,23 @@ namespace Code.UnitSystem
 
         private void AddUnitComponents()
         {
-            _components.Clear();
-            var components = GetComponentsInChildren<IUnitComponent>();
-            foreach (var component in components)
-            {
-                if (!_components.ContainsKey(component.GetType()))
-                {
-                    _components.Add(component.GetType(), component);
-                }
-            }
+            _components = GetComponentsInChildren<IUnitComponent>()
+                .ToDictionary(compo => compo.GetType());
             
             RangesCompo = GetUnitCompo<UnitManageRangeCompo>();
             AnimationCompo = GetUnitCompo<UnitAnimation>();
         }
 
-        private void InitializeUnitComponents()
+        protected virtual void InitComponents()
         {
             foreach (var component in _components.Values)
-            {
                 component.Initialize(this);
-            }
         }
 
-        private void AfterInitializeComponents()
+        protected virtual void AfterInitComponents()
         {
-            _components.Values.OfType<IAfterInitialize>()
-                .ToList().ForEach(component => component.AfterInitialize());
+            foreach (var component in _components.Values.OfType<IAfterInitialize>())
+                component.AfterInitialize();
         }
 
         public T GetUnitCompo<T>() where T : class, IUnitComponent 

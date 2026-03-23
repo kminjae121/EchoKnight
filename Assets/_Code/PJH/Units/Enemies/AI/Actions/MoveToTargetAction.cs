@@ -36,13 +36,13 @@ namespace Code.UnitSystem.Enemies.AI
 
             if (_gridMap == null)
             {
-                UnityLogger.LogError("GridMap이 존재하지 않습니다.");
+                UnityLogger.LogError("GridMap is missing.");
                 return Status.Failure;
             }
 
             if (_mover == null)
             {
-                UnityLogger.LogError("PathMover가 존재하지 않습니다.");
+                UnityLogger.LogError("PathMover is missing.");
                 return Status.Failure;
             }
 
@@ -73,8 +73,10 @@ namespace Code.UnitSystem.Enemies.AI
                 _mover.OnMoveEnd -= HandleMovementEnd;
         }
 
-        private void HandleMovementEnd() 
-            => _isMoving = false;
+        private void HandleMovementEnd()
+        {
+            _isMoving = false;
+        }
 
         private bool TryGetNearestReachableTile(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int nearTile)
         {

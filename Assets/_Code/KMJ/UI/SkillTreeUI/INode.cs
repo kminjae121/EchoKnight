@@ -2,6 +2,7 @@
 {
     public interface INode
     {
+        
         public void UseNode();
     }
 }

@@ -360,8 +360,8 @@ Transform:
   m_GameObject: {fileID: 1343128989354604929}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5.992}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6509629517921138811}
@@ -635,8 +635,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6509629517921138811}
   - component: {fileID: 3311671849505908838}
-  - component: {fileID: 2775292757466211140}
-  - component: {fileID: 787878867900363844}
   m_Layer: 0
   m_Name: ArcherRender
   m_TagString: Untagged
@@ -675,7 +673,7 @@ Animator:
   m_GameObject: {fileID: 4071758237867083310}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 41f081d5c6d286c47a33bed3f84de79a, type: 3}
-  m_Controller: {fileID: 9100000, guid: 7a8d9f30d0ce21648ba2d159342bb6ef, type: 2}
+  m_Controller: {fileID: 9100000, guid: 0301a6ed8d99e1242ab324901f4c263c, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -687,31 +685,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &2775292757466211140
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4071758237867083310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d61eddddf3d04f308cb29da910381e57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &787878867900363844
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4071758237867083310}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69bb661cc1184ac78ba2cfcf1afd514c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _animator: {fileID: 3311671849505908838}
 --- !u!1 &4093476610385839492
 GameObject:
   m_ObjectHideFlags: 0

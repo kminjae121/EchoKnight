@@ -42,6 +42,7 @@ namespace Code.UI
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
+        public Vector2 EquippedPopupOffset => equippedPopupOffset;
 
         private void Awake()
         {

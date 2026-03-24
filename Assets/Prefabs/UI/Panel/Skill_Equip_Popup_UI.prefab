@@ -665,6 +665,7 @@ GameObject:
   - component: {fileID: 1958556647456058128}
   - component: {fileID: 194135923280071711}
   - component: {fileID: 1406225634171490824}
+  - component: {fileID: 535423175580228758}
   m_Layer: 5
   m_Name: Skill_Equip_Popup_UI
   m_TagString: Untagged
@@ -744,6 +745,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af0c2753920c4fed995286d068229bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UI.SkillEquipPopupUI
+  manualOffset: {x: 250, y: -150}
   descriptionText: {fileID: 2638989232373626365}
   equipButton: {fileID: 1869511151720901948}
   unequipButton: {fileID: 4552812062948075797}
+--- !u!225 &535423175580228758
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8138442224073646201}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

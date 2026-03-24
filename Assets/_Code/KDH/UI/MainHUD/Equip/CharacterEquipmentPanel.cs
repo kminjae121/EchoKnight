@@ -65,19 +65,32 @@ namespace Code.UI
             Bus<SkillEquipEvent>.Subscribe(HandleSkillEquipped);
             Bus<SkillUnequipEvent>.Subscribe(HandleSkillUnequipped);
 
+            Vector2 defaultArtifactOffset = Vector2.zero;
+            if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
+            {
+                var btn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
+                if (btn != null) defaultArtifactOffset = btn.EquippedPopupOffset;
+            }
+
             for (int i = 0; i < equippedArtifactSlotImages.Count; i++)
             {
                 int index = i;
-                var trigger = equippedArtifactSlotImages[i].gameObject.GetComponent<SlotHoverClickTrigger>();
-                if (trigger == null) trigger = equippedArtifactSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                var trigger = equippedArtifactSlotImages[i].GetComponent<SlotHoverClickTrigger>();
                 
+                if (trigger == null)
+                {
+                    trigger = equippedArtifactSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                }
+
                 trigger.useHoverVisuals = false;
-                trigger.OnLeftClick = (pivot, offset) =>
+                
+                trigger.OnLeftClick = (pivot, triggerOffset) =>
                 {
                     if (_unit != null && _unit.EquippedArtifacts != null && index < _unit.EquippedArtifacts.artifacts.Count)
                     {
                         var artifact = _unit.EquippedArtifacts.artifacts[index];
-                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pivot, offset));
+                        Vector2 finalOffset = triggerOffset != Vector2.zero ? triggerOffset : defaultArtifactOffset;
+                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pivot, finalOffset));
                     }
                 };
             }

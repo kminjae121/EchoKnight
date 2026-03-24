@@ -41,7 +41,7 @@ namespace Code.UnitSystem.Enemies
             if (_gridMap == null || _unitManager == null)
             {
                 _currentTarget = null;
-                SetVariableValue<GameObject>(BTVars.TargetGameObject, null);
+                SetVariableValue<GameObject>(BTVars.Target, null);
                 return false;
             }
 
@@ -52,7 +52,7 @@ namespace Code.UnitSystem.Enemies
                 .OrderBy(unit => GetTileDistance(myPos, _gridMap.WorldToGridPosition(unit.transform.position)))
                 .FirstOrDefault();
 
-            SetVariableValue(BTVars.TargetGameObject, _currentTarget != null ? _currentTarget.gameObject : null);
+            SetVariableValue(BTVars.Target, _currentTarget != null ? _currentTarget.gameObject : null);
 
             return _currentTarget != null;
         }

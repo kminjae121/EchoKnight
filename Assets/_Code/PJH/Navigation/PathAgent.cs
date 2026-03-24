@@ -37,7 +37,10 @@ namespace Code.Navigation
                 int cornerIndex = 0;
 
                 if (!isSuccess)
+                {
+                    UnityLogger.Log("Calculation Failed");
                     return cornerIndex;
+                }
 
                 pointArr[cornerIndex] = list[0].worldPos;
                 ++cornerIndex;
@@ -82,15 +85,22 @@ namespace Code.Navigation
 
         private (List<AstarNode>, bool) CalculatePath(Vector3Int startPoint, Vector3Int destination)
         {
+            UnityLogger.Log("Calculate 진입");
+            
             PriorityQueue<AstarNode> openList = new();
             HashSet<Vector3Int> closedSet = new();
             Dictionary<Vector3Int, float> bestGByCell = new();
             List<AstarNode> path = new();
+            
             bool result = false;
             AstarNode goalNode = null;
 
-            if (!bakedData.GetNodeIfExist(startPoint, out NodeData startNode)
-                || !bakedData.GetNodeIfExist(destination, out NodeData endNode))
+            bool f1 = bakedData.GetNodeIfExist(startPoint, out var startNode);
+            bool f2 = bakedData.GetNodeIfExist(destination, out var endNode);
+            UnityLogger.Log($"st : {startPoint}, {f1}, ed : {destination}, {f2}");
+            
+            if (!f1
+                || !f2)
                 return (path, false);
 
             var startAstarNode = new AstarNode
@@ -105,6 +115,8 @@ namespace Code.Navigation
 
             openList.Push(startAstarNode);
             bestGByCell[startAstarNode.cellPos] = startAstarNode.g;
+            
+            UnityLogger.Log("1");
 
             while (openList.Count > 0)
             {
@@ -119,6 +131,8 @@ namespace Code.Navigation
                 if (bestGByCell.TryGetValue(currentNode.cellPos, out float bestKnownG)
                     && currentNode.g > bestKnownG)
                     continue;
+                
+                UnityLogger.Log("2");
 
                 closedSet.Add(currentNode.cellPos);
 
@@ -134,7 +148,7 @@ namespace Code.Navigation
                     if (closedSet.Contains(link.endCellPos))
                         continue;
 
-                    if (bakedData.GetNodeIfExist(link.endCellPos, out NodeData nextNode))
+                    if (!bakedData.GetNodeIfExist(link.endCellPos, out NodeData nextNode))
                         continue;
 
                     float newG = currentNode.g + link.cost;
@@ -153,6 +167,8 @@ namespace Code.Navigation
                         g = newG,
                         f = newG + CalculateH(nextNode.cellPos, endNode.cellPos)
                     });
+                    
+                    UnityLogger.Log("3");
                 }
             }
 
@@ -170,6 +186,7 @@ namespace Code.Navigation
                 path.Reverse();
             }
 
+            UnityLogger.Log("4");
             return (path, result);
         }
 

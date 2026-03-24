@@ -12,21 +12,21 @@ namespace Code.UnitSystem.UnitComponent
         [SerializeField] private int maxPathCount = 50; // 최대 점 개수
         [SerializeField] private int movePoint = 8;
         [SerializeField] private float moveSpeed = 6f;
-        [SerializeField] private int _pathLength;
-        [SerializeField] private Vector3[] _pointArray;
-
+        [SerializeField] private Vector3[] pointArray;
+        
         public event Action OnMoveEnd;
 
         private PathAgent _pathAgent;
         private Unit _owner;
         private GridMap _gridMap;
+        private int _pathLength;
 
         public void Initialize(Unit owner)
         {
             _owner = owner;
             _pathAgent = owner.GetComponent<PathAgent>();
             _gridMap = GridMap.Instance;
-            _pointArray = new Vector3[maxPathCount];
+            pointArray = new Vector3[maxPathCount];
         }
 
         public void SetPathAndMove(Vector2Int startPos, Vector2Int destination)
@@ -55,10 +55,11 @@ namespace Code.UnitSystem.UnitComponent
                 }
 
                 UnityLogger.Log($"Start : {startPos}, Destination : {destination}");
-                _pathLength = await _pathAgent.GetPath(startPos, destination, _pointArray);
+                _pathLength = await _pathAgent.GetPath(startPos, destination, pointArray);
 
                 if (_pathLength <= 0)
                 {
+                    UnityLogger.Log("pathLength is zero");
                     OnMoveEnd?.Invoke();
                     return;
                 }
@@ -68,7 +69,7 @@ namespace Code.UnitSystem.UnitComponent
 
                 for (int i = 1; i < _pathLength; ++i)
                 {
-                    Vector3Int nextCell = GridToCell(_gridMap.WorldToGridPosition(_pointArray[i]));
+                    Vector3Int nextCell = GridToCell(_gridMap.WorldToGridPosition(pointArray[i]));
                     int segmentCost = GetSegmentCost(previousCell, nextCell);
 
                     if (segmentCost <= 0)
@@ -79,7 +80,7 @@ namespace Code.UnitSystem.UnitComponent
 
                     if (remainingMovePoint >= segmentCost)
                     {
-                        await MoveToPoint(ToMovePoint(_pointArray[i]));
+                        await MoveToPoint(ToMovePoint(pointArray[i]));
                         remainingMovePoint -= segmentCost;
                         previousCell = nextCell;
 

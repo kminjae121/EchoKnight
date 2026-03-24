@@ -21,6 +21,8 @@ namespace Code.UI.SkillTreeUI
             if (nodePrice > PlayerManager.Instance.Gold)
                 return;
             
+            Debug.Log($"{unitType} 의 {upgradeStat}스탯이 {upgradeValue}만큼 증가됐다.");
+            
             PlayerManager.Instance.RemoveGold(nodePrice);
             InGameStatCompo.Instance.SetStat(upgradeStat, upgradeValue, unitType);
         }

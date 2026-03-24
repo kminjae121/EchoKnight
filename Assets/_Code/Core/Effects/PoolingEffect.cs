@@ -9,11 +9,11 @@ namespace Code.Effects
         [field: SerializeField] public PoolingItemSO PoolingType { get; private set; }
         public GameObject GameObject => gameObject;
 
-        private GondrLib.ObjectPool.Runtime.Pool _myPool;
+        private Pool _myPool;
         [SerializeField] private GameObject effectObject;
         private IPlayableVFX _playableVFX;
         
-        public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool)
+        public void SetUpPool (Pool pool)
         {
             _myPool = pool;
             _playableVFX = effectObject.GetComponent<IPlayableVFX>();

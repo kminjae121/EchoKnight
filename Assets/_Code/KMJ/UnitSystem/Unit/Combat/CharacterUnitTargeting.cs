@@ -15,7 +15,7 @@ namespace Code.UnitSystem.Combat
         private GameObject _targetEnemy;
         private Unit _targetUnit;
         private EnemyTargeting _targetingCompo;
-        private CharacterUnit _unit;
+        [SerializeField] private CharacterUnit _unit;
 
         public void Initialize(Unit owner)
         {

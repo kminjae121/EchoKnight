@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GondrLib.ObjectPool.Runtime;
+using UnityEngine;
 
 namespace Code.UnitSystem
 {
@@ -7,5 +8,6 @@ namespace Code.UnitSystem
     {
         public string UnitName;
         public GameObject UnitPrefab;
+        public PoolingItemSO poolingItem;
     }
 }

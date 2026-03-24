@@ -30,7 +30,7 @@ namespace Code.UnitSystem.Enemies.AI
         {
             if (Enemy.Value == null || Target.Value == null)
                 return Status.Failure;
-
+            
             _gridMap = GridMap.Instance;
             _mover = Enemy.Value.PathMover;
 
@@ -49,7 +49,7 @@ namespace Code.UnitSystem.Enemies.AI
             Vector2Int startPos = _gridMap.WorldToGridPosition(Enemy.Value.transform.position);
             Vector2Int targetPos = _gridMap.WorldToGridPosition(Target.Value.transform.position);
 
-            if (!TryGetNearestReachableTile(startPos, targetPos, out Vector2Int destination))
+            if (!TryGetNearestTile(startPos, targetPos, out Vector2Int destination))
                 return Status.Failure;
 
             if (destination == startPos)
@@ -78,7 +78,7 @@ namespace Code.UnitSystem.Enemies.AI
             _isMoving = false;
         }
 
-        private bool TryGetNearestReachableTile(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int nearTile)
+        private bool TryGetNearestTile(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int nearTile)
         {
             float minDistance = Mathf.Infinity;
             nearTile = default;
@@ -105,6 +105,7 @@ namespace Code.UnitSystem.Enemies.AI
                 if (distance >= minDistance)
                     continue;
 
+                UnityLogger.Log($"distance set : {distance}");
                 minDistance = distance;
                 nearTile = nextTile;
                 found = true;

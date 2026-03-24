@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using Code.Core.Debugs;
 using Code.Map;
 using DG.Tweening;
 using UnityEngine;
@@ -35,6 +36,7 @@ namespace Code.UnitSystem.Enemies
             Vector2Int myPos = _gridMap.WorldToGridPosition(Owner.transform.position);
             Vector2Int targetPos = _gridMap.WorldToGridPosition(target.transform.position);
 
+            UnityLogger.Log($"myPos : {myPos} targetPos : {targetPos}, {GetTileDistance(myPos, targetPos) <= attackTileRange}");
             return GetTileDistance(myPos, targetPos) <= attackTileRange;
         }
 

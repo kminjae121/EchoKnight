@@ -53,14 +53,16 @@ namespace Code.UnitSystem
             _isMoving = false;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             _nextTile?.SetState(TileState.Enemy,false);
+            Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
 
+            if (_unit == null)
+                return;
             _unit.InputSO.OnCancelEvent -= HandleResetTile;
             _unit.InputSO.OnClickMoveEvent -= Move;
 
-            Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
         }
 
         private void EndTargeting()

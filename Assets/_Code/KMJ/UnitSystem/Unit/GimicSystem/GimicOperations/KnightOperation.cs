@@ -18,6 +18,7 @@ namespace Code.UnitSystem.GimicSystem
             _addDamage = _addDamageList[_operationLevel];
             _skillCompo.SetAddSkillDamage(_addDamage,SkillType.ActiveSkill);
             _operationLevel++;
+            Debug.Log("실행됨");
             Bus<KnightSwordEvent>.Raise(new KnightSwordEvent(_operationLevel));
         }
 

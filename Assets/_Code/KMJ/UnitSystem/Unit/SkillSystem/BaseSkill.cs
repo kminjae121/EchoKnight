@@ -71,12 +71,13 @@ namespace Code.UnitSystem.SkillSystem
             SkillRange = skillData == null ? 0 : Mathf.Max(0, Mathf.RoundToInt(skillData.SkillRange));
         }
         
-        
-        public virtual void OnDisable()
+
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             skillEndEvent.RemoveListener(CanUseSkillTrue);
         }
-        
+
         public void SetDamage(float damage)
         {
             DamageData.damage = damage += AddDamage;

@@ -17,7 +17,6 @@ namespace Code.UI
         private void OnDisable()
         {
             Bus<KnightGimicBarEvent>.Unsubscribe(SetKnightGimicBar);
-            
         }
 
         private void SetKnightGimicBar(KnightGimicBarEvent evt)

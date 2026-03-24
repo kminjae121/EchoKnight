@@ -55,15 +55,16 @@ namespace Code.UnitSystem.SkillSystem
             skillEndEvent.AddListener(SetMovingTrue);   
         }
 
-        public override void OnDisable()
+        protected override void OnDestroy()
         {
-            base.OnDisable();
-            
+            base.OnDestroy();
             if (_inputReader != null)
                 _inputReader.OnAttackEvent -= UseSkill;
             
             skillEndEvent.RemoveListener(SetMovingTrue);
         }
+        
+        
 
         public void SetMovingTrue()
         {

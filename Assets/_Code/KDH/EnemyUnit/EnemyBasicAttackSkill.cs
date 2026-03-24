@@ -38,9 +38,9 @@ namespace Code.UnitSystem.SkillSystem
             AfterInitialize();
         }
 
-        public override void OnDisable()
+        protected override void OnDestroy()
         {
-            base.OnDisable();
+            base.OnDestroy();
             if (triggerCompo != null)
             {
                 triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;

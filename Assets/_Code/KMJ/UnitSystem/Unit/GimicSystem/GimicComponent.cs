@@ -31,7 +31,7 @@ namespace Code.UnitSystem.GimicSystem
             _unitType = owner.unitSO.UnitType;
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<UnitGimicEvent>.Unsubscribe(SetCondition);
             Bus<UseGimicEvent>.Unsubscribe(UseCondition);

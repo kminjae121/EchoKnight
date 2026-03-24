@@ -69,7 +69,7 @@ namespace Code.Core.Managers
                 AbstractEnemyUnit enemy = enemyObj.GetComponent<AbstractEnemyUnit>();
                 Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(enemy));
                 //enemy.currentTile = tile;
-                enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
+//                enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
 
                 enemies.Add(enemyObj);
             }

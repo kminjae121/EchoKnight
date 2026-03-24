@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Code.Core.Events.Bus;
+using Code.UI.SkillTreeUI;
 using Code.UnitSystem.Upgrade;
 using GondrLib.Dependencies;
 using GondrLib.ObjectPool.Runtime;
@@ -23,11 +24,13 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI statInfoText;
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private Button upgradeButton;
+        private INode thisSkillNode;
         
         [Inject] private PoolManagerMono _poolManager;
         
         private List<UpgradeNodeButton> _activeNodes = new();
         private UpgradeNodeSO _selectedNode;
+
 
         public override void Awake()
         {
@@ -94,16 +97,34 @@ namespace Code.UI
             foreach (var node in _activeNodes) node.ReturnToPool();
             _activeNodes.Clear();
 
-            foreach (var data in TreeData)
+
+            for (int i = 0; i < TreeData.Count; i++)
             {
                 var btn = _poolManager.Pop<UpgradeNodeButton>(nodeButtonPoolSO);
                 btn.transform.SetParent(treeContainer);
                 btn.transform.SetAsLastSibling();
                 btn.transform.localScale = Vector3.one;
-                btn.SetData(data, OnNodeSelected);
+                btn.SetData(TreeData[i], OnNodeSelected);
+                
+                if (i == 0)
+                    thisSkillNode = btn.GetComponent<INode>();
                 
                 _activeNodes.Add(btn);
             }
+
+            //foreach (var data in TreeData)
+            //{
+            //    var btn = _poolManager.Pop<UpgradeNodeButton>(nodeButtonPoolSO);
+            //    btn.transform.SetParent(treeContainer);
+            //    btn.transform.SetAsLastSibling();
+            //    btn.transform.localScale = Vector3.one;
+            //    btn.SetData(data, OnNodeSelected);
+            //    
+            //    if (data.isUnlocked)
+            //        thisSkillNode = btn.GetComponent<INode>();
+            //    
+            //    _activeNodes.Add(btn);
+            //}
         }
 
         private void OnNodeSelected(UpgradeNodeSO nodeData)
@@ -143,6 +164,7 @@ namespace Code.UI
         {
             if (_selectedNode == null) return;
             
+            thisSkillNode.UseNode();
             Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent($"[{_selectedNode.upgradeName}] 업그레이드 완료!"));
             
             _selectedNode.isUnlocked = true;

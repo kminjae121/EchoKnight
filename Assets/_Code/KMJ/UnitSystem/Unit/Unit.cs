@@ -55,11 +55,11 @@ namespace Code.UnitSystem
         
         protected virtual void OnDisable()
         {
-            UnregisterEvents();
         }
         
         protected virtual void OnDestroy()
         {
+            UnregisterEvents();
         }
         
         private void InitializeData()

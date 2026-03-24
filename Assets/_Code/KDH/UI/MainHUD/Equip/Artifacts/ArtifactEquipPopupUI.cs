@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class ArtifactEquipPopupUI : MonoBehaviour
     {
         [Header("UI Elements")]
@@ -17,15 +18,16 @@ namespace Code.UI
         [SerializeField] private Button unequipButton;
 
         private RectTransform _rectTransform;
+        private CanvasGroup _canvasGroup;
+        private Canvas _parentCanvas;
         private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
         private int _frameCountOnOpen;
-        private Canvas _parentCanvas;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
-            _parentCanvas = GetComponentInParent<Canvas>();
+            _canvasGroup = GetComponent<CanvasGroup>();
 
             Bus<ArtifactPopupEvent>.Subscribe(HandlePopupEvent);
             
@@ -44,12 +46,15 @@ namespace Code.UI
 
         private void Update()
         {
-            if (Time.frameCount == _frameCountOnOpen) return;
+            if (!gameObject.activeSelf || Time.frameCount == _frameCountOnOpen) return;
 
             if (UnityEngine.Input.GetMouseButtonDown(0) || UnityEngine.Input.GetMouseButtonDown(1))
             {
+                if (_parentCanvas == null)
+                    _parentCanvas = transform.root.GetComponentInChildren<Canvas>();
+
                 Camera cam = null;
-                if (_parentCanvas != null && _parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
+                if (_parentCanvas != null && (_parentCanvas.renderMode == RenderMode.ScreenSpaceCamera || _parentCanvas.renderMode == RenderMode.WorldSpace))
                 {
                     cam = _parentCanvas.worldCamera;
                 }
@@ -65,16 +70,14 @@ namespace Code.UI
         {
             if (evt.EquipmentItem == null)
             {
-                if (gameObject.activeSelf)
-                {
-                    gameObject.SetActive(false);
-                    _targetEquipmentItem = null;
-                }
+                Hide();
                 return;
             }
 
             _targetEquipmentItem = evt.EquipmentItem;
             _isCurrentlyEquipped = evt.IsEquipped;
+
+            _canvasGroup.blocksRaycasts = !evt.IsReadOnly;
 
             nameText.text = _targetEquipmentItem.itemName;
             descriptionText.text = _targetEquipmentItem.itemDesc;
@@ -87,6 +90,12 @@ namespace Code.UI
 
             equipButton.gameObject.SetActive(!_isCurrentlyEquipped && !evt.IsReadOnly);
             unequipButton.gameObject.SetActive(_isCurrentlyEquipped && !evt.IsReadOnly);
+
+            if (evt.Pivot != null)
+            {
+                _rectTransform.position = evt.Pivot.position;
+                _rectTransform.anchoredPosition += new Vector2(evt.Offset.x, evt.Offset.y);
+            }
 
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
@@ -126,7 +135,7 @@ namespace Code.UI
             gameObject.SetActive(false);
             _targetEquipmentItem = null;
             
-            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, Vector2.zero));
+            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, null));
         }
     }
 }

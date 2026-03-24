@@ -1,9 +1,9 @@
-﻿using Code.Core.Debugs;
+using Code.Core.Debugs;
+using Code.Core.Events.Bus;
 using Code.UnitSystem.Enemies.AI;
 using Code.UnitSystem.UnitComponent;
 using Unity.Behavior;
 using UnityEngine;
-using Action = System.Action;
 
 namespace Code.UnitSystem.Enemies
 {
@@ -14,7 +14,7 @@ namespace Code.UnitSystem.Enemies
         public TestAttackCompo AttackCompo { get; private set; }
         public TurnChannel TurnChannel { get; private set; }
 
-        public event Action OnTurnEnd;
+        private bool _hasEndedTurn;
 
         protected override void Awake()
         {
@@ -26,24 +26,47 @@ namespace Code.UnitSystem.Enemies
         {
             base.AfterInitComponents();
             PathMover = GetUnitCompo<PathMover>();
-            AttackCompo = GetUnitCompo<TestAttackCompo>(); // 나중에 수정
-            // 어택 컴포넌트 가져오기
+            AttackCompo = GetUnitCompo<TestAttackCompo>();
         }
 
         protected virtual void Start()
         {
-            SetVariableValue<AbstractEnemyUnit>(BTVars.Enemy, this); // 자신 할당
+            //SetVariableValue(BTVars.Enemy, this);
 
             if (GetVariableValue(BTVars.TurnChannel, out BlackboardVariable<TurnChannel> targetChannel))
                 TurnChannel = targetChannel.Value;
         }
 
-        public void InvokeTurnEnd()
-            => OnTurnEnd?.Invoke();
+        public override void OnTurnStart()
+        {
+            _hasEndedTurn = false;
+            base.OnTurnStart();
+
+            if (!PrepareTurnStart())
+            {
+                OnTurnEnd();
+                return;
+            }
+
+            TurnChannel?.SendEventMessage();
+        }
+
+        public override void OnTurnEnd()
+        {
+            if (_hasEndedTurn)
+                return;
+
+            _hasEndedTurn = true;
+            base.OnTurnEnd();
+            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+        }
+
+        protected virtual bool PrepareTurnStart()
+            => true;
 
         public void SetVariableValue<T>(string variableName, T value)
         {
-            Debug.Assert(!string.IsNullOrEmpty(variableName), $"Variable name is empty");
+            Debug.Assert(!string.IsNullOrEmpty(variableName), "Variable name is empty");
 
             if (BTAgent.GetVariable(variableName, out BlackboardVariable<T> variable))
                 variable.Value = value;

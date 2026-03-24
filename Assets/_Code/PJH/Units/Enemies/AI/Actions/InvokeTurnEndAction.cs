@@ -16,7 +16,7 @@ public partial class InvokeTurnEndAction : Action
         if (Enemy.Value == null)
             return Status.Failure;
         
-        Enemy.Value.InvokeTurnEnd();
+        Enemy.Value.OnTurnEnd();
         return Status.Success;
     }
 }

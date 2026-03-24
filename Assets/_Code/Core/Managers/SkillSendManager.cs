@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Managers;
+using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
@@ -9,15 +10,14 @@ namespace Code.Core.Managers
     public class SkillSendManager : MonoSingleton<SkillSendManager>
     {
         [Header("Skill Storage")]
-        private readonly List<SkillSO> skills = new List<SkillSO>();
+        public List<SkillSO> skills = new List<SkillSO>();
+        
         private readonly Dictionary<UnitType, List<SkillSO>> _equipSkillDict = new Dictionary<UnitType, List<SkillSO>>();
         
         public void AddSkillList(SkillSO skill)
         {
             if (skill == null) return;
-            if (skills.Contains(skill)) return;
-
-            skills.Add(skill);
+            if (!skills.Contains(skill)) skills.Add(skill);
         }
 
         public List<SkillSO> GetSkillList(UnitType unitType)
@@ -25,35 +25,42 @@ namespace Code.Core.Managers
             if (skills == null) return new List<SkillSO>();
             return skills.Where(s => s != null && s.unitType == unitType).ToList();
         }
+
+        public void SyncEquippedSkills(UnitSO unit)
+        {
+            if (unit == null || unit.SkillStorage == null) return;
+            
+            if (!_equipSkillDict.TryGetValue(unit.UnitType, out var list))
+            {
+                list = new List<SkillSO>();
+                _equipSkillDict[unit.UnitType] = list;
+            }
+            
+            list.Clear();
+            list.AddRange(unit.SkillStorage.skills);
+        }
         
         public void EquipSkill(SkillSO skill)
         {
             if (skill == null) return;
-            if (!skills.Contains(skill)) return;
 
             var unitType = skill.unitType;
-
             if (!_equipSkillDict.TryGetValue(unitType, out var list))
             {
                 list = new List<SkillSO>();
                 _equipSkillDict.Add(unitType, list);
             }
             
-            if (list.Contains(skill)) return;
-
-            list.Add(skill);
+            if (!list.Contains(skill)) list.Add(skill);
         }
 
         public void RemoveSkill(SkillSO skill)
         {
             if (skill == null) return;
 
-            foreach (var skillList in _equipSkillDict.Values)
+            if (_equipSkillDict.TryGetValue(skill.unitType, out var list))
             {
-                if (skillList.Contains(skill))
-                {
-                    skillList.Remove(skill);
-                }
+                list.Remove(skill);
             }
         }
 
@@ -63,7 +70,6 @@ namespace Code.Core.Managers
             {
                 return System.Array.Empty<SkillSO>();
             }
-
             return list.ToArray();
         }
     }

@@ -1,8 +1,8 @@
 using System;
 using Unity.Behavior;
+using Unity.Properties;
 using UnityEngine;
 using Action = Unity.Behavior.Action;
-using Unity.Properties;
 
 namespace Code.UnitSystem.Enemies.AI
 {
@@ -18,19 +18,21 @@ namespace Code.UnitSystem.Enemies.AI
 
         protected override Status OnStart()
         {
+            if (Enemy.Value == null || Target.Value == null)
+                return Status.Failure;
+
             _attackCompo = Enemy.Value.AttackCompo;
-            Debug.Assert(_attackCompo != null, "Attack Component가 존재하지 않습니다.");
-            
+
             if (_attackCompo == null)
                 return Status.Failure;
-            
+
             _attackCompo.OnAttackEnd += HandleAttackEnd;
             _isAttacking = true;
             _attackCompo.Attack(Target.Value);
 
             return Status.Running;
         }
-    
+
         protected override Status OnUpdate()
         {
             return _isAttacking ? Status.Running : Status.Success;
@@ -43,6 +45,8 @@ namespace Code.UnitSystem.Enemies.AI
         }
 
         private void HandleAttackEnd()
-            => _isAttacking = false;
+        {
+            _isAttacking = false;
+        }
     }
 }

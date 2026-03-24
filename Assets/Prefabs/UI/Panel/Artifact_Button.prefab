@@ -128,6 +128,11 @@ MonoBehaviour:
   rareSprite: {fileID: 21300000, guid: 72e6c437fdf67ef49b4eaaf5d4105aac, type: 3}
   epicSprite: {fileID: 21300000, guid: 7a5624437ea57434281dc88092b8aff4, type: 3}
   legendarySprite: {fileID: 21300000, guid: 6bed449d5398b1b48944a85f96aca516, type: 3}
+  popupPivot: {fileID: 0}
+  popupOffset: {x: -0.5, y: 0.5}
+  equippedPopupPivot: {fileID: 0}
+  equippedPopupOffset: {x: 0.5, y: 0.5}
+  openPopupOnHover: 0
 --- !u!1 &1852728075095654850
 GameObject:
   m_ObjectHideFlags: 0
@@ -220,7 +225,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1373840881766324671
 RectTransform:
   m_ObjectHideFlags: 0

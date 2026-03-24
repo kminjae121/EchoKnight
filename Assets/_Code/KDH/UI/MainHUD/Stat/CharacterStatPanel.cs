@@ -44,11 +44,20 @@ namespace Code.UI
             for (int i = 0; i < skillIcons.Count; i++)
             {
                 int index = i;
-                var trigger = skillIcons[i].gameObject.GetComponent<SlotHoverClickTrigger>();
-                if (trigger == null) trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                var trigger = skillIcons[i].GetComponent<SlotHoverClickTrigger>();
                 
+                if (trigger == null)
+                {
+                    trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                }
+
                 trigger.useHoverVisuals = false;
-                trigger.OnLeftClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
+                
+                trigger.OnClick = (pivot, offset) => 
+                {
+                    Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+                    OpenTargetPanel("EquipPanel");
+                };
                 trigger.OnHoverEnter = (pivot, offset) =>
                 {
                     if (_currentUnit != null && SkillSendManager.Instance != null)
@@ -67,11 +76,20 @@ namespace Code.UI
             for (int i = 0; i < artifactIcons.Count; i++)
             {
                 int index = i;
-                var trigger = artifactIcons[i].gameObject.GetComponent<SlotHoverClickTrigger>();
-                if (trigger == null) trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                var trigger = artifactIcons[i].GetComponent<SlotHoverClickTrigger>();
                 
+                if (trigger == null)
+                {
+                    trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
+                }
+
                 trigger.useHoverVisuals = false;
-                trigger.OnLeftClick = (pivot, offset) => OpenTargetPanel("EquipPanel");
+                
+                trigger.OnClick = (pivot, offset) => 
+                {
+                    Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, null));
+                    OpenTargetPanel("EquipPanel");
+                };
                 trigger.OnHoverEnter = (pivot, offset) =>
                 {
                     if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null)
@@ -95,13 +113,15 @@ namespace Code.UI
             UnsubscribeHpEvent();
         }
 
+        public override void Close()
+        {
+            base.Close();
+            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, null));
+        }
+
         private void OpenTargetPanel(string targetPanelId)
         {
-            if (string.IsNullOrEmpty(targetPanelId))
-            {
-                Debug.LogWarning("이동할 대상 패널 ID가 지정되지 않았습니다.");
-                return;
-            }
             PanelManager.Close("StatPanel");
             PanelManager.Open(targetPanelId);
         }

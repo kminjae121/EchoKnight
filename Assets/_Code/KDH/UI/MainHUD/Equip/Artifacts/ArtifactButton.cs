@@ -26,11 +26,9 @@ namespace Code.UI
         [SerializeField] private Sprite legendarySprite;
 
         [Header("Normal Popup Settings")]
-        [SerializeField] private RectTransform popupPivot;
         [SerializeField] private Vector2 popupOffset;
 
         [Header("Equipped Popup Settings")]
-        [SerializeField] private RectTransform equippedPopupPivot;
         [SerializeField] private Vector2 equippedPopupOffset;
 
         [Header("Behavior Settings")]
@@ -56,7 +54,7 @@ namespace Code.UI
             Bus<ArtifactPopupEvent>.Unsubscribe(HandlePopupEvent);
         }
 
-        public RectTransform GetPivot() => _isEquipped && equippedPopupPivot != null ? equippedPopupPivot : (popupPivot != null ? popupPivot : _rectTransform);
+        public RectTransform GetPivot() => _rectTransform;
         public Vector2 GetOffset() => _isEquipped ? equippedPopupOffset : popupOffset;
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;

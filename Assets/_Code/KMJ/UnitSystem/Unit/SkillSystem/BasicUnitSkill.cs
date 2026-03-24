@@ -1,4 +1,5 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
 using Code.Map;
 using Code.UnitSystem.Combat;
 using EnemySystem;
@@ -26,7 +27,10 @@ namespace Code.UnitSystem.SkillSystem
         protected override void Start()
         {
             base.Start();
-            
+        }
+
+        private void OnEnable()
+        {
             if(_characterUnit != null)
                 impulseSource = _characterUnit.impulseSource;
 
@@ -48,7 +52,7 @@ namespace Code.UnitSystem.SkillSystem
                 _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
             }
 
-            skillEndEvent.AddListener(SetMovingTrue);
+            skillEndEvent.AddListener(SetMovingTrue);   
         }
 
         public override void OnDisable()

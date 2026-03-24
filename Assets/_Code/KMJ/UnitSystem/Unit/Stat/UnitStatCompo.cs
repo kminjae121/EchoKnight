@@ -53,9 +53,6 @@ namespace Code.UnitSystem
                     value = DefensivePower;
                     break;
             }
-    
-            Debug.Log(InGameStatCompo.Instance.GetStat(statInfo, unitSO.UnitType));
-            
             value += InGameStatCompo.Instance.GetStat(statInfo, unitSO.UnitType);
             
             return (float)value;

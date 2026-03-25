@@ -58,7 +58,6 @@ namespace Code.UnitSystem.Enemies
 
             _hasEndedTurn = true;
             base.OnTurnEnd();
-            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
         }
 
         protected virtual bool PrepareTurnStart()

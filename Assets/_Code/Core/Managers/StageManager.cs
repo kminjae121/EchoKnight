@@ -68,8 +68,7 @@ namespace Code.Core.Managers
                 tile.SetState(TileState.Enemy | TileState.Obstacle, true);
                 AbstractEnemyUnit enemy = enemyObj.GetComponent<AbstractEnemyUnit>();
                 Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(enemy));
-                //enemy.currentTile = tile;
-//                enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
+                enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
 
                 enemies.Add(enemyObj);
             }

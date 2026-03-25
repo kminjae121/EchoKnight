@@ -70,7 +70,6 @@ public class ShooterAttack : BasicUnitSkill
         {
             base.SkillEnd();
             _animationCompo.PlaySelectAnimation("IDLE");
-            _characterUnit.BehaviorCompo.IsActive = true;
             
             skillEndEvent.Invoke();
         }

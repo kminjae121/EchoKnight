@@ -68,7 +68,6 @@ namespace Code.UnitSystem.SkillSystem
 
         public void SetMovingTrue()
         {
-            _characterUnit.BehaviorCompo.ReCheckInRange();
         }
 
         public void SetEnemyTargeting(EnemyTargeting targeting)
@@ -88,7 +87,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
+            _characterUnit.UnitRangeCompo.RemoveAllRange();
             _characterUnit.TurnEnd();
         }
 
@@ -147,12 +146,12 @@ namespace Code.UnitSystem.SkillSystem
             {
                 SkillStartEvent();
                 _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
-                _characterUnit.BehaviorCompo.ResetTile();
+                _characterUnit.BehaveCompo.ResetTile();
                 skillEvent?.Invoke(null);
             }
             else
             {
-                _characterUnit.BehaviorCompo.ResetTile();
+                _characterUnit.BehaveCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
                 CanUseThisSkill();

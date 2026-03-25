@@ -94,7 +94,7 @@ namespace Code.UnitSystem
                 BehaviorCompo.moveCount = 0;
             }
             
-            Bus<WhatUnitTurnEvent>.Raise(new  WhatUnitTurnEvent(unitSO.UnitType));
+            Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }
 
         public override void OnTurnEnd()
@@ -105,9 +105,6 @@ namespace Code.UnitSystem
             
             if (BehaviorCompo != null)
                 BehaviorCompo.ResetTile();
-            
-            UnitRangeCompo.RemoveAllRange();
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }
 
         protected override void Hit()

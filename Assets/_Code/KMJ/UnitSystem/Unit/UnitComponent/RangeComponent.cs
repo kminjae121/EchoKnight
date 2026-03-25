@@ -45,7 +45,6 @@ namespace Code.UnitSystem
 
             CalculateRange();
             ProcessTiles(_tilesInRange, true);
-
             IsActive = true;
         }
 

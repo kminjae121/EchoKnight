@@ -146,12 +146,12 @@ namespace Code.UnitSystem.SkillSystem
             {
                 SkillStartEvent();
                 _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
-                _characterUnit.BehaveCompo.ResetTile();
+                _characterUnit.BehaviorCompo.ResetTile();
                 skillEvent?.Invoke(null);
             }
             else
             {
-                _characterUnit.BehaveCompo.ResetTile();
+                _characterUnit.BehaviorCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
                 CanUseThisSkill();

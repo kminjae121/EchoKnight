@@ -22,8 +22,8 @@ namespace Code.UnitSystem.Combat
         public void GetApplyDamage(DamageEvent evt)
         {
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-
-            if (evt.target.GetComponent<markComponent>().isMarking == true ||
+            
+            if (evt.target.GetComponent<MarkComponent>().isMarking == true ||
                 (evt.Owner.unitSO.UnitType == UnitType.Bandlt && evt.addDamage != 0))
             {
                 Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target,GimicOption.TargetGimic));

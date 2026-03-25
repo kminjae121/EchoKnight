@@ -1,5 +1,4 @@
 using Code.Core.Debugs;
-using Code.Core.Events.Bus;
 using Code.UnitSystem.Enemies.AI;
 using Code.UnitSystem.UnitComponent;
 using Unity.Behavior;
@@ -13,6 +12,7 @@ namespace Code.UnitSystem.Enemies
         public PathMover PathMover { get; private set; }
         public TestAttackCompo AttackCompo { get; private set; }
         public TurnChannel TurnChannel { get; private set; }
+        public UnitAnimation UnitAnimator { get; private set; }
 
         private bool _hasEndedTurn;
 
@@ -27,11 +27,13 @@ namespace Code.UnitSystem.Enemies
             base.AfterInitComponents();
             PathMover = GetUnitCompo<PathMover>();
             AttackCompo = GetUnitCompo<TestAttackCompo>();
+            UnitAnimator = GetUnitCompo<UnitAnimation>();
         }
 
         protected virtual void Start()
         {
             //SetVariableValue(BTVars.Enemy, this);
+            SetVariableValue(BTVars.UnitAnimator, UnitAnimator);
 
             if (GetVariableValue(BTVars.TurnChannel, out BlackboardVariable<TurnChannel> targetChannel))
                 TurnChannel = targetChannel.Value;

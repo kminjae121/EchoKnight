@@ -11,7 +11,6 @@ namespace Code.UnitSystem.GimicSystem
         {
             if (_markDictionary[target] >= 5)
             {
-                Debug.Log(_markDictionary[target]);
                 return true;
             }
             return false;
@@ -23,7 +22,6 @@ namespace Code.UnitSystem.GimicSystem
                 _markDictionary[target] = count + 1;
             else
                 _markDictionary[target] = 1;
-            
             
             Bus<SetMarkEvent>.Raise(new SetMarkEvent(target, _markDictionary[target]));
         }

@@ -1,24 +1,22 @@
-﻿using System;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.UnitSystem.GimicSystem
 {
-    public class markComponent : MonoBehaviour
+    public class MarkComponent : MonoBehaviour
     {
         [SerializeField] private Image markUI;
         [SerializeField] private TextMeshProUGUI markText;
         [SerializeField] private Image killUI;
-        public bool isMarking { get; private set; } = false;
+         public bool isMarking { get; private set; } 
 
         private void Start()
         {
             Bus<SetMarkEvent>.Subscribe(SetMark);
         }
-
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<SetMarkEvent>.Unsubscribe(SetMark);
         }
@@ -26,6 +24,7 @@ namespace Code.UnitSystem.GimicSystem
         private void SetMark(SetMarkEvent evt)
         {
             isMarking = true;
+            
             markText.text = evt.cnt.ToString();
 
             if (evt.cnt == 4)
@@ -37,10 +36,9 @@ namespace Code.UnitSystem.GimicSystem
             if (evt.cnt == 5)
             {
                 killUI.gameObject.SetActive(false);
-                markUI.gameObject.SetActive(true);
+                markUI.gameObject.SetActive(false);
                 markText.gameObject.SetActive(false);
             }
-            
         }
     }
 }

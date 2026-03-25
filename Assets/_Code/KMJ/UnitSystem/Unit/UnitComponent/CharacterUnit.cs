@@ -129,6 +129,7 @@ namespace Code.UnitSystem
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
                 
                 OnTurnEnd();
+                RangesCompo.RemoveAllRange();
                 Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             }
         }

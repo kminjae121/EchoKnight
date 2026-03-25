@@ -14,6 +14,7 @@ namespace Code.UI
     {
         [Header("Pool Settings")]
         [SerializeField] private PoolingItemSO artifactButtonPoolingSO;
+        [SerializeField] private PoolingItemSO skillButtonPoolingSO;
 
         [Header("Equipped Items")]
         [SerializeField] private List<Image> skillIcons;
@@ -41,11 +42,24 @@ namespace Code.UI
             base.Awake();
             Bus<CharacterInfoEvent>.Subscribe(HandleCharacterInfo);
 
+            Vector2 defaultSkillOffset = Vector2.zero;
+            if (skillButtonPoolingSO != null && skillButtonPoolingSO.prefab != null)
+            {
+                var btn = skillButtonPoolingSO.prefab.GetComponent<CharacterSkillButton>();
+                if (btn != null) defaultSkillOffset = btn.EquippedPopupOffset;
+            }
+
+            Vector2 defaultArtifactOffset = Vector2.zero;
+            if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
+            {
+                var btn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
+                if (btn != null) defaultArtifactOffset = btn.EquippedPopupOffset;
+            }
+
             for (int i = 0; i < skillIcons.Count; i++)
             {
                 int index = i;
                 var trigger = skillIcons[i].GetComponent<SlotHoverClickTrigger>();
-                
                 if (trigger == null)
                 {
                     trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
@@ -53,12 +67,12 @@ namespace Code.UI
 
                 trigger.useHoverVisuals = false;
                 
-                trigger.OnClick = (pivot, offset) => 
+                trigger.OnClick = (pivot, triggerOffset) => 
                 {
                     Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
                     OpenTargetPanel("EquipPanel");
                 };
-                trigger.OnHoverEnter = (pivot, offset) =>
+                trigger.OnHoverEnter = (pivot, triggerOffset) =>
                 {
                     if (_currentUnit != null && SkillSendManager.Instance != null)
                     {
@@ -66,7 +80,8 @@ namespace Code.UI
                         if (index < equippedSkills.Length)
                         {
                             var skill = equippedSkills[index];
-                            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(skill, pivot, offset));
+                            Vector2 finalOffset = triggerOffset != Vector2.zero ? triggerOffset : defaultSkillOffset;
+                            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(skill, pivot, finalOffset));
                         }
                     }
                 };
@@ -77,7 +92,6 @@ namespace Code.UI
             {
                 int index = i;
                 var trigger = artifactIcons[i].GetComponent<SlotHoverClickTrigger>();
-                
                 if (trigger == null)
                 {
                     trigger = artifactIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
@@ -85,12 +99,12 @@ namespace Code.UI
 
                 trigger.useHoverVisuals = false;
                 
-                trigger.OnClick = (pivot, offset) => 
+                trigger.OnClick = (pivot, triggerOffset) => 
                 {
                     Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(null, false, null));
                     OpenTargetPanel("EquipPanel");
                 };
-                trigger.OnHoverEnter = (pivot, offset) =>
+                trigger.OnHoverEnter = (pivot, triggerOffset) =>
                 {
                     if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null)
                     {
@@ -98,7 +112,8 @@ namespace Code.UI
                         if (index < artifacts.Count)
                         {
                             var artifact = artifacts[index];
-                            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pivot, offset, true));
+                            Vector2 finalOffset = triggerOffset != Vector2.zero ? triggerOffset : defaultArtifactOffset;
+                            Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pivot, finalOffset, true));
                         }
                     }
                 };

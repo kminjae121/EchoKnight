@@ -20,29 +20,29 @@ namespace Code.UnitSystem
 
         #region UnitCompo
 
-        public UnitBehaviorCompo BehaveCompo { get; set; }
+        public UnitBehaviorCompo BehaviorCompo { get; private set; }
         public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
-        public TurnCostGaugeManager GaugeManager { get; set; }
+        public TurnCostGaugeManager GaugeManager { get; private set; }
 
         #endregion
         
         public int PlayableUnitID { get; set; } = -1;
         
-        public GameObject _startTile = null;
+        public GameObject _startTile;
         
         private Button endTurnBtn;
         public CinemachineImpulseSource impulseSource { get; private set; }
         
-        private Vector3 _dampingSpeed = new Vector3(1.5f,1.5f,1.5f);
+        private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
 
         private void Start()
         {
             SkillCompo = GetUnitCompo<SkillComponent>();
             TriggerCompo = GetUnitCompo<UnitAnimationTrigger>();
-            BehaveCompo = GetUnitCompo<UnitBehaviorCompo>();
+            BehaviorCompo = GetUnitCompo<UnitBehaviorCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
             
@@ -51,7 +51,7 @@ namespace Code.UnitSystem
             if (TriggerCompo != null)
                 TriggerCompo.OnDeadEvent += HandleDieAnimationEnd;
 
-            BehaveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
+            BehaviorCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
             
             if(_startTile != null)
                 transform.position = _startTile.transform.position;
@@ -88,13 +88,13 @@ namespace Code.UnitSystem
             if (endTurnBtn != null)
                 endTurnBtn.onClick.AddListener(TurnEnd);
 
-            if (BehaveCompo != null)
+            if (BehaviorCompo != null)
             {
-                BehaveCompo.FindObjectInRange();
-                BehaveCompo.moveCount = 0;
+                BehaviorCompo.FindObjectInRange();
+                BehaviorCompo.moveCount = 0;
             }
             
-            Bus<WhatUnitTurnEvent>.Raise(new  WhatUnitTurnEvent(unitSO.UnitType));
+            Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }
 
         public override void OnTurnEnd()
@@ -102,12 +102,6 @@ namespace Code.UnitSystem
             base.OnTurnEnd();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
-            
-            if (BehaveCompo != null)
-                BehaveCompo.ResetTile();
-            
-            UnitRangeCompo.RemoveAllRange();
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }
 
         protected override void Hit()
@@ -125,11 +119,12 @@ namespace Code.UnitSystem
         {
             if (isMyTurn)
             {
+                UnitRangeCompo.RemoveAllRange();
                 if (endTurnBtn != null)
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
                 
                 OnTurnEnd();
-                Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
+                
             }
         }
 
@@ -159,6 +154,5 @@ namespace Code.UnitSystem
             yield return new WaitForSeconds(1.5f);
             AnimationCompo.ReturnIdleAnimation();
         }
-
     }
 }

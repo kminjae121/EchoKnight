@@ -100,9 +100,6 @@ public class MeleeAttack : BasicUnitSkill
             }
             
             _animationCompo.PlaySelectAnimation("IDLE");
-            _characterUnit.BehaveCompo.IsActive = true;
-            _characterUnit.BehaveCompo.FindObjectInRange();
-
             SkillEnd();
         }
 

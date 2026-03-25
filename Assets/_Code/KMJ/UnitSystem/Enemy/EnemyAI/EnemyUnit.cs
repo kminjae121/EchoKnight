@@ -78,7 +78,6 @@ namespace EnemySystem
         {
             if (_ai != null) _ai.SetTurnState(false);
             base.OnTurnEnd();
-            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, 
                 false,new Vector3(0.1f,0.1f,0.1f)));

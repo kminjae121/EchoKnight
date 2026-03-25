@@ -189,8 +189,7 @@ namespace Code.UnitSystem
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             animationCompo.PlaySelectAnimation("IDLE");
 
-            ResetTile();
-            FindObjectInRange();
+            UnitRangeCompo.RemoveAllRange();
         }
 
         private IEnumerator Move(IMapTile tileInfo)

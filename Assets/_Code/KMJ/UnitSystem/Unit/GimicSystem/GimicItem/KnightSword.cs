@@ -12,12 +12,12 @@ namespace Code.UnitSystem.GimicSystem
 
         [SerializeField] private MeshRenderer meshRenderer;
 
-        private void Awake()
+
+        private void Start()
         {
             Bus<KnightSwordEvent>.Subscribe(SetMatIntnsity);
         }
-
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<KnightSwordEvent>.Unsubscribe(SetMatIntnsity);
         }

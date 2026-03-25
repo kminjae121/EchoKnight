@@ -9,16 +9,17 @@ namespace Code.UnitSystem.UnitComponent
 {
     public class PathMover : MonoBehaviour, IUnitComponent
     {
-        [SerializeField] private int maxPathCount = 50; // 최대 점 개수
+        [SerializeField] private int maxPathCount = 50;
         [SerializeField] private int movePoint = 8;
         [SerializeField] private float moveSpeed = 6f;
         [SerializeField] private Vector3[] pointArray;
-        
+
         public event Action OnMoveEnd;
 
         private PathAgent _pathAgent;
         private Unit _owner;
         private GridMap _gridMap;
+        private UnitRotation _rotationCompo;
         private int _pathLength;
 
         public void Initialize(Unit owner)
@@ -26,6 +27,7 @@ namespace Code.UnitSystem.UnitComponent
             _owner = owner;
             _pathAgent = owner.GetComponent<PathAgent>();
             _gridMap = GridMap.Instance;
+            _rotationCompo = owner.GetUnitCompo<UnitRotation>();
             pointArray = new Vector3[maxPathCount];
         }
 
@@ -54,6 +56,8 @@ namespace Code.UnitSystem.UnitComponent
                     return;
                 }
 
+                _rotationCompo ??= _owner.GetUnitCompo<UnitRotation>();
+
                 UnityLogger.Log($"Start : {startPos}, Destination : {destination}");
                 _pathLength = await _pathAgent.GetPath(startPos, destination, pointArray);
 
@@ -69,6 +73,7 @@ namespace Code.UnitSystem.UnitComponent
 
                 for (int i = 1; i < _pathLength; ++i)
                 {
+                    Vector3 targetPoint = ToMovePoint(pointArray[i]);
                     Vector3Int nextCell = GridToCell(_gridMap.WorldToGridPosition(pointArray[i]));
                     int segmentCost = GetSegmentCost(previousCell, nextCell);
 
@@ -80,7 +85,8 @@ namespace Code.UnitSystem.UnitComponent
 
                     if (remainingMovePoint >= segmentCost)
                     {
-                        await MoveToPoint(ToMovePoint(pointArray[i]));
+                        RotateToPoint(targetPoint);
+                        await MoveToPoint(targetPoint);
                         remainingMovePoint -= segmentCost;
                         previousCell = nextCell;
 
@@ -93,7 +99,9 @@ namespace Code.UnitSystem.UnitComponent
                     if (remainingMovePoint > 0)
                     {
                         Vector3Int partialCell = GetReachableCell(previousCell, nextCell, remainingMovePoint);
-                        await MoveToPoint(GetWorldPosition(partialCell));
+                        Vector3 partialPoint = GetWorldPosition(partialCell);
+                        RotateToPoint(partialPoint);
+                        await MoveToPoint(partialPoint);
                     }
 
                     break;
@@ -116,6 +124,14 @@ namespace Code.UnitSystem.UnitComponent
                     Vector3.MoveTowards(_owner.transform.position, point, moveSpeed * Time.deltaTime);
                 await Awaitable.NextFrameAsync();
             }
+        }
+
+        private void RotateToPoint(Vector3 point)
+        {
+            if (_rotationCompo == null)
+                return;
+
+            _rotationCompo.SetDir(point);
         }
 
         private int GetSegmentCost(Vector3Int startCell, Vector3Int endCell)

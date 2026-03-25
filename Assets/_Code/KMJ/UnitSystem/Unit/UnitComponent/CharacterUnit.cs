@@ -102,9 +102,6 @@ namespace Code.UnitSystem
             base.OnTurnEnd();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
-            
-            if (BehaviorCompo != null)
-                BehaviorCompo.ResetTile();
         }
 
         protected override void Hit()
@@ -122,11 +119,12 @@ namespace Code.UnitSystem
         {
             if (isMyTurn)
             {
+                UnitRangeCompo.RemoveAllRange();
                 if (endTurnBtn != null)
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
                 
                 OnTurnEnd();
-                RangesCompo.RemoveAllRange();
+                
             }
         }
 

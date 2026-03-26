@@ -52,8 +52,6 @@ namespace Code.UnitSystem.SkillSystem
 
                     if (component == null)
                         continue;
-                    
-                    baseSkill.UseSkillPoint = skillData.UsingSkillCost;
                     skills.TryAdd(skillData, baseSkill);
                 }
                 else
@@ -136,6 +134,7 @@ namespace Code.UnitSystem.SkillSystem
                     float damage = basicDamage + addDamage;
                     skill.SetDamage(damage);
                 }
+            }
         }
         
         public void StartSkill(SkillSO skillSO)

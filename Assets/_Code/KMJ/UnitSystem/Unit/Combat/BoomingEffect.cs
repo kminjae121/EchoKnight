@@ -53,7 +53,7 @@ namespace Code.UnitSystem
             {
                 impulseSource.GenerateImpulse(0.3f);
                 
-                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null));
+                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null,false));
                 
                 _collider.enabled = false;
                 gameObject.SetActive(false);

@@ -20,8 +20,7 @@ public class BasicAttackSkill : BasicUnitSkill
     protected override void Start()
     {
         base.Start();
-        SkillType = SkillType.ActiveSkill;
-        skillEvent.AddListener(AttackAction);
+        SkillEvent.AddListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
@@ -31,7 +30,7 @@ public class BasicAttackSkill : BasicUnitSkill
     {
         base.OnDestroy();
         
-        skillEvent.RemoveListener(AttackAction);
+        SkillEvent.RemoveListener(AttackAction);
         triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
         triggerCompo.OnBaseAttackSkillTrigger -= TakeDamage;
     }
@@ -42,7 +41,7 @@ public class BasicAttackSkill : BasicUnitSkill
     {
         _ownTrm = _owner.transform.position;
         StartCoroutine(MeleeAttackAction(target)); ;
-        skillStartEvent?.Invoke();
+        SkillStartEvent?.Invoke();
     }
 
     private IEnumerator MeleeAttackAction(GameObject target)
@@ -111,6 +110,6 @@ public class BasicAttackSkill : BasicUnitSkill
     protected override void SkillEnd()
     {
         base.SkillEnd();
-        skillEndEvent.Invoke();
+        SkillEndEvent.Invoke();
     }
 }

@@ -12,13 +12,12 @@ namespace Code.UI
         private void Awake()
         {
             Bus<KnightGimicBarEvent>.Subscribe(SetKnightGimicBar);
-        }
+        }   
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<KnightGimicBarEvent>.Unsubscribe(SetKnightGimicBar);
         }
-
         private void SetKnightGimicBar(KnightGimicBarEvent evt)
         {
             gaugeImg.DOFillAmount(evt.value / 10,0.5f);

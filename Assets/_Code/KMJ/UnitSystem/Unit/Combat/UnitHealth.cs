@@ -65,8 +65,8 @@ namespace Code.UnitSystem.Combat
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
             _actionData.HitByPowerAttack = attackData.isPowerAttack;
-            _actionData.LastDamageData = damageData; //데미지 데이터도 기록
-            //넉백은 나중에 처리한다.
+            _actionData.LastDamageData = damageData; 
+
             _defensivePower = _entity.AddDefensivePower;
 
             float damage = damageData.damage;

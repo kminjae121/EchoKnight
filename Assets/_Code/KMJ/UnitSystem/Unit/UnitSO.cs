@@ -70,6 +70,9 @@ public class UnitSO : ScriptableObject
 
     public float DefensivePower;
 
+    [Range(0,100)]
+    public float AvoidProbability;
+
     [Header("UnitType")] 
     public UnitInGameSO unitInGame;
     public EntityType EntityType = EntityType.MeleeAttacker;

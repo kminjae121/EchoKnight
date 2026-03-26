@@ -19,5 +19,7 @@ namespace Code.UnitSystem.SkillSystem
         [Header("Detail Info")]
         public float SkillDamage;
         public float SkillRange;
+        public bool IsOwnSkill;
+        public SkillType SkillType;
     }
 }

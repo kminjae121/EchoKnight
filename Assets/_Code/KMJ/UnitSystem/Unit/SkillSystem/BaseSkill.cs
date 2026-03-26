@@ -16,43 +16,33 @@ namespace Code.UnitSystem.SkillSystem
     public abstract class BaseSkill : RangeComponent
     {
         [Header("Base Settings")]
-        [field: SerializeField] public Sprite SkillImage { get; set; }
+        [field: SerializeField] public SkillSO SkillSO { get; private set; }
         [SerializeField] protected AttackDataSO attackData;
         [field: SerializeField] public float basicSkillDamage { get; private set; }
-        [SerializeField] protected bool ownSkill = false;
-
-        [field: SerializeField] public SkillType SkillType { get; protected set; } = SkillType.ActiveSkill;
         
-        public DamageData DamageData;
-        public int UseSkillPoint;
-        public bool isCanUseSkill = false;
 
         public float AddDamage { get; private set; } = 0;
-        public UnitRotation rotationCompo { get; set; }
-        public float damage { get; set; }
+        public float Damage { get; set; }
         protected int SkillRange { get; private set; }
-        
-        
-        protected Unit _unitBase; 
-        protected GameObject _targetEnemy = null;
 
         [Header("Unit Component")]
         protected SkillComponent _skillCompo;
         [SerializeField] protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
+        public UnitRotation RotationCompo { get; set; }
 
         [Header("Skill Event")]
-        public UnityEvent skillStartEvent;
-        public UnityEvent<GameObject> skillEvent;
-        public UnityEvent skillEndEvent;
+        public UnityEvent SkillStartEvent;
+        public UnityEvent<GameObject> SkillEvent;
+        public UnityEvent SkillEndEvent;
 
         [Header("Camera & Effects")]
         protected CinemachineImpulseSource impulseSource;
-
-        [Header("Materials & Mesh")]
-        [SerializeField] protected MeshRenderer ownCircleMesh;
-        [SerializeField] protected Material CriticalMaterial;
-        [SerializeField] protected Material basicMaterial;
+        
+        public DamageData DamageData;
+        protected Unit _unitBase; 
+        protected GameObject _targetEnemy = null;
+        public bool isCanUseSkill = false;
 
         protected override void Awake()
         {
@@ -62,8 +52,8 @@ namespace Code.UnitSystem.SkillSystem
 
         public virtual void InitializeSkill()
         {
-            skillEndEvent.AddListener(CanUseSkillTrue);
-            skillEvent.AddListener(StartSkill);
+            SkillEndEvent.AddListener(CanUseSkillTrue);
+            SkillEvent.AddListener(StartSkill);
         }
 
         public void ConfigureSkillRange(SkillSO skillData)
@@ -75,7 +65,7 @@ namespace Code.UnitSystem.SkillSystem
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            skillEndEvent.RemoveListener(CanUseSkillTrue);
+            SkillEndEvent.RemoveListener(CanUseSkillTrue);
         }
 
         public void SetDamage(float damage)
@@ -110,7 +100,7 @@ namespace Code.UnitSystem.SkillSystem
         
         
 
-        public virtual void skillEnd()
+        public virtual void SkillFinished()
         {
             BlockThisSkill();
             ResetTile();    
@@ -150,10 +140,10 @@ namespace Code.UnitSystem.SkillSystem
             _targetEnemy = target;
             isCanUseSkill = true;
 
-            if (rotationCompo != null)
-                rotationCompo.SetDir(target.transform.position);
+            if (RotationCompo != null)
+                RotationCompo.SetDir(target.transform.position);
 
-            skillEvent?.Invoke(_targetEnemy);
+            SkillEvent?.Invoke(_targetEnemy);
         }
 
         protected override int GetRange()

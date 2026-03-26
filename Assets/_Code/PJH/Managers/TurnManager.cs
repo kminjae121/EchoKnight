@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
@@ -9,6 +10,7 @@ namespace Code.Managers
 {
     public class TurnManager : MonoBehaviour
     {
+        public static TurnManager Instance { get; private set; }
         [SerializeField] private float baseTurnGauge = 100f;
         [SerializeField] private UnitManager unitManager;
         [SerializeField] private TextMeshProUGUI turnUnitText;
@@ -16,13 +18,28 @@ namespace Code.Managers
         private ITurnable _currentTurnUnit;
         private List<ITurnable> _units;
 
+        public event Action OnTurnStart;
+
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            
             Bus<UnitTurnEndEvent>.Subscribe(OnUnitTurnEnd);
         }
 
         private void OnDestroy()
         {
+            Bus<UnitTurnEndEvent>.Unsubscribe(OnUnitTurnEnd);
+            
+            if (Instance == this)
+                Instance = null;
+
             Bus<UnitTurnEndEvent>.Unsubscribe(OnUnitTurnEnd);
         }
 
@@ -53,6 +70,8 @@ namespace Code.Managers
         private void StartNextTurn()
         {
             RefreshUnits();
+            
+            OnTurnStart?.Invoke();
             
             _currentTurnUnit = GetNextUnit();
             AdvanceTime(_currentTurnUnit);

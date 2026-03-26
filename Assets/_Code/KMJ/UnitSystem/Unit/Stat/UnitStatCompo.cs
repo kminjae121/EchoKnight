@@ -10,6 +10,7 @@ namespace Code.UnitSystem
         MaxHealth,
         SkillDamage,
         DefensivePower,
+        AvoidProbability,
     }
     public class UnitStatCompo : MonoBehaviour, IUnitComponent
     {
@@ -24,6 +25,8 @@ namespace Code.UnitSystem
         private float SkillDamage => unitSO.SkillDamage;
         
         private float DefensivePower => unitSO.DefensivePower;
+        
+        private float AvoidProbability => unitSO.AvoidProbability;
 
         public void Initialize(Unit owner)
         {
@@ -52,7 +55,11 @@ namespace Code.UnitSystem
                 case StatInfo.DefensivePower:
                     value = DefensivePower;
                     break;
+                case StatInfo.AvoidProbability:
+                    value = AvoidProbability;
+                    break;
             }
+            
             value += InGameStatCompo.Instance.GetStat(statInfo, unitSO.UnitType);
             
             return (float)value;

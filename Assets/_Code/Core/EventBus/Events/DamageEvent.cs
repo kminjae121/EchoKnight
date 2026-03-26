@@ -16,7 +16,9 @@ namespace Code.Core.Events.Bus
         public Unit Owner;
 
         public bool isUseOwnGimic;
-        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target, float addDamage, Unit Owenr, bool isUseOwnGimic = true)
+
+        public bool isConfirmationSkill;
+        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target, float addDamage, Unit Owenr,  bool isConfirmationSkill, bool isUseOwnGimic = true)
         {
             DamageData = data;
             this.atkData = atkData;
@@ -24,6 +26,7 @@ namespace Code.Core.Events.Bus
             this.addDamage = addDamage;
             this.Owner = Owenr;
             this.isUseOwnGimic = isUseOwnGimic;
+            this.isConfirmationSkill = isConfirmationSkill;
         }
     }
 }

@@ -57,7 +57,6 @@ namespace Code.UnitSystem.SkillSystem
 
                     if (component != null)
                     {
-                        component.UseSkillPoint = skillSo.UsingSkillCost;
                         skills.TryAdd(skillSo, component);
                     }
                 }
@@ -69,7 +68,7 @@ namespace Code.UnitSystem.SkillSystem
             if (skills.Count > 0)
                 foreach (var skill in skills.Values)
                 {
-                    if (skill.SkillType == SkillType.ActiveSkill)
+                    if (skill.SkillSO.SkillType == SkillType.ActiveSkill)
                     {
                         if (_statCompo != null)
                         {
@@ -80,7 +79,7 @@ namespace Code.UnitSystem.SkillSystem
                         else
                             basicDamage = skill.basicSkillDamage;
                     }
-                    else if(skill.SkillType == SkillType.BasicSkill)
+                    else if(skill.SkillSO.SkillType == SkillType.BasicSkill)
                     {
                         if (_statCompo != null)
                         {
@@ -139,7 +138,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             foreach (var skill in skills.Values)
             {
-                if (skill.SkillType == skillType)
+                if (skill.SkillSO.SkillType == skillType)
                 {
                     float damage = basicDamage + addDamage;
                     skill.SetDamage(damage);
@@ -168,7 +167,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             foreach (var skill in skills.Values)
             {
-                skill.skillEnd();
+                skill.SkillFinished();
                 skill.BlockThisSkill();
                 Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
             }

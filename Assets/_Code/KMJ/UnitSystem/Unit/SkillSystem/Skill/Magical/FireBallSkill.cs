@@ -16,21 +16,23 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
-            triggerCompo.OnFireBallTrigger += MakeArrow;
-            triggerCompo.OnFireBallEndTrigger += SkillEnd;
             SkillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
             
             _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
         }
 
+        protected override void StartEvent()
+        {
+            triggerCompo.OnAttackTrigger += MakeArrow;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+            base.StartEvent();
+        }
+
         protected override void OnDestroy()
         { 
-            triggerCompo.OnFireBallTrigger -= MakeArrow;
-            triggerCompo.OnFireBallEndTrigger -= SkillEnd;
             SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
-            
         }
         
         public void AttackAction(GameObject target)
@@ -51,6 +53,8 @@ using UnityEngine;
         protected override void SkillEnd()
         {
             base.SkillEnd();
+            triggerCompo.OnAttackTrigger -= MakeArrow;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
         }

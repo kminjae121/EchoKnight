@@ -189,6 +189,7 @@ namespace Code.UnitSystem.SkillSystem
 
         private void SkillStartEvent()
         {
+            StartEvent();
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,
                 new Vector3(0.1f, 0.1f, 0.1f)));

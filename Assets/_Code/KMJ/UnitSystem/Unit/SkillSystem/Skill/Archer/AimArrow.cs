@@ -19,17 +19,20 @@ public class AimArrow : BasicUnitSkill
     protected override void Start()
     {
         base.Start();
-        triggerCompo.OnAimArrowTrigger += MakeArrow;
-        triggerCompo.OnAimArrowEndTrigger += SkillEnd;
         SkillEvent.AddListener(AttackAction);
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
     }
 
+    protected override void StartEvent()
+    {
+        base.StartEvent();
+        triggerCompo.OnAttackTrigger += MakeArrow;
+        triggerCompo.OnAnimationEndTrigger += SkillEnd;
+    }
+
     protected override void OnDestroy()
     {
-        triggerCompo.OnAimArrowTrigger -= MakeArrow;
-        triggerCompo.OnAimArrowEndTrigger -= SkillEnd;
         SkillEvent.RemoveListener(AttackAction);
         base.OnDestroy();
     }
@@ -51,6 +54,8 @@ public class AimArrow : BasicUnitSkill
     protected override void SkillEnd()
     {
         base.SkillEnd();
+        triggerCompo.OnAttackTrigger -= MakeArrow;
+        triggerCompo.OnAnimationEndTrigger -= SkillEnd;
         SkillEndEvent?.Invoke();
         animtionCompo.PlaySelectAnimation("IDLE");
     }

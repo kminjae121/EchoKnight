@@ -17,17 +17,19 @@ using UnityEngine;
             base.Start();
             SkillEvent.AddListener(AddAP);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
-            triggerCompo.OnAddAPTrigger += PlusAvoideProbablity;
+        }
 
-            triggerCompo.OnAddAPEndTrigger += SkillEnd;
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += PlusAvoideProbablity;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             SkillEvent.RemoveListener(AddAP);
-            triggerCompo.OnAddAPEndTrigger -= SkillEnd;
-            triggerCompo.OnAddAPTrigger -= PlusAvoideProbablity;
         }
 
         private void AddAP(GameObject obj)
@@ -63,6 +65,8 @@ using UnityEngine;
         protected override void SkillEnd()
         {
             base.SkillEnd();
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            triggerCompo.OnAttackTrigger -= PlusAvoideProbablity;
             SkillEndEvent?.Invoke();
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");

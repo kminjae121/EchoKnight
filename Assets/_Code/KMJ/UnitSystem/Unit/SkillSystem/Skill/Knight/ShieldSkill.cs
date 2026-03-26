@@ -22,14 +22,19 @@ public class ShieldSkill : BasicUnitSkill
         SkillEvent.AddListener(AddAP);
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         _shieldCompo = _characterUnit.GetComponentInChildren<KnightShieldCompo>();
-        triggerCompo.OnSheldEndEvent += SkillEnd;
+       
+    }
+
+    protected override void StartEvent()
+    {
+        triggerCompo.OnAnimationEndTrigger += SkillEnd;
+        base.StartEvent();
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
         SkillEvent.RemoveListener(AddAP);
-        triggerCompo.OnSheldEndEvent -= SkillEnd;
 
     }
 
@@ -72,6 +77,7 @@ public class ShieldSkill : BasicUnitSkill
     protected override void SkillEnd()
     {
         base.SkillEnd();
+        triggerCompo.OnAnimationEndTrigger -= SkillEnd;
         Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
         SkillEndEvent?.Invoke();
         animtionCompo.PlaySelectAnimation("IDLE");

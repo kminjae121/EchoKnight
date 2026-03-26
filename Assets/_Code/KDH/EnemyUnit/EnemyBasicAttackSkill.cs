@@ -24,11 +24,11 @@ namespace Code.UnitSystem.SkillSystem
 
             if (triggerCompo != null)
             {
-                triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
-                triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
-
-                triggerCompo.OnBaseAttackSkillTrigger += AttackAction; 
-                triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
+               // triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
+               // triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
+               //
+               // triggerCompo.OnBaseAttackSkillTrigger += AttackAction; 
+               // triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
             }
         }
 
@@ -43,8 +43,8 @@ namespace Code.UnitSystem.SkillSystem
             base.OnDestroy();
             if (triggerCompo != null)
             {
-                triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
-                triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
+              //  triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
+              //  triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
             }
         }
 

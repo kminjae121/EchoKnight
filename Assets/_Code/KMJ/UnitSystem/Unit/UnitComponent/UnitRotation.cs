@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 namespace Code.UnitSystem
 {
@@ -17,11 +18,6 @@ namespace Code.UnitSystem
             _owner = owner;
         }
 
-        private void Update()
-        {
-            RotationUnit();
-        }
-
         public void SetDir(Vector3 targetPosition)
         {
             Vector3 direction = targetPosition - transform.position;
@@ -31,6 +27,8 @@ namespace Code.UnitSystem
             {
                 _targetDirection = direction.normalized;
             }
+
+            RotationUnit();
         }
         
         public void RotationUnit()
@@ -38,8 +36,9 @@ namespace Code.UnitSystem
             if (_targetDirection.sqrMagnitude > 0.001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(_targetDirection);
-                _owner.transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+                _owner.transform.DORotateQuaternion(targetRotation, 0.5f);
             }
+
         }
     }
 }

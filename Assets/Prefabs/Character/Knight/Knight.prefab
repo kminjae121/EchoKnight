@@ -207,9 +207,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.GimicComponent
   GimicOption: 0
-  _condition: {fileID: 6725066882865621173}
-  _operation: {fileID: 1788073232265982149}
-  _eventCompo: {fileID: 5946010942208855039}
+  condition: {fileID: 6725066882865621173}
+  operation: {fileID: 1788073232265982149}
+  eventCompo: {fileID: 5946010942208855039}
 --- !u!114 &6725066882865621173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53ff3c6eef7d4023b0014cd903669630, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.KnightOperation
-  _addDamageList: 0a000000140000001e00000028000000
+  addDamageList: 
 --- !u!114 &5946010942208855039
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1275,7 +1275,7 @@ MonoBehaviour:
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   behaviorCompo: {fileID: 1305109529308842748}
   skillManager: {fileID: 6242146832756852556}
-  _unit: {fileID: 0}
+  unit: {fileID: 0}
 --- !u!1 &2291589197434564255
 GameObject:
   m_ObjectHideFlags: 0
@@ -1494,6 +1494,7 @@ GameObject:
   - component: {fileID: 6613513605220735348}
   - component: {fileID: 8882597909042103306}
   - component: {fileID: 4754169522647606861}
+  - component: {fileID: 6592657090282267379}
   m_Layer: 7
   m_Name: Knight
   m_TagString: Untagged
@@ -1549,6 +1550,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   unitImage: {fileID: 0}
+  <SkillCompo>k__BackingField: {fileID: 3908768748784611848}
   _startTile: {fileID: 0}
 --- !u!114 &5629794309468085115
 MonoBehaviour:
@@ -1636,6 +1638,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.5, y: 1, z: 0.5}
   m_Center: {x: 0, y: 0.83, z: 0}
+--- !u!114 &6592657090282267379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333293328105742335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ed3227b0c640c3932fbe431cb09b22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.RangeComponent
+  isMove: 0
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -3475,11 +3490,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4911891361904644203}
-  - component: {fileID: 4256917421717104377}
   - component: {fileID: 6242146832756852556}
   - component: {fileID: 6919555147147387208}
   - component: {fileID: 4765256548062757306}
   - component: {fileID: 916718369853948393}
+  - component: {fileID: 3908768748784611848}
   m_Layer: 7
   m_Name: SkillComponent
   m_TagString: Untagged
@@ -3502,22 +3517,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 663893733135974173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &4256917421717104377
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5582696319033170622}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ae9d42f1944b238682f97f832f1290, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _skillList:
-  - {fileID: 11400000, guid: 85ce8256606c74740915e79bfc5b124a, type: 2}
-  - {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
-  - {fileID: 11400000, guid: b8572723cb14fa04580c634e6a40dc30, type: 2}
 --- !u!114 &6242146832756852556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3542,12 +3541,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6c98f19c4e974744a86ce9936552195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMove: 0
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   <basicSkillDamage>k__BackingField: 3
   triggerCompo: {fileID: 2009707462312594463}
   statCompo: {fileID: 6435623573887263718}
+  rangeCompo: {fileID: 6592657090282267379}
   SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3558,7 +3557,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 5510899783727794854}
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 5510899783727794854}
+  _characterUnit: {fileID: 2682628836158502387}
   animator: {fileID: 8103722077250710701}
   atkMoveSpeed: 5
   attackMoveDistance: 3
@@ -3574,12 +3575,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deaadb60c26f4073a82f967416675e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeAttack
-  isMove: 0
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 85ce8256606c74740915e79bfc5b124a, type: 2}
   attackData: {fileID: 11400000, guid: b6f7f282f7c847f42a11ebd4685a3ff9, type: 2}
   <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 2009707462312594463}
   statCompo: {fileID: 6435623573887263718}
+  rangeCompo: {fileID: 6592657090282267379}
   SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3590,7 +3591,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 5510899783727794854}
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 5510899783727794854}
+  _characterUnit: {fileID: 2682628836158502387}
   animator: {fileID: 8103722077250710701}
   atkMoveSpeed: 6
   attackMoveDistance: 1.5
@@ -3609,12 +3612,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e081f99eb7244719579c81d6b9b8a7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SheldSkill
-  isMove: 0
   <SkillSO>k__BackingField: {fileID: 11400000, guid: b8572723cb14fa04580c634e6a40dc30, type: 2}
   attackData: {fileID: 11400000, guid: b6f7f282f7c847f42a11ebd4685a3ff9, type: 2}
   <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 2009707462312594463}
   statCompo: {fileID: 6435623573887263718}
+  rangeCompo: {fileID: 6592657090282267379}
   SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3625,8 +3628,26 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 5510899783727794854}
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 5510899783727794854}
+  _characterUnit: {fileID: 2682628836158502387}
   effectPrefab: {fileID: 1673384678163543973}
+--- !u!114 &3908768748784611848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5582696319033170622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02096773b10642c5be05cfc7efa26a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.UnitSkillComponent
+  skillList:
+  - {fileID: 11400000, guid: 85ce8256606c74740915e79bfc5b124a, type: 2}
+  - {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
+  - {fileID: 11400000, guid: b8572723cb14fa04580c634e6a40dc30, type: 2}
 --- !u!1 &5609123145717175430
 GameObject:
   m_ObjectHideFlags: 0

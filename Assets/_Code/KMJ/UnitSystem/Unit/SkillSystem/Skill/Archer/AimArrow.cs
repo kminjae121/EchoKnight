@@ -5,7 +5,7 @@ using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-public class AimArrow : BaseSkill
+public class AimArrow : BasicUnitSkill
 {
     
     private UnitAnimation animtionCompo;
@@ -16,12 +16,11 @@ public class AimArrow : BaseSkill
 
     private ShootItemAttackManager _shootItemManager;
     
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         SkillEvent.AddListener(AttackAction);
-        animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
-        _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
+        animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+        _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
     }
 
     protected override void StartEvent()
@@ -63,7 +62,7 @@ public class AimArrow : BaseSkill
     public void MakeArrow()
     {
         impulseSource.GenerateImpulse(0.8f);  
-        Vector3 pos = _unitBase.transform.position;
+        Vector3 pos = _characterUnit.transform.position;
 
         pos.y += 2f;
             

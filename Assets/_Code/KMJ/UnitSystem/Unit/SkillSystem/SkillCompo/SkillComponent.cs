@@ -7,17 +7,17 @@ using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem
 {
-    public class SkillComponent : MonoBehaviour, IUnitComponent
+    public abstract class SkillComponent : MonoBehaviour, IUnitComponent
     {
-        [SerializeField] private List<SkillSO> _skillList;
+        [SerializeField] protected List<SkillSO> skillList;
 
-        public Dictionary<SkillSO, BaseSkill> skills;
+        public Dictionary<SkillSO, BaseSkill> Skills { get; private set; }
 
-        private UnitStatCompo _statCompo;
-        private Unit _unit;
+        protected UnitStatCompo _statCompo;
+        protected Unit _unit;
 
-        private float basicDamage = 0;
-        private bool isUseSkill = true;
+        protected float basicDamage = 0;
+        protected bool isUseSkill = true;
 
         public void Initialize(Unit owner)
         {
@@ -27,12 +27,12 @@ namespace Code.UnitSystem.SkillSystem
                 _statCompo = _unit.GetUnitCompo<UnitStatCompo>();
 
             foreach (var skill in SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType))
-                _skillList.Add(skill);
+                skillList.Add(skill);
             
-            skills = new Dictionary<SkillSO, BaseSkill>();
+            Skills = new Dictionary<SkillSO, BaseSkill>();
             
 
-            foreach (var skillData in _skillList)
+            foreach (var skillData in skillList)
             {
                 if (skillData == null || string.IsNullOrEmpty(skillData.className))
                     continue;
@@ -52,14 +52,14 @@ namespace Code.UnitSystem.SkillSystem
 
                     if (component == null)
                         continue;
-                    skills.TryAdd(skillData, baseSkill);
+                    Skills.TryAdd(skillData, baseSkill);
                 }
                 else
                     Debug.LogWarning($"[SkillComponent] '{_unit.name}'에 스킬 컴포넌트 '{type.Name}'가 부착되어 있지 않습니다.");
             }
             
-            if (skills.Count > 0)
-                foreach (var skill in skills.Values)
+            if (Skills.Count > 0)
+                foreach (var skill in Skills.Values)
                 {
                     if (skill.SkillSO.SkillType == SkillType.ActiveSkill)
                     {
@@ -122,12 +122,12 @@ namespace Code.UnitSystem.SkillSystem
         
         public void UpdateSkillUI()
         {
-            Bus<SkillUIEvent>.Raise(new SkillUIEvent(_skillList, this));
+            Bus<SkillUIEvent>.Raise(new SkillUIEvent(skillList, this));
         }
 
         public void SetAddSkillDamage(float addDamage,SkillType skillType)
         {
-            foreach (var skill in skills.Values)
+            foreach (var skill in Skills.Values)
             {
                 if (skill.SkillSO.SkillType == skillType)
                 {
@@ -142,27 +142,33 @@ namespace Code.UnitSystem.SkillSystem
             if (!isUseSkill)
                 return;
             
-            if (!skills.ContainsKey(skillSO))
+            if (!Skills.ContainsKey(skillSO))
                 return;
 
-            BaseSkill skill = skills.GetValueOrDefault(skillSO);
+            BaseSkill skill = Skills.GetValueOrDefault(skillSO);
 
             if (skill != null)
             {
-                skill.ConfigureSkillRange(skillSO);
-                skill.ShowSkillRange();
-                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(false));
+                StartSkill(skill,skillSO);
             }
         }
 
         public void CancelAllSkill()
         {
-            foreach (var skill in skills.Values)
+            foreach (var skill in Skills.Values)
             {
-                skill.SkillFinished();
-                skill.BooleanSkillUse(false);
-                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+                CancelSkill(skill);
             }
+        }
+
+        protected virtual void StartSkill(BaseSkill skill, SkillSO skillSO)
+        {
+            
+        }
+
+        protected virtual void CancelSkill(BaseSkill skill)
+        {
+            
         }
     }
 }

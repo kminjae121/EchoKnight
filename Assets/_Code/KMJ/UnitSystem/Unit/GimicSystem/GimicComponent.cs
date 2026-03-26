@@ -22,7 +22,7 @@ namespace Code.UnitSystem.GimicSystem
 
         public void Initialize(Unit owner)
         {
-            SkillComponent skillCompo = owner.GetUnitCompo<SkillComponent>();
+            UnitSkillComponent skillCompo = owner.GetUnitCompo<UnitSkillComponent>();
             
             Bus<UnitGimicEvent>.Subscribe(SetCondition);
             Bus<UseGimicEvent>.Subscribe(UseCondition);

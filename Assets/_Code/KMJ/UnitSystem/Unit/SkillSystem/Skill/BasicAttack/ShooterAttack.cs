@@ -6,7 +6,7 @@ using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ShooterAttack : BaseSkill
+public class ShooterAttack : BasicUnitSkill
     {
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private Animator animator;
@@ -18,12 +18,11 @@ public class ShooterAttack : BaseSkill
         
         private GameObject _target = null;
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             SkillEvent.AddListener(AttackAction);
-            _shootItemManager = _unitBase.GetUnitCompo<ShootItemAttackManager>();
-            _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
+            _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+            _animationCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
         }
 
         protected override void OnDestroy()
@@ -57,11 +56,11 @@ public class ShooterAttack : BaseSkill
 
         private void Shoot()
         {
-            Vector3 pos = _unitBase.transform.position;
+            Vector3 pos = _characterUnit.transform.position;
 
             pos.y += 1.6f;
             
-            Vector3 slashRot = _unitBase.transform.rotation.eulerAngles;
+            Vector3 slashRot = _characterUnit.transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
             _shootItemManager.SetDamageData(DamageData,AddDamage);

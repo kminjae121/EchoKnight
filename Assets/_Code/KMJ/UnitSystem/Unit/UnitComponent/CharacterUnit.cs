@@ -21,7 +21,7 @@ namespace Code.UnitSystem
         #region UnitCompo
 
         public UnitBehaviorCompo BehaviorCompo { get; private set; }
-        public SkillComponent SkillCompo { get; private set; }
+        [field:SerializeField] public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
@@ -41,7 +41,6 @@ namespace Code.UnitSystem
 
         private void Start()
         {
-            SkillCompo = GetUnitCompo<SkillComponent>();
             TriggerCompo = GetUnitCompo<UnitAnimationTrigger>();
             BehaviorCompo = GetUnitCompo<UnitBehaviorCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();

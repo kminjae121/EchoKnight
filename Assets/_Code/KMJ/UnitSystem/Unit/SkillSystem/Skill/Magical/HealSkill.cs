@@ -7,17 +7,16 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-public class HealSkill : BaseSkill
+public class HealSkill : BasicUnitSkill
     {
         [SerializeField] private GameObject healPrefab;
         
         private UnitAnimation animtionCompo;
 
-        protected override void Start()
+        protected  void Start()
         {
-            base.Start();
             SkillEvent.AddListener(HealAction);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
         }
 
         protected override void StartEvent()
@@ -59,7 +58,7 @@ public class HealSkill : BaseSkill
 
         public void Heal()
         {
-            UnitHealth health = _owner.GetUnitCompo<UnitHealth>();
+            UnitHealth health = _characterUnit.GetUnitCompo<UnitHealth>();
             
             health.HealHp(20);
             healPrefab.SetActive(true);

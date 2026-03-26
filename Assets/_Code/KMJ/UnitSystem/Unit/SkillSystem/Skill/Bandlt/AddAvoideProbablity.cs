@@ -4,7 +4,7 @@ using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-    public class AddAvoideProbablity : BaseSkill
+    public class AddAvoideProbablity : BasicUnitSkill
     {
         [SerializeField] private GameObject effectPrefab;
         
@@ -12,11 +12,10 @@ using UnityEngine;
 
         private int skillCnt = 0;
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             SkillEvent.AddListener(AddAP);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
         }
 
         protected override void StartEvent()

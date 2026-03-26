@@ -5,7 +5,7 @@ using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-    public class ThrowKnifeSkill : BaseSkill
+    public class ThrowKnifeSkill : BasicUnitSkill
     {
         private UnitAnimation animtionCompo;
 
@@ -13,12 +13,11 @@ using UnityEngine;
 
         private ShootItemAttackManager _shootItemManager;
         
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             SkillEvent.AddListener(AttackAction);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
-            _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+            _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
         }
 
         protected override void StartEvent()

@@ -7,10 +7,8 @@ namespace Code.SkillSystem
     {
         [SerializeField] private float attackDistance;
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
-
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
         }
 

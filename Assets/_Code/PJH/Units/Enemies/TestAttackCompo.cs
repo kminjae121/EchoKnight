@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using Code.Core.Debugs;
 using Code.Map;
 using DG.Tweening;
@@ -14,13 +13,15 @@ namespace Code.UnitSystem.Enemies
         public Unit Owner { get; private set; }
 
         public event Action OnAttackEnd;
-        
+
         private GridMap _gridMap;
-        
+        private UnitRotation _rotationCompo;
+
         public void Initialize(Unit owner)
         {
             Owner = owner;
             _gridMap = GridMap.Instance;
+            _rotationCompo = owner.GetUnitCompo<UnitRotation>();
         }
 
         public bool CanAttackToTarget(GameObject target)
@@ -36,7 +37,8 @@ namespace Code.UnitSystem.Enemies
             Vector2Int myPos = _gridMap.WorldToGridPosition(Owner.transform.position);
             Vector2Int targetPos = _gridMap.WorldToGridPosition(target.transform.position);
 
-            UnityLogger.Log($"myPos : {myPos} targetPos : {targetPos}, {GetTileDistance(myPos, targetPos) <= attackTileRange}");
+            UnityLogger.Log(
+                $"myPos : {myPos} targetPos : {targetPos}, {GetTileDistance(myPos, targetPos) <= attackTileRange}");
             return GetTileDistance(myPos, targetPos) <= attackTileRange;
         }
 
@@ -48,12 +50,9 @@ namespace Code.UnitSystem.Enemies
                 return;
             }
 
-            StartCoroutine(AttackCoroutine(target));
-        }
+            _rotationCompo?.SetDir(target.transform.position);
 
-        private IEnumerator AttackCoroutine(GameObject target)
-        {
-            yield return Owner.transform.DOShakePosition(0.3f, 0.4f).WaitForCompletion();
+            Owner.transform.DOShakePosition(0.3f, 0.4f).WaitForCompletion();
             OnAttackEnd?.Invoke();
         }
 

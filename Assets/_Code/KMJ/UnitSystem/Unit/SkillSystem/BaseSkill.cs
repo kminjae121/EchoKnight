@@ -14,117 +14,124 @@ namespace Code.SkillSystem
         BasicSkill,
         ActiveSkill,
     }
-    public abstract class BaseSkill : RangeComponent
+
+    public abstract class BaseSkill : MonoBehaviour
     {
-        [Header("Base Settings")]
+        [Header("Base Settings")] 
         [field: SerializeField] public SkillSO SkillSO { get; private set; }
         [SerializeField] protected AttackDataSO attackData;
         [field: SerializeField] public float basicSkillDamage { get; private set; }
         
-
         public float AddDamage { get; private set; } = 0;
         public float Damage { get; set; }
         protected int SkillRange { get; private set; }
 
-        [Header("Unit Component")]
+
+        [Header("Unit Component")] 
         protected SkillComponent _skillCompo;
         [SerializeField] protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
+        [SerializeField] protected RangeComponent rangeCompo;
         public UnitRotation RotationCompo { get; set; }
-
-        [Header("Skill Event")]
+        
+        
+        [Header("Skill Event")] 
         public UnityEvent SkillStartEvent;
         public UnityEvent<GameObject> SkillEvent;
         public UnityEvent SkillEndEvent;
 
-        [Header("Camera & Effects")]
+
+        [Header("Camera & Effects")] 
         protected CinemachineImpulseSource impulseSource;
-        
         public DamageData DamageData;
-        protected Unit _unitBase; 
+
         protected GameObject _targetEnemy = null;
         public bool isCanUseSkill = false;
 
-        protected override void Awake()
-        {
-            _unitBase = _owner;
-            base.Awake();
-        }
-
+        public bool IsActive = false;
+        
         public virtual void InitializeSkill()
+
         {
             SkillEndEvent.AddListener(CanUseSkillTrue);
+
             SkillEvent.AddListener(StartSkill);
         }
+
 
         public void ConfigureSkillRange(SkillSO skillData)
         {
             SkillRange = skillData == null ? 0 : Mathf.Max(0, Mathf.RoundToInt(skillData.SkillRange));
         }
-        
 
-        protected override void OnDestroy()
+
+        protected virtual void OnDestroy()
         {
-            base.OnDestroy();
             SkillEndEvent.RemoveListener(CanUseSkillTrue);
         }
+
 
         public void SetDamage(float damage)
         {
             DamageData.damage = damage += AddDamage;
         }
 
+
         private void StartSkill(GameObject arg0)
         {
         }
+
         public void SetAddDamage(float addDamage)
         {
             AddDamage = addDamage;
         }
 
+
         protected virtual void StartEvent()
+
         {
-            
         }
 
+
         protected virtual void RemoveEvent()
+
         {
-            
         }
-        
+
+
         protected virtual void CanUseSkillTrue()
+
         {
         }
-        
+
+
         public virtual void ShowSkillRange()
         {
+            IsActive = true;
         }
-        
+
 
         public virtual void CheckCanAttack()
         {
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
 
-            FindObjectInRange();
+            rangeCompo.FindObjectInRange();
         }
-        
-        
+
 
         public virtual void SkillFinished()
         {
-            BlockThisSkill();
-            ResetTile();    
+            BooleanSkillUse(false);
+
+            rangeCompo.ResetTile();
         }
+
 
         public virtual void AttackEnemy()
         {
         }
 
-        public void TurnEnd()
-        {
-            BlockThisSkill();
-        }
 
         public virtual void UseSkill()
         {
@@ -134,56 +141,36 @@ namespace Code.SkillSystem
             AttackEnemy();
         }
 
-        public void CanUseThisSkill()
+
+        public void BooleanSkillUse(bool isSkill)
         {
-            isCanUseSkill = true;
+            isCanUseSkill = isSkill;
         }
 
-        public void BlockThisSkill()
-        {
-            isCanUseSkill = false;
-        }
-        
+
         public virtual void ForceUseSkill(GameObject target)
         {
             if (target == null) return;
-            
+
+
             _targetEnemy = target;
+
             isCanUseSkill = true;
 
+
             if (RotationCompo != null)
+
                 RotationCompo.SetDir(target.transform.position);
+
+
+            StartEvent();
 
             SkillEvent?.Invoke(_targetEnemy);
         }
 
-        protected override int GetRange()
+
+        protected int GetRange()
             => SkillRange;
-
-        protected override void CalculateRange()
-        {
-            _tilesInRange.Clear();
-
-            Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
-            int range = GetRange();
-
-            for (int x = -range; x <= range; x++)
-            {
-                int remain = range - Mathf.Abs(x);
-
-                for (int y = -remain; y <= remain; y++)
-                {
-                    if (x == 0 && y == 0)
-                        continue;
-
-                    Vector2Int position = start + new Vector2Int(x, y);
-                    IMapTile tile = GridMap.Instance.GetTile(position);
-
-                    if (tile != null)
-                        _tilesInRange.Add(tile);
-                }
-            }
-
-        }
+        
     }
 }

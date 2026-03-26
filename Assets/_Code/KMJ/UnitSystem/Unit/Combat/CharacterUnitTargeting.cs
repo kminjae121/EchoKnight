@@ -15,11 +15,11 @@ namespace Code.UnitSystem.Combat
         private GameObject _targetEnemy;
         private Unit _targetUnit;
         private EnemyTargeting _targetingCompo;
-        [SerializeField] private CharacterUnit _unit;
+        [SerializeField] private CharacterUnit unit;
 
         public void Initialize(Unit owner)
         {
-            _unit = owner as CharacterUnit;
+            unit = owner as CharacterUnit;
         }
 
         private void Update()
@@ -29,7 +29,7 @@ namespace Code.UnitSystem.Combat
 
         private void HandleTargeting()
         {
-            if (!_unit.isMyTurn || inputSO == null)
+            if (!unit.isMyTurn || inputSO == null)
                 return;
             
             if (skillManager.GetSkillInfo() != null && skillManager.GetSkillInfo().IsActive)
@@ -87,7 +87,7 @@ namespace Code.UnitSystem.Combat
                 if (skill != null)
                 {
                     skill.RotationCompo.SetDir(enemy.transform.position);
-                    skill.SetAddDamage(skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.Damage));
+                    skill.SetAddDamage(skill.CriticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.Damage));
                 }
                 
                 UnitHealth health = enemy.GetComponent<UnitHealth>();

@@ -23,11 +23,10 @@ public class MeleeAttack : BasicUnitSkill
     
     private GameObject _target = null;
     
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         SkillEvent.AddListener(AttackAction);
-        _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
+        _animationCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
     }
 
     protected override void StartEvent()
@@ -44,7 +43,7 @@ public class MeleeAttack : BasicUnitSkill
     
     public void AttackAction(GameObject target)
     {
-        _ownTrm = _unitBase.transform.position;
+        _ownTrm = _characterUnit.transform.position;
         _target = target;
         
         StartCoroutine(MeleeAttackAction(target));
@@ -56,19 +55,19 @@ public class MeleeAttack : BasicUnitSkill
         
         _animationCompo.PlaySelectAnimation("MOVE");
         
-        while (Vector3.Distance(target.transform.position, _unitBase.transform.position) > attackMoveDistance)
+        while (Vector3.Distance(target.transform.position, _characterUnit.transform.position) > attackMoveDistance)
         {
-            Vector3 currentPos = _unitBase.transform.position;
+            Vector3 currentPos = _characterUnit.transform.position;
             Vector3 targetPos = target.transform.position;
             
             targetPos.y = currentPos.y;
     
-            _unitBase.transform.position = Vector3.MoveTowards(
+            _characterUnit.transform.position = Vector3.MoveTowards(
                 currentPos,
                 targetPos,
                 atkMoveSpeed * Time.deltaTime
             );
-            if (isRunningAttack && Vector3.Distance(_unitBase.transform.position, target.transform.position) 
+            if (isRunningAttack && Vector3.Distance(_characterUnit.transform.position, target.transform.position) 
                 < attackMoveDistance * 2f)
             {
                 break;
@@ -92,10 +91,10 @@ public class MeleeAttack : BasicUnitSkill
     {
         _animationCompo.PlaySelectAnimation("MOVE");
     
-        while (Vector3.Distance(_unitBase.transform.position, _ownTrm) > 0.01f)
+        while (Vector3.Distance(_characterUnit.transform.position, _ownTrm) > 0.01f)
         {
-            _unitBase.transform.position = Vector3.MoveTowards(
-                _unitBase.transform.position,
+            _characterUnit.transform.position = Vector3.MoveTowards(
+                _characterUnit.transform.position,
                 _ownTrm,
                 atkMoveSpeed * Time.deltaTime
             );

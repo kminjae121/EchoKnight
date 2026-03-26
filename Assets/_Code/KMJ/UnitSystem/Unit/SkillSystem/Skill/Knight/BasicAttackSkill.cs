@@ -17,11 +17,10 @@ public class BasicAttackSkill : BasicUnitSkill
         
     private Vector3 _ownTrm;
     
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         SkillEvent.AddListener(AttackAction);
-        animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+        animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
     }
 
     protected override void StartEvent()
@@ -42,7 +41,7 @@ public class BasicAttackSkill : BasicUnitSkill
 
     public void AttackAction(GameObject target)
     {
-        _ownTrm = _owner.transform.position;
+        _ownTrm = _characterUnit.transform.position;
         StartCoroutine(MeleeAttackAction(target)); ;
         SkillStartEvent?.Invoke();
     }
@@ -56,14 +55,14 @@ public class BasicAttackSkill : BasicUnitSkill
             
         animtionCompo.PlaySelectAnimation("MOVE");
             
-        while (Vector3.Distance(_owner.transform.position, target.transform.position) > attackMoveDistance)
+        while (Vector3.Distance(_characterUnit.transform.position, target.transform.position) > attackMoveDistance)
         {
-            Vector3 currentPos = _owner.transform.position;
+            Vector3 currentPos = _characterUnit.transform.position;
             Vector3 targetPos = target.transform.position;
                 
             targetPos.y = currentPos.y;
 
-            _owner.transform.position = Vector3.MoveTowards(
+            _characterUnit.transform.position = Vector3.MoveTowards(
                 currentPos,
                 targetPos,
                 atkMoveSpeed * Time.deltaTime
@@ -72,7 +71,7 @@ public class BasicAttackSkill : BasicUnitSkill
             yield return null;
         }
         
-        if (Vector3.Distance(_owner.transform.position, target.transform.position) <= attackMoveDistance * 2)
+        if (Vector3.Distance(_characterUnit.transform.position, target.transform.position) <= attackMoveDistance * 2)
         {
             animtionCompo.PlaySelectAnimation("BAS");
         }
@@ -94,10 +93,10 @@ public class BasicAttackSkill : BasicUnitSkill
     {
         animtionCompo.PlaySelectAnimation("MOVE");
             
-        while (Vector3.Distance(_owner.transform.position, _ownTrm) > 0.01f)
+        while (Vector3.Distance(_characterUnit.transform.position, _ownTrm) > 0.01f)
         {
-            _owner.transform.position = Vector3.MoveTowards(
-                _owner.transform.position,
+            _characterUnit.transform.position = Vector3.MoveTowards(
+                _characterUnit.transform.position,
                 _ownTrm,
                 atkMoveSpeed * Time.deltaTime
             );

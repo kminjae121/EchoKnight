@@ -16,13 +16,11 @@ public class ShieldSkill : BasicUnitSkill
 
     private int turnCnt = 0;
 
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
         SkillEvent.AddListener(AddAP);
-        animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+        animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
         _shieldCompo = _characterUnit.GetComponentInChildren<KnightShieldCompo>();
-       
     }
 
     protected override void StartEvent()

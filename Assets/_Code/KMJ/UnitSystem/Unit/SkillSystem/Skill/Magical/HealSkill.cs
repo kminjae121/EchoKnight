@@ -15,10 +15,9 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
-            SkillType = SkillType.ActiveSkill;
             triggerCompo.OnHealTrigger += Heal;
             triggerCompo.OnHealEndTrigger += SkillEnd;
-            skillEvent.AddListener(HealAction);
+            SkillEvent.AddListener(HealAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         }
 
@@ -26,7 +25,7 @@ using UnityEngine;
         { 
             triggerCompo.OnHealTrigger-= Heal;
             triggerCompo.OnHealEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(HealAction);
+            SkillEvent.RemoveListener(HealAction);
             base.OnDestroy();
             
         }
@@ -34,7 +33,7 @@ using UnityEngine;
         public void HealAction(GameObject target)
         {
             StartCoroutine(FireBall());
-            skillStartEvent?.Invoke();
+            SkillStartEvent?.Invoke();
         }
         
         private IEnumerator FireBall()
@@ -48,7 +47,7 @@ using UnityEngine;
         protected override void SkillEnd()
         {
             base.SkillEnd();
-            skillEndEvent?.Invoke();
+            SkillEndEvent?.Invoke();
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
         }

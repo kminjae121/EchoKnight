@@ -165,8 +165,8 @@ namespace EnemySystem
                 isSkillEnded = true;
             };
             
-            if (skill.skillEndEvent != null)
-                skill.skillEndEvent.AddListener(endListener);
+            if (skill.SkillEndEvent != null)
+                skill.SkillEndEvent.AddListener(endListener);
             
             skill.ForceUseSkill(target);
 
@@ -184,8 +184,8 @@ namespace EnemySystem
                 Debug.LogWarning($"[EnemyUnit] {name} 스킬 타임아웃.");
             }
 
-            if (skill.skillEndEvent != null)
-                skill.skillEndEvent.RemoveListener(endListener);
+            if (skill.SkillEndEvent != null)
+                skill.SkillEndEvent.RemoveListener(endListener);
             
             OnIdleRequested();
             onComplete?.Invoke();

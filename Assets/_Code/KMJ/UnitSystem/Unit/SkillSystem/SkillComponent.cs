@@ -49,10 +49,9 @@ namespace Code.UnitSystem.SkillSystem
 
                 if (component is BaseSkill baseSkill)
                 {
+
                     if (component == null)
                         continue;
-                    
-                    baseSkill.UseSkillPoint = skillData.UsingSkillCost;
                     skills.TryAdd(skillData, baseSkill);
                 }
                 else
@@ -62,7 +61,7 @@ namespace Code.UnitSystem.SkillSystem
             if (skills.Count > 0)
                 foreach (var skill in skills.Values)
                 {
-                    if (skill.SkillType == SkillType.ActiveSkill)
+                    if (skill.SkillSO.SkillType == SkillType.ActiveSkill)
                     {
                         if (_statCompo != null)
                         {
@@ -73,7 +72,7 @@ namespace Code.UnitSystem.SkillSystem
                         else
                             basicDamage = skill.basicSkillDamage;
                     }
-                    else if(skill.SkillType == SkillType.BasicSkill)
+                    else if(skill.SkillSO.SkillType == SkillType.BasicSkill)
                     {
                         if (_statCompo != null)
                         {
@@ -129,11 +128,13 @@ namespace Code.UnitSystem.SkillSystem
         public void SetAddSkillDamage(float addDamage,SkillType skillType)
         {
             foreach (var skill in skills.Values)
-                if (skill.SkillType == skillType)
+            {
+                if (skill.SkillSO.SkillType == skillType)
                 {
                     float damage = basicDamage + addDamage;
                     skill.SetDamage(damage);
                 }
+            }
         }
         
         public void StartSkill(SkillSO skillSO)
@@ -158,7 +159,7 @@ namespace Code.UnitSystem.SkillSystem
         {
             foreach (var skill in skills.Values)
             {
-                skill.skillEnd();
+                skill.SkillFinished();
                 skill.BlockThisSkill();
                 Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
             }

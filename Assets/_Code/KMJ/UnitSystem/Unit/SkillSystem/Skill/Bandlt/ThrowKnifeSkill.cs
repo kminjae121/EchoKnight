@@ -16,10 +16,9 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
-            SkillType = SkillType.ActiveSkill;
             triggerCompo.OnThrowKnifeTrigger += MakeThrowKnife;
             triggerCompo.OnThrowKnifeEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
+            SkillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
             _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
         }
@@ -28,7 +27,7 @@ using UnityEngine;
         {
             triggerCompo.OnThrowKnifeTrigger -= MakeThrowKnife;
             triggerCompo.OnThrowKnifeEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
         }
 
@@ -36,12 +35,11 @@ using UnityEngine;
         {
             StartCoroutine(SlashFlag());
             _target = target;
-            skillStartEvent?.Invoke();
+            SkillStartEvent?.Invoke();
         }
         
         private IEnumerator SlashFlag()
         {
-           
             yield return new WaitForSeconds(0.3f);
             yield return new WaitForSeconds(0.1f);
             animtionCompo.PlaySelectAnimation("THROW");
@@ -49,25 +47,13 @@ using UnityEngine;
         
         public void MakeThrowKnife()
         {
-            impulseSource.GenerateImpulse(0.5f);  
-            Vector3 pos = _unitBase.transform.position;
-
-            pos.y += 2f;
-        
-            Vector3 slashRot = transform.rotation.eulerAngles;
-            
-            
-            _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(DamageData,AddDamage);
-            _shootItemManager.CreateShootItem("Knife",pos, slashRot);
-
-            _target = null;
+            _characterUnit.IsConfirmationSkill = true;    
         }
         
         protected override void SkillEnd()
         {
             base.SkillEnd();
-            skillEndEvent?.Invoke();
+            SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
         }
     }

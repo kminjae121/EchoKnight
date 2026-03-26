@@ -16,10 +16,9 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
-            SkillType = SkillType.ActiveSkill;
             triggerCompo.OnFireBallTrigger += MakeArrow;
             triggerCompo.OnFireBallEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
+            SkillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
             
             _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
@@ -29,7 +28,7 @@ using UnityEngine;
         { 
             triggerCompo.OnFireBallTrigger -= MakeArrow;
             triggerCompo.OnFireBallEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
             
         }
@@ -38,7 +37,7 @@ using UnityEngine;
         {
             StartCoroutine(FireBall());
             _target = target;
-            skillStartEvent?.Invoke();
+            SkillStartEvent?.Invoke();
         }
         
         private IEnumerator FireBall()
@@ -52,7 +51,7 @@ using UnityEngine;
         protected override void SkillEnd()
         {
             base.SkillEnd();
-            skillEndEvent?.Invoke();
+            SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
         }
         

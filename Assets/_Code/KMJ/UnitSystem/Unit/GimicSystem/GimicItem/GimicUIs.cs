@@ -41,8 +41,11 @@ namespace Code.UnitSystem.GimicSystem
             {
                 value.gameObject.SetActive(false);
             }
-            
-            _uiDict.GetValueOrDefault(evt.unitType).gameObject.SetActive(true);
+
+            if (_uiDict.GetValueOrDefault(evt.unitType))
+            {
+                _uiDict.GetValueOrDefault(evt.unitType).gameObject.SetActive(true);
+            }
         }
     }
 }

@@ -77,7 +77,7 @@ namespace Code.UnitSystem.Combat
             ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
             
             shootItemCompo.SetShootItemCompo(this);
-            shootItemCompo.SetTarget(_target);
+            shootItemCompo.SetTarget(_target.gameObject);
             shootItem.transform.rotation = Quaternion.Euler(rotation);
         }
 
@@ -85,7 +85,7 @@ namespace Code.UnitSystem.Combat
         {
             impulseSource.GenerateImpulse(0.4f);
 
-            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target,_addDamage,_unit));
+            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target.gameObject,_addDamage,_unit, false));
         }
     }
 }

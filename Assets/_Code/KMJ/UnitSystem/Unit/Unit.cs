@@ -33,6 +33,8 @@ namespace Code.UnitSystem
         
         public float AddDefensivePower { get; set; }
         
+        public float AddAvoideProbability { get; set; }
+        
         [field: SerializeField] public PoolingItemSO PoolingType { get; private set; }
         public GameObject GameObject => gameObject;
         
@@ -90,9 +92,20 @@ namespace Code.UnitSystem
         public virtual void OnTurnStart()
         {
             isMyTurn = true;
-            
+        }
+
+        public void InitilizeDefensivePower()
+        {
             if (AddDefensivePower != 0)
                 unitSO.DefensivePower -= AddDefensivePower;
+        
+            AddDefensivePower = 0;
+        }
+
+        public void InitilizeAvoideProbability()
+        {
+            if (AddAvoideProbability != 0)
+                unitSO.AvoidProbability -= AddAvoideProbability;
         
             AddDefensivePower = 0;
         }

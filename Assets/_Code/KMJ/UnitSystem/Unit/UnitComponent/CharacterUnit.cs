@@ -30,6 +30,7 @@ namespace Code.UnitSystem
         #endregion
         
         public int PlayableUnitID { get; set; } = -1;
+        public bool IsConfirmationSkill { get; set; }
         
         public GameObject _startTile;
         

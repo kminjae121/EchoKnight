@@ -86,8 +86,8 @@ namespace Code.UnitSystem.Combat
                 
                 if (skill != null)
                 {
-                    skill.rotationCompo.SetDir(enemy.transform.position);
-                    skill.SetAddDamage(skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.damage));
+                    skill.RotationCompo.SetDir(enemy.transform.position);
+                    skill.SetAddDamage(skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.Damage));
                 }
                 
                 UnitHealth health = enemy.GetComponent<UnitHealth>();

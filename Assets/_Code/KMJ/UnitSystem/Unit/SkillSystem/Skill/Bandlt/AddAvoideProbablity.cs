@@ -4,19 +4,20 @@ using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-    public class AddAPSkill : BasicUnitSkill
+    public class AddAvoideProbablity : BasicUnitSkill
     {
         [SerializeField] private GameObject effectPrefab;
         
         private UnitAnimation animtionCompo;
 
+        private int skillCnt = 0;
+
         protected override void Start()
         {
             base.Start();
-            SkillType = SkillType.ActiveSkill;
-            skillEvent.AddListener(AddAP);
+            SkillEvent.AddListener(AddAP);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
-            triggerCompo.OnAddAPTrigger += PlusAP;
+            triggerCompo.OnAddAPTrigger += PlusAvoideProbablity;
 
             triggerCompo.OnAddAPEndTrigger += SkillEnd;
         }
@@ -24,18 +25,18 @@ using UnityEngine;
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            skillEvent.RemoveListener(AddAP);
+            SkillEvent.RemoveListener(AddAP);
             triggerCompo.OnAddAPEndTrigger -= SkillEnd;
-            triggerCompo.OnAddAPTrigger -= PlusAP;
+            triggerCompo.OnAddAPTrigger -= PlusAvoideProbablity;
         }
 
         private void AddAP(GameObject obj)
         {
-            skillStartEvent?.Invoke();
-            StartCoroutine(AddAp());
+            SkillStartEvent?.Invoke();
+            StartCoroutine(AddAvoid());
         }
 
-        private IEnumerator AddAp()
+        private IEnumerator AddAvoid()
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(false));
             yield return new WaitForSeconds(0.3f);
@@ -45,16 +46,24 @@ using UnityEngine;
             animtionCompo.PlaySelectAnimation("HEAL");
         }
 
-        private void PlusAP()
+        private void PlusAvoideProbablity()
         {
-            CharacterUnit unit = _owner as CharacterUnit;
+            if (skillCnt >= 3)
+            {
+                _characterUnit.InitilizeAvoideProbability();
+                return;
+            }
 
+            skillCnt += 1;
+            
+            _characterUnit.AddAvoideProbability += 10;
+            _characterUnit.unitSO.AvoidProbability += 10;
         }
         
         protected override void SkillEnd()
         {
             base.SkillEnd();
-            skillEndEvent?.Invoke();
+            SkillEndEvent?.Invoke();
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
         }

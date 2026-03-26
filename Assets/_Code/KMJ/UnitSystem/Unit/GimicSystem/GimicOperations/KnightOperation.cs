@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Code.Core.Events.Bus;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem

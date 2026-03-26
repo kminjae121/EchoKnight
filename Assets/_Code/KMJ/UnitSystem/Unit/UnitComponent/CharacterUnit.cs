@@ -3,7 +3,7 @@ using Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;

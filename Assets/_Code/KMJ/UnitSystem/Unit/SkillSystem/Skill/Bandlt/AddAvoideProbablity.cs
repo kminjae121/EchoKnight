@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
     public class AddAvoideProbablity : BasicUnitSkill

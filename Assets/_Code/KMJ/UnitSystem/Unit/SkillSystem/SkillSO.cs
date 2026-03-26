@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     [CreateAssetMenu(fileName = "SkillSO/Skill", menuName = "skillSO", order = 0)]
     public class SkillSO : ScriptableObject

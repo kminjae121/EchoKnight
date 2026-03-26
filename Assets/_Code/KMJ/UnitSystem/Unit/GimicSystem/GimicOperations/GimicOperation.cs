@@ -1,4 +1,4 @@
-﻿using Code.UnitSystem.SkillSystem;
+﻿using Code.SkillSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
+using Code.UnitSystem;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class SkillComponent : MonoBehaviour, IUnitComponent
     {

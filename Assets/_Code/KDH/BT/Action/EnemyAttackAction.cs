@@ -1,5 +1,5 @@
 using System;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using EnemySystem;
 using Unity.Behavior;
 using UnityEngine;

@@ -1,6 +1,6 @@
 ﻿using Code.Core.Managers;
 using Code.Managers;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
 namespace Code.UI.SkillTreeUI

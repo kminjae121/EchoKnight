@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
 namespace _Code.KMJ.UnitSystem.involveUnitSO

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem.Skill.Knight
+namespace Code.SkillSystem.Skill.Knight
 {
     public class KnightShieldCompo : MonoBehaviour
     {

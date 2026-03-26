@@ -9,6 +9,7 @@ namespace Code.UnitSystem
         public Action OnAttackTrigger;
         public Action OnAnimationEndTrigger;
         public Action OnEnemyAnimationEndTrigger;
+        public Action OnTakeDamageTrigger;
         public Action OnEnemyDieEndTrigger;
         
         
@@ -18,7 +19,8 @@ namespace Code.UnitSystem
         {
             _entity = entity;
         }
-        
+
+        private void TakeDamage() => OnTakeDamageTrigger?.Invoke();
 
         public void TriggerDead() => OnDeadEvent?.Invoke();
         

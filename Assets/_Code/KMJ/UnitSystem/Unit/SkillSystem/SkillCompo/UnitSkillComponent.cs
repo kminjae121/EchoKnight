@@ -1,4 +1,5 @@
 ﻿using Code.Core.Events.Bus;
+using Code.SkillSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem.SkillSystem

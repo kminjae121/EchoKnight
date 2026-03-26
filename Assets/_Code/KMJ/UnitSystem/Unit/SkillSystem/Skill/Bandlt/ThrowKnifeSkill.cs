@@ -16,17 +16,20 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
-            triggerCompo.OnThrowKnifeTrigger += MakeThrowKnife;
-            triggerCompo.OnThrowKnifeEndTrigger += SkillEnd;
             SkillEvent.AddListener(AttackAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
             _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
         }
 
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += MakeThrowKnife;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+        }
+
         protected override void OnDestroy()
         {
-            triggerCompo.OnThrowKnifeTrigger -= MakeThrowKnife;
-            triggerCompo.OnThrowKnifeEndTrigger -= SkillEnd;
             SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
         }
@@ -40,8 +43,7 @@ using UnityEngine;
         
         private IEnumerator SlashFlag()
         {
-            yield return new WaitForSeconds(0.3f);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.4f);
             animtionCompo.PlaySelectAnimation("THROW");
         }
         
@@ -53,6 +55,9 @@ using UnityEngine;
         protected override void SkillEnd()
         {
             base.SkillEnd();
+            
+            triggerCompo.OnAttackTrigger -= MakeThrowKnife;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
         }

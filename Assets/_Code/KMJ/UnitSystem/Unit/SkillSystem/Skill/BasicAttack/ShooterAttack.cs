@@ -21,8 +21,6 @@ public class ShooterAttack : BasicUnitSkill
         protected override void Start()
         {
             base.Start();
-            triggerCompo.OnShootAttackTrigger += Shoot;
-            triggerCompo.OnShootAttackEndTrigger += SkillEnd;
             SkillEvent.AddListener(AttackAction);
             _shootItemManager = _unitBase.GetUnitCompo<ShootItemAttackManager>();
             _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
@@ -31,10 +29,16 @@ public class ShooterAttack : BasicUnitSkill
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            triggerCompo.OnShootAttackTrigger -= Shoot;
-            triggerCompo.OnShootAttackEndTrigger -= SkillEnd;
             SkillEvent.RemoveListener(AttackAction);
         }
+
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += Shoot;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+        }
+        
 
         public void AttackAction(GameObject target)
         {
@@ -69,8 +73,9 @@ public class ShooterAttack : BasicUnitSkill
         protected override void SkillEnd()
         {
             base.SkillEnd();
+            triggerCompo.OnAttackTrigger -= Shoot;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             _animationCompo.PlaySelectAnimation("IDLE");
-            
             SkillEndEvent.Invoke();
         }
     }

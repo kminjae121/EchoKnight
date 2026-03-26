@@ -81,6 +81,16 @@ namespace Code.SkillSystem
         {
             AddDamage = addDamage;
         }
+
+        protected virtual void StartEvent()
+        {
+            
+        }
+
+        protected virtual void RemoveEvent()
+        {
+            
+        }
         
         protected virtual void CanUseSkillTrue()
         {
@@ -137,7 +147,7 @@ namespace Code.SkillSystem
         public virtual void ForceUseSkill(GameObject target)
         {
             if (target == null) return;
-
+            
             _targetEnemy = target;
             isCanUseSkill = true;
 

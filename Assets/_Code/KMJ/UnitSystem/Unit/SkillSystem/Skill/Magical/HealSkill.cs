@@ -4,9 +4,10 @@ using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using Code.SkillSystem;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
-    public class HealSkill : BasicUnitSkill
+public class HealSkill : BasicUnitSkill
     {
         [SerializeField] private GameObject healPrefab;
         
@@ -15,16 +16,19 @@ using UnityEngine;
         protected override void Start()
         {
             base.Start();
-            triggerCompo.OnHealTrigger += Heal;
-            triggerCompo.OnHealEndTrigger += SkillEnd;
             SkillEvent.AddListener(HealAction);
             animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
         }
 
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += Heal;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+        }
+
         protected override void OnDestroy()
         { 
-            triggerCompo.OnHealTrigger-= Heal;
-            triggerCompo.OnHealEndTrigger -= SkillEnd;
             SkillEvent.RemoveListener(HealAction);
             base.OnDestroy();
             
@@ -46,6 +50,8 @@ using UnityEngine;
         protected override void SkillEnd()
         {
             base.SkillEnd();
+            triggerCompo.OnAttackTrigger-= Heal;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             SkillEndEvent?.Invoke();
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
             animtionCompo.PlaySelectAnimation("IDLE");

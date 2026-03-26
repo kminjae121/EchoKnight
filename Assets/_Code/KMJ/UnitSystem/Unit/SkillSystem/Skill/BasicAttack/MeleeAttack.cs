@@ -26,16 +26,19 @@ public class MeleeAttack : BasicUnitSkill
     protected override void Start()
     {
         base.Start();
-        triggerCompo.OnTakeDamageTrigger += TakeDamage;
-        triggerCompo.OnAttackTrigger += AttackEnd;
         SkillEvent.AddListener(AttackAction);
         _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
     }
-    
+
+    protected override void StartEvent()
+    {
+        base.StartEvent();
+        triggerCompo.OnAttackTrigger += TakeDamage;
+        triggerCompo.OnAnimationEndTrigger += AttackEnd;
+    }
+
     protected override void OnDestroy()
     {
-        triggerCompo.OnTakeDamageTrigger -= TakeDamage;
-        triggerCompo.OnAttackTrigger -= AttackEnd;
         SkillEvent.RemoveListener(AttackAction);
     }
     
@@ -106,6 +109,8 @@ public class MeleeAttack : BasicUnitSkill
     protected override void SkillEnd()
     {
         base.SkillEnd();
+        triggerCompo.OnAttackTrigger -= TakeDamage;
+        triggerCompo.OnAnimationEndTrigger -= AttackEnd;
         SkillEndEvent?.Invoke();
     }
     

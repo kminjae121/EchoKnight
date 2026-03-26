@@ -21,9 +21,14 @@ public class BasicAttackSkill : BasicUnitSkill
     {
         base.Start();
         SkillEvent.AddListener(AttackAction);
-        triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
-        triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
         animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+    }
+
+    protected override void StartEvent()
+    {
+        base.StartEvent();
+        triggerCompo.OnAnimationEndTrigger += AttackEnd;
+        triggerCompo.OnAttackTrigger += TakeDamage;
     }
 
     protected override void OnDestroy()
@@ -31,8 +36,6 @@ public class BasicAttackSkill : BasicUnitSkill
         base.OnDestroy();
         
         SkillEvent.RemoveListener(AttackAction);
-        triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
-        triggerCompo.OnBaseAttackSkillTrigger -= TakeDamage;
     }
     
 
@@ -78,8 +81,7 @@ public class BasicAttackSkill : BasicUnitSkill
     public void TakeDamage()
     {
         _characterUnit.impulseSource.GenerateImpulse(0.3f);
-
-        ;
+        
         Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_targetEnemy,AddDamage,_characterUnit,false));
     }
 
@@ -110,6 +112,8 @@ public class BasicAttackSkill : BasicUnitSkill
     protected override void SkillEnd()
     {
         base.SkillEnd();
+        triggerCompo.OnAnimationEndTrigger -= AttackEnd;
+        triggerCompo.OnAttackTrigger -= TakeDamage;
         SkillEndEvent.Invoke();
     }
 }

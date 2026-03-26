@@ -21,11 +21,10 @@ public class LongAttack : BasicUnitSkill
         
         private Vector3 _ownTrm;
 
-        protected override void Start()
+        protected  void Start()
         {
-            base.Start();
             SkillEvent.AddListener(AttackAction);
-            _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
+            _animationCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
         }
 
         protected override void StartEvent()

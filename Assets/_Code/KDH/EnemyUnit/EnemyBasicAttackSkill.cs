@@ -6,6 +6,7 @@ namespace Code.SkillSystem
 {
     public class EnemyBasicAttackSkill : BaseSkill, IAfterInitialize
     {
+        [SerializeField] private Unit _owner;
         public void AfterInitialize()
         {
             Damage = 10f; 
@@ -33,9 +34,8 @@ namespace Code.SkillSystem
             }
         }
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             AfterInitialize();
         }
 

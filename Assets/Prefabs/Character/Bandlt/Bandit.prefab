@@ -281,7 +281,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1143109227806251459}
-  - component: {fileID: 6452819485889830439}
+  - component: {fileID: 5678619842417617077}
   - component: {fileID: 8081901703055209266}
   - component: {fileID: 3840525881294530688}
   - component: {fileID: 8752380451699132067}
@@ -308,7 +308,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 663893733135974173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6452819485889830439
+--- !u!114 &5678619842417617077
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -317,12 +317,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1196206733201850435}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ae9d42f1944b238682f97f832f1290, type: 3}
+  m_Script: {fileID: 11500000, guid: 02096773b10642c5be05cfc7efa26a3a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _skillList:
-  - {fileID: 11400000, guid: e6c678ee70b8f4244b6ff4c1f738697a, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.UnitSkillComponent
+  skillList:
   - {fileID: 11400000, guid: da3c0e6fa6cb1ae4a83af31605467c23, type: 2}
+  - {fileID: 11400000, guid: e6c678ee70b8f4244b6ff4c1f738697a, type: 2}
   - {fileID: 11400000, guid: 3547ba0eb4e6b574aa423bbdc23a47b9, type: 2}
 --- !u!114 &8081901703055209266
 MonoBehaviour:
@@ -348,12 +348,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: deaadb60c26f4073a82f967416675e9e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MeleeAttack
-  isMove: 0
   <SkillSO>k__BackingField: {fileID: 11400000, guid: e6c678ee70b8f4244b6ff4c1f738697a, type: 2}
   attackData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
   <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 1924552953260626216}
   statCompo: {fileID: 3173957803825689137}
+  rangeCompo: {fileID: 1424652538578945589}
   SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -364,7 +364,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 8929876921273345976}
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 8929876921273345976}
+  _characterUnit: {fileID: 2682628836158502387}
   animator: {fileID: 7325435174955684362}
   atkMoveSpeed: 6
   attackMoveDistance: 1.5
@@ -383,12 +385,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be8419dfdc664cf982804c176f960981, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMove: 0
   <SkillSO>k__BackingField: {fileID: 11400000, guid: da3c0e6fa6cb1ae4a83af31605467c23, type: 2}
   attackData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
   <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 1924552953260626216}
   statCompo: {fileID: 3173957803825689137}
+  rangeCompo: {fileID: 0}
   SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -399,7 +401,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 8929876921273345976}
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 8929876921273345976}
+  _characterUnit: {fileID: 2682628836158502387}
   effectPrefab: {fileID: 1884208570772499433}
 --- !u!114 &7245421633850133361
 MonoBehaviour:
@@ -413,12 +417,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c06a190a9154bd9b5dc0f8dff1fdae6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMove: 0
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 3547ba0eb4e6b574aa423bbdc23a47b9, type: 2}
   attackData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
   <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 1924552953260626216}
   statCompo: {fileID: 3173957803825689137}
+  rangeCompo: {fileID: 1424652538578945589}
   SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -429,7 +433,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 8929876921273345976}
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 8929876921273345976}
+  _characterUnit: {fileID: 2682628836158502387}
 --- !u!1 &1261544466626548610
 GameObject:
   m_ObjectHideFlags: 0
@@ -804,6 +810,7 @@ GameObject:
   - component: {fileID: 1364905615837076402}
   - component: {fileID: 7062266341635414419}
   - component: {fileID: 7021340276383001583}
+  - component: {fileID: 1424652538578945589}
   m_Layer: 7
   m_Name: Bandit
   m_TagString: Untagged
@@ -859,6 +866,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   unitImage: {fileID: 0}
+  <SkillCompo>k__BackingField: {fileID: 5678619842417617077}
   _startTile: {fileID: 0}
 --- !u!114 &5629794309468085115
 MonoBehaviour:
@@ -961,6 +969,19 @@ MonoBehaviour:
   shootItems:
   - {fileID: 3328839309293825585, guid: 9ba78afe5783aa647b95bd3c0c5c2af4, type: 3}
   atkData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
+--- !u!114 &1424652538578945589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333293328105742335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ed3227b0c640c3932fbe431cb09b22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.RangeComponent
+  isMove: 0
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1071,7 +1092,7 @@ MonoBehaviour:
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   behaviorCompo: {fileID: 2712662656777492302}
   skillManager: {fileID: 8081901703055209266}
-  _unit: {fileID: 0}
+  unit: {fileID: 0}
 --- !u!1 &2708508128988086321
 GameObject:
   m_ObjectHideFlags: 0
@@ -1146,9 +1167,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.GimicComponent
   GimicOption: 1
-  _condition: {fileID: 1269211429030348699}
-  _operation: {fileID: 186765895236097103}
-  _eventCompo: {fileID: 7752894650181887457}
+  condition: {fileID: 1269211429030348699}
+  operation: {fileID: 186765895236097103}
+  eventCompo: {fileID: 7752894650181887457}
 --- !u!114 &7752894650181887457
 MonoBehaviour:
   m_ObjectHideFlags: 0

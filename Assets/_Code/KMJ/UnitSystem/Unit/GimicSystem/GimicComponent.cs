@@ -1,6 +1,7 @@
 ﻿using System;
 using Code.Core.Events.Bus;
 using Code.SkillSystem;
+using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem
@@ -14,19 +15,19 @@ namespace Code.UnitSystem.GimicSystem
     {
         public GimicOption GimicOption;
         
-        [SerializeField] private GimicCondition _condition;
-        [SerializeField] private GimicOperation _operation;
-        [SerializeField] private GimicEventComponent _eventCompo;
+        [SerializeField] private GimicCondition condition;
+        [SerializeField] private GimicOperation operation;
+        [SerializeField] private GimicEventComponent eventCompo;
         
         private UnitType _unitType;
 
         public void Initialize(Unit owner)
         {
-            SkillComponent skillCompo = owner.GetUnitCompo<SkillComponent>();
+            UnitSkillComponent skillCompo = owner.GetUnitCompo<UnitSkillComponent>();
             
             Bus<UnitGimicEvent>.Subscribe(SetCondition);
             Bus<UseGimicEvent>.Subscribe(UseCondition);
-            _operation.InitializeOperation(skillCompo);
+            operation.InitializeOperation(skillCompo);
 
             _unitType = owner.unitSO.UnitType;
         }
@@ -43,17 +44,17 @@ namespace Code.UnitSystem.GimicSystem
             {
                 if (evt.gimicOption == GimicOption.OwnGimic)
                 {
-                    _condition.SetCondition();
+                    condition.SetCondition();
                 
-                    if (_condition.CheckCondition())
-                        _operation.StartOperation();
+                    if (condition.CheckCondition())
+                        operation.StartOperation();
                 }
                 else if (evt.gimicOption == GimicOption.TargetGimic)
                 {
-                    _condition.SetCondition(evt.target);
+                    condition.SetCondition(evt.target);
 
-                    if (_condition.CheckCondition(evt.target))
-                        _operation.StartOperation(evt.target);
+                    if (condition.CheckCondition(evt.target))
+                        operation.StartOperation(evt.target);
                 }   
             }
         }
@@ -64,13 +65,13 @@ namespace Code.UnitSystem.GimicSystem
             {
                 if (GimicOption == GimicOption.OwnGimic)
                 {
-                    _condition.RemoveCondition();
-                    _operation.ResetOperation();
+                    condition.RemoveCondition();
+                    operation.ResetOperation();
                 }
                 else if (evt.unitType == _unitType && GimicOption == GimicOption.TargetGimic)
                 {
-                    _condition.RemoveCondition(evt.target);
-                    _operation.ResetOperation(evt.target);
+                    condition.RemoveCondition(evt.target);
+                    operation.ResetOperation(evt.target);
                 }
             }
         }

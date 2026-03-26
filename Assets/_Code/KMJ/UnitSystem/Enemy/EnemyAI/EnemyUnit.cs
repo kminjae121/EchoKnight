@@ -132,13 +132,13 @@ namespace EnemySystem
 
             BaseSkill skillToUse = null;
 
-            if (!string.IsNullOrEmpty(skillso.skillName) && _skillCompo.skills.ContainsKey(skillso))
+            if (!string.IsNullOrEmpty(skillso.skillName) && _skillCompo.Skills.ContainsKey(skillso))
             {
-                skillToUse = _skillCompo.skills[skillso];
+                skillToUse = _skillCompo.Skills[skillso];
             }
-            else if (_skillCompo.skills.Count > 0)
+            else if (_skillCompo.Skills.Count > 0)
             {
-                var enumerator = _skillCompo.skills.Values.GetEnumerator();
+                var enumerator = _skillCompo.Skills.Values.GetEnumerator();
                 if (enumerator.MoveNext()) 
                 {
                     skillToUse = enumerator.Current;

@@ -7,7 +7,7 @@ namespace Code.UnitSystem.Combat
     {
         public DamageType damageType = DamageType.MELEE;
         
-        public string attackName;
+        public string AttackName;
         public float damageMultiplier = 1f; //증가 뎀
         public float damageIncrease = 0;  //추가 뎀
         public bool isPowerAttack;
@@ -15,7 +15,7 @@ namespace Code.UnitSystem.Combat
         
         private void OnEnable()
         {
-            attackName = name;
+            AttackName = name;
         }
     }
 }

@@ -23,7 +23,7 @@ namespace Code.UnitSystem
         public string UnitName => unitSO != null ? unitSO.UnitName : "Unknown";
         
         [Header("Components")]
-        protected Dictionary<Type, IUnitComponent> _components;
+        protected Dictionary<Type, IUnitComponent> _components = new  Dictionary<Type, IUnitComponent>();
         public UnitManageRangeCompo RangesCompo { get; private set; }
         public UnitAnimation AnimationCompo { get; private set; }
         

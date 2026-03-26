@@ -4,7 +4,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 

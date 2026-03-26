@@ -1,12 +1,13 @@
 ﻿using System;
 using Code.Core.Events.Bus;
 using Code.Map;
+using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using EnemySystem;
 using Input;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class BasicUnitSkill : BaseSkill
     {

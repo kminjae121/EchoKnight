@@ -1,7 +1,8 @@
-﻿using Code.UnitSystem.Combat;
+﻿using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class EnemyBasicAttackSkill : BaseSkill, IAfterInitialize
     {

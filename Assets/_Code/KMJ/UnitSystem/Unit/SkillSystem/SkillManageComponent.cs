@@ -2,7 +2,7 @@
 using Code.Core.Events.Bus;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class SkillManageComponent : MonoBehaviour
     {

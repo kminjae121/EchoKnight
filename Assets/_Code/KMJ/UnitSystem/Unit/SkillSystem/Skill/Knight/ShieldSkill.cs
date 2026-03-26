@@ -2,8 +2,8 @@
 using Code.Core.Events.Bus;
 using Code.Managers;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
-using Code.UnitSystem.SkillSystem.Skill.Knight;
+using Code.SkillSystem;
+using Code.SkillSystem.Skill.Knight;
 using UnityEngine;
 
 

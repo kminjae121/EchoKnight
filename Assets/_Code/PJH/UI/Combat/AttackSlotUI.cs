@@ -1,4 +1,4 @@
-﻿using Code.UnitSystem.SkillSystem;
+﻿using Code.SkillSystem;
 using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;

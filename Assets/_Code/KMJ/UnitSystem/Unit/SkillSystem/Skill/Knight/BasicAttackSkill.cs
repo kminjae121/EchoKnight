@@ -3,7 +3,7 @@ using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using Code.UnitSystem.GimicSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
 public class BasicAttackSkill : BasicUnitSkill

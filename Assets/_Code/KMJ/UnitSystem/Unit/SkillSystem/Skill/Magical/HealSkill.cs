@@ -32,15 +32,14 @@ using UnityEngine;
         
         public void HealAction(GameObject target)
         {
-            StartCoroutine(FireBall());
             SkillStartEvent?.Invoke();
+            StartCoroutine(FireBall());
         }
         
         private IEnumerator FireBall()
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(false));
-            yield return new WaitForSeconds(0.3f);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.4f);
             animtionCompo.PlaySelectAnimation("HEAL");
         }
 
@@ -48,7 +47,7 @@ using UnityEngine;
         {
             base.SkillEnd();
             SkillEndEvent?.Invoke();
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
             animtionCompo.PlaySelectAnimation("IDLE");
         }
 

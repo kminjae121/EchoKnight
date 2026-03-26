@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 
 
-public class HealSkill : BasicUnitSkill
+public class HealSkill : BaseSkill
     {
         [SerializeField] private GameObject healPrefab;
         

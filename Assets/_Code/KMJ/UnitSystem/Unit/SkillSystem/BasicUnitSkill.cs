@@ -11,7 +11,7 @@ namespace Code.UnitSystem.SkillSystem
     public class BasicUnitSkill : BaseSkill
     {
         [Header("Basic Settings")]
-        [field: SerializeField] public CriticalSpot criticalSpot { get; private set; }
+        [field: SerializeField] public CriticalSpot CriticalSpot { get; private set; }
         
         protected CharacterUnit _characterUnit;
         
@@ -51,8 +51,6 @@ namespace Code.UnitSystem.SkillSystem
                 triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
                 _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
             }
-
-            SkillEndEvent.AddListener(SetMovingTrue);   
         }
 
         protected override void OnDestroy()
@@ -60,16 +58,8 @@ namespace Code.UnitSystem.SkillSystem
             base.OnDestroy();
             if (_inputReader != null)
                 _inputReader.OnAttackEvent -= UseSkill;
-            
-            SkillEndEvent.RemoveListener(SetMovingTrue);
         }
         
-        
-
-        public void SetMovingTrue()
-        {
-        }
-
         public void SetEnemyTargeting(EnemyTargeting targeting)
         {
             _targetingCompo = targeting;
@@ -153,7 +143,7 @@ namespace Code.UnitSystem.SkillSystem
                 _characterUnit.BehaviorCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
-                CanUseThisSkill();
+                BooleanSkillUse(true);
             }
         }
         
@@ -190,6 +180,7 @@ namespace Code.UnitSystem.SkillSystem
         private void SkillStartEvent()
         {
             StartEvent();
+            
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,
                 new Vector3(0.1f, 0.1f, 0.1f)));

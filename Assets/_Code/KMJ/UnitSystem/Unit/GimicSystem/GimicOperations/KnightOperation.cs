@@ -7,7 +7,7 @@ namespace Code.UnitSystem.GimicSystem
 {
     public class KnightOperation : GimicOperation
     {
-        [SerializeField] private List<int> _addDamageList;
+        [SerializeField] private List<int> addDamageList;
         
         private int _addDamage = 0;
 
@@ -15,7 +15,7 @@ namespace Code.UnitSystem.GimicSystem
         
         public override void StartOperation()
         {
-            _addDamage = _addDamageList[_operationLevel];
+            _addDamage = addDamageList[_operationLevel];
             _skillCompo.SetAddSkillDamage(_addDamage,SkillType.ActiveSkill);
             _operationLevel++;
             Bus<KnightSwordEvent>.Raise(new KnightSwordEvent(_operationLevel));

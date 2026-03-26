@@ -4,7 +4,7 @@ using Code.UnitSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-    public class AddAvoideProbablity : BasicUnitSkill
+    public class AddAvoideProbablity : BaseSkill
     {
         [SerializeField] private GameObject effectPrefab;
         

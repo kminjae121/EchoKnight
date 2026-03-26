@@ -5,7 +5,7 @@ using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-    public class ThrowKnifeSkill : BasicUnitSkill
+    public class ThrowKnifeSkill : BaseSkill
     {
         private UnitAnimation animtionCompo;
 

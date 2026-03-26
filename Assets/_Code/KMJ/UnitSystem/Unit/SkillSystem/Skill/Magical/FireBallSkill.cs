@@ -5,7 +5,7 @@ using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-    public class FireBallSkill : BasicUnitSkill
+    public class FireBallSkill : BaseSkill
     { 
         private UnitAnimation animtionCompo;
 

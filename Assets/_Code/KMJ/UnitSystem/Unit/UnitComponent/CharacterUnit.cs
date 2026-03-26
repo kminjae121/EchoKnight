@@ -125,7 +125,6 @@ namespace Code.UnitSystem
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
                 
                 OnTurnEnd();
-                
             }
         }
 

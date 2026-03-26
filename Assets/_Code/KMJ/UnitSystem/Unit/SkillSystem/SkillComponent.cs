@@ -160,7 +160,7 @@ namespace Code.UnitSystem.SkillSystem
             foreach (var skill in skills.Values)
             {
                 skill.SkillFinished();
-                skill.BlockThisSkill();
+                skill.BooleanSkillUse(false);
                 Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
             }
         }

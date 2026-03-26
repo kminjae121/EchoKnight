@@ -6,7 +6,7 @@ namespace Code.UnitSystem.SkillSystem
 {
     public class SkillManageComponent : MonoBehaviour
     {
-        private BasicUnitSkill usingSkill;
+        private BaseSkill usingSkill;
 
         private void OnEnable()
         {
@@ -23,7 +23,7 @@ namespace Code.UnitSystem.SkillSystem
             usingSkill = skillSo.skill;
         }
 
-        public BasicUnitSkill GetSkillInfo()
+        public BaseSkill GetSkillInfo()
         {
             return usingSkill;
         }

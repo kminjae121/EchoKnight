@@ -7,7 +7,7 @@ using Code.UnitSystem.SkillSystem.Skill.Knight;
 using UnityEngine;
 
 
-public class ShieldSkill : BasicUnitSkill
+public class ShieldSkill : BaseSkill
 {
     [SerializeField] private GameObject effectPrefab;
 

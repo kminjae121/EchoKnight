@@ -6,7 +6,7 @@ using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class ShooterAttack : BasicUnitSkill
+public class ShooterAttack : BaseSkill
     {
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private Animator animator;

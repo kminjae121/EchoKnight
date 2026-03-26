@@ -4,9 +4,9 @@ namespace Code.Core.Events.Bus
 {
     public struct SendSkillEvent : IEvent
     {
-        public BasicUnitSkill skill;
+        public BaseSkill skill;
 
-        public SendSkillEvent(BasicUnitSkill skill)
+        public SendSkillEvent(BaseSkill skill)
         {
             this.skill = skill;
         }

@@ -1365,6 +1365,7 @@ MonoBehaviour:
   <SkillSO>k__BackingField: {fileID: 11400000, guid: c0f306b00f672d743aef7ad4bc4e4776, type: 2}
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
   <basicSkillDamage>k__BackingField: 0
+  <CriticalSpot>k__BackingField: {fileID: 0}
   triggerCompo: {fileID: 4918850842610012167}
   statCompo: {fileID: 6021934548967281175}
   SkillStartEvent:
@@ -1377,7 +1378,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 7752189333861557116}
   atkMoveSpeed: 0
   animator: {fileID: 7615231855437860106}
   effectPrefab: {fileID: 2544580028942621615}
@@ -1411,6 +1411,7 @@ MonoBehaviour:
   <SkillSO>k__BackingField: {fileID: 11400000, guid: d55721ce64d71b44ab8c0a09e708d036, type: 2}
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
   <basicSkillDamage>k__BackingField: 0
+  <CriticalSpot>k__BackingField: {fileID: 0}
   triggerCompo: {fileID: 4918850842610012167}
   statCompo: {fileID: 6021934548967281175}
   SkillStartEvent:
@@ -1423,7 +1424,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 7752189333861557116}
   healPrefab: {fileID: 5054388580355579544}
 --- !u!114 &2656233011362560395
 MonoBehaviour:
@@ -1441,6 +1441,7 @@ MonoBehaviour:
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 49aa6bbcc524d604e97103df070426a5, type: 2}
   attackData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
   <basicSkillDamage>k__BackingField: 0
+  <CriticalSpot>k__BackingField: {fileID: 0}
   triggerCompo: {fileID: 4918850842610012167}
   statCompo: {fileID: 6021934548967281175}
   SkillStartEvent:
@@ -1453,7 +1454,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   isCanUseSkill: 0
-  <criticalSpot>k__BackingField: {fileID: 7752189333861557116}
 --- !u!1 &4286341817391397124
 GameObject:
   m_ObjectHideFlags: 0
@@ -2750,7 +2750,7 @@ MonoBehaviour:
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   behaviorCompo: {fileID: 346073034446612595}
   skillManager: {fileID: 7899156878848632344}
-  _unit: {fileID: 0}
+  unit: {fileID: 0}
 --- !u!1 &7366538928604377655
 GameObject:
   m_ObjectHideFlags: 0

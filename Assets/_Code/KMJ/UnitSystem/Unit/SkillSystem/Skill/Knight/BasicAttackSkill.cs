@@ -6,7 +6,7 @@ using Code.UnitSystem.GimicSystem;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-public class BasicAttackSkill : BasicUnitSkill
+public class BasicAttackSkill : BaseSkill
 {
     [SerializeField] private Animator animator;
     private UnitAnimation animtionCompo;

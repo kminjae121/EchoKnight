@@ -5,7 +5,7 @@ using Code.UnitSystem.Combat;
 using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
-    public class FireArrow : BasicUnitSkill
+    public class FireArrow : BaseSkill
     {
         private UnitAnimation animtionCompo;
 

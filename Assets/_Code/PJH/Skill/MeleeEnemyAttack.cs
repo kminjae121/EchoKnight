@@ -9,6 +9,7 @@ namespace Code.SkillSystem
 
         protected void Start()
         {
+            //데미지 주는 
             triggerCompo.OnTakeDamageTrigger += TakeDamage;
         }
 

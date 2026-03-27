@@ -1,21 +1,49 @@
-﻿using Code.UnitSystem.Combat;
+﻿using Code.Core.Debugs;
+using Code.Core.Events.Bus;
 using UnityEngine;
 
 namespace Code.SkillSystem
 {
     public class MeleeEnemyAttack : BaseSkill
     {
-        [SerializeField] private float attackDistance;
-
-        protected void Start()
+        private GameObject _target;
+        
+        protected override void Start()
         {
-            //데미지 주는 
-            triggerCompo.OnTakeDamageTrigger += TakeDamage;
+            base.Start();
+            SkillEvent.AddListener(AttackAction);
         }
 
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += TakeDamage;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+        }
+
+        protected override void OnDestroy()
+        {
+            SkillEvent.RemoveListener(AttackAction);
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            base.OnDestroy();
+        }
+
+        private void AttackAction(GameObject target)
+        {
+            _target = target;
+        }
+        
         private void TakeDamage()
         {
             // 임펄스랑 데미지
+            UnityLogger.Log("적이 데미지를 주었습니다.");
+            Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage, _unitBase, false));
+        }
+        
+        private void SkillEnd()
+        {
+            triggerCompo.OnAttackTrigger -= TakeDamage;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
         }
     }
 }

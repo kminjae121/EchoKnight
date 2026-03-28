@@ -1,8 +1,6 @@
 ﻿using Code.Core.Events.Bus;
-using Code.SkillSystem;
-using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class UnitSkillComponent : SkillComponent
     {

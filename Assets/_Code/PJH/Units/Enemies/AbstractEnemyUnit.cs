@@ -85,20 +85,20 @@ namespace Code.UnitSystem.Enemies
             selectedSkillSO = null;
             selectedSkill = null;
 
-            if (SkillCompo?.skills == null || SkillCompo.skills.Count == 0)
+            if (SkillCompo?.Skills == null || SkillCompo.Skills.Count == 0)
             {
                 UnityLogger.LogError($"[{nameof(AbstractEnemyUnit)}] {name} has no registered skills.");
                 return false;
             }
 
-            if (skillSO != null && SkillCompo.skills.TryGetValue(skillSO, out BaseSkill exactSkill) && exactSkill != null)
+            if (skillSO != null && SkillCompo.Skills.TryGetValue(skillSO, out BaseSkill exactSkill) && exactSkill != null)
             {
                 selectedSkillSO = skillSO;
                 selectedSkill = exactSkill;
                 return true;
             }
 
-            foreach (var pair in SkillCompo.skills)
+            foreach (var pair in SkillCompo.Skills)
             {
                 if (pair.Key == null || pair.Value == null)
                     continue;

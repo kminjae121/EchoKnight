@@ -8,9 +8,8 @@ namespace Code.SkillSystem
     {
         private GameObject _target;
         
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             SkillEvent.AddListener(AttackAction);
         }
 
@@ -37,7 +36,7 @@ namespace Code.SkillSystem
         {
             // 임펄스랑 데미지
             UnityLogger.Log("적이 데미지를 주었습니다.");
-            Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage, _unitBase, false));
+            Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage,null , false));
         }
         
         private void SkillEnd()

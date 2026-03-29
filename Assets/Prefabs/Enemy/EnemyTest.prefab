@@ -842,51 +842,6 @@ Transform:
   - {fileID: 3286134050076824269}
   m_Father: {fileID: 6250192722359086393}
   m_LocalEulerAnglesHint: {x: 0.50288767, y: -72.901375, z: 81.518684}
---- !u!1 &2171222053794463943
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 5610862228387319182}
-  - component: {fileID: 417466653025379379}
-  m_Layer: 8
-  m_Name: Test Attack Component
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &5610862228387319182
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2171222053794463943}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5211122161282092982}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &417466653025379379
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2171222053794463943}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8b6c53b8c534ce4b287281b31344a10, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Enemies.TestAttackCompo
-  attackTileRange: 1
 --- !u!1 &2449966310274728600
 GameObject:
   m_ObjectHideFlags: 0
@@ -2364,7 +2319,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4383671267594620022}
-  - component: {fileID: 7726040754937296678}
+  - component: {fileID: 9015689262468036079}
   m_Layer: 8
   m_Name: Basic Skill
   m_TagString: Untagged
@@ -2387,22 +2342,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2306784775025815784}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7726040754937296678
+--- !u!114 &9015689262468036079
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4817877739892737220}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2af12f64ded84ec3aa038eebe0a59ed0, type: 3}
+  m_Script: {fileID: 11500000, guid: 421601ad24154c36bfe50975d1257eba, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  <SkillSO>k__BackingField: {fileID: 11400000, guid: 13febbdf3a5be0f4492eca9203e8e1bb, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::Code.SkillSystem.MeleeEnemyAttack
+  <SkillSO>k__BackingField: {fileID: 11400000, guid: a45cf72c25b0a884fbae08f59cbe47ff, type: 2}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
-  <basicSkillDamage>k__BackingField: 0
-  triggerCompo: {fileID: 0}
+  <basicSkillDamage>k__BackingField: 1
+  triggerCompo: {fileID: 2713756273135776808}
   statCompo: {fileID: 4857703127278487287}
   rangeCompo: {fileID: 0}
   SkillStartEvent:
@@ -2416,7 +2371,6 @@ MonoBehaviour:
       m_Calls: []
   isCanUseSkill: 0
   IsActive: 0
-  _owner: {fileID: 0}
 --- !u!1 &4997435329129884886
 GameObject:
   m_ObjectHideFlags: 0
@@ -3515,7 +3469,6 @@ Transform:
   - {fileID: 793186663750302850}
   - {fileID: 5936188201806222212}
   - {fileID: 2467498325383036099}
-  - {fileID: 5610862228387319182}
   - {fileID: 2306784775025815784}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4200,6 +4153,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2306784775025815784}
+  - component: {fileID: 2346489519433926513}
   m_Layer: 8
   m_Name: Skill Component
   m_TagString: Untagged
@@ -4223,6 +4177,20 @@ Transform:
   - {fileID: 4383671267594620022}
   m_Father: {fileID: 5211122161282092982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2346489519433926513
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7798696631587214412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89697e88e3fe4b7d8f77ec969dd9a531, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.SkillSystem.EnemySkillComponent
+  skillList:
+  - {fileID: 11400000, guid: a45cf72c25b0a884fbae08f59cbe47ff, type: 2}
 --- !u!1 &7853610035896982523
 GameObject:
   m_ObjectHideFlags: 0

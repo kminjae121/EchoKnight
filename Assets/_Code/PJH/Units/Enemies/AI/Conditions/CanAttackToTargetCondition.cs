@@ -14,9 +14,7 @@ namespace Code.UnitSystem.Enemies.AI
         public override bool IsTrue()
         {
             return Enemy.Value != null &&
-                   Enemy.Value.AttackCompo != null &&
-                   Target.Value != null &&
-                   Enemy.Value.AttackCompo.CanAttackToTarget(Target.Value);
+                   Target.Value != null;
         }
     }
 }

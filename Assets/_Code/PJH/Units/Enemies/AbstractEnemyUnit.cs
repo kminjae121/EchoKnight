@@ -12,7 +12,6 @@ namespace Code.UnitSystem.Enemies
     {
         public BehaviorGraphAgent BTAgent { get; private set; }
         public PathMover PathMover { get; private set; }
-        public TestAttackCompo AttackCompo { get; private set; }
         public SkillComponent SkillCompo { get; private set; }
         public TurnChannel TurnChannel { get; private set; }
         public UnitAnimation UnitAnimator { get; private set; }
@@ -29,7 +28,6 @@ namespace Code.UnitSystem.Enemies
         {
             base.AfterInitComponents();
             PathMover = GetUnitCompo<PathMover>();
-            AttackCompo = GetUnitCompo<TestAttackCompo>();
             SkillCompo = GetUnitCompo<SkillComponent>();
             UnitAnimator = GetUnitCompo<UnitAnimation>();
         }

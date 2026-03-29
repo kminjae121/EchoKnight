@@ -1,7 +1,6 @@
 ﻿using System;
 using Code.Core.Events.Bus;
 using Code.SkillSystem;
-using Code.UnitSystem.SkillSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem.GimicSystem

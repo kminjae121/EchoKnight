@@ -7,6 +7,7 @@ using Code.SkillSystem;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Code.UnitSystem
@@ -35,9 +36,12 @@ namespace Code.UnitSystem
         public GameObject _startTile;
         
         private Button endTurnBtn;
-        public CinemachineImpulseSource impulseSource { get; private set; }
         
         private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
+
+        public UnityEvent OnTurnStartEvent;
+        
+        public UnityEvent OnTurnEndEvent;
 
         private void Start()
         {
@@ -67,11 +71,10 @@ namespace Code.UnitSystem
                 TriggerCompo.OnDeadEvent -= HandleDieAnimationEnd;
         }
 
-        public void SetObject(TurnCostGaugeManager manager, Button btn,CinemachineImpulseSource source)
+        public void SetObject(TurnCostGaugeManager manager, Button btn)
         {
             GaugeManager = manager;
             endTurnBtn = btn;
-            impulseSource = source;
         }
 
         public override void OnTurnStart()
@@ -94,12 +97,15 @@ namespace Code.UnitSystem
                 BehaviorCompo.moveCount = 0;
             }
             
+            OnTurnStartEvent?.Invoke();
+            
             Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }
 
         public override void OnTurnEnd()
         {
             base.OnTurnEnd();
+            OnTurnEndEvent?.Invoke();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
         }

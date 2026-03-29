@@ -61,7 +61,7 @@ public class AimArrow : BasicUnitSkill
     
     public void MakeArrow()
     {
-        impulseSource.GenerateImpulse(0.8f);  
+        Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.4f));
         Vector3 pos = _characterUnit.transform.position;
 
         pos.y += 2f;

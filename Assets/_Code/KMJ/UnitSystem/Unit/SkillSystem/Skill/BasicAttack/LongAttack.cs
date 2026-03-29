@@ -21,7 +21,7 @@ public class LongAttack : BasicUnitSkill
         
         private Vector3 _ownTrm;
 
-        protected  void Start()
+        protected void Start()
         {
             SkillEvent.AddListener(AttackAction);
             _animationCompo = _characterUnit.GetUnitCompo<UnitAnimation>();

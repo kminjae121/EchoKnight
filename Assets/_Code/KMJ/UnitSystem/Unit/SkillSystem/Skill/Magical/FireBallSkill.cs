@@ -60,7 +60,7 @@ using UnityEngine;
         
         public void MakeArrow()
         {
-            impulseSource.GenerateImpulse(0.5f);  
+            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.4f));
             Vector3 pos = transform.position;
 
             pos.y += 3f;

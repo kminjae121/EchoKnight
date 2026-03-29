@@ -35,7 +35,6 @@ namespace Code.UnitSystem
         public GameObject _startTile;
         
         private Button endTurnBtn;
-        public CinemachineImpulseSource impulseSource { get; private set; }
         
         private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
 
@@ -67,11 +66,10 @@ namespace Code.UnitSystem
                 TriggerCompo.OnDeadEvent -= HandleDieAnimationEnd;
         }
 
-        public void SetObject(TurnCostGaugeManager manager, Button btn,CinemachineImpulseSource source)
+        public void SetObject(TurnCostGaugeManager manager, Button btn)
         {
             GaugeManager = manager;
             endTurnBtn = btn;
-            impulseSource = source;
         }
 
         public override void OnTurnStart()

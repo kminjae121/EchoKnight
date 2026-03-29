@@ -42,7 +42,6 @@ namespace Code.SkillSystem
 
 
         [Header("Camera & Effects")] 
-        protected CinemachineImpulseSource impulseSource;
         public DamageData DamageData;
 
         protected GameObject _targetEnemy = null;

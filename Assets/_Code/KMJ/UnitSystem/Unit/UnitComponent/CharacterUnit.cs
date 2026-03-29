@@ -7,6 +7,7 @@ using Code.SkillSystem;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace Code.UnitSystem
@@ -37,6 +38,10 @@ namespace Code.UnitSystem
         private Button endTurnBtn;
         
         private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
+
+        public UnityEvent OnTurnStartEvent;
+        
+        public UnityEvent OnTurnEndEvent;
 
         private void Start()
         {
@@ -92,12 +97,15 @@ namespace Code.UnitSystem
                 BehaviorCompo.moveCount = 0;
             }
             
+            OnTurnStartEvent?.Invoke();
+            
             Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }
 
         public override void OnTurnEnd()
         {
             base.OnTurnEnd();
+            OnTurnEndEvent?.Invoke();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
         }

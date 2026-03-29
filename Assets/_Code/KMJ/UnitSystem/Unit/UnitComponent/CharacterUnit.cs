@@ -3,7 +3,7 @@ using Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using Input;
 using Unity.Cinemachine;
 using UnityEngine;
@@ -21,7 +21,7 @@ namespace Code.UnitSystem
         #region UnitCompo
 
         public UnitBehaviorCompo BehaviorCompo { get; private set; }
-        public SkillComponent SkillCompo { get; private set; }
+        [field:SerializeField] public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
@@ -30,6 +30,7 @@ namespace Code.UnitSystem
         #endregion
         
         public int PlayableUnitID { get; set; } = -1;
+        public bool IsConfirmationSkill { get; set; }
         
         public GameObject _startTile;
         
@@ -40,7 +41,6 @@ namespace Code.UnitSystem
 
         private void Start()
         {
-            SkillCompo = GetUnitCompo<SkillComponent>();
             TriggerCompo = GetUnitCompo<UnitAnimationTrigger>();
             BehaviorCompo = GetUnitCompo<UnitBehaviorCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
@@ -124,7 +124,6 @@ namespace Code.UnitSystem
                     endTurnBtn.onClick.RemoveListener(TurnEnd);
                 
                 OnTurnEnd();
-                
             }
         }
 

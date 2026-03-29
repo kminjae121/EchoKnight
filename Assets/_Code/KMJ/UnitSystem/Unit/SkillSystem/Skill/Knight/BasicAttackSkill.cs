@@ -3,7 +3,7 @@ using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using Code.UnitSystem.GimicSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
 public class BasicAttackSkill : BasicUnitSkill
@@ -17,32 +17,33 @@ public class BasicAttackSkill : BasicUnitSkill
         
     private Vector3 _ownTrm;
     
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
-        SkillType = SkillType.ActiveSkill;
-        skillEvent.AddListener(AttackAction);
-        triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
-        triggerCompo.OnBaseAttackSkillTrigger += TakeDamage;
-        animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+        SkillEvent.AddListener(AttackAction);
+        animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+    }
+
+    protected override void StartEvent()
+    {
+        base.StartEvent();
+        triggerCompo.OnAnimationEndTrigger += AttackEnd;
+        triggerCompo.OnAttackTrigger += TakeDamage;
     }
 
     protected override void OnDestroy()
     {
         base.OnDestroy();
         
-        skillEvent.RemoveListener(AttackAction);
-        triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
-        triggerCompo.OnBaseAttackSkillTrigger -= TakeDamage;
+        SkillEvent.RemoveListener(AttackAction);
     }
     
 
 
     public void AttackAction(GameObject target)
     {
-        _ownTrm = _owner.transform.position;
+        _ownTrm = _characterUnit.transform.position;
         StartCoroutine(MeleeAttackAction(target)); ;
-        skillStartEvent?.Invoke();
+        SkillStartEvent?.Invoke();
     }
 
     private IEnumerator MeleeAttackAction(GameObject target)
@@ -54,14 +55,14 @@ public class BasicAttackSkill : BasicUnitSkill
             
         animtionCompo.PlaySelectAnimation("MOVE");
             
-        while (Vector3.Distance(_owner.transform.position, target.transform.position) > attackMoveDistance)
+        while (Vector3.Distance(_characterUnit.transform.position, target.transform.position) > attackMoveDistance)
         {
-            Vector3 currentPos = _owner.transform.position;
+            Vector3 currentPos = _characterUnit.transform.position;
             Vector3 targetPos = target.transform.position;
                 
             targetPos.y = currentPos.y;
 
-            _owner.transform.position = Vector3.MoveTowards(
+            _characterUnit.transform.position = Vector3.MoveTowards(
                 currentPos,
                 targetPos,
                 atkMoveSpeed * Time.deltaTime
@@ -70,7 +71,7 @@ public class BasicAttackSkill : BasicUnitSkill
             yield return null;
         }
         
-        if (Vector3.Distance(_owner.transform.position, target.transform.position) <= attackMoveDistance * 2)
+        if (Vector3.Distance(_characterUnit.transform.position, target.transform.position) <= attackMoveDistance * 2)
         {
             animtionCompo.PlaySelectAnimation("BAS");
         }
@@ -79,8 +80,7 @@ public class BasicAttackSkill : BasicUnitSkill
     public void TakeDamage()
     {
         _characterUnit.impulseSource.GenerateImpulse(0.3f);
-
-        ;
+        
         Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_targetEnemy,AddDamage,_characterUnit,false));
     }
 
@@ -93,10 +93,10 @@ public class BasicAttackSkill : BasicUnitSkill
     {
         animtionCompo.PlaySelectAnimation("MOVE");
             
-        while (Vector3.Distance(_owner.transform.position, _ownTrm) > 0.01f)
+        while (Vector3.Distance(_characterUnit.transform.position, _ownTrm) > 0.01f)
         {
-            _owner.transform.position = Vector3.MoveTowards(
-                _owner.transform.position,
+            _characterUnit.transform.position = Vector3.MoveTowards(
+                _characterUnit.transform.position,
                 _ownTrm,
                 atkMoveSpeed * Time.deltaTime
             );
@@ -111,6 +111,8 @@ public class BasicAttackSkill : BasicUnitSkill
     protected override void SkillEnd()
     {
         base.SkillEnd();
-        skillEndEvent.Invoke();
+        triggerCompo.OnAnimationEndTrigger -= AttackEnd;
+        triggerCompo.OnAttackTrigger -= TakeDamage;
+        SkillEndEvent.Invoke();
     }
 }

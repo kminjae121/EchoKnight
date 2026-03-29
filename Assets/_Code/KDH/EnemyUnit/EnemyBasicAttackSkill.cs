@@ -1,22 +1,24 @@
-﻿using Code.UnitSystem.Combat;
+﻿using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class EnemyBasicAttackSkill : BaseSkill, IAfterInitialize
     {
+        [SerializeField] private Unit _owner;
         public void AfterInitialize()
         {
-            damage = 10f; 
-            UseSkillPoint = 0; 
+            Damage = 10f; 
+            SkillSO.UsingSkillCost = 0; 
 
             if (_owner != null)
             {
                 if (triggerCompo == null) 
                     triggerCompo = _owner.GetUnitCompo<UnitAnimationTrigger>();
                 
-                if (rotationCompo == null) 
-                    rotationCompo = _owner.GetUnitCompo<UnitRotation>();
+                if (RotationCompo == null) 
+                    RotationCompo = _owner.GetUnitCompo<UnitRotation>();
                 
                 if (_skillCompo == null) 
                     _skillCompo = _owner.GetUnitCompo<SkillComponent>();
@@ -24,17 +26,16 @@ namespace Code.UnitSystem.SkillSystem
 
             if (triggerCompo != null)
             {
-                triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
-                triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
-
-                triggerCompo.OnBaseAttackSkillTrigger += AttackAction; 
-                triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
+               // triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
+               // triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
+               //
+               // triggerCompo.OnBaseAttackSkillTrigger += AttackAction; 
+               // triggerCompo.OnBaseAttackSkillEndTrigger += AttackEnd;
             }
         }
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
             AfterInitialize();
         }
 
@@ -43,8 +44,8 @@ namespace Code.UnitSystem.SkillSystem
             base.OnDestroy();
             if (triggerCompo != null)
             {
-                triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
-                triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
+              //  triggerCompo.OnBaseAttackSkillTrigger -= AttackAction;
+              //  triggerCompo.OnBaseAttackSkillEndTrigger -= AttackEnd;
             }
         }
 
@@ -59,7 +60,7 @@ namespace Code.UnitSystem.SkillSystem
             else
             {
                 Debug.LogError($"[EnemyBasicAttackSkill] 애니메이션 컴포넌트를 찾을 수 없어 턴을 강제 종료합니다.");
-                skillEnd();
+                SkillFinished();
             }
         }
 
@@ -76,7 +77,7 @@ namespace Code.UnitSystem.SkillSystem
                 if (targetHealth != null)
                 {
                     DamageData damageData = new DamageData();
-                    damageData.damage = damage;
+                    damageData.damage = Damage;
                     damageData.isCritical = false;
 
                     Vector3 hitPoint = _targetEnemy.transform.position;
@@ -89,7 +90,7 @@ namespace Code.UnitSystem.SkillSystem
 
         private void AttackEnd()
         {
-            skillEnd();
+            SkillFinished();
         }
     }
 }

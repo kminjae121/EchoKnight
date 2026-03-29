@@ -1,5 +1,5 @@
 ﻿using Code.Core.Events.Bus;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;

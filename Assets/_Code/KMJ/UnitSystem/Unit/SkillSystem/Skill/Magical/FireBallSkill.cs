@@ -2,7 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
     public class FireBallSkill : BasicUnitSkill
@@ -13,32 +13,32 @@ using UnityEngine;
 
         private ShootItemAttackManager _shootItemManager;
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
-            SkillType = SkillType.ActiveSkill;
-            triggerCompo.OnFireBallTrigger += MakeArrow;
-            triggerCompo.OnFireBallEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            SkillEvent.AddListener(AttackAction);
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
             
-            _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
+            _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+        }
+
+        protected override void StartEvent()
+        {
+            triggerCompo.OnAttackTrigger += MakeArrow;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+            base.StartEvent();
         }
 
         protected override void OnDestroy()
         { 
-            triggerCompo.OnFireBallTrigger -= MakeArrow;
-            triggerCompo.OnFireBallEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
-            
         }
         
         public void AttackAction(GameObject target)
         {
             StartCoroutine(FireBall());
             _target = target;
-            skillStartEvent?.Invoke();
+            SkillStartEvent?.Invoke();
         }
         
         private IEnumerator FireBall()
@@ -52,7 +52,9 @@ using UnityEngine;
         protected override void SkillEnd()
         {
             base.SkillEnd();
-            skillEndEvent?.Invoke();
+            triggerCompo.OnAttackTrigger -= MakeArrow;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
         }
         

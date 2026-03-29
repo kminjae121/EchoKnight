@@ -2,7 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;

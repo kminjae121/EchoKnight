@@ -21,8 +21,6 @@ namespace Code.UnitSystem.Enemies.AI
             if (Enemy.Value == null || Target.Value == null)
                 return Status.Failure;
 
-            _attackCompo = Enemy.Value.AttackCompo;
-
             if (_attackCompo == null)
                 return Status.Failure;
 

@@ -2,7 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -18,23 +18,26 @@ public class ShooterAttack : BasicUnitSkill
         
         private GameObject _target = null;
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
-            triggerCompo.OnShootAttackTrigger += Shoot;
-            triggerCompo.OnShootAttackEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
-            _shootItemManager = _unitBase.GetUnitCompo<ShootItemAttackManager>();
-            _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
+            SkillEvent.AddListener(AttackAction);
+            _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+            _animationCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            triggerCompo.OnShootAttackTrigger -= Shoot;
-            triggerCompo.OnShootAttackEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
         }
+
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += Shoot;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+        }
+        
 
         public void AttackAction(GameObject target)
         {
@@ -53,11 +56,11 @@ public class ShooterAttack : BasicUnitSkill
 
         private void Shoot()
         {
-            Vector3 pos = _unitBase.transform.position;
+            Vector3 pos = _characterUnit.transform.position;
 
             pos.y += 1.6f;
             
-            Vector3 slashRot = _unitBase.transform.rotation.eulerAngles;
+            Vector3 slashRot = _characterUnit.transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);
             _shootItemManager.SetDamageData(DamageData,AddDamage);
@@ -69,8 +72,9 @@ public class ShooterAttack : BasicUnitSkill
         protected override void SkillEnd()
         {
             base.SkillEnd();
+            triggerCompo.OnAttackTrigger -= Shoot;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             _animationCompo.PlaySelectAnimation("IDLE");
-            
-            skillEndEvent.Invoke();
+            SkillEndEvent.Invoke();
         }
     }

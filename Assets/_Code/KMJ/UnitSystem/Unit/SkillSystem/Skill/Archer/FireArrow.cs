@@ -2,7 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
     public class FireArrow : BasicUnitSkill
@@ -13,23 +13,23 @@ using UnityEngine;
         
         private ShootItemAttackManager  _shootItemManager;
         
-        protected override void Start()
+        protected  void Start()
         {
-            base.Start();
-            SkillType = SkillType.ActiveSkill;
-            triggerCompo.OnFireArrowTrigger += MakeArrow;
-            triggerCompo.OnFireArrowEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
-            
-            _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
+            SkillEvent.AddListener(AttackAction);
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+            _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+        }
+
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += MakeArrow;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
         }
 
         protected override void OnDestroy()
         {
-            triggerCompo.OnFireArrowTrigger -= MakeArrow;
-            triggerCompo.OnFireArrowEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
         }
 
@@ -38,14 +38,16 @@ using UnityEngine;
             _target = null;
             StartCoroutine(FireArrowAction());
             _target = target;
-            skillStartEvent?.Invoke();
+            SkillStartEvent?.Invoke();
             
         }
         
         protected override void SkillEnd()
         {
             base.SkillEnd();
-            skillEndEvent?.Invoke();
+            triggerCompo.OnAttackTrigger -= MakeArrow;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
         }
         
@@ -58,7 +60,7 @@ using UnityEngine;
         
         public void MakeArrow()
         {
-            Vector3 pos = _unitBase.transform.position;
+            Vector3 pos = _characterUnit.transform.position;
 
             pos.y += 2f;
 

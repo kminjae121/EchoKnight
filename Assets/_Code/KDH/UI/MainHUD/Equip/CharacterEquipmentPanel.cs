@@ -5,7 +5,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.Items;
 using Code.UnitSystem.ArtifactSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using GondrLib.Dependencies;
 using GondrLib.ObjectPool.Runtime;
 using TMPro;

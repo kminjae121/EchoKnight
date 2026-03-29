@@ -171,7 +171,7 @@ MonoBehaviour:
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
   behaviorCompo: {fileID: 8324561617133896265}
   skillManager: {fileID: 2634193257307267230}
-  _unit: {fileID: 0}
+  unit: {fileID: 0}
 --- !u!1 &1151433537442722781
 GameObject:
   m_ObjectHideFlags: 0
@@ -426,6 +426,7 @@ GameObject:
   - component: {fileID: 6075876742358229832}
   - component: {fileID: 1222309613828550042}
   - component: {fileID: 5373079463382361699}
+  - component: {fileID: 647129778875576278}
   m_Layer: 7
   m_Name: Archer
   m_TagString: Untagged
@@ -479,6 +480,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   unitImage: {fileID: 0}
+  <SkillCompo>k__BackingField: {fileID: 7012801265034030826}
   _startTile: {fileID: 0}
 --- !u!114 &6766064933185521238
 MonoBehaviour:
@@ -583,6 +585,19 @@ MonoBehaviour:
   - {fileID: 3328839309293825585, guid: 40681ef34cf38bc43bb30e622f0a31cb, type: 3}
   - {fileID: 3328839309293825585, guid: 37d6cf34f81c9ff4ba0c95a43dd6708f, type: 3}
   atkData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
+--- !u!114 &647129778875576278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074397246875815997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ed3227b0c640c3932fbe431cb09b22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.RangeComponent
+  isMove: 0
 --- !u!1 &2261831170091435932
 GameObject:
   m_ObjectHideFlags: 0
@@ -1567,7 +1582,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7513396104360579884}
-  - component: {fileID: 1436627432719690847}
+  - component: {fileID: 7012801265034030826}
   - component: {fileID: 2634193257307267230}
   - component: {fileID: 7333213160164719334}
   - component: {fileID: 7892059421470948934}
@@ -1594,7 +1609,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2773054132212776123}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1436627432719690847
+--- !u!114 &7012801265034030826
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1603,12 +1618,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6677092735934490779}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ae9d42f1944b238682f97f832f1290, type: 3}
+  m_Script: {fileID: 11500000, guid: 02096773b10642c5be05cfc7efa26a3a, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  _skillList:
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.UnitSkillComponent
+  skillList:
   - {fileID: 11400000, guid: 9b2ffd0514d0f6b4f8a31cce69681977, type: 2}
-  - {fileID: 11400000, guid: cc8abb61a159ed94e925dbbe9ed92bbe, type: 2}
 --- !u!114 &2634193257307267230
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1633,29 +1647,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f1e26dbdf9b14ddfae3ea733ed9520c0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ShooterAttack
-  isMove: 0
-  <SkillImage>k__BackingField: {fileID: 0}
+  <SkillSO>k__BackingField: {fileID: 11400000, guid: 9b2ffd0514d0f6b4f8a31cce69681977, type: 2}
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
   <basicSkillDamage>k__BackingField: 0
-  ownSkill: 0
-  <SkillType>k__BackingField: 0
-  UseSkillPoint: 0
-  isCanUseSkill: 0
   triggerCompo: {fileID: 2965218449955992475}
   statCompo: {fileID: 1501015307250350184}
-  skillStartEvent:
+  rangeCompo: {fileID: 647129778875576278}
+  SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEvent:
+  SkillEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEndEvent:
+  SkillEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  ownCircleMesh: {fileID: 0}
-  CriticalMaterial: {fileID: 2100000, guid: c34a6f906ec24ab4d9aeccf399b523f1, type: 2}
-  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
-  <criticalSpot>k__BackingField: {fileID: 7918537313758781247}
+  isCanUseSkill: 0
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 7918537313758781247}
+  _characterUnit: {fileID: 3173451793327125779}
   atkMoveSpeed: 0
   animator: {fileID: 8657052352698793276}
   agent: {fileID: 6075876742358229832}
@@ -1671,29 +1681,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a7bf5f186b6e40f6a98429b771832613, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMove: 0
-  <SkillImage>k__BackingField: {fileID: 0}
+  <SkillSO>k__BackingField: {fileID: 11400000, guid: cc8abb61a159ed94e925dbbe9ed92bbe, type: 2}
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
   <basicSkillDamage>k__BackingField: 0
-  ownSkill: 0
-  <SkillType>k__BackingField: 1
-  UseSkillPoint: 0
-  isCanUseSkill: 0
   triggerCompo: {fileID: 2965218449955992475}
   statCompo: {fileID: 1501015307250350184}
-  skillStartEvent:
+  rangeCompo: {fileID: 647129778875576278}
+  SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEvent:
+  SkillEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEndEvent:
+  SkillEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  ownCircleMesh: {fileID: 0}
-  CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
-  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
-  <criticalSpot>k__BackingField: {fileID: 7918537313758781247}
+  isCanUseSkill: 0
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 7918537313758781247}
+  _characterUnit: {fileID: 3173451793327125779}
 --- !u!114 &2442742964246998859
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1706,29 +1712,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a62f9fe152bd4067a325a3b02ca5dae7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMove: 0
-  <SkillImage>k__BackingField: {fileID: 0}
+  <SkillSO>k__BackingField: {fileID: 11400000, guid: 9e6d2bb982fdce24195828fbf5725261, type: 2}
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
   <basicSkillDamage>k__BackingField: 0
-  ownSkill: 0
-  <SkillType>k__BackingField: 1
-  UseSkillPoint: 0
-  isCanUseSkill: 0
   triggerCompo: {fileID: 2965218449955992475}
   statCompo: {fileID: 1501015307250350184}
-  skillStartEvent:
+  rangeCompo: {fileID: 647129778875576278}
+  SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEvent:
+  SkillEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEndEvent:
+  SkillEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  ownCircleMesh: {fileID: 0}
-  CriticalMaterial: {fileID: 2100000, guid: 8ddb8975fd9d8f143bb8f91865f95bd5, type: 2}
-  basicMaterial: {fileID: 2100000, guid: c403ce49802fe714da07a0cb436117b4, type: 2}
-  <criticalSpot>k__BackingField: {fileID: 7918537313758781247}
+  isCanUseSkill: 0
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 7918537313758781247}
+  _characterUnit: {fileID: 3173451793327125779}
 --- !u!1 &6793596474031118395
 GameObject:
   m_ObjectHideFlags: 0

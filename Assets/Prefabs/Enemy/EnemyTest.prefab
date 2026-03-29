@@ -2394,33 +2394,29 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4817877739892737220}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2af12f64ded84ec3aa038eebe0a59ed0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isMove: 0
-  <SkillImage>k__BackingField: {fileID: 0}
+  <SkillSO>k__BackingField: {fileID: 11400000, guid: 13febbdf3a5be0f4492eca9203e8e1bb, type: 2}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
   <basicSkillDamage>k__BackingField: 0
-  ownSkill: 0
-  <SkillType>k__BackingField: 1
-  UseSkillPoint: 0
-  isCanUseSkill: 0
   triggerCompo: {fileID: 0}
   statCompo: {fileID: 4857703127278487287}
-  skillStartEvent:
+  rangeCompo: {fileID: 0}
+  SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEvent:
+  SkillEvent:
     m_PersistentCalls:
       m_Calls: []
-  skillEndEvent:
+  SkillEndEvent:
     m_PersistentCalls:
       m_Calls: []
-  ownCircleMesh: {fileID: 0}
-  CriticalMaterial: {fileID: 0}
-  basicMaterial: {fileID: 0}
+  isCanUseSkill: 0
+  IsActive: 0
+  _owner: {fileID: 0}
 --- !u!1 &4997435329129884886
 GameObject:
   m_ObjectHideFlags: 0
@@ -3489,6 +3485,7 @@ GameObject:
   - component: {fileID: 2550625214469592120}
   - component: {fileID: 3228297707212119237}
   - component: {fileID: 5446457073614788353}
+  - component: {fileID: 5983212269499877758}
   m_Layer: 8
   m_Name: EnemyTest
   m_TagString: Untagged
@@ -3632,6 +3629,21 @@ MonoBehaviour:
   normalText: {fileID: 11400000, guid: fc6dd7d9bb3e2cc4581c347ad34cd662, type: 2}
   criticalText: {fileID: 11400000, guid: 06b606e1c3a03674fa90dc9aa08098fc, type: 2}
   textEventChannel: {fileID: 11400000, guid: 249b09a83d3d0854e920cd46632fa8ba, type: 2}
+--- !u!114 &5983212269499877758
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6855422769672034763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1da580a3a6eb4e3e941e50ce324daa6e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.MarkComponent
+  markUI: {fileID: 8271199161321589897}
+  markText: {fileID: 7180455446240464752}
+  killUI: {fileID: 3203223115612991172}
 --- !u!1 &6905951634126871524
 GameObject:
   m_ObjectHideFlags: 0
@@ -4188,7 +4200,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2306784775025815784}
-  - component: {fileID: 5258435336335340212}
   m_Layer: 8
   m_Name: Skill Component
   m_TagString: Untagged
@@ -4212,20 +4223,6 @@ Transform:
   - {fileID: 4383671267594620022}
   m_Father: {fileID: 5211122161282092982}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5258435336335340212
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7798696631587214412}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56ae9d42f1944b238682f97f832f1290, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _skillList:
-  - {fileID: 11400000, guid: 13febbdf3a5be0f4492eca9203e8e1bb, type: 2}
 --- !u!1 &7853610035896982523
 GameObject:
   m_ObjectHideFlags: 0

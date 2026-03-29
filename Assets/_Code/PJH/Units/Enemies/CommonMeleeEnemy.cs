@@ -2,6 +2,7 @@ using System.Linq;
 using Code.Managers;
 using Code.Map;
 using Code.UnitSystem.Enemies.AI;
+using Code.Utils;
 using UnityEngine;
 
 namespace Code.UnitSystem.Enemies
@@ -49,15 +50,12 @@ namespace Code.UnitSystem.Enemies
 
             _currentTarget = _unitManager.GetPlayerUnits()
                 .Where(unit => unit != null && unit.gameObject.activeInHierarchy)
-                .OrderBy(unit => GetTileDistance(myPos, _gridMap.WorldToGridPosition(unit.transform.position)))
+                .OrderBy(unit => DistanceUtils.GetEuclideanDistance(myPos, _gridMap.WorldToGridPosition(unit.transform.position)))
                 .FirstOrDefault();
 
             SetVariableValue(BTVars.Target, _currentTarget != null ? _currentTarget.gameObject : null);
 
             return _currentTarget != null;
         }
-
-        private static float GetTileDistance(Vector2Int start, Vector2Int destination)
-            => Vector2Int.Distance(start, destination);
     }
 }

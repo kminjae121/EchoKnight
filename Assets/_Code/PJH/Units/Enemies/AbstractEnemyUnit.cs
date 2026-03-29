@@ -1,7 +1,9 @@
 using Code.Core.Debugs;
+using Code.Map;
 using Code.SkillSystem;
 using Code.UnitSystem.Enemies.AI;
 using Code.UnitSystem.UnitComponent;
+using Code.Utils;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.Events;
@@ -12,7 +14,7 @@ namespace Code.UnitSystem.Enemies
     {
         public BehaviorGraphAgent BTAgent { get; private set; }
         public PathMover PathMover { get; private set; }
-        public SkillComponent SkillCompo { get; private set; }
+        public EnemySkillComponent SkillCompo { get; private set; }
         public TurnChannel TurnChannel { get; private set; }
         public UnitAnimation UnitAnimator { get; private set; }
 
@@ -28,13 +30,12 @@ namespace Code.UnitSystem.Enemies
         {
             base.AfterInitComponents();
             PathMover = GetUnitCompo<PathMover>();
-            SkillCompo = GetUnitCompo<SkillComponent>();
+            SkillCompo = GetUnitCompo<EnemySkillComponent>();
             UnitAnimator = GetUnitCompo<UnitAnimation>();
         }
 
         protected virtual void Start()
         {
-            //SetVariableValue(BTVars.Enemy, this);
             SetVariableValue(BTVars.UnitAnimator, UnitAnimator);
 
             if (GetVariableValue(BTVars.TurnChannel, out BlackboardVariable<TurnChannel> targetChannel))
@@ -120,9 +121,33 @@ namespace Code.UnitSystem.Enemies
             };
 
             skill.SkillEndEvent?.AddListener(endListener);
+            skill.ConfigureSkillRange(skillSO);
             skill.ForceUseSkill(target);
-            UnityLogger.Log("asdasd");
-            SkillCompo.StartSkill(skillSO);
+        }
+
+        public bool CanUseSkillOnTarget(SkillSO skillSO, GameObject target)
+        {
+            if (target == null || SkillCompo?.Skills == null || SkillCompo.Skills.Count == 0)
+            {
+                UnityLogger.LogError($"[{nameof(AbstractEnemyUnit)}] {name} cannot check skill range without target or skills.");
+                return false;
+            }
+
+            if (!TryGetSkill(skillSO, out var selectedSkillSO, out _))
+                return false;
+
+            GridMap gridMap = GridMap.Instance;
+
+            if (gridMap == null)
+                return false;
+
+            Vector2Int myPos = gridMap.WorldToGridPosition(transform.position);
+            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
+
+            float distance = DistanceUtils.GetEuclideanDistance(myPos, targetPos);
+            float range = Mathf.Max(0f, selectedSkillSO.SkillRange);
+
+            return distance <= range;
         }
 
         public void SetVariableValue<T>(string variableName, T value)

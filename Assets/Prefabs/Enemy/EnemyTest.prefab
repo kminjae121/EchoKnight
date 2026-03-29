@@ -2359,7 +2359,7 @@ MonoBehaviour:
   <basicSkillDamage>k__BackingField: 1
   triggerCompo: {fileID: 2713756273135776808}
   statCompo: {fileID: 4857703127278487287}
-  rangeCompo: {fileID: 0}
+  rangeCompo: {fileID: 5799591044095117756}
   SkillStartEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3440,6 +3440,7 @@ GameObject:
   - component: {fileID: 3228297707212119237}
   - component: {fileID: 5446457073614788353}
   - component: {fileID: 5983212269499877758}
+  - component: {fileID: 5799591044095117756}
   m_Layer: 8
   m_Name: EnemyTest
   m_TagString: Untagged
@@ -3597,6 +3598,19 @@ MonoBehaviour:
   markUI: {fileID: 8271199161321589897}
   markText: {fileID: 7180455446240464752}
   killUI: {fileID: 3203223115612991172}
+--- !u!114 &5799591044095117756
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6855422769672034763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49ed3227b0c640c3932fbe431cb09b22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.RangeComponent
+  isMove: 0
 --- !u!1 &6905951634126871524
 GameObject:
   m_ObjectHideFlags: 0

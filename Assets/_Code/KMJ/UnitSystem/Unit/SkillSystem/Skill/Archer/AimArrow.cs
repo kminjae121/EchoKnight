@@ -39,7 +39,6 @@ public class AimArrow : BasicUnitSkill
     public void AttackAction(GameObject target)
     {
         StartCoroutine(FireArrowAction());
-        SkillStartEvent?.Invoke();
         _target = target;
     }
     

@@ -67,11 +67,17 @@ namespace Code.UnitSystem.Combat
             _actionData.HitByPowerAttack = attackData.isPowerAttack;
             _actionData.LastDamageData = damageData; 
 
-            _defensivePower = _entity.AddDefensivePower;
+            _defensivePower = _entity.unitSO.DefensivePower;
 
             float damage = damageData.damage;
             float CalculateDamage = damage * (_defensivePower / 100);
             damage -= CalculateDamage;
+            
+            float criticalProbilityValue =
+                Random.Range(0f, 100f);
+            
+            if(criticalProbilityValue <= _entity.unitSO.CriticalProbability)
+                damage += damage * criticalProbilityValue;  
             
             currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
 
@@ -94,7 +100,7 @@ namespace Code.UnitSystem.Combat
                unitStateCompo.TakeDamage(damage);
            }
            
-           _entity.OnHitEvent?.Invoke(); //이벤트만 발행한다.
+           _entity.OnHitEvent?.Invoke();
            
            if (currentHealth <= 0)
                _entity.OnDeathEvent?.Invoke();

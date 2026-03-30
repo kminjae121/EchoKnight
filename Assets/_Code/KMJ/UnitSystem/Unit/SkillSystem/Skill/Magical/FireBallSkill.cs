@@ -38,7 +38,6 @@ using UnityEngine;
         {
             StartCoroutine(FireBall());
             _target = target;
-            SkillStartEvent?.Invoke();
         }
         
         private IEnumerator FireBall()

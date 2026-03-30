@@ -14,6 +14,8 @@ public class BasicAttackSkill : BasicUnitSkill
     [SerializeField] private float atkMoveSpeed;
     
     [SerializeField] private float attackMoveDistance = 1.5f;
+
+    private GameObject _target;
         
     private Vector3 _ownTrm;
     
@@ -42,17 +44,15 @@ public class BasicAttackSkill : BasicUnitSkill
     public void AttackAction(GameObject target)
     {
         _ownTrm = _characterUnit.transform.position;
-        StartCoroutine(MeleeAttackAction(target)); ;
-        SkillStartEvent?.Invoke();
+        _target = null;
+        _target = target;
+        StartCoroutine(MeleeAttackAction(_targetEnemy)); ;
     }
 
     private IEnumerator MeleeAttackAction(GameObject target)
     {
-        
-        yield return new WaitForSeconds(0.3f);
-        yield return new WaitForSeconds(0.1f);
-        _targetEnemy = target;
-            
+        yield return new WaitForSeconds(0.4f);
+
         animtionCompo.PlaySelectAnimation("MOVE");
             
         while (Vector3.Distance(_characterUnit.transform.position, target.transform.position) > attackMoveDistance)
@@ -79,9 +79,8 @@ public class BasicAttackSkill : BasicUnitSkill
     
     public void TakeDamage()
     {
-        Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.3f));
-        
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_targetEnemy,AddDamage,_characterUnit,false));
+        Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.45f));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_target,AddDamage,_characterUnit,false));
     }
 
     public void AttackEnd()
@@ -104,7 +103,6 @@ public class BasicAttackSkill : BasicUnitSkill
         }
         animtionCompo.PlaySelectAnimation("IDLE");
         Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Knight, null));
-        _targetEnemy = null;
         SkillEnd();
     }
 

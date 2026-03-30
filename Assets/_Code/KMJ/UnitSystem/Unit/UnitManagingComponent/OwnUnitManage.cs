@@ -32,8 +32,6 @@ namespace Code.UnitManaging
         [SerializeField] private TurnCostGaugeManager GaugeManager;
         [SerializeField] private Button endTurnBtn;
 
-        [SerializeField] private CinemachineImpulseSource impulseSource;
-        
         [Inject] private PoolManagerMono _poolManager;
         
 
@@ -107,7 +105,7 @@ namespace Code.UnitManaging
                         basicUnit.UnitImage
                     ));
                     
-                    basicUnit.SetObject(GaugeManager, endTurnBtn,impulseSource);
+                    basicUnit.SetObject(GaugeManager, endTurnBtn);
 
                     StageManager.Instance.AddPlayerCnt();
                 }

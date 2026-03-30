@@ -65,8 +65,8 @@ public class ShooterAttack : BasicUnitSkill
             _shootItemManager.SetTarget(_target);
             _shootItemManager.SetDamageData(DamageData,AddDamage);
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);   
-
-            _characterUnit.impulseSource.GenerateImpulse(0.3f);
+            
+            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.3f));
         }
 
         protected override void SkillEnd()

@@ -32,6 +32,11 @@ namespace Code.UnitSystem.Enemies.AI
         {
             return _isAttacking ? Status.Running : Status.Success;
         }
+
+        protected override void OnEnd()
+        {
+            _isAttacking = false;
+        }
     
         private void HandleAttackEnd()
             =>_isAttacking = false;

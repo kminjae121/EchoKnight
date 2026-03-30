@@ -25,7 +25,7 @@ Transform:
   m_GameObject: {fileID: 64216413797762405}
   serializedVersion: 2
   m_LocalRotation: {x: -0.7093532, y: -0, z: -0, w: 0.7048532}
-  m_LocalPosition: {x: -0.48656, y: -1.374, z: 3.4240932}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1.5, y: 1.5, z: 1.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1428,6 +1428,36 @@ MonoBehaviour:
   unitImage: {fileID: 0}
   <SkillCompo>k__BackingField: {fileID: 5678619842417617077}
   _startTile: {fileID: 0}
+  OnTurnStartEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8758395380733786865}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 1
+        m_CallState: 2
+  OnTurnEndEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 8758395380733786865}
+        m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
+        m_MethodName: SetActive
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &5629794309468085115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3873,7 +3903,7 @@ Transform:
   m_GameObject: {fileID: 8758395380733786865}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: -0.067, z: 0}
+  m_LocalPosition: {x: 0, y: 0.234, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

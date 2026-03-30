@@ -1,6 +1,7 @@
 using System;
 using Code.Core.Debugs;
 using Code.Map;
+using Code.Utils;
 using DG.Tweening;
 using UnityEngine;
 
@@ -36,10 +37,11 @@ namespace Code.UnitSystem.Enemies
 
             Vector2Int myPos = _gridMap.WorldToGridPosition(Owner.transform.position);
             Vector2Int targetPos = _gridMap.WorldToGridPosition(target.transform.position);
+            float distance = DistanceUtils.GetEuclideanDistance(myPos, targetPos);
 
             UnityLogger.Log(
-                $"myPos : {myPos} targetPos : {targetPos}, {GetTileDistance(myPos, targetPos) <= attackTileRange}");
-            return GetTileDistance(myPos, targetPos) <= attackTileRange;
+                $"myPos : {myPos} targetPos : {targetPos}, {distance <= attackTileRange}");
+            return distance <= attackTileRange;
         }
 
         public void Attack(GameObject target)
@@ -55,8 +57,5 @@ namespace Code.UnitSystem.Enemies
             Owner.transform.DOShakePosition(0.3f, 0.4f).WaitForCompletion();
             OnAttackEnd?.Invoke();
         }
-
-        private static int GetTileDistance(Vector2Int start, Vector2Int destination)
-            => Mathf.Abs(start.x - destination.x) + Mathf.Abs(start.y - destination.y);
     }
 }

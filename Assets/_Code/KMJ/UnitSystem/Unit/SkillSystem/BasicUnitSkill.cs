@@ -22,9 +22,6 @@ namespace Code.SkillSystem
 
         private void OnEnable()
         {
-            if(_characterUnit != null)
-                impulseSource = _characterUnit.impulseSource;
-
             if (_characterUnit != null)
             {
                 _inputReader = _characterUnit.InputSO;

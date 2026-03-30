@@ -79,7 +79,7 @@ public class BasicAttackSkill : BasicUnitSkill
     
     public void TakeDamage()
     {
-        _characterUnit.impulseSource.GenerateImpulse(0.3f);
+        Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.3f));
         
         Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_targetEnemy,AddDamage,_characterUnit,false));
     }

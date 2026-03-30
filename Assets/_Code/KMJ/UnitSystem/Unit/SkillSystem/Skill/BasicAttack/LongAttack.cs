@@ -42,7 +42,6 @@ public class LongAttack : BasicUnitSkill
 
         public void AttackAction(GameObject target)
         {
-            agent.enabled = false;
             _ownTrm = transform.position;
             
             StartCoroutine(MeleeAttackAction(target));

@@ -38,7 +38,6 @@ public class ShieldSkill : BasicUnitSkill
 
     private void AddAP(GameObject obj)
     {
-        SkillStartEvent?.Invoke();
         StartCoroutine(Shield());
     }
 

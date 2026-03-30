@@ -64,7 +64,6 @@ namespace Code.SkillSystem
         protected virtual void SkillEnd()
         {
             IsActive = false;
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             _characterUnit.TurnEnd();
         }
@@ -94,7 +93,6 @@ namespace Code.SkillSystem
             
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
-            _targetEnemy = null;
            
             SkillFinished();
         }
@@ -114,7 +112,7 @@ namespace Code.SkillSystem
             if (!_characterUnit.GaugeManager.CanUseSkill(SkillSO.UsingSkillCost))
             {
                 Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
-                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                 Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                 return;
@@ -124,12 +122,12 @@ namespace Code.SkillSystem
             {
                 SkillStartEvent();
                 _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
-                _characterUnit.BehaviorCompo.ResetTile();
+                _characterUnit.MoveCompo.ResetTile();
                 SkillEvent?.Invoke(null);
             }
             else
             {
-                _characterUnit.BehaviorCompo.ResetTile();
+                _characterUnit.MoveCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
                 BooleanSkillUse(true);
@@ -170,7 +168,7 @@ namespace Code.SkillSystem
         {
             StartEvent();
             
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_characterUnit.gameObject, true,
                 new Vector3(0.1f, 0.1f, 0.1f)));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));

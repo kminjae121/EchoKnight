@@ -145,8 +145,11 @@ namespace Code.UnitSystem.Enemies
                 return false;
             }
 
-            if (!TryGetSkill(skillSO, out var selectedSkillSO, out _))
+            if (!TryGetSkill(skillSO, out var selectedSkillSO, out var selectedSkill))
                 return false;
+
+            if (selectedSkill is FrontPierceEnemyAttack pierceAttack)
+                return pierceAttack.CanHitTarget(target);
 
             GridMap gridMap = GridMap.Instance;
 
@@ -160,6 +163,75 @@ namespace Code.UnitSystem.Enemies
             float range = Mathf.Max(0f, selectedSkillSO.SkillRange);
 
             return distance <= range;
+        }
+
+        public bool TrySelectAttackSkill(GameObject target, out SkillSO selectedSkillSO)
+        {
+            selectedSkillSO = null;
+
+            if (target == null || SkillCompo?.Skills == null || SkillCompo.Skills.Count == 0)
+                return false;
+
+            SkillSO bestPierceSkill = null;
+            int bestPierceHitCount = 0;
+            SkillSO basicSkill = null;
+            SkillSO fallbackSkill = null;
+
+            foreach (var pair in SkillCompo.Skills)
+            {
+                SkillSO skillSO = pair.Key;
+                BaseSkill skill = pair.Value;
+
+                if (skillSO == null || skill == null)
+                    continue;
+
+                if (!CanUseSkillOnTarget(skillSO, target))
+                    continue;
+
+                fallbackSkill ??= skillSO;
+
+                if (skill is FrontPierceEnemyAttack pierceSkill)
+                {
+                    int hitCount = pierceSkill.GetPredictedHitCount(target);
+
+                    if (hitCount > bestPierceHitCount)
+                    {
+                        bestPierceHitCount = hitCount;
+                        bestPierceSkill = skillSO;
+                    }
+
+                    continue;
+                }
+
+                if (skillSO.SkillType == SkillType.BasicSkill)
+                    basicSkill ??= skillSO;
+            }
+
+            if (bestPierceSkill != null && bestPierceHitCount >= 2)
+            {
+                selectedSkillSO = bestPierceSkill;
+                return true;
+            }
+
+            if (basicSkill != null)
+            {
+                selectedSkillSO = basicSkill;
+                return true;
+            }
+
+            if (bestPierceSkill != null)
+            {
+                selectedSkillSO = bestPierceSkill;
+                return true;
+            }
+
+            if (fallbackSkill != null)
+            {
+                selectedSkillSO = fallbackSkill;
+                return true;
+            }
+
+            return false;
         }
 
         protected virtual bool UpdateTargetBlackboard()

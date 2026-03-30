@@ -51,12 +51,54 @@ namespace Code.SkillSystem
             if (_target == null)
                 return;
 
+            foreach (GameObject hitTarget in GetHitTargets(_target))
+                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage, null, false));
+            
+            UnityLogger.Log("관통 공격으로 데미지");
+        }
+
+        public bool CanHitTarget(GameObject target)
+        {
+            if (target == null)
+                return false;
+
+            GridMap gridMap = GridMap.Instance;
+
+            if (gridMap == null)
+                return false;
+
+            Vector2Int origin = gridMap.WorldToGridPosition(transform.position);
+            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
+            Vector2Int forwardDir = GetForwardDirection(origin, targetPos);
+
+            if (forwardDir == Vector2Int.zero)
+                return false;
+
+            for (int i = 1; i <= pierceLength; i++)
+            {
+                if (origin + (forwardDir * i) == targetPos)
+                    return true;
+            }
+
+            return false;
+        }
+
+        public int GetPredictedHitCount(GameObject target)
+            => GetHitTargets(target).Count;
+
+        private List<GameObject> GetHitTargets(GameObject target)
+        {
+            List<GameObject> hitTargets = new List<GameObject>();
+
+            if (target == null)
+                return hitTargets;
+
             GridMap gridMap = GridMap.Instance;
 
             if (gridMap == null)
             {
                 UnityLogger.LogError($"[{nameof(FrontPierceEnemyAttack)}] GridMap is missing.");
-                return;
+                return hitTargets;
             }
 
             if (_unitManager == null)
@@ -65,17 +107,17 @@ namespace Code.SkillSystem
             if (_unitManager == null)
             {
                 UnityLogger.LogError($"[{nameof(FrontPierceEnemyAttack)}] UnitManager is missing.");
-                return;
+                return hitTargets;
             }
 
             Vector2Int origin = gridMap.WorldToGridPosition(transform.position);
-            Vector2Int targetPos = gridMap.WorldToGridPosition(_target.transform.position);
+            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
             Vector2Int forwardDir = GetForwardDirection(origin, targetPos);
 
             if (forwardDir == Vector2Int.zero)
-                return;
+                return hitTargets;
 
-            HashSet<GameObject> hitTargets = new HashSet<GameObject>();
+            HashSet<GameObject> hitTargetSet = new HashSet<GameObject>();
 
             for (int i = 1; i <= pierceLength; i++)
             {
@@ -89,12 +131,14 @@ namespace Code.SkillSystem
                     if (gridMap.WorldToGridPosition(unit.transform.position) != hitPos)
                         continue;
 
-                    if (!hitTargets.Add(unit.gameObject))
+                    if (!hitTargetSet.Add(unit.gameObject))
                         continue;
 
-                    Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, unit.gameObject, AddDamage, null, false));
+                    hitTargets.Add(unit.gameObject);
                 }
             }
+
+            return hitTargets;
         }
 
         private void SkillEnd()

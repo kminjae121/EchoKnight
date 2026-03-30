@@ -23,7 +23,11 @@ namespace Code.SkillSystem
         protected override void OnDestroy()
         {
             SkillEvent.RemoveListener(AttackAction);
-            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            if (triggerCompo != null)
+            {
+                triggerCompo.OnAttackTrigger -= TakeDamage;
+                triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            }
             base.OnDestroy();
         }
 
@@ -43,6 +47,9 @@ namespace Code.SkillSystem
         {
             triggerCompo.OnAttackTrigger -= TakeDamage;
             triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            _target = null;
+            SkillFinished();
+            SkillEndEvent?.Invoke();
         }
     }
 }

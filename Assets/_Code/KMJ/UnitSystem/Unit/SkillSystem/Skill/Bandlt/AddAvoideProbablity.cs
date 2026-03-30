@@ -33,7 +33,6 @@ using UnityEngine;
 
         private void AddAP(GameObject obj)
         {
-            SkillStartEvent?.Invoke();
             StartCoroutine(AddAvoid());
         }
 

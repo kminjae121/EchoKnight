@@ -38,7 +38,6 @@ using UnityEngine;
             _target = null;
             StartCoroutine(FireArrowAction());
             _target = target;
-            SkillStartEvent?.Invoke();
             
         }
         

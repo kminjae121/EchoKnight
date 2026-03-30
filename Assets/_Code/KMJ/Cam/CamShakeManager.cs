@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Code.Cam
 {
-    public class CamShakeCompo : MonoBehaviour
+    public class CamShakeManager : MonoBehaviour
     {
         [SerializeField] private CinemachineImpulseSource source;
 
@@ -21,7 +21,8 @@ namespace Code.Cam
 
         private void ShakeCam(CamShakeEvent evt)
         {
-            source.GenerateImpulse(evt.force);  
+            if(evt.force != 0)
+                source.GenerateImpulse(evt.force);  
         }
     }
 }

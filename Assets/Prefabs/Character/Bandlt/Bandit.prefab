@@ -591,9 +591,6 @@ MonoBehaviour:
   triggerCompo: {fileID: 1924552953260626216}
   statCompo: {fileID: 3173957803825689137}
   rangeCompo: {fileID: 1424652538578945589}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -608,7 +605,7 @@ MonoBehaviour:
   atkMoveSpeed: 6
   attackMoveDistance: 1.5
   atkData: {fileID: 11400000, guid: 57b55b92fa3bd8a4087761042ebeebb3, type: 2}
-  agent: {fileID: 1364905615837076402}
+  agent: {fileID: 0}
   isRunningAttack: 1
 --- !u!114 &8752380451699132067
 MonoBehaviour:
@@ -628,9 +625,6 @@ MonoBehaviour:
   triggerCompo: {fileID: 1924552953260626216}
   statCompo: {fileID: 3173957803825689137}
   rangeCompo: {fileID: 1424652538578945589}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -660,9 +654,6 @@ MonoBehaviour:
   triggerCompo: {fileID: 1924552953260626216}
   statCompo: {fileID: 3173957803825689137}
   rangeCompo: {fileID: 1424652538578945589}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -1367,10 +1358,10 @@ GameObject:
   - component: {fileID: 5629794309468085115}
   - component: {fileID: 3966720720610224676}
   - component: {fileID: 9109243178793357433}
-  - component: {fileID: 1364905615837076402}
   - component: {fileID: 7062266341635414419}
   - component: {fileID: 7021340276383001583}
   - component: {fileID: 1424652538578945589}
+  - component: {fileID: 7519626469314416697}
   m_Layer: 7
   m_Name: Bandit
   m_TagString: Untagged
@@ -1501,28 +1492,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25af39072b7408d9c69b3f6ef864bfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!195 &1364905615837076402
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2333293328105742335}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 0.96
-  m_BaseOffset: -0.3
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!65 &7062266341635414419
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1572,6 +1541,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.RangeComponent
   isMove: 0
+--- !u!114 &7519626469314416697
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333293328105742335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdbeb9df4dd94388902413e11adc8e84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Navigation.PathAgent
+  bakedData: {fileID: 11400000, guid: af1ba32832d0427478ef0f1ba19d152a, type: 2}
+  reducePath: 0
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1712,9 +1695,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitSystem.UnitTargeting
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  behaviorCompo: {fileID: 2712662656777492302}
+  moveCompo: {fileID: 2712662656777492302}
   skillManager: {fileID: 8081901703055209266}
-  unit: {fileID: 0}
+  unit: {fileID: 2682628836158502387}
 --- !u!1 &2594130010292274367
 GameObject:
   m_ObjectHideFlags: 0
@@ -1877,6 +1860,7 @@ GameObject:
   m_Component:
   - component: {fileID: 960830923541178477}
   - component: {fileID: 2712662656777492302}
+  - component: {fileID: 3126627384926995037}
   m_Layer: 7
   m_Name: BehaveCompo
   m_TagString: Untagged
@@ -1916,7 +1900,22 @@ MonoBehaviour:
   rotationCompo: {fileID: 3966720720610224676}
   triggerCompo: {fileID: 1924552953260626216}
   <VisualPrefabs>k__BackingField: {fileID: 4161862152606468413}
-  navMeshAgent: {fileID: 1364905615837076402}
+--- !u!114 &3126627384926995037
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2769553640912309105}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f600070910c24e36b1e9829076421192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.PathMover
+  maxPathCount: 50
+  movePoint: 8
+  moveSpeed: 6
+  pointArray: []
 --- !u!1 &2786405618907007983
 GameObject:
   m_ObjectHideFlags: 0
@@ -1977,7 +1976,7 @@ Transform:
   m_GameObject: {fileID: 2829831168495099917}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.687, z: 0}
+  m_LocalPosition: {x: 0, y: 0.273, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -3903,7 +3902,7 @@ Transform:
   m_GameObject: {fileID: 8758395380733786865}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0.234, z: 0}
+  m_LocalPosition: {x: 0, y: -0.152, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -14679,7 +14678,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7155335147208632822, guid: 97c43495f80a3244fad1301dfafbe252, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7194351831689376219, guid: 97c43495f80a3244fad1301dfafbe252, type: 3}
       propertyPath: looping

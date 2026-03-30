@@ -81,6 +81,9 @@ namespace Code.UnitManaging
 
                 spawnUnit.transform.position = spawnPos;
                 
+                Debug.Log(spawnUnit.transform.position);
+                Debug.Log(spawnPos);
+                
                 spawnUnit.transform.rotation = Quaternion.identity;
                 
 

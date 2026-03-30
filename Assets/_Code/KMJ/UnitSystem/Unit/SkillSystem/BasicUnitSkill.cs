@@ -94,7 +94,6 @@ namespace Code.SkillSystem
             
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
-            _targetEnemy = null;
            
             SkillFinished();
         }
@@ -124,12 +123,12 @@ namespace Code.SkillSystem
             {
                 SkillStartEvent();
                 _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
-                _characterUnit.BehaviorCompo.ResetTile();
+                _characterUnit.MoveCompo.ResetTile();
                 SkillEvent?.Invoke(null);
             }
             else
             {
-                _characterUnit.BehaviorCompo.ResetTile();
+                _characterUnit.MoveCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
                 BooleanSkillUse(true);

@@ -37,7 +37,6 @@ using UnityEngine;
         {
             StartCoroutine(SlashFlag());
             _target = target;
-            SkillStartEvent?.Invoke();
         }
         
         private IEnumerator SlashFlag()

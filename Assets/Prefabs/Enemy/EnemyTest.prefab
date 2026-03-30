@@ -250,9 +250,6 @@ MonoBehaviour:
   triggerCompo: {fileID: 2713756273135776808}
   statCompo: {fileID: 4857703127278487287}
   rangeCompo: {fileID: 5799591044095117756}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -261,6 +258,7 @@ MonoBehaviour:
       m_Calls: []
   isCanUseSkill: 0
   IsActive: 0
+  pierceLength: 3
 --- !u!1 &540081009022969164
 GameObject:
   m_ObjectHideFlags: 0
@@ -2421,9 +2419,6 @@ MonoBehaviour:
   triggerCompo: {fileID: 2713756273135776808}
   statCompo: {fileID: 4857703127278487287}
   rangeCompo: {fileID: 5799591044095117756}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -4266,8 +4261,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.SkillSystem.EnemySkillComponent
   skillList:
-  - {fileID: 11400000, guid: a45cf72c25b0a884fbae08f59cbe47ff, type: 2}
   - {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
+  - {fileID: 11400000, guid: a45cf72c25b0a884fbae08f59cbe47ff, type: 2}
 --- !u!1 &7853610035896982523
 GameObject:
   m_ObjectHideFlags: 0

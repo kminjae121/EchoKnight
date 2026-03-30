@@ -1,4 +1,6 @@
+using System.Linq;
 using Code.Core.Debugs;
+using Code.Managers;
 using Code.Map;
 using Code.SkillSystem;
 using Code.UnitSystem.Enemies.AI;
@@ -17,6 +19,9 @@ namespace Code.UnitSystem.Enemies
         public EnemySkillComponent SkillCompo { get; private set; }
         public TurnChannel TurnChannel { get; private set; }
         public UnitAnimation UnitAnimator { get; private set; }
+        protected GridMap GridMapInstance { get; private set; }
+        protected UnitManager UnitManager { get; private set; }
+        protected Unit CurrentTarget { get; private set; }
 
         private bool _hasEndedTurn;
 
@@ -40,6 +45,10 @@ namespace Code.UnitSystem.Enemies
 
             if (GetVariableValue(BTVars.TurnChannel, out BlackboardVariable<TurnChannel> targetChannel))
                 TurnChannel = targetChannel.Value;
+
+            GridMapInstance = GridMap.Instance;
+            UnitManager = FindFirstObjectByType<UnitManager>();
+            UpdateTargetBlackboard();
         }
 
         public override void OnTurnStart()
@@ -66,7 +75,7 @@ namespace Code.UnitSystem.Enemies
         }
 
         protected virtual bool PrepareTurnStart()
-            => true;
+            => UpdateTargetBlackboard();
 
         public void OrderSkill(SkillSO skillSO, GameObject target, System.Action onComplete)
         {
@@ -148,6 +157,27 @@ namespace Code.UnitSystem.Enemies
             float range = Mathf.Max(0f, selectedSkillSO.SkillRange);
 
             return distance <= range;
+        }
+
+        protected virtual bool UpdateTargetBlackboard()
+        {
+            CurrentTarget = FindClosestPlayerTarget();
+            SetVariableValue(BTVars.Target, CurrentTarget != null ? CurrentTarget.gameObject : null);
+            return CurrentTarget != null;
+        }
+
+        protected virtual Unit FindClosestPlayerTarget()
+        {
+            if (GridMapInstance == null || UnitManager == null)
+                return null;
+
+            Vector2Int myPos = GridMapInstance.WorldToGridPosition(transform.position);
+
+            return UnitManager.GetPlayerUnits()
+                .Where(unit => unit != null && unit.gameObject.activeInHierarchy)
+                .OrderBy(unit => DistanceUtils.GetEuclideanDistance(myPos,
+                    GridMapInstance.WorldToGridPosition(unit.transform.position)))
+                .FirstOrDefault();
         }
 
         public void SetVariableValue<T>(string variableName, T value)

@@ -153,6 +153,7 @@ namespace Code.UnitSystem
                 true, new Vector3(0.1f, 0.1f, 0.1f)));
             
             GridMap.Instance.SetGridVisible(false);
+            _targetMapTile = tile;
             IsActive = false;
             _isMoving = true;
 
@@ -163,13 +164,10 @@ namespace Code.UnitSystem
 
         private void HandleMoveEnd()
         {
-
             GridMap.Instance.SetGridVisible(true);
             _isMoving = false;
             IsActive = true;
 
-            CurrentMapTile = _targetMapTile;
-            _targetMapTile.SetState(TileState.Obstacle,true);
             
             if (CurrentMapTile != null)
             {
@@ -177,6 +175,11 @@ namespace Code.UnitSystem
                 tileInfos.SetState(TileState.Obstacle,false);
                 tileInfos.SetState(TileState.Walkable,true);
             }
+            
+            CurrentMapTile = _targetMapTile;
+            
+            CurrentMapTile.SetState(TileState.Obstacle,true);
+            
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
                 false, new Vector3(0.1f, 0.1f, 0.1f)));
@@ -197,7 +200,6 @@ namespace Code.UnitSystem
             MoveStart(tileInfo);
             
             _pathMoverCompo.SetPathAndMove(CurrentMapTile.GridPos, tileInfo.GridPos);
-            _targetMapTile = tileInfo;
             moveCount++;
         }
     }

@@ -2,6 +2,7 @@ using System;
 using Code.Core.Debugs;
 using Code.Map;
 using Code.UnitSystem.UnitComponent;
+using Code.Utils;
 using Unity.Behavior;
 using Unity.Properties;
 using UnityEngine;
@@ -84,7 +85,7 @@ namespace Code.UnitSystem.Enemies.AI
             nearTile = default;
             bool found = false;
 
-            if (Mathf.Abs(sourceTile.x - targetTile.x) + Mathf.Abs(sourceTile.y - targetTile.y) == 1)
+            if (DistanceUtils.GetEuclideanDistance(sourceTile, targetTile) <= 1f)
             {
                 nearTile = sourceTile;
                 return true;
@@ -100,7 +101,7 @@ namespace Code.UnitSystem.Enemies.AI
                 if (!_gridMap.CanMoveTo(nextTile))
                     continue;
 
-                float distance = Vector2Int.Distance(sourceTile, nextTile);
+                float distance = DistanceUtils.GetEuclideanDistance(sourceTile, nextTile);
 
                 if (distance >= minDistance)
                     continue;

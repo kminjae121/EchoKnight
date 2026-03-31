@@ -4,6 +4,7 @@ using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using Code.UnitSystem.GimicSystem;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Code.UnitSystem.Combat
 {
@@ -27,8 +28,10 @@ namespace Code.UnitSystem.Combat
             {
                 if (evt.target.TryGetComponent(out IDamageable damageable))
                 {
+                    bool isCritical = CalculateCritical(ref evt);
+
                     damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
-                        evt.target.transform.position, evt.atkData, evt.Owner);
+                        evt.target.transform.position, evt.atkData, evt.Owner, isCritical);
                 }
             
                 if (evt.Owner as CharacterUnit)
@@ -37,6 +40,26 @@ namespace Code.UnitSystem.Combat
                     RogueEvent(evt);
                 }
             }   
+        }
+
+        private bool CalculateCritical(ref DamageEvent evt)
+        {
+            bool isCritical = false;
+
+            float damage = evt.DamageData.damage;
+                    
+            float criticalProbilityValue =
+                Random.Range(0f, 100f);
+
+            if (evt.Owner != null && criticalProbilityValue <= evt.Owner.unitSO.CriticalProbability)
+            {
+                isCritical = true;
+                damage = damage * evt.Owner.unitSO.CriticalDamageIncrease;
+
+                evt.DamageData.damage = (int)damage;
+            }
+
+            return isCritical;
         }
 
         private static void RogueEvent(DamageEvent evt)

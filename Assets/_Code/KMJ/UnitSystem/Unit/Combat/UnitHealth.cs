@@ -60,12 +60,12 @@ namespace Code.UnitSystem.Combat
         }
         
 
-        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer)
+        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer,bool isCritical)
         {
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
             _actionData.HitByPowerAttack = attackData.isPowerAttack;
-            _actionData.LastDamageData = damageData; 
+            _actionData.LastDamageData = damageData;
 
             _defensivePower = _entity.unitSO.DefensivePower;
 
@@ -73,17 +73,11 @@ namespace Code.UnitSystem.Combat
             float CalculateDamage = damage * (_defensivePower / 100);
             damage -= CalculateDamage;
             
-            float criticalProbilityValue =
-                Random.Range(0f, 100f);
-            
-            if(criticalProbilityValue <= _entity.unitSO.CriticalProbability)
-                damage += damage * criticalProbilityValue;  
-            
             currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
 
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
-            int typeHash = damageData.isCritical ? criticalText.nameHash : normalText.nameHash;
+            int typeHash = isCritical ? criticalText.nameHash : normalText.nameHash;
             Vector3 position = hitPoint + new Vector3(0, 1.2f);
             PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damage.ToString(), typeHash
                 , position, 0.5f);  

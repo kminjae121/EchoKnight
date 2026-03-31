@@ -62,29 +62,15 @@ namespace Code.SkillSystem
             if (Skills.Count > 0)
                 foreach (var skill in Skills.Values)
                 {
-                    if (skill.SkillSO.SkillType == SkillType.ActiveSkill)
+                    if (_statCompo != null)
                     {
-                        if (_statCompo != null)
-                        {
-                            float skillDamageValue = _statCompo.GetStat(StatInfo.SkillDamage);
-                            float floatDamage = skill.basicSkillDamage * skillDamageValue;
-                            basicDamage = (int)floatDamage;
-                        }
-                        else
-                            basicDamage = skill.basicSkillDamage;
+                        float skillDamageValue = _statCompo.GetStat(StatInfo.SkillDamage);
+                        float floatDamage = skill.BasicSkillDamage * skillDamageValue;
+                        basicDamage = (int)floatDamage;
                     }
-                    else if(skill.SkillSO.SkillType == SkillType.BasicSkill)
-                    {
-                        if (_statCompo != null)
-                        {
-                            float atkDamage = _statCompo.GetStat(StatInfo.AtkDamage);
-                            float floatDamage = atkDamage;
-                            basicDamage = (int)floatDamage;
-                        }
-                        else
-                            basicDamage = skill.basicSkillDamage;
-                    }
-                    
+                    else
+                        basicDamage = skill.BasicSkillDamage;
+                        
                     skill.InitializeSkill();
                     skill.SetDamage(basicDamage);   
                 }

@@ -12,7 +12,7 @@ namespace Code.UnitSystem.Combat
         private void Start()
         {
             Bus<DamageEvent>.Subscribe(GetApplyDamage);
-        }
+        }   
 
         private void OnDisable()
         {
@@ -23,14 +23,20 @@ namespace Code.UnitSystem.Combat
         {
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
 
-            evt.target.GetComponent<UnitHealth>().ApplyDamage(evt.DamageData, evt.target.transform.position,
-                evt.target.transform.position, evt.atkData, evt.Owner);
-            if (evt.Owner as CharacterUnit)
+            if (evt.target != null)
             {
-                KnightEvent(evt);
-
-                RogueEvent(evt);
-            }
+                if (evt.target.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
+                        evt.target.transform.position, evt.atkData, evt.Owner);
+                }
+            
+                if (evt.Owner as CharacterUnit)
+                {
+                    KnightEvent(evt);
+                    RogueEvent(evt);
+                }
+            }   
         }
 
         private static void RogueEvent(DamageEvent evt)
@@ -47,9 +53,7 @@ namespace Code.UnitSystem.Combat
             }
 
             if ((evt.Owner.unitSO.UnitType == UnitType.Bandlt && evt.addDamage != 0) || unit.IsConfirmationSkill)
-            {
                 Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target,GimicOption.TargetGimic));
-            }
         }
 
         private static void KnightEvent(DamageEvent evt)

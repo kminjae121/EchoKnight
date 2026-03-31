@@ -532,6 +532,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2810820762658562236}
   - component: {fileID: 1305109529308842748}
+  - component: {fileID: 1138369471046449206}
   m_Layer: 7
   m_Name: BehaveCompo
   m_TagString: Untagged
@@ -571,7 +572,22 @@ MonoBehaviour:
   rotationCompo: {fileID: 6429403500470982661}
   triggerCompo: {fileID: 2009707462312594463}
   <VisualPrefabs>k__BackingField: {fileID: 7453269926037496367}
-  navMeshAgent: {fileID: 8882597909042103306}
+--- !u!114 &1138369471046449206
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 727516773310955813}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f600070910c24e36b1e9829076421192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.PathMover
+  maxPathCount: 50
+  movePoint: 8
+  moveSpeed: 6
+  pointArray: []
 --- !u!1 &855993353581411186
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273,9 +1289,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitSystem.UnitTargeting
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  behaviorCompo: {fileID: 1305109529308842748}
+  moveCompo: {fileID: 1305109529308842748}
   skillManager: {fileID: 6242146832756852556}
-  unit: {fileID: 0}
+  unit: {fileID: 2682628836158502387}
 --- !u!1 &2291589197434564255
 GameObject:
   m_ObjectHideFlags: 0
@@ -1492,9 +1508,9 @@ GameObject:
   - component: {fileID: 5629794309468085115}
   - component: {fileID: 6429403500470982661}
   - component: {fileID: 6613513605220735348}
-  - component: {fileID: 8882597909042103306}
   - component: {fileID: 4754169522647606861}
   - component: {fileID: 6592657090282267379}
+  - component: {fileID: 4391231841659948945}
   m_Layer: 7
   m_Name: Knight
   m_TagString: Untagged
@@ -1625,28 +1641,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25af39072b7408d9c69b3f6ef864bfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!195 &8882597909042103306
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2333293328105742335}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.5
-  m_Speed: 3.5
-  m_Acceleration: 8
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 0.6
-  m_BaseOffset: -0.3
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!65 &4754169522647606861
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1681,6 +1675,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.RangeComponent
   isMove: 0
+--- !u!114 &4391231841659948945
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2333293328105742335}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdbeb9df4dd94388902413e11adc8e84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Navigation.PathAgent
+  bakedData: {fileID: 11400000, guid: af1ba32832d0427478ef0f1ba19d152a, type: 2}
+  reducePath: 0
 --- !u!1 &2343179446556584762
 GameObject:
   m_ObjectHideFlags: 0
@@ -3628,7 +3636,7 @@ MonoBehaviour:
   atkMoveSpeed: 6
   attackMoveDistance: 1.5
   atkData: {fileID: 11400000, guid: b6f7f282f7c847f42a11ebd4685a3ff9, type: 2}
-  agent: {fileID: 8882597909042103306}
+  agent: {fileID: 0}
   isRunningAttack: 1
 --- !u!114 &916718369853948393
 MonoBehaviour:

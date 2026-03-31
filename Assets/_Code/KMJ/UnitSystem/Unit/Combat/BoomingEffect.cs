@@ -48,7 +48,7 @@ namespace Code.UnitSystem
         {
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
             {
-                Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.3f));
+                Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.5f));
                 
                 Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null,false));
                 

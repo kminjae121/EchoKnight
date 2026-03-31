@@ -1,4 +1,6 @@
+using System.Linq;
 using Code.Core.Debugs;
+using Code.Managers;
 using Code.Map;
 using Code.SkillSystem;
 using Code.UnitSystem.Enemies.AI;
@@ -17,6 +19,10 @@ namespace Code.UnitSystem.Enemies
         public EnemySkillComponent SkillCompo { get; private set; }
         public TurnChannel TurnChannel { get; private set; }
         public UnitAnimation UnitAnimator { get; private set; }
+        public UnitRotation UnitRotationCompo { get; private set; }
+        protected GridMap GridMapInstance { get; private set; }
+        protected UnitManager UnitManager { get; private set; }
+        protected Unit CurrentTarget { get; private set; }
 
         private bool _hasEndedTurn;
 
@@ -32,6 +38,7 @@ namespace Code.UnitSystem.Enemies
             PathMover = GetUnitCompo<PathMover>();
             SkillCompo = GetUnitCompo<EnemySkillComponent>();
             UnitAnimator = GetUnitCompo<UnitAnimation>();
+            UnitRotationCompo = GetUnitCompo<UnitRotation>();
         }
 
         protected virtual void Start()
@@ -40,6 +47,10 @@ namespace Code.UnitSystem.Enemies
 
             if (GetVariableValue(BTVars.TurnChannel, out BlackboardVariable<TurnChannel> targetChannel))
                 TurnChannel = targetChannel.Value;
+
+            GridMapInstance = GridMap.Instance;
+            UnitManager = FindFirstObjectByType<UnitManager>();
+            UpdateTargetBlackboard();
         }
 
         public override void OnTurnStart()
@@ -66,7 +77,7 @@ namespace Code.UnitSystem.Enemies
         }
 
         protected virtual bool PrepareTurnStart()
-            => true;
+            => UpdateTargetBlackboard();
 
         public void OrderSkill(SkillSO skillSO, GameObject target, System.Action onComplete)
         {
@@ -121,6 +132,7 @@ namespace Code.UnitSystem.Enemies
             };
 
             skill.SkillEndEvent?.AddListener(endListener);
+            skill.RotationCompo = UnitRotationCompo;
             skill.ConfigureSkillRange(skillSO);
             skill.ForceUseSkill(target);
         }
@@ -133,8 +145,11 @@ namespace Code.UnitSystem.Enemies
                 return false;
             }
 
-            if (!TryGetSkill(skillSO, out var selectedSkillSO, out _))
+            if (!TryGetSkill(skillSO, out var selectedSkillSO, out var selectedSkill))
                 return false;
+
+            if (selectedSkill is FrontPierceEnemyAttack pierceAttack)
+                return pierceAttack.CanHitTarget(target);
 
             GridMap gridMap = GridMap.Instance;
 
@@ -148,6 +163,96 @@ namespace Code.UnitSystem.Enemies
             float range = Mathf.Max(0f, selectedSkillSO.SkillRange);
 
             return distance <= range;
+        }
+
+        public bool TrySelectAttackSkill(GameObject target, out SkillSO selectedSkillSO)
+        {
+            selectedSkillSO = null;
+
+            if (target == null || SkillCompo?.Skills == null || SkillCompo.Skills.Count == 0)
+                return false;
+
+            SkillSO bestPierceSkill = null;
+            int bestPierceHitCount = 0;
+            SkillSO basicSkill = null;
+            SkillSO fallbackSkill = null;
+
+            foreach (var pair in SkillCompo.Skills)
+            {
+                SkillSO skillSO = pair.Key;
+                BaseSkill skill = pair.Value;
+
+                if (skillSO == null || skill == null)
+                    continue;
+
+                if (!CanUseSkillOnTarget(skillSO, target))
+                    continue;
+
+                fallbackSkill ??= skillSO;
+
+                if (skill is FrontPierceEnemyAttack pierceSkill)
+                {
+                    int hitCount = pierceSkill.GetPredictedHitCount(target);
+
+                    if (hitCount > bestPierceHitCount)
+                    {
+                        bestPierceHitCount = hitCount;
+                        bestPierceSkill = skillSO;
+                    }
+
+                    continue;
+                }
+
+                if (skillSO.SkillType == SkillType.BasicSkill)
+                    basicSkill ??= skillSO;
+            }
+
+            if (bestPierceSkill != null && bestPierceHitCount >= 2)
+            {
+                selectedSkillSO = bestPierceSkill;
+                return true;
+            }
+
+            if (basicSkill != null)
+            {
+                selectedSkillSO = basicSkill;
+                return true;
+            }
+
+            if (bestPierceSkill != null)
+            {
+                selectedSkillSO = bestPierceSkill;
+                return true;
+            }
+
+            if (fallbackSkill != null)
+            {
+                selectedSkillSO = fallbackSkill;
+                return true;
+            }
+
+            return false;
+        }
+
+        protected virtual bool UpdateTargetBlackboard()
+        {
+            CurrentTarget = FindClosestPlayerTarget();
+            SetVariableValue(BTVars.Target, CurrentTarget != null ? CurrentTarget.gameObject : null);
+            return CurrentTarget != null;
+        }
+
+        protected virtual Unit FindClosestPlayerTarget()
+        {
+            if (GridMapInstance == null || UnitManager == null)
+                return null;
+
+            Vector2Int myPos = GridMapInstance.WorldToGridPosition(transform.position);
+
+            return UnitManager.GetPlayerUnits()
+                .Where(unit => unit != null && unit.gameObject.activeInHierarchy)
+                .OrderBy(unit => DistanceUtils.GetEuclideanDistance(myPos,
+                    GridMapInstance.WorldToGridPosition(unit.transform.position)))
+                .FirstOrDefault();
         }
 
         public void SetVariableValue<T>(string variableName, T value)

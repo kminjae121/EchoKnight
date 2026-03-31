@@ -35,7 +35,6 @@ public class HealSkill : BasicUnitSkill
         
         public void HealAction(GameObject target)
         {
-            SkillStartEvent?.Invoke();
             StartCoroutine(FireBall());
         }
         

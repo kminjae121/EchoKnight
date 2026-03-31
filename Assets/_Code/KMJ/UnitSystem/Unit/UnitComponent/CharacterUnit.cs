@@ -21,7 +21,7 @@ namespace Code.UnitSystem
 
         #region UnitCompo
 
-        public UnitBehaviorCompo BehaviorCompo { get; private set; }
+        public UnitMoveCompo MoveCompo { get; private set; }
         [field:SerializeField] public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
@@ -46,7 +46,7 @@ namespace Code.UnitSystem
         private void Start()
         {
             TriggerCompo = GetUnitCompo<UnitAnimationTrigger>();
-            BehaviorCompo = GetUnitCompo<UnitBehaviorCompo>();
+            MoveCompo = GetUnitCompo<UnitMoveCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
             
@@ -55,7 +55,7 @@ namespace Code.UnitSystem
             if (TriggerCompo != null)
                 TriggerCompo.OnDeadEvent += HandleDieAnimationEnd;
 
-            BehaviorCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
+            MoveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
             
             if(_startTile != null)
                 transform.position = _startTile.transform.position;
@@ -81,7 +81,7 @@ namespace Code.UnitSystem
         {
             base.OnTurnStart();
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             
             GaugeManager.AddSkillPoint(30);
@@ -91,10 +91,10 @@ namespace Code.UnitSystem
             if (endTurnBtn != null)
                 endTurnBtn.onClick.AddListener(TurnEnd);
 
-            if (BehaviorCompo != null)
+            if (MoveCompo != null)
             {
-                BehaviorCompo.FindObjectInRange();
-                BehaviorCompo.moveCount = 0;
+                MoveCompo.FindObjectInRange();
+                MoveCompo.moveCount = 0;
             }
             
             OnTurnStartEvent?.Invoke();

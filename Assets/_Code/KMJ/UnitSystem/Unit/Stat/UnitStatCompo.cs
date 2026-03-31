@@ -11,6 +11,8 @@ namespace Code.UnitSystem
         SkillDamage,
         DefensivePower,
         AvoidProbability,
+        CriticalProbability,
+        CriticalIncreaseValue,
     }
     public class UnitStatCompo : MonoBehaviour, IUnitComponent
     {
@@ -27,6 +29,10 @@ namespace Code.UnitSystem
         private float DefensivePower => unitSO.DefensivePower;
         
         private float AvoidProbability => unitSO.AvoidProbability;
+
+        private float CriticalProbability => unitSO.CriticalProbability;
+
+        private float CriticalIncreaseValue => unitSO.CriticalDamageIncrease;
 
         public void Initialize(Unit owner)
         {
@@ -57,6 +63,12 @@ namespace Code.UnitSystem
                     break;
                 case StatInfo.AvoidProbability:
                     value = AvoidProbability;
+                    break;
+                case  StatInfo.CriticalProbability:
+                    value = CriticalProbability;
+                    break;
+                case StatInfo.CriticalIncreaseValue:
+                    value = CriticalIncreaseValue;
                     break;
             }
             

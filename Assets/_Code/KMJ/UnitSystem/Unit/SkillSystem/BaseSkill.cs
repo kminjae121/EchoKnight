@@ -20,7 +20,7 @@ namespace Code.SkillSystem
         [Header("Base Settings")] 
         [field: SerializeField] public SkillSO SkillSO { get; private set; }
         [SerializeField] protected AttackDataSO attackData;
-        [field: SerializeField] public float basicSkillDamage { get; private set; }
+        public float BasicSkillDamage => SkillSO.SkillDamage;
         
         public float AddDamage { get; private set; } = 0;
         public float Damage { get; set; }
@@ -36,7 +36,6 @@ namespace Code.SkillSystem
         
         
         [Header("Skill Event")] 
-        public UnityEvent SkillStartEvent;
         public UnityEvent<GameObject> SkillEvent;
         public UnityEvent SkillEndEvent;
 
@@ -87,8 +86,8 @@ namespace Code.SkillSystem
 
 
         protected virtual void StartEvent()
-
         {
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         }
 
 

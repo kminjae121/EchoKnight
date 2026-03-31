@@ -9,7 +9,7 @@ namespace Code.UnitSystem.Combat
     public class CharacterUnitTargeting : MonoBehaviour, IUnitComponent
     {
         [SerializeField] private InputReader inputSO;
-        [SerializeField] private UnitBehaviorCompo behaviorCompo;
+        [SerializeField] private UnitMoveCompo moveCompo;
         [SerializeField] private SkillManageComponent skillManager;
 
         private GameObject _targetEnemy;
@@ -45,7 +45,7 @@ namespace Code.UnitSystem.Combat
         {
             GameObject enemy = inputSO.GetEnemy();
 
-            if (behaviorCompo.VisualPrefabs.activeInHierarchy
+            if (moveCompo.VisualPrefabs.activeInHierarchy
                 || enemy == null && _targetEnemy != null)
                 ClearTarget();
             else if (enemy != null)
@@ -67,7 +67,6 @@ namespace Code.UnitSystem.Combat
 
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false,
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage, true));
-                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
 
                     _targetingCompo = null;
                     skillManager.GetSkillInfo().SetEnemyTargeting(null);

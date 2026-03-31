@@ -200,9 +200,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UnitSystem.UnitTargeting
   inputSO: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
-  behaviorCompo: {fileID: 8324561617133896265}
+  moveCompo: {fileID: 8324561617133896265}
   skillManager: {fileID: 2634193257307267230}
-  unit: {fileID: 0}
+  unit: {fileID: 3173451793327125779}
 --- !u!1 &913457192953124081
 GameObject:
   m_ObjectHideFlags: 0
@@ -550,10 +550,10 @@ GameObject:
   - component: {fileID: 6766064933185521238}
   - component: {fileID: 1970335402761181577}
   - component: {fileID: 8917779060496862038}
-  - component: {fileID: 6075876742358229832}
   - component: {fileID: 1222309613828550042}
   - component: {fileID: 5373079463382361699}
   - component: {fileID: 647129778875576278}
+  - component: {fileID: 255262588629856658}
   m_Layer: 7
   m_Name: Archer
   m_TagString: Untagged
@@ -570,7 +570,7 @@ Transform:
   m_GameObject: {fileID: 2074397246875815997}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 5.992}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -682,28 +682,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b25af39072b7408d9c69b3f6ef864bfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!195 &6075876742358229832
-NavMeshAgent:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2074397246875815997}
-  m_Enabled: 1
-  m_AgentTypeID: 0
-  m_Radius: 0.3
-  m_Speed: 4
-  m_Acceleration: 50
-  avoidancePriority: 50
-  m_AngularSpeed: 120
-  m_StoppingDistance: 0
-  m_AutoTraverseOffMeshLink: 1
-  m_AutoBraking: 0
-  m_AutoRepath: 1
-  m_Height: 0.64
-  m_BaseOffset: -0.2
-  m_WalkableMask: 4294967295
-  m_ObstacleAvoidanceType: 4
 --- !u!65 &1222309613828550042
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -755,6 +733,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.RangeComponent
   isMove: 0
+--- !u!114 &255262588629856658
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2074397246875815997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdbeb9df4dd94388902413e11adc8e84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.Navigation.PathAgent
+  bakedData: {fileID: 11400000, guid: af1ba32832d0427478ef0f1ba19d152a, type: 2}
+  reducePath: 0
 --- !u!1 &2168969579808550699
 GameObject:
   m_ObjectHideFlags: 0
@@ -20685,13 +20677,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ShooterAttack
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 9b2ffd0514d0f6b4f8a31cce69681977, type: 2}
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
-  <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 2965218449955992475}
   statCompo: {fileID: 1501015307250350184}
   rangeCompo: {fileID: 647129778875576278}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -20704,7 +20692,7 @@ MonoBehaviour:
   _characterUnit: {fileID: 3173451793327125779}
   atkMoveSpeed: 0
   animator: {fileID: 8657052352698793276}
-  agent: {fileID: 6075876742358229832}
+  agent: {fileID: 0}
 --- !u!114 &7892059421470948934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20719,13 +20707,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <SkillSO>k__BackingField: {fileID: 11400000, guid: cc8abb61a159ed94e925dbbe9ed92bbe, type: 2}
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
-  <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 2965218449955992475}
   statCompo: {fileID: 1501015307250350184}
   rangeCompo: {fileID: 647129778875576278}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -20750,13 +20734,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 9e6d2bb982fdce24195828fbf5725261, type: 2}
   attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
-  <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 2965218449955992475}
   statCompo: {fileID: 1501015307250350184}
   rangeCompo: {fileID: 647129778875576278}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -21077,6 +21057,7 @@ GameObject:
   m_Component:
   - component: {fileID: 77579645504495796}
   - component: {fileID: 8324561617133896265}
+  - component: {fileID: 8857494282733115528}
   m_Layer: 7
   m_Name: Behavior
   m_TagString: Untagged
@@ -21116,7 +21097,22 @@ MonoBehaviour:
   rotationCompo: {fileID: 1970335402761181577}
   triggerCompo: {fileID: 2965218449955992475}
   <VisualPrefabs>k__BackingField: {fileID: 7778028018116508132}
-  navMeshAgent: {fileID: 6075876742358229832}
+--- !u!114 &8857494282733115528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7488819803652951065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f600070910c24e36b1e9829076421192, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.PathMover
+  maxPathCount: 50
+  movePoint: 8
+  moveSpeed: 6
+  pointArray: []
 --- !u!1 &7561882472613966106
 GameObject:
   m_ObjectHideFlags: 0

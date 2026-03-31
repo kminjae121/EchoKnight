@@ -40,7 +40,7 @@ namespace Code.SkillSystem
 
         private void TakeDamage()
         {
-            UnityLogger.Log("적이 데미지를 주었습니다.");
+            UnityLogger.Log("일반 공격으로 데미지");
             Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage, null, false));
         }
 

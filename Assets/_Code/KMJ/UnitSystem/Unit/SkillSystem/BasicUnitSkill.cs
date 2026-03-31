@@ -64,6 +64,7 @@ namespace Code.SkillSystem
         protected virtual void SkillEnd()
         {
             IsActive = false;
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             _characterUnit.TurnEnd();
         }
@@ -89,7 +90,8 @@ namespace Code.SkillSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_characterUnit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
             Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
                 null,true));
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+            
+            StartEvent();
             
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
@@ -166,9 +168,6 @@ namespace Code.SkillSystem
 
         private void SkillStartEvent()
         {
-            StartEvent();
-            
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_characterUnit.gameObject, true,
                 new Vector3(0.1f, 0.1f, 0.1f)));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));

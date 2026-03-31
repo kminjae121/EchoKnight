@@ -67,7 +67,6 @@ namespace Code.UnitSystem.Combat
 
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false,
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage, true));
-                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
 
                     _targetingCompo = null;
                     skillManager.GetSkillInfo().SetEnemyTargeting(null);

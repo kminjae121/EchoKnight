@@ -86,8 +86,8 @@ namespace Code.SkillSystem
 
 
         protected virtual void StartEvent()
-
         {
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         }
 
 

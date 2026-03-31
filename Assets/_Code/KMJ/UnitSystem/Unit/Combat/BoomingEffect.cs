@@ -9,8 +9,6 @@ namespace Code.UnitSystem
 {
     public class BoomingEffect : MonoBehaviour
     {
-        private CinemachineImpulseSource impulseSource;
-        
         private Collider _collider;
         
         [SerializeField] private LayerMask _whatIsEnemy;
@@ -26,7 +24,6 @@ namespace Code.UnitSystem
             _collider = GetComponent<Collider>();
             _collider.enabled = false;
             _damageData.damage = 4;
-            impulseSource = GameObject.Find("ImpulseSource").GetComponent<CinemachineImpulseSource>();
         }
 
         private void OnEnable()
@@ -51,9 +48,9 @@ namespace Code.UnitSystem
         {
             if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
             {
-                impulseSource.GenerateImpulse(0.3f);
+                Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.5f));
                 
-                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null));
+                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null,false));
                 
                 _collider.enabled = false;
                 gameObject.SetActive(false);

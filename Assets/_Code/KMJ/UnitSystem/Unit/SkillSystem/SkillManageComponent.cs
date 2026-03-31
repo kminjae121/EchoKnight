@@ -1,13 +1,14 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class SkillManageComponent : MonoBehaviour
     {
         private BasicUnitSkill usingSkill;
 
-        private void Awake()
+        private void OnEnable()
         {
             Bus<SendSkillEvent>.Subscribe(SetSkillSO);
         }

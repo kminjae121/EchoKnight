@@ -4,7 +4,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
@@ -78,7 +78,6 @@ namespace EnemySystem
         {
             if (_ai != null) _ai.SetTurnState(false);
             base.OnTurnEnd();
-            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
             
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, 
                 false,new Vector3(0.1f,0.1f,0.1f)));
@@ -133,13 +132,13 @@ namespace EnemySystem
 
             BaseSkill skillToUse = null;
 
-            if (!string.IsNullOrEmpty(skillso.skillName) && _skillCompo.skills.ContainsKey(skillso))
+            if (!string.IsNullOrEmpty(skillso.skillName) && _skillCompo.Skills.ContainsKey(skillso))
             {
-                skillToUse = _skillCompo.skills[skillso];
+                skillToUse = _skillCompo.Skills[skillso];
             }
-            else if (_skillCompo.skills.Count > 0)
+            else if (_skillCompo.Skills.Count > 0)
             {
-                var enumerator = _skillCompo.skills.Values.GetEnumerator();
+                var enumerator = _skillCompo.Skills.Values.GetEnumerator();
                 if (enumerator.MoveNext()) 
                 {
                     skillToUse = enumerator.Current;
@@ -166,8 +165,8 @@ namespace EnemySystem
                 isSkillEnded = true;
             };
             
-            if (skill.skillEndEvent != null)
-                skill.skillEndEvent.AddListener(endListener);
+            if (skill.SkillEndEvent != null)
+                skill.SkillEndEvent.AddListener(endListener);
             
             skill.ForceUseSkill(target);
 
@@ -185,8 +184,8 @@ namespace EnemySystem
                 Debug.LogWarning($"[EnemyUnit] {name} 스킬 타임아웃.");
             }
 
-            if (skill.skillEndEvent != null)
-                skill.skillEndEvent.RemoveListener(endListener);
+            if (skill.SkillEndEvent != null)
+                skill.SkillEndEvent.RemoveListener(endListener);
             
             OnIdleRequested();
             onComplete?.Invoke();

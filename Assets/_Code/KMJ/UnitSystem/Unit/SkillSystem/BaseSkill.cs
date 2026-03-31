@@ -1,128 +1,135 @@
 ﻿using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
+using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public enum SkillType
     {
         BasicSkill,
         ActiveSkill,
     }
-    public abstract class BaseSkill : RangeComponent
+
+    public abstract class BaseSkill : MonoBehaviour
     {
-        [Header("Base Settings")]
-        [field: SerializeField] public Sprite SkillImage { get; set; }
+        [Header("Base Settings")] 
+        [field: SerializeField] public SkillSO SkillSO { get; private set; }
         [SerializeField] protected AttackDataSO attackData;
-        [field: SerializeField] public float basicSkillDamage { get; private set; }
-        [SerializeField] protected bool ownSkill = false;
-
-        [field: SerializeField] public SkillType SkillType { get; protected set; } = SkillType.ActiveSkill;
+        public float BasicSkillDamage => SkillSO.SkillDamage;
         
-        public DamageData DamageData;
-        public int UseSkillPoint;
-        public bool isCanUseSkill = false;
-
         public float AddDamage { get; private set; } = 0;
-        public UnitRotation rotationCompo { get; set; }
-        public float damage { get; set; }
+        public float Damage { get; set; }
         protected int SkillRange { get; private set; }
-        
-        
-        protected Unit _unitBase; 
-        protected GameObject _targetEnemy = null;
 
-        [Header("Unit Component")]
+
+        [Header("Unit Component")] 
         protected SkillComponent _skillCompo;
         [SerializeField] protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
+        [SerializeField] protected RangeComponent rangeCompo;
+        public UnitRotation RotationCompo { get; set; }
+        
+        
+        [Header("Skill Event")] 
+        public UnityEvent<GameObject> SkillEvent;
+        public UnityEvent SkillEndEvent;
 
-        [Header("Skill Event")]
-        public UnityEvent skillStartEvent;
-        public UnityEvent<GameObject> skillEvent;
-        public UnityEvent skillEndEvent;
 
-        [Header("Camera & Effects")]
-        protected CinemachineImpulseSource impulseSource;
+        [Header("Camera & Effects")] 
+        public DamageData DamageData;
 
-        [Header("Materials & Mesh")]
-        [SerializeField] protected MeshRenderer ownCircleMesh;
-        [SerializeField] protected Material CriticalMaterial;
-        [SerializeField] protected Material basicMaterial;
+        protected GameObject _targetEnemy = null;
+        public bool isCanUseSkill = false;
 
-        protected override void Awake()
-        {
-            _unitBase = _owner;
-            base.Awake();
-        }
-
+        public bool IsActive = false;
+        
         public virtual void InitializeSkill()
+
         {
-            skillEndEvent.AddListener(CanUseSkillTrue);
-            skillEvent.AddListener(StartSkill);
+            SkillEndEvent.AddListener(CanUseSkillTrue);
+
+            SkillEvent.AddListener(StartSkill);
         }
+
 
         public void ConfigureSkillRange(SkillSO skillData)
         {
             SkillRange = skillData == null ? 0 : Mathf.Max(0, Mathf.RoundToInt(skillData.SkillRange));
         }
-        
-        
-        public virtual void OnDisable()
+
+
+        protected virtual void OnDestroy()
         {
-            skillEndEvent.RemoveListener(CanUseSkillTrue);
+            SkillEndEvent.RemoveListener(CanUseSkillTrue);
         }
-        
+
+
         public void SetDamage(float damage)
         {
             DamageData.damage = damage += AddDamage;
         }
 
+
         private void StartSkill(GameObject arg0)
         {
         }
+
         public void SetAddDamage(float addDamage)
         {
             AddDamage = addDamage;
         }
-        
-        protected virtual void CanUseSkillTrue()
+
+
+        protected virtual void StartEvent()
+        {
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+        }
+
+
+        protected virtual void RemoveEvent()
+
         {
         }
-        
+
+
+        protected virtual void CanUseSkillTrue()
+
+        {
+        }
+
+
         public virtual void ShowSkillRange()
         {
+            IsActive = true;
         }
-        
+
 
         public virtual void CheckCanAttack()
         {
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
 
-            FindObjectInRange();
+            rangeCompo.FindObjectInRange();
         }
-        
-        
 
-        public virtual void skillEnd()
+
+        public virtual void SkillFinished()
         {
-            BlockThisSkill();
-            ResetTile();    
+            BooleanSkillUse(false);
+
+            rangeCompo.ResetTile();
         }
+
 
         public virtual void AttackEnemy()
         {
         }
 
-        public void TurnEnd()
-        {
-            BlockThisSkill();
-        }
 
         public virtual void UseSkill()
         {
@@ -132,56 +139,36 @@ namespace Code.UnitSystem.SkillSystem
             AttackEnemy();
         }
 
-        public void CanUseThisSkill()
+
+        public void BooleanSkillUse(bool isSkill)
         {
-            isCanUseSkill = true;
+            isCanUseSkill = isSkill;
         }
 
-        public void BlockThisSkill()
-        {
-            isCanUseSkill = false;
-        }
-        
+
         public virtual void ForceUseSkill(GameObject target)
         {
             if (target == null) return;
 
+
             _targetEnemy = target;
+
             isCanUseSkill = true;
 
-            if (rotationCompo != null)
-                rotationCompo.SetDir(target.transform.position);
 
-            skillEvent?.Invoke(_targetEnemy);
+            if (RotationCompo != null)
+
+                RotationCompo.SetDir(target.transform.position);
+
+
+            StartEvent();
+
+            SkillEvent?.Invoke(_targetEnemy);
         }
 
-        protected override int GetRange()
+
+        protected int GetRange()
             => SkillRange;
-
-        protected override void CalculateRange()
-        {
-            _tilesInRange.Clear();
-
-            Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
-            int range = GetRange();
-
-            for (int x = -range; x <= range; x++)
-            {
-                int remain = range - Mathf.Abs(x);
-
-                for (int y = -remain; y <= remain; y++)
-                {
-                    if (x == 0 && y == 0)
-                        continue;
-
-                    Vector2Int position = start + new Vector2Int(x, y);
-                    IMapTile tile = GridMap.Instance.GetTile(position);
-
-                    if (tile != null)
-                        _tilesInRange.Add(tile);
-                }
-            }
-
-        }
+        
     }
 }

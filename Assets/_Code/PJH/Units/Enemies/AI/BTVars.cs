@@ -2,9 +2,12 @@
 {
     public static class BTVars
     {
-        public static string TargetGameObject = "TargetGameObject";
-        public static string AIType = "AIType";
-        public static string Enemy = "Enemy";
-        public static string TurnChannel = "TurnChannel";
+        public const string Target = "Target";
+        public const string AIType = "AIType";
+        public const string Enemy = "Enemy";
+        public const string TurnChannel = "TurnChannel";
+        public const string AnimationChannel = "AnimationChannel";
+        public const string NextAnimation = "NextAnimation";
+        public const string UnitAnimator = "UnitAnimator";
     }
 }

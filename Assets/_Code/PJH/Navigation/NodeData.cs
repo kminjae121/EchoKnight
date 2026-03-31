@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -8,7 +8,7 @@ namespace Code.Navigation
     public class NodeData
     {
         public Vector3 worldPos;
-        public readonly Vector3Int cellPos;
+        public Vector3Int cellPos;
         public List<LinkData> neighbors;
 
         public NodeData(Vector3 worldPos, Vector3Int cellPos)
@@ -16,6 +16,11 @@ namespace Code.Navigation
             this.worldPos = worldPos;
             this.cellPos = cellPos;
             neighbors = new List<LinkData>();
+        }
+
+        public void SetCellPos(Vector3Int newCellPos)
+        {
+            cellPos = newCellPos;
         }
 
         public void AddNeighbor(NodeData neighborNode)

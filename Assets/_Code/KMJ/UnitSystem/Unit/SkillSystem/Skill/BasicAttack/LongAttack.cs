@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -21,26 +21,27 @@ public class LongAttack : BasicUnitSkill
         
         private Vector3 _ownTrm;
 
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
-            triggerCompo.OnLongRangeAttackTrigger += ShootLongRangeAttack;
-            triggerCompo.OnLongRangeAttackEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
-            _animationCompo = _unitBase.GetUnitCompo<UnitAnimation>();
+            SkillEvent.AddListener(AttackAction);
+            _animationCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+        }
+
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += ShootLongRangeAttack;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            triggerCompo.OnLongRangeAttackTrigger -= ShootLongRangeAttack;
-            triggerCompo.OnLongRangeAttackEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
         }
 
         public void AttackAction(GameObject target)
         {
-            agent.enabled = false;
             _ownTrm = transform.position;
             
             StartCoroutine(MeleeAttackAction(target));
@@ -70,8 +71,9 @@ public class LongAttack : BasicUnitSkill
         protected override void SkillEnd()
         {
             base.SkillEnd();
+            triggerCompo.OnAttackTrigger -= ShootLongRangeAttack;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             _animationCompo.PlaySelectAnimation("IDLE");
-            _characterUnit.BehaveCompo.IsActive = true;
-            skillEndEvent?.Invoke();
+            SkillEndEvent?.Invoke();
         }
     }

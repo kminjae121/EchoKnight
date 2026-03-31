@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Generic;
+using Code.Map;
 using UnityEngine;
 
 namespace Code.Navigation
@@ -12,13 +12,24 @@ namespace Code.Navigation
 
         private void OnEnable()
         {
-            //Initialize();
+            Initialize();
         }
         
         public void Initialize()
         {
-            if (_pointDict == null || _pointDict.Count != points.Count)
-                _pointDict = points.ToDictionary(node => node.cellPos);
+            _pointDict = new Dictionary<Vector3Int, NodeData>();
+
+            foreach (NodeData node in points)
+            {
+                if (node == null)
+                    continue;
+
+                Vector3Int normalizedCellPos = GetNormalizedCellPos(node);
+                node.SetCellPos(normalizedCellPos);
+
+                if (!_pointDict.ContainsKey(normalizedCellPos))
+                    _pointDict.Add(normalizedCellPos, node);
+            }
         }
         
         public void ClearPoints()
@@ -45,6 +56,20 @@ namespace Code.Navigation
 
             nodeData = null;
             return false;
+        }
+
+        private static Vector3Int GetNormalizedCellPos(NodeData node)
+        {
+            if (node.neighbors != null && node.neighbors.Count > 0)
+                return node.neighbors[0].startCellPos;
+
+            if (GridMap.Instance != null)
+            {
+                Vector2Int gridPos = GridMap.Instance.WorldToGridPosition(node.worldPos);
+                return new Vector3Int(gridPos.x, gridPos.y, 0);
+            }
+
+            return node.cellPos;
         }
     }
 }

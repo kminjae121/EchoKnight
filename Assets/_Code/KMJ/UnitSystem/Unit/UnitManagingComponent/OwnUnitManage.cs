@@ -6,6 +6,8 @@ using Code.Managers;
 using Code.Map;
 using Code.UnitSystem;
 using GameEventChannel;
+using GondrLib.Dependencies;
+using GondrLib.ObjectPool.Runtime;
 using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,14 +25,15 @@ namespace Code.UnitManaging
         [Header("Spawn Settings")]
         [SerializeField] public List<Vector2Int> startingCoords = new List<Vector2Int>();
 
-        public List<UnitSpawnSO> _selectedUnits { get; private set; } = new List<UnitSpawnSO>();
+        public List<PoolingItemSO> _selectedUnits { get; private set; } = new List<PoolingItemSO>();
 
         private readonly List<Unit> _myOwnUnitList = new List<Unit>();
 
         [SerializeField] private TurnCostGaugeManager GaugeManager;
         [SerializeField] private Button endTurnBtn;
 
-        [SerializeField] private CinemachineImpulseSource impulseSource;
+        [Inject] private PoolManagerMono _poolManager;
+        
 
         private void Awake()
         {
@@ -73,11 +76,13 @@ namespace Code.UnitManaging
 
                 Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(coord.x, coord.y);
 
-                GameObject spawnUnit = Instantiate(
-                    _selectedUnits[i].UnitPrefab,
-                    spawnPos,
-                    Quaternion.identity
-                );
+                GameObject spawnUnit = _poolManager.Pop<Unit>(_selectedUnits[i]).gameObject;
+
+
+                spawnUnit.transform.position = spawnPos;
+                
+                spawnUnit.transform.rotation = Quaternion.identity;
+                
 
                 tile.SetState(TileState.Obstacle, true);
 
@@ -100,7 +105,7 @@ namespace Code.UnitManaging
                         basicUnit.UnitImage
                     ));
                     
-                    basicUnit.SetObject(GaugeManager, endTurnBtn,impulseSource);
+                    basicUnit.SetObject(GaugeManager, endTurnBtn);
 
                     StageManager.Instance.AddPlayerCnt();
                 }

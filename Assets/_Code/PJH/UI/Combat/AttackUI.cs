@@ -36,8 +36,7 @@ namespace Code.UI
         {
             if (attackPanel == null)
                 return;
-
-            attackPanel.SetActive(!evt.IsLock);
+            attackPanel.SetActive(evt.IsActive);
         }
 
         private void SetSkill(SkillUIEvent evt)

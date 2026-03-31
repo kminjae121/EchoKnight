@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using DG.Tweening;
+using UnityEngine;
 
 namespace Code.UnitSystem
 {
@@ -7,16 +8,14 @@ namespace Code.UnitSystem
         private Vector3 _targetDirection;
         
         [Header("Settings")]
-        [SerializeField] private float _rotationSpeed = 30f; 
+        [SerializeField] private float _rotationSpeed = 30f;
+
+        private Unit _owner;
         
-        public void Initialize(Code.UnitSystem.Unit owner)
+        public void Initialize(Unit owner)
         {
             _targetDirection = transform.forward;
-        }
-
-        private void Update()
-        {
-            RotationUnit();
+            _owner = owner;
         }
 
         public void SetDir(Vector3 targetPosition)
@@ -28,6 +27,8 @@ namespace Code.UnitSystem
             {
                 _targetDirection = direction.normalized;
             }
+
+            RotationUnit();
         }
         
         public void RotationUnit()
@@ -35,8 +36,9 @@ namespace Code.UnitSystem
             if (_targetDirection.sqrMagnitude > 0.001f)
             {
                 Quaternion targetRotation = Quaternion.LookRotation(_targetDirection);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, Time.deltaTime * _rotationSpeed);
+                _owner.transform.DORotateQuaternion(targetRotation, 0.5f);
             }
+
         }
     }
 }

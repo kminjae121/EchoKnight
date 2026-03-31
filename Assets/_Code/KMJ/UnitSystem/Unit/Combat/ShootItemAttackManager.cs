@@ -18,7 +18,6 @@ namespace Code.UnitSystem.Combat
 
         private Dictionary<string, ShootItem> _shootItemDict = new Dictionary<string, ShootItem>();
         private DamageData _damageData;
-        private CinemachineImpulseSource impulseSource;
 
         public Action hitEvent;
 
@@ -42,7 +41,6 @@ namespace Code.UnitSystem.Combat
             if (_unit as CharacterUnit)
             {
                 CharacterUnit characterUnit = _unit as CharacterUnit;
-                impulseSource = characterUnit.impulseSource;
             }
         }
 
@@ -77,15 +75,15 @@ namespace Code.UnitSystem.Combat
             ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
             
             shootItemCompo.SetShootItemCompo(this);
-            shootItemCompo.SetTarget(_target);
+            shootItemCompo.SetTarget(_target.gameObject);
             shootItem.transform.rotation = Quaternion.Euler(rotation);
         }
 
         private void GiveDamage()
         {
-            impulseSource.GenerateImpulse(0.4f);
+            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.56f));
 
-            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target,_addDamage,_unit));
+            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target.gameObject,_addDamage,_unit, false));
         }
     }
 }

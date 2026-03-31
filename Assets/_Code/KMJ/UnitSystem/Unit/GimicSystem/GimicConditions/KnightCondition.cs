@@ -18,7 +18,7 @@ namespace Code.UnitSystem.GimicSystem
 
         [SerializeField] private KnightPhase phase = KnightPhase.OnePhase;
         
-        private readonly int[] BonusStacks = { 3, 6, 10 };
+        private readonly int[] _bonusStacks = { 3, 6, 10 };
         
 
         public override void SetCondition()
@@ -37,7 +37,7 @@ namespace Code.UnitSystem.GimicSystem
             if (phase == KnightPhase.LastPage)
                 return false;
             
-            if (stack >= BonusStacks[idx])
+            if (stack >= _bonusStacks[idx])
             {
                 phase = (KnightPhase)(idx + 1);
                 return true;

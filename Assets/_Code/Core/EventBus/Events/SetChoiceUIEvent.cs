@@ -1,5 +1,5 @@
 ﻿using Code.Items;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using TMPro;
 using UnityEngine;
 

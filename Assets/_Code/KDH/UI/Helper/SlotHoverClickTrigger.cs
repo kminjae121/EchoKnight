@@ -18,12 +18,10 @@ namespace Code.UI
         public bool useHoverVisuals = true;
 
         [Header("Popup Settings (Normal)")]
-        [SerializeField] private RectTransform popupPivot;
         [SerializeField] private Vector2 popupOffset;
 
-        [Header("Popup Settings (Equipped/Another Pivot)")]
+        [Header("Popup Settings (Equipped)")]
         [SerializeField] private bool isEquippedSlot = false;
-        [SerializeField] private RectTransform equippedPopupPivot;
         [SerializeField] private Vector2 equippedPopupOffset;
 
         private Image _image;
@@ -39,7 +37,7 @@ namespace Code.UI
             if (hoverImage != null) hoverImage.SetActive(false);
         }
 
-        public RectTransform GetPivot() => isEquippedSlot && equippedPopupPivot != null ? equippedPopupPivot : (popupPivot != null ? popupPivot : _rectTransform);
+        public RectTransform GetPivot() => _rectTransform;
         public Vector2 GetOffset() => isEquippedSlot ? equippedPopupOffset : popupOffset;
 
         public void SetInteractable(bool interactable)
@@ -57,28 +55,34 @@ namespace Code.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_isInteractable && useHoverVisuals)
+            if (!_isInteractable) return;
+            
+            if (useHoverVisuals)
             {
                 if (hoverImage != null) hoverImage.SetActive(true);
                 else if (_image != null) _image.color = _hoverColor;
             }
             
-            if (_isInteractable) OnHoverEnter?.Invoke(GetPivot(), GetOffset());
+            OnHoverEnter?.Invoke(GetPivot(), GetOffset());
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (_isInteractable && useHoverVisuals)
+            if (!_isInteractable) return;
+            
+            if (useHoverVisuals)
             {
                 if (hoverImage != null) hoverImage.SetActive(false);
                 else if (_image != null) _image.color = _normalColor;
             }
             
-            if (_isInteractable) OnHoverExit?.Invoke();
+            OnHoverExit?.Invoke();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
+            if (!_isInteractable) return;
+
             if (eventData.button == PointerEventData.InputButton.Left)
             {
                 OnClick?.Invoke(GetPivot(), GetOffset());
@@ -86,7 +90,7 @@ namespace Code.UI
             }
             else if (eventData.button == PointerEventData.InputButton.Right)
             {
-                if (_isInteractable) OnRightClick?.Invoke(GetPivot(), GetOffset());
+                OnRightClick?.Invoke(GetPivot(), GetOffset());
             }
         }
     }

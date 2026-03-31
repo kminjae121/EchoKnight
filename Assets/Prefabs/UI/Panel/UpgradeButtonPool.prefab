@@ -162,6 +162,7 @@ GameObject:
   - component: {fileID: 1529619218244635235}
   - component: {fileID: 1262950800671891943}
   - component: {fileID: 1571318639024486194}
+  - component: {fileID: 448292776457085173}
   m_Layer: 5
   m_Name: UpgradeButtonPool
   m_TagString: Untagged
@@ -260,6 +261,22 @@ MonoBehaviour:
   iconImage: {fileID: 1139199196251345494}
   lockOverlay: {fileID: 567623734197107734}
   button: {fileID: 1262950800671891943}
+--- !u!114 &448292776457085173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5044868519526076312}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1068221a8a9a48d983bbcbe1e37e6df3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UI.SkillTreeUI.StatNode
+  unitType: 3
+  upgradeStat: 1
+  upgradeValue: 3
+  nodePrice: 0
 --- !u!1 &7846356173220476346
 GameObject:
   m_ObjectHideFlags: 0

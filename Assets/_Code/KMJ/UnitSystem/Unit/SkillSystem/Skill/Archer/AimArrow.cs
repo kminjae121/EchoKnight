@@ -2,7 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
 public class AimArrow : BasicUnitSkill
@@ -16,29 +16,29 @@ public class AimArrow : BasicUnitSkill
 
     private ShootItemAttackManager _shootItemManager;
     
-    protected override void Start()
+    protected void Start()
     {
-        base.Start();
-        SkillType = SkillType.ActiveSkill;
-        triggerCompo.OnAimArrowTrigger += MakeArrow;
-        triggerCompo.OnAimArrowEndTrigger += SkillEnd;
-        skillEvent.AddListener(AttackAction);
-        animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
-        _shootItemManager = _owner.GetUnitCompo<ShootItemAttackManager>();
+        SkillEvent.AddListener(AttackAction);
+        animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+        _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+    }
+
+    protected override void StartEvent()
+    {
+        base.StartEvent();
+        triggerCompo.OnAttackTrigger += MakeArrow;
+        triggerCompo.OnAnimationEndTrigger += SkillEnd;
     }
 
     protected override void OnDestroy()
     {
-        triggerCompo.OnAimArrowTrigger -= MakeArrow;
-        triggerCompo.OnAimArrowEndTrigger -= SkillEnd;
-        skillEvent.RemoveListener(AttackAction);
+        SkillEvent.RemoveListener(AttackAction);
         base.OnDestroy();
     }
 
     public void AttackAction(GameObject target)
     {
         StartCoroutine(FireArrowAction());
-        skillStartEvent?.Invoke();
         _target = target;
     }
     
@@ -52,14 +52,16 @@ public class AimArrow : BasicUnitSkill
     protected override void SkillEnd()
     {
         base.SkillEnd();
-        skillEndEvent?.Invoke();
+        triggerCompo.OnAttackTrigger -= MakeArrow;
+        triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+        SkillEndEvent?.Invoke();
         animtionCompo.PlaySelectAnimation("IDLE");
     }
     
     public void MakeArrow()
     {
-        impulseSource.GenerateImpulse(0.8f);  
-        Vector3 pos = _unitBase.transform.position;
+        Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.4f));
+        Vector3 pos = _characterUnit.transform.position;
 
         pos.y += 2f;
             

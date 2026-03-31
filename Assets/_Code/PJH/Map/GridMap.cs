@@ -204,8 +204,9 @@ namespace Code.Map
         public bool CanMoveTo(Vector2Int position)
         {
             IMapTile tile = GetTile(position);
-            return tile != null && tile.HasState(TileState.Walkable) 
-                                && !tile.HasState(TileState.Obstacle);
+            return tile != null &&
+                   !tile.HasState(TileState.Obstacle) &&
+                   !tile.HasState(TileState.Enemy);
         }
     }
 }

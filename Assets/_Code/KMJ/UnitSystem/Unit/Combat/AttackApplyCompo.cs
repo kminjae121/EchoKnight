@@ -12,10 +12,10 @@ namespace Code.UnitSystem.Combat
         private void Start()
         {
             Bus<DamageEvent>.Subscribe(GetApplyDamage);
-        }
+        }   
 
         private void OnDisable()
-        { 
+        {
             Bus<DamageEvent>.Unsubscribe(GetApplyDamage);
         }
 
@@ -23,17 +23,43 @@ namespace Code.UnitSystem.Combat
         {
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
 
-            if (evt.target.GetComponent<markComponent>().isMarking == true ||
-                (evt.Owner.unitSO.UnitType == UnitType.Bandlt && evt.addDamage != 0))
+            if (evt.target != null)
             {
-                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target,GimicOption.TargetGimic));
+                if (evt.target.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
+                        evt.target.transform.position, evt.atkData, evt.Owner);
+                }
+            
+                if (evt.Owner as CharacterUnit)
+                {
+                    KnightEvent(evt);
+                    RogueEvent(evt);
+                }
+            }   
+        }
+
+        private static void RogueEvent(DamageEvent evt)
+        {
+            CharacterUnit unit = evt.Owner as CharacterUnit;
+            
+            if (evt.target.TryGetComponent(out MarkComponent mark))
+            {
+                if (mark.isMarking == true)
+                {
+                    Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target, GimicOption.TargetGimic));
+                    return;
+                }
             }
-            
-            if(evt.Owner.unitSO.UnitType == UnitType.Knight && evt.isUseOwnGimic)
-                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Knight,null,GimicOption.OwnGimic));
-            
-            evt.target.GetComponent<UnitHealth>().ApplyDamage(evt.DamageData, evt.target.transform.position,
-                evt.target.transform.position, evt.atkData, evt.Owner);
+
+            if ((evt.Owner.unitSO.UnitType == UnitType.Bandlt && evt.addDamage != 0) || unit.IsConfirmationSkill)
+                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target,GimicOption.TargetGimic));
+        }
+
+        private static void KnightEvent(DamageEvent evt)
+        {
+            if (evt.Owner.unitSO.UnitType == UnitType.Knight && evt.isUseOwnGimic)
+                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Knight, null, GimicOption.OwnGimic));
         }
     }
 }

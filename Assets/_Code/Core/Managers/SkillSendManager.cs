@@ -2,7 +2,7 @@
 using System.Linq;
 using Code.Core.Managers;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using UnityEngine;
 
 namespace Code.Core.Managers

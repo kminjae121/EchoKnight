@@ -1,5 +1,5 @@
 ﻿using Code.Core.Events.Bus;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -20,11 +20,9 @@ namespace Code.UI
         [SerializeField] private GameObject customHoverArea;
 
         [Header("Normal Popup Settings")]
-        [SerializeField] private RectTransform popupPivot;
         [SerializeField] private Vector2 popupOffset;
 
         [Header("Equipped Popup Settings")]
-        [SerializeField] private RectTransform equippedPopupPivot;
         [SerializeField] private Vector2 equippedPopupOffset;
 
         private SkillSO _skill;
@@ -37,6 +35,7 @@ namespace Code.UI
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
+        public Vector2 EquippedPopupOffset => equippedPopupOffset;
 
         private void Awake()
         {
@@ -62,7 +61,7 @@ namespace Code.UI
             }
         }
 
-        public RectTransform GetPivot() => _isEquipped && equippedPopupPivot != null ? equippedPopupPivot : (popupPivot != null ? popupPivot : _rectTransform);
+        public RectTransform GetPivot() => _rectTransform;
         public Vector2 GetOffset() => _isEquipped ? equippedPopupOffset : popupOffset;
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
@@ -80,6 +79,16 @@ namespace Code.UI
         {
             if (_pool != null) _pool.Push(this);
             else Destroy(gameObject);
+        }
+
+        public void SetEmptySlot(Sprite emptySprite)
+        {
+            ResetItem();
+            if (iconImage != null)
+            {
+                iconImage.sprite = emptySprite;
+                iconImage.color = Color.white;
+            }
         }
 
         private void OnDisable()

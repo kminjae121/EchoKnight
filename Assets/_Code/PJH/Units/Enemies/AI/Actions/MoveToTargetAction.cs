@@ -2,6 +2,7 @@ using System;
 using Code.Core.Debugs;
 using Code.Map;
 using Code.UnitSystem.UnitComponent;
+using Code.Utils;
 using Unity.Behavior;
 using Unity.Properties;
 using UnityEngine;
@@ -30,7 +31,7 @@ namespace Code.UnitSystem.Enemies.AI
         {
             if (Enemy.Value == null || Target.Value == null)
                 return Status.Failure;
-
+            
             _gridMap = GridMap.Instance;
             _mover = Enemy.Value.PathMover;
 
@@ -49,7 +50,7 @@ namespace Code.UnitSystem.Enemies.AI
             Vector2Int startPos = _gridMap.WorldToGridPosition(Enemy.Value.transform.position);
             Vector2Int targetPos = _gridMap.WorldToGridPosition(Target.Value.transform.position);
 
-            if (!TryGetNearestReachableTile(startPos, targetPos, out Vector2Int destination))
+            if (!TryGetNearestTile(startPos, targetPos, out Vector2Int destination))
                 return Status.Failure;
 
             if (destination == startPos)
@@ -78,13 +79,13 @@ namespace Code.UnitSystem.Enemies.AI
             _isMoving = false;
         }
 
-        private bool TryGetNearestReachableTile(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int nearTile)
+        private bool TryGetNearestTile(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int nearTile)
         {
             float minDistance = Mathf.Infinity;
             nearTile = default;
             bool found = false;
 
-            if (Mathf.Abs(sourceTile.x - targetTile.x) + Mathf.Abs(sourceTile.y - targetTile.y) == 1)
+            if (DistanceUtils.GetEuclideanDistance(sourceTile, targetTile) <= 1f)
             {
                 nearTile = sourceTile;
                 return true;
@@ -100,11 +101,12 @@ namespace Code.UnitSystem.Enemies.AI
                 if (!_gridMap.CanMoveTo(nextTile))
                     continue;
 
-                float distance = Vector2Int.Distance(sourceTile, nextTile);
+                float distance = DistanceUtils.GetEuclideanDistance(sourceTile, nextTile);
 
                 if (distance >= minDistance)
                     continue;
 
+                UnityLogger.Log($"distance set : {distance}");
                 minDistance = distance;
                 nearTile = nextTile;
                 found = true;

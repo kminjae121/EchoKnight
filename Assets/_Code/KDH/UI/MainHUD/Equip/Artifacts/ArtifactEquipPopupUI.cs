@@ -19,10 +19,8 @@ namespace Code.UI
 
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
-        private Canvas _parentCanvas;
         private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
-        private int _frameCountOnOpen;
 
         private void Awake()
         {
@@ -42,28 +40,6 @@ namespace Code.UI
             Bus<ArtifactPopupEvent>.Unsubscribe(HandlePopupEvent);
             equipButton.onClick.RemoveListener(HandleEquip);
             unequipButton.onClick.RemoveListener(HandleUnequip);
-        }
-
-        private void Update()
-        {
-            if (!gameObject.activeSelf || Time.frameCount == _frameCountOnOpen) return;
-
-            if (UnityEngine.Input.GetMouseButtonDown(0) || UnityEngine.Input.GetMouseButtonDown(1))
-            {
-                if (_parentCanvas == null)
-                    _parentCanvas = transform.root.GetComponentInChildren<Canvas>();
-
-                Camera cam = null;
-                if (_parentCanvas != null && (_parentCanvas.renderMode == RenderMode.ScreenSpaceCamera || _parentCanvas.renderMode == RenderMode.WorldSpace))
-                {
-                    cam = _parentCanvas.worldCamera;
-                }
-
-                if (!RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, UnityEngine.Input.mousePosition, cam))
-                {
-                    Hide();
-                }
-            }
         }
 
         private void HandlePopupEvent(ArtifactPopupEvent evt)
@@ -99,7 +75,6 @@ namespace Code.UI
 
             gameObject.SetActive(true);
             transform.SetAsLastSibling();
-            _frameCountOnOpen = Time.frameCount;
         }
 
         private void SetTierTextColor(ArtifactRarity rarity)

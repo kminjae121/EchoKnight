@@ -15,7 +15,7 @@ namespace Code.UnitSystem
         protected Action _resetTileEvent;
         protected Unit _owner;
 
-        protected readonly List<IMapTile> _tilesInRange = new();
+        public readonly List<IMapTile> TilesInRange = new();
 
         private UnitManageRangeCompo _rangeComponent;
 
@@ -44,14 +44,13 @@ namespace Code.UnitSystem
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
 
             CalculateRange();
-            ProcessTiles(_tilesInRange, true);
-
+            ProcessTiles(TilesInRange, true);
             IsActive = true;
         }
 
         protected virtual void CalculateRange()
         {
-            _tilesInRange.Clear();
+            TilesInRange.Clear();
             
             Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
             int range = GetRange();
@@ -87,12 +86,12 @@ namespace Code.UnitSystem
                     
                     if (tile.HasState(TileState.Obstacle))
                     {
-                        _tilesInRange.Add(tile);
+                        TilesInRange.Add(tile);
 
                         continue;
                     }
                     
-                    _tilesInRange.Add(tile);
+                    TilesInRange.Add(tile);
                     queue.Enqueue((next, dist + 1));
                 }
             }
@@ -100,10 +99,10 @@ namespace Code.UnitSystem
 
         public void ResetTile()
         {
-            if (_tilesInRange.Count == 0)
+            if (TilesInRange.Count == 0)
                 return;
 
-            ProcessTiles(_tilesInRange, false);
+            ProcessTiles(TilesInRange, false);
 
             IsActive = false;
 
@@ -112,7 +111,7 @@ namespace Code.UnitSystem
 
         public void ReCheckInRange()
         {
-            foreach (var tile in _tilesInRange)
+            foreach (var tile in TilesInRange)
             {
                 if (isMove && !tile.HasState(TileState.Obstacle) && !tile.HasState(TileState.Enemy))
                     tile.SetState(TileState.Walkable, true);

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Code.UnitSystem;
+using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 
 namespace Code.UnitManaging
@@ -8,15 +9,15 @@ namespace Code.UnitManaging
     { 
         [SerializeField] private UnitStorageSO _storage;
         
-        public Dictionary<string, UnitSpawnSO> units = new Dictionary<string, UnitSpawnSO>();
+        public Dictionary<string, PoolingItemSO> units = new Dictionary<string, PoolingItemSO>();
         
-        public List<UnitSpawnSO> unitInfos = new List<UnitSpawnSO>();
+        public List<PoolingItemSO> unitInfos = new List<PoolingItemSO>();
 
         private void Awake()
         {
             _storage.units.ForEach(unit =>
             {
-                unitInfos.Add(unit);
+                unitInfos.Add(unit.poolingItem);
             });    
         }
 
@@ -25,7 +26,7 @@ namespace Code.UnitManaging
         /// </summary>
         /// <param name="unitName">찾을 유닛 이름</param>
         /// <returns></returns>
-        public UnitSpawnSO GetUnitInfo(string unitName)
+        public PoolingItemSO GetUnitInfo(string unitName)
         {
             return units.GetValueOrDefault(unitName);
         }

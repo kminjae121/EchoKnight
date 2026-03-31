@@ -1,5 +1,5 @@
 ﻿using Code.Core.Events.Bus;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using EnemySystem;
 using Input;
 using UnityEngine;
@@ -9,17 +9,17 @@ namespace Code.UnitSystem.Combat
     public class CharacterUnitTargeting : MonoBehaviour, IUnitComponent
     {
         [SerializeField] private InputReader inputSO;
-        [SerializeField] private UnitBehaviorCompo behaviorCompo;
+        [SerializeField] private UnitMoveCompo moveCompo;
         [SerializeField] private SkillManageComponent skillManager;
 
         private GameObject _targetEnemy;
         private Unit _targetUnit;
         private EnemyTargeting _targetingCompo;
-        private CharacterUnit _unit;
+        [SerializeField] private CharacterUnit unit;
 
         public void Initialize(Unit owner)
         {
-            _unit = owner as CharacterUnit;
+            unit = owner as CharacterUnit;
         }
 
         private void Update()
@@ -29,7 +29,7 @@ namespace Code.UnitSystem.Combat
 
         private void HandleTargeting()
         {
-            if (!_unit.isMyTurn || inputSO == null)
+            if (!unit.isMyTurn || inputSO == null)
                 return;
             
             if (skillManager.GetSkillInfo() != null && skillManager.GetSkillInfo().IsActive)
@@ -45,7 +45,7 @@ namespace Code.UnitSystem.Combat
         {
             GameObject enemy = inputSO.GetEnemy();
 
-            if (behaviorCompo.VisualPrefabs.activeInHierarchy
+            if (moveCompo.VisualPrefabs.activeInHierarchy
                 || enemy == null && _targetEnemy != null)
                 ClearTarget();
             else if (enemy != null)
@@ -67,7 +67,6 @@ namespace Code.UnitSystem.Combat
 
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false,
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage, true));
-                    Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
 
                     _targetingCompo = null;
                     skillManager.GetSkillInfo().SetEnemyTargeting(null);
@@ -86,8 +85,8 @@ namespace Code.UnitSystem.Combat
                 
                 if (skill != null)
                 {
-                    skill.rotationCompo.SetDir(enemy.transform.position);
-                    skill.SetAddDamage(skill.criticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.damage));
+                    skill.RotationCompo.SetDir(enemy.transform.position);
+                    skill.SetAddDamage(skill.CriticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.Damage));
                 }
                 
                 UnitHealth health = enemy.GetComponent<UnitHealth>();

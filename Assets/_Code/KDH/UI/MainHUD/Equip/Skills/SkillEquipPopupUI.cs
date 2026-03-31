@@ -1,6 +1,6 @@
 ﻿using Code.Core.Events.Bus;
 using Code.Core.Managers;
-using Code.UnitSystem.SkillSystem;
+using Code.SkillSystem;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,7 +10,8 @@ namespace Code.UI
     [RequireComponent(typeof(CanvasGroup))]
     public class SkillEquipPopupUI : MonoBehaviour
     {
-        [Header("UI Elements")]
+        [SerializeField] private Vector2 manualOffset;
+        
         [SerializeField] private TextMeshProUGUI descriptionText;
         [SerializeField] private Button equipButton;
         [SerializeField] private Button unequipButton;
@@ -26,6 +27,7 @@ namespace Code.UI
         {
             _rectTransform = GetComponent<RectTransform>();
             _canvasGroup = GetComponent<CanvasGroup>();
+            _parentCanvas = GetComponentInParent<Canvas>();
 
             Bus<SkillEquipPopupEvent>.Subscribe(HandlePopupEvent);
             
@@ -44,15 +46,12 @@ namespace Code.UI
 
         private void Update()
         {
-            if (!gameObject.activeSelf || Time.frameCount == _frameCountOnOpen) return;
+            if (Time.frameCount == _frameCountOnOpen) return;
 
             if (UnityEngine.Input.GetMouseButtonDown(0) || UnityEngine.Input.GetMouseButtonDown(1))
             {
-                if (_parentCanvas == null)
-                    _parentCanvas = transform.root.GetComponentInChildren<Canvas>();
-
                 Camera cam = null;
-                if (_parentCanvas != null && (_parentCanvas.renderMode == RenderMode.ScreenSpaceCamera || _parentCanvas.renderMode == RenderMode.WorldSpace))
+                if (_parentCanvas != null && _parentCanvas.renderMode != RenderMode.ScreenSpaceOverlay)
                 {
                     cam = _parentCanvas.worldCamera;
                 }
@@ -78,7 +77,9 @@ namespace Code.UI
             _canvasGroup.blocksRaycasts = !evt.IsReadOnly;
 
             if (descriptionText != null)
+            {
                 descriptionText.text = _isCurrentlyEquipped ? "스킬을\n해제하시겠습니까?" : "스킬을\n장착하시겠습니까?";
+            }
 
             equipButton.gameObject.SetActive(!_isCurrentlyEquipped && !evt.IsReadOnly);
             unequipButton.gameObject.SetActive(_isCurrentlyEquipped && !evt.IsReadOnly);
@@ -86,7 +87,7 @@ namespace Code.UI
             if (evt.Pivot != null)
             {
                 _rectTransform.position = evt.Pivot.position;
-                _rectTransform.anchoredPosition += new Vector2(evt.Offset.x, evt.Offset.y);
+                _rectTransform.localPosition += new Vector3(manualOffset.x, manualOffset.y, 0f);
             }
 
             gameObject.SetActive(true);
@@ -114,8 +115,6 @@ namespace Code.UI
 
         private void Hide()
         {
-            if (!gameObject.activeSelf && _targetSkill == null) return;
-
             gameObject.SetActive(false);
             _targetSkill = null;
         }

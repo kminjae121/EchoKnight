@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     [CreateAssetMenu(fileName = "SkillSO/Skill", menuName = "skillSO", order = 0)]
     public class SkillSO : ScriptableObject
@@ -19,5 +19,7 @@ namespace Code.UnitSystem.SkillSystem
         [Header("Detail Info")]
         public float SkillDamage;
         public float SkillRange;
+        public bool IsOwnSkill;
+        public SkillType SkillType;
     }
 }

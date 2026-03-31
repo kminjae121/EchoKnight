@@ -4,7 +4,7 @@ namespace Code.UnitSystem.GimicSystem
 {
     public abstract class GimicCondition : MonoBehaviour,IGimicComponent
     {
-        protected bool isCanRunning = false;
+        protected bool _isCanRunning = false;
         
         public virtual bool CheckCondition()
         {

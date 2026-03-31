@@ -1,35 +1,27 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
 using Code.Map;
+using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using EnemySystem;
 using Input;
 using UnityEngine;
 
-namespace Code.UnitSystem.SkillSystem
+namespace Code.SkillSystem
 {
     public class BasicUnitSkill : BaseSkill
     {
         [Header("Basic Settings")]
-        [field: SerializeField] public CriticalSpot criticalSpot { get; private set; }
+        [field: SerializeField] public CriticalSpot CriticalSpot { get; private set; }
         
-        protected CharacterUnit _characterUnit;
+        [SerializeField]  protected CharacterUnit _characterUnit;
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
+        
 
-        protected override void Awake()
+        private void OnEnable()
         {
-            base.Awake();
-            _characterUnit = _owner as CharacterUnit;
-        }
-
-        protected override void Start()
-        {
-            base.Start();
-            
-            if(_characterUnit != null)
-                impulseSource = _characterUnit.impulseSource;
-
             if (_characterUnit != null)
             {
                 _inputReader = _characterUnit.InputSO;
@@ -41,31 +33,21 @@ namespace Code.UnitSystem.SkillSystem
                 }
             }
 
-            if (_unitBase != null)
+            if (_characterUnit != null)
             {
-                rotationCompo = _unitBase.GetUnitCompo<UnitRotation>();
-                triggerCompo = _unitBase.GetUnitCompo<UnitAnimationTrigger>();
-                _skillCompo = _unitBase.GetUnitCompo<SkillComponent>();
+                RotationCompo = _characterUnit.GetUnitCompo<UnitRotation>();
+                triggerCompo = _characterUnit.GetUnitCompo<UnitAnimationTrigger>();
+                _skillCompo = _characterUnit.GetUnitCompo<SkillComponent>();
             }
-
-            skillEndEvent.AddListener(SetMovingTrue);
         }
 
-        public override void OnDisable()
+        protected override void OnDestroy()
         {
-            base.OnDisable();
-            
+            base.OnDestroy();
             if (_inputReader != null)
                 _inputReader.OnAttackEvent -= UseSkill;
-            
-            skillEndEvent.RemoveListener(SetMovingTrue);
         }
-
-        public void SetMovingTrue()
-        {
-            _characterUnit.BehaveCompo.ReCheckInRange();
-        }
-
+        
         public void SetEnemyTargeting(EnemyTargeting targeting)
         {
             _targetingCompo = targeting;
@@ -81,9 +63,9 @@ namespace Code.UnitSystem.SkillSystem
 
         protected virtual void SkillEnd()
         {
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            IsActive = false;
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
             _characterUnit.TurnEnd();
         }
 
@@ -91,30 +73,30 @@ namespace Code.UnitSystem.SkillSystem
         {
             if (!isCanUseSkill)
             {
-                skillEnd();
+                SkillFinished();
                 return;
             }
 
             if (_targetEnemy == null) return;
+
+            _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
             
-            _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
-            
-            if (rotationCompo != null)
-                rotationCompo.SetDir(_targetEnemy.transform.position);
+            if (RotationCompo != null)
+                RotationCompo.SetDir(_targetEnemy.transform.position);
             
             if (_targetingCompo != null)
                 _targetingCompo.OffTargeting();
             
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_characterUnit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
             Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
                 null,true));
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent());
+            
+            StartEvent();
             
             GridMap.Instance.SetGridVisible(false);
-            skillEvent?.Invoke(_targetEnemy);
-            _targetEnemy = null;
+            SkillEvent?.Invoke(_targetEnemy);
            
-            skillEnd();
+            SkillFinished();
         }
 
         public void SetEnemy(GameObject target)
@@ -129,28 +111,28 @@ namespace Code.UnitSystem.SkillSystem
             if (_characterUnit == null || _characterUnit.GaugeManager == null)
                 return;
 
-            if (!_characterUnit.GaugeManager.CanUseSkill(UseSkillPoint))
+            if (!_characterUnit.GaugeManager.CanUseSkill(SkillSO.UsingSkillCost))
             {
                 Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
-                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
                 Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                 return;
             }
 
-            if (ownSkill)
+            if (SkillSO.IsOwnSkill)
             {
                 SkillStartEvent();
-                _characterUnit.GaugeManager.UseSkill(UseSkillPoint);
-                _characterUnit.BehaveCompo.ResetTile();
-                skillEvent?.Invoke(null);
+                _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
+                _characterUnit.MoveCompo.ResetTile();
+                SkillEvent?.Invoke(null);
             }
             else
             {
-                _characterUnit.BehaveCompo.ResetTile();
+                _characterUnit.MoveCompo.ResetTile();
                 SkillStartEvent();
                 CheckCanAttack();
-                CanUseThisSkill();
+                BooleanSkillUse(true);
             }
         }
         
@@ -167,7 +149,7 @@ namespace Code.UnitSystem.SkillSystem
             
             Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
             
-            foreach (var tile in _tilesInRange)
+            foreach (var tile in rangeCompo.TilesInRange)
             {
                 if (tile.GridPos == enemyPos)
                 {
@@ -186,8 +168,7 @@ namespace Code.UnitSystem.SkillSystem
 
         private void SkillStartEvent()
         {
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unitBase.gameObject, true,
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_characterUnit.gameObject, true,
                 new Vector3(0.1f, 0.1f, 0.1f)));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
             Bus<SendSkillEvent>.Raise(new SendSkillEvent(this));

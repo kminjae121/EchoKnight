@@ -81,7 +81,7 @@ namespace Code.UnitSystem
         {
             base.OnTurnStart();
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             
             GaugeManager.AddSkillPoint(30);

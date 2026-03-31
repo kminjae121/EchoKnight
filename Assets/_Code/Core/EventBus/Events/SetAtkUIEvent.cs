@@ -2,11 +2,11 @@
 {
     public struct SetAtkUIEvent : IEvent
     {
-        public bool IsLock { get; private set; }
+        public bool IsActive { get; private set; }
         
-        public SetAtkUIEvent(bool isLock)
+        public SetAtkUIEvent(bool isActive)
         {
-            IsLock = isLock;
+            IsActive = isActive;
         }
     }
 }

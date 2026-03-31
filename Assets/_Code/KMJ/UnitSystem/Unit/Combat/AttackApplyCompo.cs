@@ -22,18 +22,21 @@ namespace Code.UnitSystem.Combat
         public void GetApplyDamage(DamageEvent evt)
         {
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-            
-            if (evt.target.TryGetComponent(out IDamageable damageable))
+
+            if (evt.target != null)
             {
-                damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
-                    evt.target.transform.position, evt.atkData, evt.Owner);
-            }
+                if (evt.target.TryGetComponent(out IDamageable damageable))
+                {
+                    damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
+                        evt.target.transform.position, evt.atkData, evt.Owner);
+                }
             
-            if (evt.Owner as CharacterUnit)
-            {
-                KnightEvent(evt);
-                RogueEvent(evt);
-            }
+                if (evt.Owner as CharacterUnit)
+                {
+                    KnightEvent(evt);
+                    RogueEvent(evt);
+                }
+            }   
         }
 
         private static void RogueEvent(DamageEvent evt)

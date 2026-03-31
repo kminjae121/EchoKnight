@@ -119,7 +119,7 @@ namespace Code.UnitSystem
         {
             UnitRangeCompo.RemoveAllRange();
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }
 
         private void Move()
@@ -148,7 +148,7 @@ namespace Code.UnitSystem
         
         private void MoveStart(IMapTile tile)
         {
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject,
                 true, new Vector3(0.1f, 0.1f, 0.1f)));
             
@@ -180,7 +180,7 @@ namespace Code.UnitSystem
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
                 false, new Vector3(0.1f, 0.1f, 0.1f)));
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
+            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             animationCompo.PlaySelectAnimation("IDLE");
 
             UnitRangeCompo.RemoveAllRange();

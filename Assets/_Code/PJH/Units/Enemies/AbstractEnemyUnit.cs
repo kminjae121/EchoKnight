@@ -13,7 +13,7 @@ using UnityEngine.Events;
 
 namespace Code.UnitSystem.Enemies
 {
-    public abstract class EnemyUnit : Unit
+    public abstract class AbstractEnemyUnit : Unit
     {
         public BehaviorGraphAgent BTAgent { get; private set; }
         public PathMover PathMover { get; private set; }
@@ -103,7 +103,7 @@ namespace Code.UnitSystem.Enemies
 
             if (SkillCompo?.Skills == null || SkillCompo.Skills.Count == 0)
             {
-                UnityLogger.LogError($"[{nameof(EnemyUnit)}] {name} has no registered skills.");
+                UnityLogger.LogError($"[{nameof(AbstractEnemyUnit)}] {name} has no registered skills.");
                 return false;
             }
 
@@ -124,7 +124,7 @@ namespace Code.UnitSystem.Enemies
                 return true;
             }
 
-            UnityLogger.LogError($"[{nameof(EnemyUnit)}] {name} could not resolve a skill to execute.");
+            UnityLogger.LogError($"[{nameof(AbstractEnemyUnit)}] {name} could not resolve a skill to execute.");
             return false;
         }
 
@@ -147,7 +147,7 @@ namespace Code.UnitSystem.Enemies
         {
             if (target == null || SkillCompo?.Skills == null || SkillCompo.Skills.Count == 0)
             {
-                UnityLogger.LogError($"[{nameof(EnemyUnit)}] {name} cannot check skill range without target or skills.");
+                UnityLogger.LogError($"[{nameof(AbstractEnemyUnit)}] {name} cannot check skill range without target or skills.");
                 return false;
             }
 

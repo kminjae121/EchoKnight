@@ -86,6 +86,8 @@ namespace Code.UnitSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+
+            SkillCompo.ResetSkillsCount();
             
             SkillCostCompo.AddSkillCost();
             

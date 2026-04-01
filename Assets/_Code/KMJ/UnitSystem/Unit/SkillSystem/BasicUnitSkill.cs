@@ -18,8 +18,6 @@ namespace Code.SkillSystem
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
-        
-
         private void OnEnable()
         {
             if (_characterUnit != null)
@@ -117,6 +115,16 @@ namespace Code.SkillSystem
 
             if (_characterUnit == null || _characterUnit.SkillCostCompo == null)
                 return;
+            
+            
+            if (SkillSO.SkillType == SkillType.BasicSkill && SkillCount >= 1)
+            {
+                SkillFinished(false);
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("일반 공격은 한번만 사용가능합니다."));
+                return;
+            }
+                
+            SkillCount += 1;
 
             if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.UsingSkillCost))
             {

@@ -44,7 +44,7 @@ namespace Code.UnitSystem.Combat
             }
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             hitEvent -= GiveDamage;
         }
@@ -75,14 +75,13 @@ namespace Code.UnitSystem.Combat
             ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
             
             shootItemCompo.SetShootItemCompo(this);
-            shootItemCompo.SetTarget(_target.gameObject);
+            shootItemCompo.SetTarget(_target.GetComponentInChildren<UnitAnimation>().gameObject);
             shootItem.transform.rotation = Quaternion.Euler(rotation);
         }
 
         private void GiveDamage()
         {
             Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.56f));
-
             Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target.gameObject,_addDamage,_unit, false));
         }
     }

@@ -51,7 +51,7 @@ namespace Code.SkillSystem
         public void SetEnemyTargeting(EnemyTargeting targeting)
         {
             _targetingCompo = targeting;
-        }
+        }     
         
         protected override void CanUseSkillTrue()
         {
@@ -66,20 +66,27 @@ namespace Code.SkillSystem
             IsActive = false;
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            _characterUnit.TurnEnd();
+        }
+
+        public override void SkillFinished(bool isCancel)
+        {
+            base.SkillFinished(isCancel);
+            
+            if(isCancel)
+                _characterUnit.SkillCostUI.ReturnShowFilled();
         }
 
         public override void AttackEnemy()
         {
             if (!isCanUseSkill)
             {
-                SkillFinished();
+                SkillFinished(false);
                 return;
             }
 
             if (_targetEnemy == null) return;
 
-            _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
+            _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.UsingSkillCost);
             
             if (RotationCompo != null)
                 RotationCompo.SetDir(_targetEnemy.transform.position);
@@ -96,7 +103,7 @@ namespace Code.SkillSystem
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
            
-            SkillFinished();
+            SkillFinished(false);
         }
 
         public void SetEnemy(GameObject target)
@@ -108,10 +115,10 @@ namespace Code.SkillSystem
         {
             base.ShowSkillRange();
 
-            if (_characterUnit == null || _characterUnit.GaugeManager == null)
+            if (_characterUnit == null || _characterUnit.SkillCostCompo == null)
                 return;
 
-            if (!_characterUnit.GaugeManager.CanUseSkill(SkillSO.UsingSkillCost))
+            if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.UsingSkillCost))
             {
                 Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
@@ -120,11 +127,14 @@ namespace Code.SkillSystem
                 return;
             }
 
+            _characterUnit.SkillCostUI.SetShowGauge(_characterUnit.SkillCostCompo.CheckSkillCost(SkillSO.UsingSkillCost));
+            
             if (SkillSO.IsOwnSkill)
             {
                 SkillStartEvent();
-                _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
+                _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.UsingSkillCost);
                 _characterUnit.MoveCompo.ResetTile();
+                StartEvent();
                 SkillEvent?.Invoke(null);
             }
             else

@@ -146,7 +146,7 @@ namespace Code.SkillSystem
             triggerCompo.OnAttackTrigger -= TakeDamage;
             triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             _target = null;
-            SkillFinished();
+            SkillFinished(false);
             SkillEndEvent?.Invoke();
         }
 

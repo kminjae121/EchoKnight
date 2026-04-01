@@ -48,11 +48,11 @@ public class HealSkill : BasicUnitSkill
         protected override void SkillEnd()
         {
             base.SkillEnd();
-            triggerCompo.OnAttackTrigger-= Heal;
-            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
             SkillEndEvent?.Invoke();
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
             animtionCompo.PlaySelectAnimation("IDLE");
+            triggerCompo.OnAttackTrigger-= Heal;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
         }
 
         public void Heal()

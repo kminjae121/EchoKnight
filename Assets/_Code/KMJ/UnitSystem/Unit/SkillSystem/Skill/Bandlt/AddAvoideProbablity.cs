@@ -22,7 +22,7 @@ using UnityEngine;
         {
             base.StartEvent();
             triggerCompo.OnAttackTrigger += PlusAvoideProbablity;
-            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+            triggerCompo.OnAnimationEndTrigger += HandleSkillEnd;
         }
 
         protected override void OnDestroy()
@@ -39,8 +39,7 @@ using UnityEngine;
         private IEnumerator AddAvoid()
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(false));
-            yield return new WaitForSeconds(0.3f);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.4f);
             effectPrefab.SetActive(true);
             effectPrefab.GetComponent<ParticleSystem>().Play();
             animtionCompo.PlaySelectAnimation("HEAL");
@@ -59,14 +58,19 @@ using UnityEngine;
             _characterUnit.AddAvoidProbability += 10;
             _characterUnit.unitSO.AvoidProbability += 10;
         }
+
+        private void HandleSkillEnd()
+        {
+            SkillEnd();
+        }
         
         protected override void SkillEnd()
-        {
+        { 
             base.SkillEnd();
-            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
-            triggerCompo.OnAttackTrigger -= PlusAvoideProbablity;
-            SkillEndEvent?.Invoke();
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             animtionCompo.PlaySelectAnimation("IDLE");
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd; 
+            triggerCompo.OnAttackTrigger -= PlusAvoideProbablity;
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            SkillEndEvent?.Invoke();
         }
     }

@@ -18,7 +18,7 @@ public enum UnitType
     Magician,
 }
 
-[CreateAssetMenu (fileName = "Unit", menuName = "UnitSO")]
+[CreateAssetMenu (fileName = "Unit", menuName = "SO/UnitSO/UnitSO")]
 public class UnitSO : ScriptableObject
 {
     [Header("UnitName")]
@@ -77,6 +77,11 @@ public class UnitSO : ScriptableObject
     public float CriticalProbability;
 
     public float CriticalDamageIncrease;
+
+    [Header("SkillSystem")] 
+    public int MaxSkillCost;
+
+    public int RecoverySkillCost;
 
     [Header("UnitType")] 
     public UnitInGameSO unitInGame;

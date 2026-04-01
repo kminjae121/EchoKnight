@@ -4,6 +4,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
 using Code.Map;
+using Code.UI;
 using Code.UnitSystem;
 using GameEventChannel;
 using GondrLib.Dependencies;
@@ -25,12 +26,13 @@ namespace Code.UnitManaging
         [Header("Spawn Settings")]
         [SerializeField] public List<Vector2Int> startingCoords = new List<Vector2Int>();
 
-        public List<PoolingItemSO> _selectedUnits { get; private set; } = new List<PoolingItemSO>();
+        [SerializeField] private Button endTurnBtn;
+        [SerializeField] private SkillCostUI skillCostUI;
+        
+        public List<PoolingItemSO> SelectedUnits { get; private set; } = new List<PoolingItemSO>();
 
         private readonly List<Unit> _myOwnUnitList = new List<Unit>();
 
-        [SerializeField] private TurnCostGaugeManager GaugeManager;
-        [SerializeField] private Button endTurnBtn;
 
         [Inject] private PoolManagerMono _poolManager;
         
@@ -54,12 +56,12 @@ namespace Code.UnitManaging
 
         private void MakeGameUnit()
         {
-            if (_selectedUnits.Count == 0)
+            if (SelectedUnits.Count == 0)
                 return;
 
             int count = -1;
 
-            int spawnCount = Mathf.Min(_selectedUnits.Count, startingCoords.Count);
+            int spawnCount = Mathf.Min(SelectedUnits.Count, startingCoords.Count);
 
             for (int i = 0; i < spawnCount; i++)
             {
@@ -76,7 +78,7 @@ namespace Code.UnitManaging
 
                 Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(coord.x, coord.y);
 
-                GameObject spawnUnit = _poolManager.Pop<Unit>(_selectedUnits[i]).gameObject;
+                GameObject spawnUnit = _poolManager.Pop<Unit>(SelectedUnits[i]).gameObject;
 
 
                 spawnUnit.transform.position = spawnPos;
@@ -105,7 +107,7 @@ namespace Code.UnitManaging
                         basicUnit.UnitImage
                     ));
                     
-                    basicUnit.SetObject(GaugeManager, endTurnBtn);
+                    basicUnit.SetObject(endTurnBtn, skillCostUI);
 
                     StageManager.Instance.AddPlayerCnt();
                 }
@@ -114,8 +116,8 @@ namespace Code.UnitManaging
         
         public void SelectUnits()
         {
-            _selectedUnits.Clear();
-            storageCompo.unitInfos.ForEach(unit => _selectedUnits.Add(unit));
+            SelectedUnits.Clear();
+            storageCompo.unitInfos.ForEach(unit => SelectedUnits.Add(unit));
         }
     }
 }

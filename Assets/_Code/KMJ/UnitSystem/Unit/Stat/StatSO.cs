@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace EntityComponent
 {
-    [CreateAssetMenu(fileName = "Stat", menuName = "SO/StatSystem/Stat", order = 0)]
+    [CreateAssetMenu(fileName = "Stat", menuName = "SO/UnitSO/UnitStat", order = 0)]
     public class StatSO : ScriptableObject, ICloneable
     {
         [SerializeField] private Sprite icon;

@@ -113,12 +113,13 @@ namespace Code.SkillSystem
         {
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
-
-            rangeCompo.FindObjectInRange();
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+            
+            rangeCompo.FindObjectInRange(SkillSO.SkillRange);
         }
 
 
-        public virtual void SkillFinished()
+        public virtual void SkillFinished(bool isCancel)
         {
             BooleanSkillUse(false);
 

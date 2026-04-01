@@ -37,23 +37,20 @@ namespace Code.UnitSystem
         {
         }
 
-        public void FindObjectInRange()
+        public void FindObjectInRange(int range)
         {
             _rangeComponent.RemoveAllRange(); 
 
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
-
-            CalculateRange();
+            CalculateRange(range);
             ProcessTiles(TilesInRange, true);
             IsActive = true;
         }
 
-        protected virtual void CalculateRange()
+        protected virtual void CalculateRange(int range)
         {
             TilesInRange.Clear();
             
             Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
-            int range = GetRange();
 
             Queue<(Vector2Int pos, int dist)> queue = new();
             HashSet<Vector2Int> visited = new();
@@ -140,9 +137,6 @@ namespace Code.UnitSystem
                     tile.ClearOverlay();
             }
         }
-
-        protected virtual int GetRange()
-            => _owner.unitSO.moveRange;
 
         private void ApplyOverlay(IMapTile tile)
         {

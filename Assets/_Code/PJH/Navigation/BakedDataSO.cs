@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code.Navigation
 {
-    [CreateAssetMenu(fileName = "Baked Data", menuName = "SO/BakedData", order = 0)]
+    [CreateAssetMenu(fileName = "Baked Data", menuName = "SO/Map/BakedData", order = 0)]
     public class BakedDataSO : ScriptableObject
     {
         public List<NodeData> points = new();

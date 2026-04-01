@@ -9,7 +9,7 @@ public enum EventType
 }
 namespace Code.UI
 {
-    [CreateAssetMenu(fileName = "EventSO", menuName = "EventSO", order = 0)]
+    [CreateAssetMenu(fileName = "EventSO", menuName = "SO/Event/EventSO", order = 0)]
     public class EventTextSO : ScriptableObject
     {
         [TextArea(3, 10)]

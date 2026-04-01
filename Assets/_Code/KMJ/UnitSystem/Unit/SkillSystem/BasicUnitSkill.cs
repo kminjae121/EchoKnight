@@ -71,7 +71,7 @@ namespace Code.SkillSystem
         public override void SkillFinished(bool isCancel)
         {
             base.SkillFinished(isCancel);
-            
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
             if(isCancel)
                 _characterUnit.SkillCostUI.ReturnShowFilled();
         }

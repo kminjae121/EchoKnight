@@ -85610,6 +85610,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1658617232}
   - component: {fileID: 1658617233}
+  - component: {fileID: 1658617234}
+  - component: {fileID: 1658617235}
   m_Layer: 0
   m_Name: DamageManager
   m_TagString: Untagged
@@ -85644,6 +85646,48 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 776c93e1cd1b410f896debe554d3a772, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Combat.AttackApplyCompo
+  AttackEndEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1658617234}
+        m_TargetAssemblyTypeName: _Code.KMJ.UnitSystem.UnitAttackFeedback, Assembly-CSharp
+        m_MethodName: StartFeedback
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1658617234
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658617231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d823cd1e267466fae5c931333e420a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Code.KMJ.UnitSystem.UnitAttackFeedback
+  atkEffectPool: {fileID: 11400000, guid: 004621995f553c94a8389f82a5355239, type: 2}
+  playDuration: 1
+  HitPoint: {x: 0, y: 0, z: 0}
+--- !u!114 &1658617235
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1658617231}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4277fed73abc4e9f9ff65893a66a94fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Combat.ActionData
 --- !u!1 &1658735234
 GameObject:
   m_ObjectHideFlags: 0

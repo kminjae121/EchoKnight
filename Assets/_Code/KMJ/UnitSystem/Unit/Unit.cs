@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.UnitSystem.UnitComponent;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 
@@ -22,10 +23,10 @@ namespace Code.UnitSystem
         public bool IsReadyDoAct => TurnGauge >= 100f;
         public string UnitName => unitSO != null ? unitSO.UnitName : "Unknown";
         
-        [Header("Components")]
-        protected Dictionary<Type, IUnitComponent> _components = new  Dictionary<Type, IUnitComponent>();
-        public UnitManageRangeCompo RangesCompo { get; private set; }
+        protected Dictionary<Type, IUnitComponent> _components = new();
+        public UnitManageRangeCompo RangeCompo { get; private set; }
         public UnitAnimation AnimationCompo { get; private set; }
+        public StatusEffectCompo StatusEffectCompo { get; private set; }
         
         [Header("Events")]
         public Action OnDeathEvent;
@@ -33,7 +34,7 @@ namespace Code.UnitSystem
         
         public float AddDefensivePower { get; set; }
         
-        public float AddAvoideProbability { get; set; }
+        public float AddAvoidProbability { get; set; }
         
         [field: SerializeField] public PoolingItemSO PoolingType { get; private set; }
         public GameObject GameObject => gameObject;
@@ -94,7 +95,7 @@ namespace Code.UnitSystem
             isMyTurn = true;
         }
 
-        public void InitilizeDefensivePower()
+        public void InitializeDefensivePower()
         {
             if (AddDefensivePower != 0)
                 unitSO.DefensivePower -= AddDefensivePower;
@@ -102,10 +103,10 @@ namespace Code.UnitSystem
             AddDefensivePower = 0;
         }
 
-        public void InitilizeAvoideProbability()
+        public void InitializeAvoidProbability()
         {
-            if (AddAvoideProbability != 0)
-                unitSO.AvoidProbability -= AddAvoideProbability;
+            if (AddAvoidProbability != 0)
+                unitSO.AvoidProbability -= AddAvoidProbability;
         
             AddDefensivePower = 0;
         }
@@ -121,6 +122,7 @@ namespace Code.UnitSystem
         
         public virtual void OnTurnEnd()
         {
+            StatusEffectCompo.UpdateStatusEffects();
             isMyTurn = false;
             Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
         }
@@ -139,8 +141,9 @@ namespace Code.UnitSystem
             _components = GetComponentsInChildren<IUnitComponent>()
                 .ToDictionary(compo => compo.GetType());
         
-            RangesCompo = GetUnitCompo<UnitManageRangeCompo>();
+            RangeCompo = GetUnitCompo<UnitManageRangeCompo>();
             AnimationCompo = GetUnitCompo<UnitAnimation>();
+            StatusEffectCompo = GetUnitCompo<StatusEffectCompo>();
         }
         
         protected virtual void InitComponents()

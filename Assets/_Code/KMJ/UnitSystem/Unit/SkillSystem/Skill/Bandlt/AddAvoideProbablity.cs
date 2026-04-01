@@ -49,13 +49,13 @@ using UnityEngine;
         {
             if (skillCnt >= 3)
             {
-                _characterUnit.InitilizeAvoideProbability();
+                _characterUnit.InitializeAvoidProbability();
                 return;
             }
 
             skillCnt += 1;
             
-            _characterUnit.AddAvoideProbability += 10;
+            _characterUnit.AddAvoidProbability += 10;
             _characterUnit.unitSO.AvoidProbability += 10;
         }
 

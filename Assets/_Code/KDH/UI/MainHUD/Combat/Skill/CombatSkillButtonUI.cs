@@ -1,0 +1,190 @@
+﻿using Code.Core.Events.Bus;
+using Code.SkillSystem;
+using DG.Tweening;
+using GondrLib.ObjectPool.Runtime;
+using TMPro;
+using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.UI;
+
+namespace Code.UI
+{
+    [RequireComponent(typeof(RectTransform))]
+    public class CombatSkillButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPoolable
+    {
+        [SerializeField] private PoolingItemSO poolingType;
+        [SerializeField] private Image skillIcon;
+        [SerializeField] private TextMeshProUGUI damageText;
+        [SerializeField] private TextMeshProUGUI costText;
+        
+        [SerializeField] private float hoverYOffset = 15f;
+        [SerializeField] private float selectYOffset = 30f;
+        [SerializeField] private float animDuration = 0.2f;
+        [SerializeField] private Ease animEase = Ease.OutCubic;
+
+        [SerializeField] private float darkenMultiplier = 0.4f;
+
+        private RectTransform _rectTransform;
+        private Image _backgroundImage;
+        private Vector2 _originalPosition;
+        private Tween _moveTween;
+        private SkillSO _currentSkill;
+        private bool _isSelected;
+        private bool _isInteractable;
+
+        private Color _originBgColor = Color.white;
+        private Color _originIconColor = Color.white;
+        private Color _originDamageColor = Color.white;
+        private Color _originCostColor = Color.white;
+        
+        private Pool _pool;
+
+        public PoolingItemSO PoolingType => poolingType;
+        public GameObject GameObject => gameObject;
+
+        private void Awake()
+        {
+            _rectTransform = GetComponent<RectTransform>();
+            _backgroundImage = GetComponent<Image>();
+            _originalPosition = _rectTransform.anchoredPosition;
+
+            if (_backgroundImage != null) _originBgColor = _backgroundImage.color;
+            if (skillIcon != null) _originIconColor = skillIcon.color;
+            if (damageText != null) _originDamageColor = damageText.color;
+            if (costText != null) _originCostColor = costText.color;
+            
+            Bus<CombatSkillCancelEvent>.Subscribe(HandleSkillCancel);
+            Bus<CombatSkillSelectEvent>.Subscribe(HandleOtherSkillSelected);
+        }
+
+        private void OnDestroy()
+        {
+            Bus<CombatSkillCancelEvent>.Unsubscribe(HandleSkillCancel);
+            Bus<CombatSkillSelectEvent>.Unsubscribe(HandleOtherSkillSelected);
+            _moveTween?.Kill();
+        }
+
+        public void SetUpPool(Pool pool)
+        {
+            _pool = pool;
+        }
+
+        public void ResetItem()
+        {
+            _currentSkill = null;
+            _isSelected = false;
+            _isInteractable = false;
+            ApplyColorMultiplier(1f);
+            ResetPosition();
+        }
+
+        public void ReturnToPool()
+        {
+            if (_pool != null)
+            {
+                _pool.Push(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        public void SetupSkill(SkillSO skill, int currentTurnCost)
+        {
+            _currentSkill = skill;
+            _isSelected = false;
+            
+            if (skillIcon != null) skillIcon.sprite = skill.skillUIImage;
+            if (damageText != null) damageText.text = skill.SkillDamage.ToString();
+            if (costText != null) costText.text = skill.SkillCost.ToString();
+
+            _isInteractable = currentTurnCost >= skill.SkillCost;
+
+            if (!_isInteractable)
+            {
+                transform.SetAsFirstSibling();
+                ApplyColorMultiplier(darkenMultiplier);
+            }
+            else
+            {
+                ApplyColorMultiplier(1f);
+            }
+
+            ResetPosition();
+        }
+
+        private void ApplyColorMultiplier(float multiplier)
+        {
+            Color tint = new Color(multiplier, multiplier, multiplier, 1f);
+
+            if (_backgroundImage != null) _backgroundImage.color = _originBgColor * tint;
+            if (skillIcon != null) skillIcon.color = _originIconColor * tint;
+            if (damageText != null) damageText.color = _originDamageColor * tint;
+            if (costText != null) costText.color = _originCostColor * tint;
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            if (!_isInteractable || _isSelected) return;
+
+            _moveTween?.Kill();
+            _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + hoverYOffset, animDuration).SetEase(animEase);
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (!_isInteractable || _isSelected) return;
+
+            _moveTween?.Kill();
+            _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y, animDuration).SetEase(animEase);
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (!_isInteractable)
+            {
+                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("코스트가 부족하여 스킬을 사용할 수 없습니다."));
+                return;
+            }
+
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                SelectThisSkill();
+            }
+        }
+
+        private void SelectThisSkill()
+        {
+            _isSelected = true;
+            _moveTween?.Kill();
+            _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + selectYOffset, animDuration).SetEase(animEase);
+            
+            Bus<CombatSkillSelectEvent>.Raise(new CombatSkillSelectEvent(_currentSkill));
+        }
+
+        private void HandleOtherSkillSelected(CombatSkillSelectEvent evt)
+        {
+            if (evt.SelectedSkill != _currentSkill && _isSelected)
+            {
+                _isSelected = false;
+                ResetPosition();
+            }
+        }
+
+        private void HandleSkillCancel(CombatSkillCancelEvent evt)
+        {
+            if (_isSelected)
+            {
+                _isSelected = false;
+                ResetPosition();
+            }
+        }
+
+        private void ResetPosition()
+        {
+            _moveTween?.Kill();
+            _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y, animDuration).SetEase(animEase);
+        }
+    }
+}

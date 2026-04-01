@@ -106,6 +106,13 @@ namespace Code.SkillSystem
         {
             isUseSkill = evt.isUsingSkill;
         }
+        public void ResetSkillsCount()
+        {
+            foreach (var skill in Skills.Values)
+            {
+                skill.ResetSkillCnt();
+            }
+        }
         
         public void UpdateSkillUI()
         {

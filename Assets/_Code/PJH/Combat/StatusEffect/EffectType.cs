@@ -7,6 +7,6 @@ namespace Code.Combat.StatusEffect
     {
         None = 0,
         Poison = 1 << 1,
-        Stunned = 1 << 2
+        Stun = 1 << 2
     }
 }

@@ -1,53 +1,64 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using Code.Combat.StatusEffect;
+using Code.Core.Debugs;
 using UnityEngine;
 
 namespace Code.UnitSystem.UnitComponent
 {
     public class StatusEffectCompo : MonoBehaviour, IUnitComponent
     {
-        private static Dictionary<EffectType, Type> _effectTypeFactory;
+        [SerializeField] private List<StatusEffectSO> statusEffectList;
+        
+        private static readonly Dictionary<string, Type> _typeCacheDict = new();
+        private readonly List<EffectType> _removeBuffer = new();
 
-        private Unit _owner;
+        private Dictionary<EffectType, StatusEffectSO> _statusEffectDict;
         private Dictionary<EffectType, StatusEffect> _activeEffectDict;
-        private List<StatusEffect> _activeEffects;
+        
         private int _statusEffectBit;
+        private Unit _owner;
 
         public void Initialize(Unit owner)
         {
-            _owner = owner;
-            _activeEffects = new List<StatusEffect>();
             _activeEffectDict = new Dictionary<EffectType, StatusEffect>();
+            _statusEffectDict = new Dictionary<EffectType, StatusEffectSO>();
+            
             _statusEffectBit = 0;
+            _owner = owner;
 
-            CacheEffectTypes();
+            RegisterStatusEffect();
         }
 
-        // 턴마다 실행
         public void UpdateStatusEffects()
         {
-            for (int i = _activeEffects.Count - 1; i >= 0; --i)
+            if (_activeEffectDict == null || _activeEffectDict.Count == 0)
+                return;
+
+            _removeBuffer.Clear();
+
+            foreach (var (effectType, effect) in _activeEffectDict)
             {
-                StatusEffect effect = _activeEffects[i];
                 effect.UpdateEffect();
 
-                if (effect.IsCompleted())
-                    RemoveStatusEffect(effect.EffectType);
+                if (effect.IsCompleted)
+                    _removeBuffer.Add(effectType);
             }
+
+            foreach (var effectType in _removeBuffer)
+                RemoveStatusEffect(effectType);
         }
 
-        public StatusEffect AddStatusEffect(EffectType effectType, int duration)
+        public StatusEffect AddStatusEffect(EffectType effectType, StatusEffectApplyData data)
         {
-            if (_owner == null || effectType == EffectType.None || duration <= 0)
+            if (_owner == null)
                 return null;
 
-            if (_activeEffectDict.TryGetValue(effectType, out StatusEffect activeEffect))
+            if (_activeEffectDict.TryGetValue(effectType, out var activeEffect))
             {
-                activeEffect.EndEffect();
-                _activeEffects.Remove(activeEffect);
-                _activeEffectDict.Remove(effectType);
+                activeEffect.Merge(data);
+                return activeEffect;
             }
 
             StatusEffect effect = CreateEffect(effectType);
@@ -55,98 +66,97 @@ namespace Code.UnitSystem.UnitComponent
             if (effect == null)
                 return null;
 
-            effect.ApplyEffect(_owner, duration);
-            _activeEffects.Add(effect);
+            effect.SetEffect(_owner, data);
+            effect.ApplyEffect();
+            
             _activeEffectDict[effectType] = effect;
             _statusEffectBit |= (int)effectType;
 
             return effect;
         }
 
-        public void RemoveStatusEffect(EffectType effectType)
+        private void RemoveStatusEffect(EffectType effectType)
         {
-            if (_activeEffectDict.TryGetValue(effectType, out StatusEffect effect) == false)
-                return;
+            if (_activeEffectDict != null && _activeEffectDict.TryGetValue(effectType, out var effect))
+            {
+                effect.EndEffect();
+                _activeEffectDict.Remove(effectType);
+            }
 
-            effect.EndEffect();
-            _activeEffects.Remove(effect);
-            _activeEffectDict.Remove(effectType);
             _statusEffectBit &= ~(int)effectType;
         }
 
-        public bool IsUnderStatusEffect(EffectType effectType)
+        public bool HasState(EffectType effectType)
+            => (_statusEffectBit & (int)effectType) == (int)effectType;
+
+        public bool HasAnyState(EffectType effectType)
             => (_statusEffectBit & (int)effectType) != 0;
 
-        private static void CacheEffectTypes()
+        private void RegisterStatusEffect()
         {
-            if (_effectTypeFactory != null)
+            if (statusEffectList == null || statusEffectList.Count == 0)
                 return;
 
-            _effectTypeFactory = new Dictionary<EffectType, Type>();
-
-            foreach (EffectType effectType in Enum.GetValues(typeof(EffectType)))
+            foreach (var statusEffectSO in statusEffectList)
             {
-                if (effectType == EffectType.None)
+                if (statusEffectSO == null)
                     continue;
 
-                Type effectClassType = ResolveEffectType(effectType);
-
-                if (effectClassType != null)
-                    _effectTypeFactory[effectType] = effectClassType;
+                if (!_statusEffectDict.TryAdd(statusEffectSO.effectType, statusEffectSO))
+                    Debug.LogWarning($"[{nameof(StatusEffectCompo)}] Duplicate StatusEffectSO for {statusEffectSO.effectType} on {name}.");
             }
-        }
-
-        private static Type ResolveEffectType(EffectType effectType)
-        {
-            string expectedTypeName = $"{effectType}StatusEffect";
-
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                Type[] types;
-
-                try
-                {
-                    types = assembly.GetTypes();
-                }
-                catch (ReflectionTypeLoadException ex)
-                {
-                    types = ex.Types;
-                }
-
-                for (int i = 0; i < types.Length; i++)
-                {
-                    Type type = types[i];
-
-                    if (type == null || type.IsAbstract)
-                        continue;
-
-                    if (type.Name != expectedTypeName || !typeof(StatusEffect).IsAssignableFrom(type))
-                        continue;
-
-                    return type;
-                }
-            }
-
-            Debug.LogWarning($"[{nameof(StatusEffectCompo)}] {expectedTypeName} type was not found.");
-            return null;
         }
 
         private StatusEffect CreateEffect(EffectType effectType)
         {
-            if (!_effectTypeFactory.TryGetValue(effectType, out Type effectClassType))
+            if (_statusEffectDict == null || !_statusEffectDict.TryGetValue(effectType, out var statusEffectSO))
             {
-                Debug.LogWarning($"[{nameof(StatusEffectCompo)}] {effectType} effect is not registered.");
+                UnityLogger.LogWarning($"[{nameof(StatusEffectCompo)}] {effectType} StatusEffectSO is not assigned on {name}.");
                 return null;
             }
 
-            if (Activator.CreateInstance(effectClassType) is not StatusEffect effect)
+            Type effectTypeClass = GetTypeByName(statusEffectSO.className);
+
+            if (effectTypeClass == null)
             {
-                Debug.LogWarning($"[{nameof(StatusEffectCompo)}] Failed to create {effectClassType.Name} instance.");
+                UnityLogger.LogWarning($"[{nameof(StatusEffectCompo)}] Could not find class '{statusEffectSO.className}' for {effectType}.");
                 return null;
             }
 
-            effect.Initialize(effectType);
+            if (Activator.CreateInstance(effectTypeClass) is not StatusEffect effect)
+            {
+                UnityLogger.LogWarning($"[{nameof(StatusEffectCompo)}] Failed to create {effectTypeClass.Name} instance.");
+                return null;
+            }
+
+            effect.Initialize(statusEffectSO);
             return effect;
+        }
+
+        private static Type GetTypeByName(string className)
+        {
+            if (string.IsNullOrWhiteSpace(className))
+                return null;
+
+            if (_typeCacheDict.TryGetValue(className, out Type cachedType))
+                return cachedType;
+
+            Type type = Type.GetType(className);
+
+            if (type == null)
+                foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+                {
+                    type = assembly.GetTypes().FirstOrDefault(t =>
+                        t.Name == className || t.FullName == className || t.FullName.EndsWith($".{className}"));
+
+                    if (type != null)
+                        break;
+                }
+
+            if (type != null)
+                _typeCacheDict[className] = type;
+
+            return type;
         }
     }
 }

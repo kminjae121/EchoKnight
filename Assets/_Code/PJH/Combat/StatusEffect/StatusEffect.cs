@@ -4,25 +4,29 @@ namespace Code.Combat.StatusEffect
 {
     public abstract class StatusEffect
     {
+        public StatusEffectSO StatusEffectSO { get; private set; }
         public EffectPolarity Polarity { get; private set; }
         public EffectType EffectType { get; private set; }
-        public int Duration { get; private set; }
         
-        public bool IsActive => _target != null && Duration > 0;
+        public int? Duration { get; private set; }
+        public int? Value { get; private set; }
+
+        public bool IsCompleted => Duration <= 0;
 
         protected Unit _target;
 
-        public void Initialize(EffectType effectType)
+        public void Initialize(StatusEffectSO statusEffectSO)
         {
-            EffectType = effectType;
-            Polarity = GetPolarity();
+            StatusEffectSO = statusEffectSO;
+            EffectType = statusEffectSO.effectType;
+            Polarity = statusEffectSO.polarity;
         }
 
-        public virtual void ApplyEffect(Unit target, int duration)
+        public virtual void SetEffect(Unit target, StatusEffectApplyData data)
         {
             _target = target;
-            Duration = duration;
-            OnApply();
+            Duration = data.Duration;
+            Value = data.Value;
         }
 
         public virtual void UpdateEffect()
@@ -30,36 +34,19 @@ namespace Code.Combat.StatusEffect
             if (_target == null || Duration <= 0)
                 return;
 
-            OnUpdate();
-            --Duration;
+            if (Duration != null)
+                --Duration;
         }
 
         public virtual void EndEffect()
         {
-            if (_target == null)
-                return;
-
-            OnEnd();
             _target = null;
-            Duration = 0;
         }
 
-        public bool IsCompleted()
-            => Duration <= 0;
+        // 실제 버프 / 디버프 로직
+        public abstract void ApplyEffect();
 
-        protected virtual EffectPolarity GetPolarity()
-            => EffectPolarity.None;
-
-        protected virtual void OnApply()
-        {
-        }
-
-        protected virtual void OnUpdate()
-        {
-        }
-
-        protected virtual void OnEnd()
-        {
-        }
+        // 중복 효과 처리
+        public abstract void Merge(StatusEffectApplyData data);
     }
 }

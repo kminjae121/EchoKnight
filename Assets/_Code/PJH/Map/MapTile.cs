@@ -37,6 +37,9 @@ namespace Code.Map
         public bool HasState(TileState state)
             => (tileState & state) == state;
 
+        public bool HasAnyState(TileState state)
+            => (tileState & state) != 0;
+
         public void SetState(TileState state, bool value)
         {
             if (value)

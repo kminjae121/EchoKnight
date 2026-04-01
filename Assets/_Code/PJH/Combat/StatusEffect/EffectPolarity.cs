@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Code.Combat.StatusEffect
+﻿namespace Code.Combat.StatusEffect
 {
     public enum EffectPolarity
     {

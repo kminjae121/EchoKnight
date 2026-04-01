@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Code.Core.Debugs;
+using Code.Core.Interfaces;
 using Code.Map;
 using Code.Navigation;
 using UnityEngine;
@@ -70,6 +71,7 @@ namespace Code.UnitSystem.UnitComponent
 
                 int remainingMovePoint = movePoint;
                 Vector3Int previousCell = startPos;
+                Vector3Int finalCell = startPos;
 
                 for (int i = 1; i < _pathLength; ++i)
                 {
@@ -89,6 +91,7 @@ namespace Code.UnitSystem.UnitComponent
                         await MoveToPoint(targetPoint);
                         remainingMovePoint -= segmentCost;
                         previousCell = nextCell;
+                        finalCell = nextCell;
 
                         if (remainingMovePoint <= 0)
                             break;
@@ -102,11 +105,13 @@ namespace Code.UnitSystem.UnitComponent
                         Vector3 partialPoint = GetWorldPosition(partialCell);
                         RotateToPoint(partialPoint);
                         await MoveToPoint(partialPoint);
+                        finalCell = partialCell;
                     }
 
                     break;
                 }
 
+                UpdateUnitTileState(startPos, finalCell);
                 OnMoveEnd?.Invoke();
             }
             catch (Exception e)
@@ -164,5 +169,32 @@ namespace Code.UnitSystem.UnitComponent
 
         private static Vector3Int GridToCell(Vector2Int gridPosition)
             => new(gridPosition.x, gridPosition.y, 0);
+
+        private void UpdateUnitTileState(Vector3Int previousCell, Vector3Int currentCell)
+        {
+            if (_owner == null || _gridMap == null)
+                return;
+
+            IMapTile previousTile = _gridMap.GetTile(previousCell.x, previousCell.y);
+            IMapTile currentTile = _gridMap.GetTile(currentCell.x, currentCell.y);
+
+            if (previousTile != null)
+            {
+                previousTile.SetState(TileState.Enemy, false);
+                previousTile.SetState(TileState.Obstacle, false);
+                previousTile.SetState(TileState.Walkable, true);
+            }
+
+            if (currentTile != null)
+            {
+                currentTile.SetState(TileState.Walkable, false);
+                currentTile.SetState(TileState.Obstacle, true);
+
+                if (_owner.IsPlayerUnit)
+                    currentTile.SetState(TileState.Enemy, false);
+                else
+                    currentTile.SetState(TileState.Enemy, true);
+            }
+        }
     }
 }

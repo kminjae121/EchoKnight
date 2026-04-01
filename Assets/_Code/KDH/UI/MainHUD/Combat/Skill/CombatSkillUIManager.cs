@@ -2,39 +2,51 @@
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.Managers;
-using Code.SkillSystem;
 using Code.UnitSystem;
+using Code.SkillSystem;
 using DG.Tweening;
+using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.UI
 {
-    [RequireComponent(typeof(RectTransform))]
     public class CombatSkillUIManager : MonoBehaviour
     {
-        [SerializeField] private List<CombatSkillButtonUI> skillSlots;
+        [Header("UI Area & Pooling")]
+        [SerializeField] private RectTransform skillArea;
+        [SerializeField] private PoolingItemSO skillButtonPoolingSO;
+
+        [Header("Slots & Buttons")]
+        [SerializeField] private List<RectTransform> skillSlotPositions;
         [SerializeField] private Button nextPageButton;
         [SerializeField] private Button prevPageButton;
         [SerializeField] private Button backgroundCancelButton;
 
+        [Header("Slide Animation")]
         [SerializeField] private float slideDuration = 0.3f;
         [SerializeField] private Ease slideEase = Ease.OutBack;
         [SerializeField] private Vector2 hiddenPosition;
         [SerializeField] private Vector2 visiblePosition;
 
-        private RectTransform _rectTransform;
         private Tween _slideTween;
         private UnitSO _currentUnit;
         private SkillSO[] _equippedSkills;
         private int _currentPage = 0;
         private const int MaxSkillsPerPage = 3;
         private bool _isSkillSelected = false;
+        
+        private PoolManagerMono _poolManager;
+        private List<CombatSkillButtonUI> _activeSkillButtons = new List<CombatSkillButtonUI>();
 
         private void Awake()
         {
-            _rectTransform = GetComponent<RectTransform>();
-            _rectTransform.anchoredPosition = hiddenPosition;
+            _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
+
+            if (skillArea != null)
+            {
+                skillArea.anchoredPosition = hiddenPosition;
+            }
 
             if (nextPageButton != null) nextPageButton.onClick.AddListener(GoToNextPage);
             if (prevPageButton != null) prevPageButton.onClick.AddListener(GoToPrevPage);
@@ -83,6 +95,17 @@ namespace Code.UI
 
             if (backgroundCancelButton != null) backgroundCancelButton.gameObject.SetActive(false);
 
+            if (_equippedSkills != null && _equippedSkills.Length > MaxSkillsPerPage)
+            {
+                if (nextPageButton != null) nextPageButton.gameObject.SetActive(true);
+                if (prevPageButton != null) prevPageButton.gameObject.SetActive(false);
+            }
+            else
+            {
+                if (nextPageButton != null) nextPageButton.gameObject.SetActive(false);
+                if (prevPageButton != null) prevPageButton.gameObject.SetActive(false);
+            }
+
             RefreshSkillSlots();
             ShowUI();
         }
@@ -94,13 +117,13 @@ namespace Code.UI
 
         private void RefreshSkillSlots()
         {
-            if (_equippedSkills == null || _equippedSkills.Length == 0)
+            foreach (var btn in _activeSkillButtons)
             {
-                foreach (var slot in skillSlots) slot.gameObject.SetActive(false);
-                if (nextPageButton != null) nextPageButton.gameObject.SetActive(false);
-                if (prevPageButton != null) prevPageButton.gameObject.SetActive(false);
-                return;
+                btn.ReturnToPool();
             }
+            _activeSkillButtons.Clear();
+
+            if (_equippedSkills == null || _equippedSkills.Length == 0) return;
 
             int startIndex = _currentPage * MaxSkillsPerPage;
             int currentTurnCost = GetCurrentUnitCost();
@@ -110,39 +133,36 @@ namespace Code.UI
                 int skillIndex = startIndex + i;
                 if (skillIndex < _equippedSkills.Length && _equippedSkills[skillIndex] != null)
                 {
-                    skillSlots[i].gameObject.SetActive(true);
-                    skillSlots[i].SetupSkill(_equippedSkills[skillIndex], currentTurnCost);
-                }
-                else
-                {
-                    skillSlots[i].gameObject.SetActive(false);
+                    if (i < skillSlotPositions.Count && skillSlotPositions[i] != null)
+                    {
+                        var btn = _poolManager.Pop<CombatSkillButtonUI>(skillButtonPoolingSO);
+                        btn.transform.SetParent(skillSlotPositions[i]);
+                        btn.transform.localPosition = Vector3.zero;
+                        btn.transform.localScale = Vector3.one;
+                        
+                        btn.SetupSkill(_equippedSkills[skillIndex], currentTurnCost);
+                        _activeSkillButtons.Add(btn);
+                    }
                 }
             }
-
-            UpdatePaginationButtons();
-        }
-
-        private void UpdatePaginationButtons()
-        {
-            int totalPages = Mathf.CeilToInt((float)_equippedSkills.Length / MaxSkillsPerPage);
-            
-            if (nextPageButton != null) 
-                nextPageButton.gameObject.SetActive(totalPages > 1 && _currentPage < totalPages - 1);
-                
-            if (prevPageButton != null) 
-                prevPageButton.gameObject.SetActive(totalPages > 1 && _currentPage > 0);
         }
 
         private void GoToNextPage()
         {
-            _currentPage++;
+            _currentPage = 1;
             RefreshSkillSlots();
+
+            if (nextPageButton != null) nextPageButton.gameObject.SetActive(false);
+            if (prevPageButton != null) prevPageButton.gameObject.SetActive(true);
         }
 
         private void GoToPrevPage()
         {
-            _currentPage--;
+            _currentPage = 0;
             RefreshSkillSlots();
+
+            if (nextPageButton != null) nextPageButton.gameObject.SetActive(true);
+            if (prevPageButton != null) prevPageButton.gameObject.SetActive(false);
         }
 
         private void HandleSkillSelected(CombatSkillSelectEvent evt)
@@ -176,14 +196,20 @@ namespace Code.UI
         private void ShowUI()
         {
             _slideTween?.Kill();
-            _slideTween = _rectTransform.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
+            if (skillArea != null)
+            {
+                _slideTween = skillArea.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
+            }
         }
 
         private void HideUI()
         {
             CancelSkillSelection();
             _slideTween?.Kill();
-            _slideTween = _rectTransform.DOAnchorPos(hiddenPosition, slideDuration).SetEase(Ease.InBack);
+            if (skillArea != null)
+            {
+                _slideTween = skillArea.DOAnchorPos(hiddenPosition, slideDuration).SetEase(Ease.InBack);
+            }
         }
     }
 }

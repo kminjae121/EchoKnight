@@ -4,12 +4,14 @@ using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using Code.UnitSystem.GimicSystem;
 using UnityEngine;
+using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace Code.UnitSystem.Combat
 {
     public class AttackApplyCompo : MonoBehaviour
     {
+        public UnityEvent AttackEndEvent;
         private void Start()
         {
             Bus<DamageEvent>.Subscribe(GetApplyDamage);
@@ -32,6 +34,8 @@ namespace Code.UnitSystem.Combat
 
                     damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
                         evt.target.transform.position, evt.atkData, evt.Owner, isCritical);
+                    
+                    AttackEndEvent?.Invoke();
                 }
             }   
         }

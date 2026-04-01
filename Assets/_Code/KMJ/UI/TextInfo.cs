@@ -2,7 +2,7 @@
 
 namespace Code.UI
 {
-    [CreateAssetMenu(fileName = "TextInfo", menuName = "TextInfo", order = 0)]
+    [CreateAssetMenu(fileName = "TextInfo", menuName = "SO/Txt/TextInfo", order = 0)]
     public class TextInfo : ScriptableObject
     {
         public string textName;

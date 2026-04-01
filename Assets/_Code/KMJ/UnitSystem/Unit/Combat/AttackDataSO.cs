@@ -2,7 +2,7 @@
 
 namespace Code.UnitSystem.Combat
 {
-    [CreateAssetMenu(fileName = "AttackData", menuName = "SO/Combat/AttackData", order = 0)]
+    [CreateAssetMenu(fileName = "AttackData", menuName = "SO/UnitSO/AttackDataSO", order = 0)]
     public class AttackDataSO : ScriptableObject
     {
         public DamageType damageType = DamageType.MELEE;

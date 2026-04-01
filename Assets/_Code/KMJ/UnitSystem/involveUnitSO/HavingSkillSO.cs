@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Code.KMJ.UnitSystem.involveUnitSO
 {
-    [CreateAssetMenu(fileName = "HavingSkillSO", menuName = "SkillSO", order = 0)]
+    [CreateAssetMenu(fileName = "HavingSkillSO", menuName = "SO/UnitSO/Skill/HavingSkill", order = 0)]
     public class HavingSkillSO : ScriptableObject
     {
         public List<SkillSO> HaveSkills = new List<SkillSO>();

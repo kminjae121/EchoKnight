@@ -7,7 +7,7 @@ namespace PixeLadder.EasyTransition.Effects
     /// <summary>
     /// A transition effect that uses a Voronoi/Cellular noise pattern.
     /// </summary>
-    [CreateAssetMenu(fileName = "NewCellularEffect", menuName = "Easy Transition/Cellular Effect")]
+    [CreateAssetMenu(fileName = "NewCellularEffect", menuName = "SO/Easy Transition/Cellular Effect")]
     public class CellularEffect : TransitionEffect
     {
         public enum AnimationDirection { Reveal, Obscure }

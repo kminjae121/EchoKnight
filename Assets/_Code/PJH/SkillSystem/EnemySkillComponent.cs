@@ -13,7 +13,7 @@ namespace Code.SkillSystem
 
         protected override void CancelSkill(BaseSkill skill)
         {
-            skill.SkillFinished();
+            skill.SkillFinished(false);
             skill.BooleanSkillUse(false);
             Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
         }

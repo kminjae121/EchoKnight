@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using Code.UnitSystem.UnitComponent;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Code.UnitSystem
 {
@@ -51,7 +49,7 @@ namespace Code.UnitSystem
             _isMoving = false;
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             _nextTile?.SetState(TileState.Enemy,false);
             Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
@@ -167,19 +165,9 @@ namespace Code.UnitSystem
             GridMap.Instance.SetGridVisible(true);
             _isMoving = false;
             IsActive = true;
-
-            
-            if (CurrentMapTile != null)
-            {
-                IMapTile tileInfos = CurrentMapTile;
-                tileInfos.SetState(TileState.Obstacle,false);
-                tileInfos.SetState(TileState.Walkable,true);
-            }
             
             CurrentMapTile = _targetMapTile;
-            
-            CurrentMapTile.SetState(TileState.Obstacle,true);
-            
+
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
                 false, new Vector3(0.1f, 0.1f, 0.1f)));

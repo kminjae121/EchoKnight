@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Combat.StatusEffect;
 using Code.Core.Debugs;
+using Code.Core.Events.Bus;
 using UnityEngine;
 
 namespace Code.UnitSystem.UnitComponent
@@ -28,7 +29,17 @@ namespace Code.UnitSystem.UnitComponent
             _statusEffectBit = 0;
             _owner = owner;
 
-            RegisterStatusEffect();
+            RegisterStatusEffects();
+        }
+
+        private void OnEnable()
+        {
+            Bus<ApplyStatusEffectEvent>.Subscribe(HandleApplyStatusEffect);
+        }
+
+        private void OnDisable()
+        {
+            Bus<ApplyStatusEffectEvent>.Unsubscribe(HandleApplyStatusEffect);
         }
 
         public void UpdateStatusEffects()
@@ -50,29 +61,27 @@ namespace Code.UnitSystem.UnitComponent
                 RemoveStatusEffect(effectType);
         }
 
-        public StatusEffect AddStatusEffect(EffectType effectType, StatusEffectApplyData data)
+        private void AddStatusEffect(EffectType effectType, StatusEffectApplyData data)
         {
             if (_owner == null)
-                return null;
+                return;
 
             if (_activeEffectDict.TryGetValue(effectType, out var activeEffect))
             {
                 activeEffect.Merge(data);
-                return activeEffect;
+                return;
             }
 
             StatusEffect effect = CreateEffect(effectType);
 
             if (effect == null)
-                return null;
+                return;
 
             effect.SetEffect(_owner, data);
             effect.ApplyEffect();
             
             _activeEffectDict[effectType] = effect;
             _statusEffectBit |= (int)effectType;
-
-            return effect;
         }
 
         private void RemoveStatusEffect(EffectType effectType)
@@ -92,7 +101,15 @@ namespace Code.UnitSystem.UnitComponent
         public bool HasAnyState(EffectType effectType)
             => (_statusEffectBit & (int)effectType) != 0;
 
-        private void RegisterStatusEffect()
+        private void HandleApplyStatusEffect(ApplyStatusEffectEvent evt)
+        {
+            if (_owner == null || evt.Target != _owner)
+                return;
+
+            AddStatusEffect(evt.EffectType, evt.ApplyData);
+        }
+
+        private void RegisterStatusEffects()
         {
             if (statusEffectList == null || statusEffectList.Count == 0)
                 return;

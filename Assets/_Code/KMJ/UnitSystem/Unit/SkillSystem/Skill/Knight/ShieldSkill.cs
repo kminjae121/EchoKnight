@@ -51,7 +51,7 @@ public class ShieldSkill : BasicUnitSkill
         if (turnCnt >= 1)
         {
             TurnManager.Instance.OnTurnStart -= HandleShieldEvent;
-            _characterUnit.InitilizeDefensivePower();
+            _characterUnit.InitializeDefensivePower();
             _shieldCompo.SetBaseMaterial();
             return;
         }

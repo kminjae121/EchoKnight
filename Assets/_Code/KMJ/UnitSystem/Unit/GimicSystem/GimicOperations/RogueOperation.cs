@@ -19,7 +19,7 @@ namespace Code.UnitSystem.GimicSystem
         public override void StartOperation(GameObject target)
         {
             target.GetComponent<UnitHealth>().ApplyDamage(_damageData, target.transform.position,
-                target.transform.position,atkData, null);
+                target.transform.position,atkData, null,false);
         }
 
         public override void ResetOperation(GameObject target)

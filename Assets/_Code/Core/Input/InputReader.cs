@@ -6,7 +6,7 @@ using UnityEngine.InputSystem;
 
 namespace Input
 {
-    [CreateAssetMenu(fileName = "Input", menuName = "Input/InputReader", order = 0)]
+    [CreateAssetMenu(fileName = "Input", menuName = "SO/Input/InputReader", order = 0)]
     public class InputReader : ScriptableObject, Controls.IPlayerActions
     {
         [SerializeField] private LayerMask whatIsGround;

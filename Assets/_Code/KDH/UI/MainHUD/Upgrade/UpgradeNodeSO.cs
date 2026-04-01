@@ -2,7 +2,7 @@
 
 namespace Code.UnitSystem.Upgrade
 {
-    [CreateAssetMenu(fileName = "UpgradeNode", menuName = "UpgradeSystem/UpgradeNode")]
+    [CreateAssetMenu(fileName = "UpgradeNode", menuName = "SO/UpgradeSystem/UpgradeNode")]
     public class UpgradeNodeSO : ScriptableObject
     {
         public string upgradeName;

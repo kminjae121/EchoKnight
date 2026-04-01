@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code.UnitManaging
 {
-    [CreateAssetMenu(fileName = "UnitStorage", menuName = "Unit/Storage", order = 0)]
+    [CreateAssetMenu(fileName = "UnitStorage", menuName = "SO/UnitSO/Storage", order = 0)]
     public class UnitStorageSO : ScriptableObject
     {
         public List<UnitSpawnSO> units = new();

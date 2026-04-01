@@ -2,7 +2,7 @@
 
 namespace Code.SkillSystem
 {
-    [CreateAssetMenu(fileName = "SkillSO/Skill", menuName = "skillSO", order = 0)]
+    [CreateAssetMenu(fileName = "SkillSO", menuName = "SO/UnitSO/Skill/UnitSkill", order = 0)]
     public class SkillSO : ScriptableObject
     {
         [Header("Basic Info")]
@@ -18,7 +18,7 @@ namespace Code.SkillSystem
 
         [Header("Detail Info")]
         public float SkillDamage;
-        public float SkillRange;
+        public int SkillRange;
         public bool IsOwnSkill;
         public SkillType SkillType;
     }

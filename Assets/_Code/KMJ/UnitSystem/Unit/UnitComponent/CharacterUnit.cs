@@ -4,8 +4,8 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
 using Code.SkillSystem;
+using Code.UI;
 using Input;
-using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -26,7 +26,9 @@ namespace Code.UnitSystem
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
-        public TurnCostGaugeManager GaugeManager { get; private set; }
+        public UnitSkillCost SkillCostCompo { get; private set; }
+
+        public SkillCostUI SkillCostUI { get; set; }
 
         #endregion
         
@@ -49,6 +51,7 @@ namespace Code.UnitSystem
             MoveCompo = GetUnitCompo<UnitMoveCompo>();
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
+            SkillCostCompo =  GetUnitCompo<UnitSkillCost>();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
@@ -71,10 +74,10 @@ namespace Code.UnitSystem
                 TriggerCompo.OnDeadEvent -= HandleDieAnimationEnd;
         }
 
-        public void SetObject(TurnCostGaugeManager manager, Button btn)
+        public void SetObject(Button btn,SkillCostUI skillCostUI)
         {
-            GaugeManager = manager;
             endTurnBtn = btn;
+            SkillCostUI = skillCostUI;
         }
 
         public override void OnTurnStart()
@@ -84,7 +87,7 @@ namespace Code.UnitSystem
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             
-            GaugeManager.AddSkillPoint(30);
+            SkillCostCompo.AddSkillCost();
             
             SkillCompo.UpdateSkillUI();
             
@@ -93,11 +96,12 @@ namespace Code.UnitSystem
 
             if (MoveCompo != null)
             {
-                MoveCompo.FindObjectInRange();
+                MoveCompo.FindObjectInRange(unitSO.moveRange);
                 MoveCompo.moveCount = 0;
             }
             
             OnTurnStartEvent?.Invoke();
+            SkillCostUI.SetSkillCostCompo(SkillCostCompo);
             
             Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }

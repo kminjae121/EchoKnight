@@ -52,29 +52,8 @@ public class BasicAttackSkill : BasicUnitSkill
     private IEnumerator MeleeAttackAction(GameObject target)
     {
         yield return new WaitForSeconds(0.4f);
-
-        animtionCompo.PlaySelectAnimation("MOVE");
-            
-        while (Vector3.Distance(_characterUnit.transform.position, target.transform.position) > attackMoveDistance)
-        {
-            Vector3 currentPos = _characterUnit.transform.position;
-            Vector3 targetPos = target.transform.position;
-                
-            targetPos.y = currentPos.y;
-
-            _characterUnit.transform.position = Vector3.MoveTowards(
-                currentPos,
-                targetPos,
-                atkMoveSpeed * Time.deltaTime
-            );
-
-            yield return null;
-        }
         
-        if (Vector3.Distance(_characterUnit.transform.position, target.transform.position) <= attackMoveDistance * 2)
-        {
-            animtionCompo.PlaySelectAnimation("BAS");
-        }
+        animtionCompo.PlaySelectAnimation("BAS");
     }
     
     public void TakeDamage()
@@ -85,24 +64,12 @@ public class BasicAttackSkill : BasicUnitSkill
 
     public void AttackEnd()
     {
-        StartCoroutine(ReturnOwnPos());
+        ReturnOwnPos();
     }
 
-    private IEnumerator ReturnOwnPos()
+    private void ReturnOwnPos()
     {
-        animtionCompo.PlaySelectAnimation("MOVE");
-            
-        while (Vector3.Distance(_characterUnit.transform.position, _ownTrm) > 0.01f)
-        {
-            _characterUnit.transform.position = Vector3.MoveTowards(
-                _characterUnit.transform.position,
-                _ownTrm,
-                atkMoveSpeed * Time.deltaTime
-            );
-            yield return null;
-        }
         animtionCompo.PlaySelectAnimation("IDLE");
-        Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Knight, null));
         SkillEnd();
     }
 

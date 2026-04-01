@@ -78,7 +78,7 @@ namespace Code.SkillSystem
             Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             Bus<UsingSkillEvent>.Unsubscribe(BooleanSkill);
         }

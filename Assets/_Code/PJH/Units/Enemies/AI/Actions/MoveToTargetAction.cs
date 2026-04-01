@@ -14,7 +14,7 @@ namespace Code.UnitSystem.Enemies.AI
     [NodeDescription(name: "MoveToTarget", story: "[Enemy] move to [Target]", category: "Action", id: "b573e234c5921f41ffd38ca38e3e3074")]
     public partial class MoveToTargetAction : Action
     {
-        [SerializeReference] public BlackboardVariable<AbstractEnemyUnit> Enemy;
+        [SerializeReference] public BlackboardVariable<EnemyUnit> Enemy;
         [SerializeReference] public BlackboardVariable<GameObject> Target;
 
         private static readonly Vector2Int[] Offsets =

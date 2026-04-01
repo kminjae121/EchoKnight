@@ -9,7 +9,7 @@ using Unity.Properties;
 [NodeDescription(name: "InvokeTurnEnd", story: "[Enemy] invoke turn end", category: "Action", id: "a5df9b381357813153e8667bed677d48")]
 public partial class InvokeTurnEndAction : Action
 {
-    [SerializeReference] public BlackboardVariable<AbstractEnemyUnit> Enemy;
+    [SerializeReference] public BlackboardVariable<EnemyUnit> Enemy;
 
     protected override Status OnStart()
     {

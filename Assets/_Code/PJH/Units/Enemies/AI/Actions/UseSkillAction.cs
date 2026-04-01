@@ -11,7 +11,7 @@ namespace Code.UnitSystem.Enemies.AI
     [NodeDescription(name: "UseSkill", story: "[Enemy] use selected skill to [Target]", category: "Action", id: "783da2698f5bd1e0e9055ff7658a1dd8")]
     public partial class UseSkillAction : Action
     {
-        [SerializeReference] public BlackboardVariable<AbstractEnemyUnit> Enemy;
+        [SerializeReference] public BlackboardVariable<EnemyUnit> Enemy;
         [SerializeReference] public BlackboardVariable<GameObject> Target;
 
         private bool _isAttacking;

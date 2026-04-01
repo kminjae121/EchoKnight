@@ -116,7 +116,6 @@ namespace Code.Navigation
             openList.Push(startAstarNode);
             bestGByCell[startAstarNode.cellPos] = startAstarNode.g;
             
-            UnityLogger.Log("1");
 
             while (openList.Count > 0)
             {
@@ -131,8 +130,6 @@ namespace Code.Navigation
                 if (bestGByCell.TryGetValue(currentNode.cellPos, out float bestKnownG)
                     && currentNode.g > bestKnownG)
                     continue;
-                
-                UnityLogger.Log("2");
 
                 closedSet.Add(currentNode.cellPos);
 
@@ -167,8 +164,6 @@ namespace Code.Navigation
                         g = newG,
                         f = newG + CalculateH(nextNode.cellPos, endNode.cellPos)
                     });
-                    
-                    UnityLogger.Log("3");
                 }
             }
 
@@ -185,8 +180,6 @@ namespace Code.Navigation
                 path.Add(last); // 시작점
                 path.Reverse();
             }
-
-            UnityLogger.Log("4");
             return (path, result);
         }
 

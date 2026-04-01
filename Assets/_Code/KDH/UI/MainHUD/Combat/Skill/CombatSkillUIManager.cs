@@ -30,8 +30,8 @@ namespace Code.UI
         [SerializeField] private Vector2 visiblePosition;
 
         private Tween _slideTween;
-        private UnitSO _currentUnit;
-        private SkillSO[] _equippedSkills;
+        private List<SkillSO> _equippedSkills = new List<SkillSO>();
+        private SkillComponent _currentSkillCompo;
         private int _currentPage = 0;
         private const int MaxSkillsPerPage = 3;
         private bool _isSkillSelected = false;
@@ -52,7 +52,8 @@ namespace Code.UI
             if (prevPageButton != null) prevPageButton.onClick.AddListener(GoToPrevPage);
             if (backgroundCancelButton != null) backgroundCancelButton.onClick.AddListener(CancelSkillSelection);
 
-            Bus<CharacterInfoEvent>.Subscribe(HandleTurnStart);
+            Bus<SkillUIEvent>.Subscribe(HandleSkillReceived);
+            
             Bus<CombatSkillSelectEvent>.Subscribe(HandleSkillSelected);
             Bus<UnitTurnEndEvent>.Subscribe(HandleTurnEnd);
             
@@ -65,7 +66,7 @@ namespace Code.UI
             if (prevPageButton != null) prevPageButton.onClick.RemoveListener(GoToPrevPage);
             if (backgroundCancelButton != null) backgroundCancelButton.onClick.RemoveListener(CancelSkillSelection);
 
-            Bus<CharacterInfoEvent>.Unsubscribe(HandleTurnStart);
+            Bus<SkillUIEvent>.Unsubscribe(HandleSkillReceived);
             Bus<CombatSkillSelectEvent>.Unsubscribe(HandleSkillSelected);
             Bus<UnitTurnEndEvent>.Unsubscribe(HandleTurnEnd);
 
@@ -80,22 +81,17 @@ namespace Code.UI
             }
         }
 
-        private void HandleTurnStart(CharacterInfoEvent evt)
+        private void HandleSkillReceived(SkillUIEvent evt)
         {
-            if (evt.Unit == null)
-            {
-                HideUI();
-                return;
-            }
-
-            _currentUnit = evt.Unit.Data;
-            _equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.UnitType);
+            _equippedSkills = evt.Skills;
+            _currentSkillCompo = evt.SkillCompo;
+            
             _currentPage = 0;
             _isSkillSelected = false;
 
             if (backgroundCancelButton != null) backgroundCancelButton.gameObject.SetActive(false);
 
-            if (_equippedSkills != null && _equippedSkills.Length > MaxSkillsPerPage)
+            if (_equippedSkills != null && _equippedSkills.Count > MaxSkillsPerPage)
             {
                 if (nextPageButton != null) nextPageButton.gameObject.SetActive(true);
                 if (prevPageButton != null) prevPageButton.gameObject.SetActive(false);
@@ -104,6 +100,12 @@ namespace Code.UI
             {
                 if (nextPageButton != null) nextPageButton.gameObject.SetActive(false);
                 if (prevPageButton != null) prevPageButton.gameObject.SetActive(false);
+            }
+
+            if (_equippedSkills == null || _equippedSkills.Count == 0)
+            {
+                HideUI();
+                return;
             }
 
             RefreshSkillSlots();
@@ -123,7 +125,7 @@ namespace Code.UI
             }
             _activeSkillButtons.Clear();
 
-            if (_equippedSkills == null || _equippedSkills.Length == 0) return;
+            if (_equippedSkills == null || _equippedSkills.Count == 0) return;
 
             int startIndex = _currentPage * MaxSkillsPerPage;
             int currentTurnCost = GetCurrentUnitCost();
@@ -131,7 +133,7 @@ namespace Code.UI
             for (int i = 0; i < MaxSkillsPerPage; i++)
             {
                 int skillIndex = startIndex + i;
-                if (skillIndex < _equippedSkills.Length && _equippedSkills[skillIndex] != null)
+                if (skillIndex < _equippedSkills.Count && _equippedSkills[skillIndex] != null)
                 {
                     if (i < skillSlotPositions.Count && skillSlotPositions[i] != null)
                     {
@@ -140,7 +142,7 @@ namespace Code.UI
                         btn.transform.localPosition = Vector3.zero;
                         btn.transform.localScale = Vector3.one;
                         
-                        btn.SetupSkill(_equippedSkills[skillIndex], currentTurnCost);
+                        btn.SetupSkill(_equippedSkills[skillIndex], _currentSkillCompo, currentTurnCost);
                         _activeSkillButtons.Add(btn);
                     }
                 }

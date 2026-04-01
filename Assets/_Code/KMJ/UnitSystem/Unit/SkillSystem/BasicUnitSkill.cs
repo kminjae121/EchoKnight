@@ -86,7 +86,7 @@ namespace Code.SkillSystem
 
             if (_targetEnemy == null) return;
 
-            _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.UsingSkillCost);
+            _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
             
             if (RotationCompo != null)
                 RotationCompo.SetDir(_targetEnemy.transform.position);
@@ -118,7 +118,7 @@ namespace Code.SkillSystem
             if (_characterUnit == null || _characterUnit.SkillCostCompo == null)
                 return;
 
-            if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.UsingSkillCost))
+            if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.SkillCost))
             {
                 Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
@@ -127,12 +127,12 @@ namespace Code.SkillSystem
                 return;
             }
 
-            _characterUnit.SkillCostUI.SetShowGauge(_characterUnit.SkillCostCompo.CheckSkillCost(SkillSO.UsingSkillCost));
+            _characterUnit.SkillCostUI.SetShowGauge(_characterUnit.SkillCostCompo.CheckSkillCost(SkillSO.SkillCost));
             
             if (SkillSO.IsOwnSkill)
             {
                 SkillStartEvent();
-                _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.UsingSkillCost);
+                _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
                 _characterUnit.MoveCompo.ResetTile();
                 StartEvent();
                 SkillEvent?.Invoke(null);

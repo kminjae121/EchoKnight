@@ -29,6 +29,7 @@ namespace Code.UI
         private Vector2 _originalPosition;
         private Tween _moveTween;
         private SkillSO _currentSkill;
+        private SkillComponent _skillCompo;
         private bool _isSelected;
         private bool _isInteractable;
 
@@ -72,6 +73,7 @@ namespace Code.UI
         public void ResetItem()
         {
             _currentSkill = null;
+            _skillCompo = null;
             _isSelected = false;
             _isInteractable = false;
             ApplyColorMultiplier(1f);
@@ -90,16 +92,17 @@ namespace Code.UI
             }
         }
 
-        public void SetupSkill(SkillSO skill, int currentTurnCost)
+        public void SetupSkill(SkillSO skill, SkillComponent compo, int currentTurnCost)
         {
             _currentSkill = skill;
+            _skillCompo = compo;
             _isSelected = false;
             
             if (skillIcon != null) skillIcon.sprite = skill.skillUIImage;
             if (damageText != null) damageText.text = skill.SkillDamage.ToString();
-            if (costText != null) costText.text = skill.SkillCost.ToString();
+            if (costText != null) costText.text = skill.SkillValue.ToString();
 
-            _isInteractable = currentTurnCost >= skill.SkillCost;
+            _isInteractable = currentTurnCost >= skill.SkillValue;
 
             if (!_isInteractable)
             {
@@ -160,6 +163,12 @@ namespace Code.UI
             _moveTween?.Kill();
             _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + selectYOffset, animDuration).SetEase(animEase);
             
+            if (_skillCompo != null && _currentSkill != null)
+            {
+                _skillCompo.CancelAllSkill();
+                _skillCompo.StartSkill(_currentSkill);
+            }
+            
             Bus<CombatSkillSelectEvent>.Raise(new CombatSkillSelectEvent(_currentSkill));
         }
 
@@ -178,6 +187,11 @@ namespace Code.UI
             {
                 _isSelected = false;
                 ResetPosition();
+                
+                if (_skillCompo != null)
+                {
+                    _skillCompo.CancelAllSkill();
+                }
             }
         }
 

@@ -33,12 +33,6 @@ namespace Code.UnitSystem.Combat
                     damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
                         evt.target.transform.position, evt.atkData, evt.Owner, isCritical);
                 }
-            
-                if (evt.Owner as CharacterUnit)
-                {
-                    KnightEvent(evt);
-                    RogueEvent(evt);
-                }
             }   
         }
 
@@ -60,29 +54,6 @@ namespace Code.UnitSystem.Combat
             }
 
             return isCritical;
-        }
-
-        private static void RogueEvent(DamageEvent evt)
-        {
-            CharacterUnit unit = evt.Owner as CharacterUnit;
-            
-            if (evt.target.TryGetComponent(out MarkComponent mark))
-            {
-                if (mark.isMarking == true)
-                {
-                    Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target, GimicOption.TargetGimic));
-                    return;
-                }
-            }
-
-            if ((evt.Owner.unitSO.UnitType == UnitType.Bandlt && evt.addDamage != 0) || unit.IsConfirmationSkill)
-                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Bandlt, evt.target,GimicOption.TargetGimic));
-        }
-
-        private static void KnightEvent(DamageEvent evt)
-        {
-            if (evt.Owner.unitSO.UnitType == UnitType.Knight && evt.isUseOwnGimic)
-                Bus<UnitGimicEvent>.Raise(new UnitGimicEvent(UnitType.Knight, null, GimicOption.OwnGimic));
         }
     }
 }

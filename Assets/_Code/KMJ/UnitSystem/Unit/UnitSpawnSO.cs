@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Code.UnitSystem
 {
-    [CreateAssetMenu(fileName = "Unit", menuName = "Unit/UnitInfo", order = 0)]
+    [CreateAssetMenu(fileName = "UnitInfo", menuName = "SO/UnitSO/UnitInfo", order = 0)]
     public class UnitSpawnSO : ScriptableObject
     {
         public string UnitName;

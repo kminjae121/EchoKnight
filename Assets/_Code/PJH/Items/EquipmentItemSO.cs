@@ -11,7 +11,7 @@ namespace Code.Items
         Legendary
     }
 
-    [CreateAssetMenu(fileName = "ArtifactSO", menuName = "ArtifactSystem/ArtifactSO")]
+    [CreateAssetMenu(fileName = "ArtifactSO", menuName = "SO/ArtifactSystem/ArtifactSO")]
     public class EquipmentItemSO : ItemSO
     {
         public ArtifactRarity rarity;

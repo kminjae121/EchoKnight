@@ -2,7 +2,7 @@
 
 namespace Code.UnitSystem
 {
-    [CreateAssetMenu(fileName = "UnitIngGameSO", menuName = "UnitIngGameSO", order = 0)]
+    [CreateAssetMenu(fileName = "UnitIngGameSO", menuName = "SO/UnitSO/UnitInGame", order = 0)]
     public class UnitInGameSO : ScriptableObject
     {
         public UnitType UnitType = UnitType.None;

@@ -27245,6 +27245,7 @@ GameObject:
   - component: {fileID: 533353563}
   - component: {fileID: 533353562}
   - component: {fileID: 533353561}
+  - component: {fileID: 533353565}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -27398,10 +27399,35 @@ Camera:
   m_HDR: 1
   m_AllowMSAA: 1
   m_AllowDynamicResolution: 0
-  m_ForceIntoRT: 0
+  m_ForceIntoRT: 1
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!114 &533353565
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 533353559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7bb42831ee5422f409e7f24f9e7488ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EPO::EPOOutline.Outliner
+  stage: 1
+  renderingStrategy: 0
+  renderingMode: 1
+  outlineLayerMask: -1
+  primaryBufferSizeMode: 3
+  primaryRendererScale: 0.75
+  primarySizeReference: 500
+  blurShift: 0
+  dilateShift: 2
+  dilateIterations: 1
+  dilateQuality: 0
+  blurIterations: 1
+  blurType: 1
 --- !u!1 &534784051
 GameObject:
   m_ObjectHideFlags: 0
@@ -59153,6 +59179,7 @@ GameObject:
   - component: {fileID: 1107215227}
   - component: {fileID: 1107215229}
   - component: {fileID: 1107215228}
+  - component: {fileID: 1107215230}
   m_Layer: 0
   m_Name: Cylinder (5)
   m_TagString: Untagged
@@ -59232,6 +59259,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1107215226}
   m_Mesh: {fileID: 2534964839176971238, guid: 225fa02056d29994c85f7a60422ed4a6, type: 3}
+--- !u!114 &1107215230
+MonoBehaviour:
+  m_ObjectHideFlags: 2
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1107215226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EPO::EPOOutline.TargetStateListener
 --- !u!1 &1109316230
 GameObject:
   m_ObjectHideFlags: 0

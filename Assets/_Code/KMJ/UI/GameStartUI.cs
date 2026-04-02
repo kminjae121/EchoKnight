@@ -10,7 +10,8 @@ namespace Code.UI
 
         public void StartGame()
         {
-            img.DOFade(0, 1.5f)
+            img.DOFade(0, 2f)
+                .SetEase(Ease.InQuint)
                 .OnComplete(() =>
                 {
                     img.gameObject.SetActive(false);

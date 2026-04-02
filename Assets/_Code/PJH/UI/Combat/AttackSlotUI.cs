@@ -52,7 +52,7 @@ namespace Code.UI
                 skillDescText.text = skill.SkillDescription;
 
             if (skillCostText != null)
-                skillCostText.text = $"코스트 - {skill.SkillCost}";
+                skillCostText.text = $"코스트 - {skill.SkillValue}";
 
             if (skillIcon != null)
                 skillIcon.sprite = skill.skillUIImage;

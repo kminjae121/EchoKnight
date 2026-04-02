@@ -10,8 +10,8 @@ namespace Code.SkillSystem
         public string skillName;
         [TextArea(3, 15)]
         public string SkillDescription;
+        public int SkillValue;
         public int SkillCost;
-        public int UsingSkillCost;
         public Sprite skillUIImage;
         public string className;
         public int skillPrice;

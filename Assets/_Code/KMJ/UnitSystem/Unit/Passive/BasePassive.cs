@@ -8,7 +8,7 @@ namespace _Code.Passive
         public abstract void StopPassive();
 
         public virtual void HandleTurnStartEvent()
-        {
+        {   
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Code.KMJ.UnitSystem;
 using Code.SkillSystem;
 using Code.UnitSystem;
 using NUnit.Framework;
@@ -19,6 +20,8 @@ namespace _Code.Passive
         public void Initialize(Unit owner)
         {
             _unit = owner;
+
+            _passiveList = PassiveStorage.Instance.GetPassive(_unit.unitSO.UnitType);
 
             FindPassive();
         }

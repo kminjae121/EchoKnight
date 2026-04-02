@@ -9,6 +9,7 @@ namespace Code.Core.Interfaces
         Vector3 WorldPos { get; }
         
         bool HasState(TileState state);
+        bool HasAnyState(TileState state);
 
         void SetState(TileState state, bool value);
 
@@ -17,4 +18,3 @@ namespace Code.Core.Interfaces
         void ClearOverlay();
     }
 }
-

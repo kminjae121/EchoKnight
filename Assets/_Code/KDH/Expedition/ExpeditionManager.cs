@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement; 
 using Code.Expedition.Data;
-using PixeLadder.EasyTransition; 
+using PixeLadder.EasyTransition;
 
 namespace Code.Expedition.Managers
 {

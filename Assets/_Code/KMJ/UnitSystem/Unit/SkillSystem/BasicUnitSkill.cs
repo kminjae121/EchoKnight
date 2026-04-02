@@ -18,8 +18,6 @@ namespace Code.SkillSystem
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
-        
-
         private void OnEnable()
         {
             if (_characterUnit != null)
@@ -71,6 +69,9 @@ namespace Code.SkillSystem
         public override void SkillFinished(bool isCancel)
         {
             base.SkillFinished(isCancel);
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+            if(isCancel)
+                _characterUnit.SkillCostUI.ReturnShowFilled();
         }
 
         public override void AttackEnemy()
@@ -83,10 +84,7 @@ namespace Code.SkillSystem
 
             if (_targetEnemy == null) return;
 
-            if (_characterUnit.SkillCostCompo != null)
-            {
-                _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
-            }
+            _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
             
             if (RotationCompo != null)
                 RotationCompo.SetDir(_targetEnemy.transform.position);
@@ -102,6 +100,10 @@ namespace Code.SkillSystem
             
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
+
+            if (SkillSO.IsOwnSkill)
+                _characterUnit.OutLineCompo.ResetOutLine();
+            
            
             SkillFinished(false);
         }
@@ -117,6 +119,16 @@ namespace Code.SkillSystem
 
             if (_characterUnit == null || _characterUnit.SkillCostCompo == null)
                 return;
+            
+            
+            if (SkillSO.SkillType == SkillType.BasicSkill && SkillCount >= 1)
+            {
+                SkillFinished(false);
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("일반 공격은 한번만 사용가능합니다."));
+                return;
+            }
+                
+            SkillCount += 1;
 
             if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.SkillCost))
             {
@@ -127,25 +139,22 @@ namespace Code.SkillSystem
                 return;
             }
 
-            if (SkillSO.IsOwnSkill)
-            {
-                SkillStartEvent();
-                _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
-                _characterUnit.MoveCompo.ResetTile();
-                StartEvent();
-                SkillEvent?.Invoke(null);
-            }
-            else
-            {
-                _characterUnit.MoveCompo.ResetTile();
-                SkillStartEvent();
-                CheckCanAttack();
-                BooleanSkillUse(true);
-            }
+            _characterUnit.SkillCostUI.SetShowGauge(_characterUnit.SkillCostCompo.CheckSkillCost(SkillSO.SkillCost));
+            
+            _characterUnit.MoveCompo.ResetTile();
+            SkillStartEvent();
+            CheckCanAttack();
+            BooleanSkillUse(true);
         }
-        
+
         public void FindEnemyIsThere(GameObject enemy)
         {
+            if (SkillSO.IsOwnSkill)
+            {
+                _targetEnemy = enemy;
+                return;
+            }
+            
             if (enemy == null)
             {
                 _targetEnemy = null;

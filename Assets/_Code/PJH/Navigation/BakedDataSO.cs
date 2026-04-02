@@ -27,8 +27,7 @@ namespace Code.Navigation
                 Vector3Int normalizedCellPos = GetNormalizedCellPos(node);
                 node.SetCellPos(normalizedCellPos);
 
-                if (!_pointDict.ContainsKey(normalizedCellPos))
-                    _pointDict.Add(normalizedCellPos, node);
+                _pointDict.TryAdd(normalizedCellPos, node);
             }
         }
         
@@ -63,13 +62,11 @@ namespace Code.Navigation
             if (node.neighbors != null && node.neighbors.Count > 0)
                 return node.neighbors[0].startCellPos;
 
-            if (GridMap.Instance != null)
-            {
-                Vector2Int gridPos = GridMap.Instance.WorldToGridPosition(node.worldPos);
-                return new Vector3Int(gridPos.x, gridPos.y, 0);
-            }
-
-            return node.cellPos;
+            if (GridMap.Instance == null)
+                return node.cellPos;
+            
+            Vector2Int gridPos = GridMap.Instance.WorldToGridPosition(node.worldPos);
+            return new Vector3Int(gridPos.x, gridPos.y, 0);
         }
     }
 }

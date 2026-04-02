@@ -1,4 +1,8 @@
-﻿using DG.Tweening;
+﻿using System;
+using System.Collections;
+using Code.Core.Managers;
+using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,15 +10,44 @@ namespace Code.UI
 {
     public class GameStartUI : MonoBehaviour
     {
+        [SerializeField] private Image img2;
         [SerializeField] private Image img;
+        [SerializeField] private TextMeshProUGUI txt;
+        [SerializeField] private Button btn;
+        [SerializeField] private Transform img2Trm;
+        [SerializeField] private Transform startTrm;
+        [SerializeField] private Transform endTrm;
 
-        public void StartGame()
+        private void Awake()
         {
-            img.DOFade(0, 1.5f)
+            img2.transform.position = startTrm.position;
+        }
+
+        private void Start()
+        {
+            StartGame();
+            StartCoroutine(WaitStart());
+        }
+
+        private void StartGame()
+        {
+            DOTween.Sequence(img2.transform.DOMoveX(img2Trm.position.x , 0.8f))
+                .SetDelay(0.7f)
+                .Append(img2.transform.DOMoveX(endTrm.position.x, 0.8f))
+                .Append(txt.DOFade(0,0.3f))
+                .Append(img.DOFade(0, 2f))
+                .SetEase(Ease.InQuint)
                 .OnComplete(() =>
                 {
                     img.gameObject.SetActive(false);
+                    img2.gameObject.SetActive(false);
                 });
+        }
+
+        private IEnumerator WaitStart()
+        {
+            yield return new WaitForSeconds(0.3f);
+            btn.onClick?.Invoke();
         }
         
     }

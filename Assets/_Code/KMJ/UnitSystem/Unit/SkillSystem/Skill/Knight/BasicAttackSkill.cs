@@ -1,8 +1,6 @@
 using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
-using Code.UnitSystem.Combat;
-using Code.UnitSystem.GimicSystem;
 using Code.SkillSystem;
 using UnityEngine;
 

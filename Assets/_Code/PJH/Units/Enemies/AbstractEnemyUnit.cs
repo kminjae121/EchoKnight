@@ -82,6 +82,14 @@ namespace Code.UnitSystem.Enemies
             base.OnTurnEnd();
         }
 
+        protected override void Dead()
+        {
+            base.Dead();
+            if (Core.Managers.StageManager.Instance != null)
+                Core.Managers.StageManager.Instance.RemoveEnemy(this.gameObject);
+            gameObject.SetActive(false);
+        }
+
         protected virtual bool PrepareTurnStart()
             => UpdateTargetBlackboard();
 

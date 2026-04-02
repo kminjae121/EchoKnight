@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using TMPro;
 using UnityEngine;
 
 namespace Code.Managers
@@ -11,12 +10,19 @@ namespace Code.Managers
     public class TurnManager : MonoBehaviour
     {
         public static TurnManager Instance { get; private set; }
+        
+        [Header("Turn Settings")]
         [SerializeField] private float baseTurnGauge = 100f;
+        [SerializeField] private float roundIntervalAV = 100f;
+        
+        [Header("Dependencies")]
         [SerializeField] private UnitManager unitManager;
-        [SerializeField] private TextMeshProUGUI turnUnitText;
+
+        public int CurrentRound { get; private set; } = 1;
 
         private ITurnable _currentTurnUnit;
         private List<ITurnable> _units;
+        private RoundTracker _roundTracker;
 
         public event Action OnTurnStart;
 
@@ -29,37 +35,46 @@ namespace Code.Managers
             }
 
             Instance = this;
-            
             Bus<UnitTurnEndEvent>.Subscribe(OnUnitTurnEnd);
         }
 
         private void OnDestroy()
         {
-            Bus<UnitTurnEndEvent>.Unsubscribe(OnUnitTurnEnd);
-            
             if (Instance == this)
+            {
                 Instance = null;
+            }
 
             Bus<UnitTurnEndEvent>.Unsubscribe(OnUnitTurnEnd);
         }
 
         public void StartBattle()
         {
+            CurrentRound = 1;
+            
+            _roundTracker = new RoundTracker();
+            _roundTracker.NextRound = 1;
+            _roundTracker.TurnGauge = roundIntervalAV;
+
             RefreshUnits();
 
             foreach (var unit in _units)
+            {
+                if (unit is RoundTracker) continue;
                 unit.TurnGauge = CalculateBaseTurnGauge(unit);
+            }
 
             StartNextTurn();
         }
 
         private float CalculateBaseTurnGauge(ITurnable unit)
-            => baseTurnGauge / Mathf.Max(1, unit.TurnSpeed);
+        {
+            return baseTurnGauge / Mathf.Max(1f, unit.TurnSpeed);
+        }
 
         private void OnUnitTurnEnd(UnitTurnEndEvent evt)
         {
-            if (_currentTurnUnit == null)
-                return;
+            if (_currentTurnUnit == null) return;
             
             _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
             _currentTurnUnit = null;
@@ -71,34 +86,49 @@ namespace Code.Managers
         {
             RefreshUnits();
             
-            OnTurnStart?.Invoke();
-            
             _currentTurnUnit = GetNextUnit();
             AdvanceTime(_currentTurnUnit);
-            _currentTurnUnit.OnTurnStart();
 
-            UpdateCurrentTurnUI();
+            if (_currentTurnUnit is RoundTracker rt)
+            {
+                CurrentRound = rt.NextRound;
+                rt.NextRound = CurrentRound + 1;
+                rt.TurnGauge = roundIntervalAV;
+                _currentTurnUnit = null;
+                
+                StartNextTurn();
+                return;
+            }
+
+            OnTurnStart?.Invoke();
+            _currentTurnUnit.OnTurnStart();
 
             Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
         }
 
         private void RefreshUnits()
         {
-            _units = unitManager
-                .GetAllUnits()
-                .OfType<ITurnable>()
-                .ToList();
+            _units = unitManager.GetAllUnits().OfType<ITurnable>().ToList();
+            
+            if (_roundTracker != null)
+            {
+                _units.Add(_roundTracker);
+            }
         }
 
         private ITurnable GetNextUnit()
-            => _units.OrderBy(u => u.TurnGauge).First();
+        {
+            return _units.OrderBy(u => u.TurnGauge).First();
+        }
 
         private void AdvanceTime(ITurnable actingUnit)
         {
             float delta = actingUnit.TurnGauge;
 
             foreach (var unit in _units)
+            {
                 unit.TurnGauge -= delta;
+            }
 
             ClampAllTurnGauge();
         }
@@ -106,42 +136,27 @@ namespace Code.Managers
         private void ClampAllTurnGauge()
         {
             foreach (var unit in _units)
+            {
                 unit.TurnGauge = Mathf.Max(0f, unit.TurnGauge);
+            }
         }
         
-        /// <summary>
-        /// 턴 조작 스킬용 함수
-        /// 양수 : 지연, 음수 : 가속
-        /// </summary>
-        /// <param name="unit"></param>
-        /// <param name="delta"></param>
         public void ModifyTurnGauge(ITurnable unit, float delta)
         {
             unit.TurnGauge += delta;
             unit.TurnGauge = Mathf.Max(0f, unit.TurnGauge);
+            Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
         }
 
         public void ForceImmediateTurn(ITurnable unit)
         {
             unit.TurnGauge = 0f;
-        }
-
-        #region UI Function
-
-        private void UpdateCurrentTurnUI()
-        {
-            if (turnUnitText != null && _currentTurnUnit != null)
-                turnUnitText.text = _currentTurnUnit.UnitName;
+            Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
         }
 
         public List<ITurnable> GetTimelineUnits(int count)
         {
-            return _units
-                .OrderBy(u => u.TurnGauge)
-                .Take(count)
-                .ToList();
+            return _units.OrderBy(u => u.TurnGauge).Take(count).ToList();
         }
-
-        #endregion
     }
 }

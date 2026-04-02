@@ -1,4 +1,4 @@
-﻿using _Code.KMJ.UnitSystem;
+﻿using _Code.UnitSystem;
 using UnityEngine;
 
 namespace Code.UnitSystem

@@ -37,7 +37,7 @@ namespace Code.UnitSystem.UnitComponent
             SetPathAndMove(GridToCell(startPos), GridToCell(destination));
         }
 
-        public async void SetPathAndMove(Vector3Int startPos, Vector3Int destination)
+        private async void SetPathAndMove(Vector3Int startPos, Vector3Int destination)
         {
             try
             {
@@ -131,7 +131,7 @@ namespace Code.UnitSystem.UnitComponent
             if (segmentCost <= 0 || remainingMovePoint <= 0)
                 return startCell;
 
-            Vector3Int direction = new Vector3Int
+            Vector3Int dir = new Vector3Int
             (
                 Math.Sign(delta.x),
                 Math.Sign(delta.y),
@@ -143,13 +143,13 @@ namespace Code.UnitSystem.UnitComponent
 
             for (int step = 0; step < maxStep; ++step)
             {
-                Vector3Int nextCell = currentCell + direction;
+                Vector3Int nextCell = currentCell + dir;
 
                 if (!CanTraverseCell(nextCell))
                     break;
 
                 currentCell = nextCell;
-                movedCost++;
+                ++movedCost;
             }
 
             return currentCell;
@@ -194,11 +194,7 @@ namespace Code.UnitSystem.UnitComponent
             {
                 currentTile.SetState(TileState.Walkable, false);
                 currentTile.SetState(TileState.Obstacle, true);
-
-                if (_owner.IsPlayerUnit)
-                    currentTile.SetState(TileState.Enemy, false);
-                else
-                    currentTile.SetState(TileState.Enemy, true);
+                currentTile.SetState(TileState.Enemy, !_owner.IsPlayerUnit);
             }
         }
     }

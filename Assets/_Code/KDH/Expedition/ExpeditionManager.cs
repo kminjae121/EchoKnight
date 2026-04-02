@@ -5,6 +5,7 @@ using _00.Core._02.Scripts._01.Manager;
 using Code.Core;
 using Code.Core.Events.Bus;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.SceneManagement; 
 using Code.Expedition.Data;
 using PixeLadder.EasyTransition; 
@@ -40,7 +41,7 @@ namespace Code.Expedition.Managers
         private static string _savedCurrentNodeName = "";
         private static HashSet<string> _savedClearedNodes = new HashSet<string>();
 
-        private Canvas canvas = null; 
+        private Canvas _canvas = null; 
 
         protected override void Awake()
         {
@@ -51,8 +52,6 @@ namespace Code.Expedition.Managers
         private void Start()
         {
             InitializeExpeditionScene();
-
-            canvas = FindAnyObjectByType<Canvas>();
         }
 
         private void Update()
@@ -293,8 +292,19 @@ namespace Code.Expedition.Managers
                     {
                         if (mapping.eventNodeData == currentEventData)
                         {
+                            if (_canvas == null)
+                            {
+                                Canvas[] canvas = FindObjectsOfType<Canvas>();
+
+                                foreach (var canva in canvas)
+                                {
+                                    if (canva.gameObject.name == "UI")
+                                        _canvas = canva;
+                                }
+                            }
+                            
                             targetUI = mapping.uiPanel;
-                            GameObject ui = Instantiate(eventUIMappings[0].uiPanel,canvas.transform);
+                            GameObject ui = Instantiate(eventUIMappings[0].uiPanel,_canvas.transform);
                             ui.transform.localPosition = new Vector3(13, -82, -12f);
                             break;
                         }
@@ -303,7 +313,7 @@ namespace Code.Expedition.Managers
                     if (targetUI == null && eventUIMappings.Count > 0)
                     {
                         targetUI = eventUIMappings[0].uiPanel;
-                        GameObject ui = Instantiate(eventUIMappings[0].uiPanel,canvas.transform);
+                        GameObject ui = Instantiate(eventUIMappings[0].uiPanel,_canvas.transform);
                         ui.transform.localPosition = new Vector3(13, -82, -12f);
                         
                         Debug.Log("매칭되는 EventNodeSO가 없어 기본 UI를 사용합니다.");

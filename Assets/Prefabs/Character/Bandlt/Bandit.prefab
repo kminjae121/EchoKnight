@@ -523,6 +523,7 @@ GameObject:
   - component: {fileID: 3840525881294530688}
   - component: {fileID: 8752380451699132067}
   - component: {fileID: 7245421633850133361}
+  - component: {fileID: 8785889583483896561}
   m_Layer: 7
   m_Name: SkillComponent
   m_TagString: Untagged
@@ -561,6 +562,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: da3c0e6fa6cb1ae4a83af31605467c23, type: 2}
   - {fileID: 11400000, guid: e6c678ee70b8f4244b6ff4c1f738697a, type: 2}
   - {fileID: 11400000, guid: 3547ba0eb4e6b574aa423bbdc23a47b9, type: 2}
+  _intputReader: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
 --- !u!114 &8081901703055209266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -661,6 +663,21 @@ MonoBehaviour:
   IsActive: 0
   <CriticalSpot>k__BackingField: {fileID: 8929876921273345976}
   _characterUnit: {fileID: 2682628836158502387}
+--- !u!114 &8785889583483896561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1196206733201850435}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7716dad4601f409a91e0b8ffb6899613, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitSkillCost
+  skillCostChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &1198076909313212270
 GameObject:
   m_ObjectHideFlags: 0
@@ -1392,6 +1409,7 @@ Transform:
   - {fileID: 4282370355982358629}
   - {fileID: 8999164334913300090}
   - {fileID: 4817241397350440807}
+  - {fileID: 4137789877076245374}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2682628836158502387
@@ -3964,6 +3982,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4466807914262883023}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &9045382278905667321
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4137789877076245374}
+  - component: {fileID: 2462129524675625387}
+  m_Layer: 7
+  m_Name: Status
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4137789877076245374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9045382278905667321}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 663893733135974173}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2462129524675625387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9045382278905667321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4132b6426184e93a565253cbff9cbbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.StatusEffectCompo
+  statusEffectList: []
 --- !u!1 &9097402391931302214
 GameObject:
   m_ObjectHideFlags: 0

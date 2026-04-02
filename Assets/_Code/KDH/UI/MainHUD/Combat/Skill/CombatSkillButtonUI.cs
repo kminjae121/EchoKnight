@@ -1,6 +1,7 @@
 ﻿using Code.Core.Events.Bus;
 using Code.SkillSystem;
 using DG.Tweening;
+using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -9,29 +10,49 @@ using UnityEngine.UI;
 namespace Code.UI
 {
     [RequireComponent(typeof(RectTransform))]
-    public class CombatSkillButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+    public class CombatSkillButtonUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler, IPoolable
     {
+        [SerializeField] private PoolingItemSO poolingType;
         [SerializeField] private Image skillIcon;
         [SerializeField] private TextMeshProUGUI damageText;
         [SerializeField] private TextMeshProUGUI costText;
-        [SerializeField] private Image dimOverlay;
         
         [SerializeField] private float hoverYOffset = 15f;
         [SerializeField] private float selectYOffset = 30f;
         [SerializeField] private float animDuration = 0.2f;
         [SerializeField] private Ease animEase = Ease.OutCubic;
 
+        [SerializeField] private float darkenMultiplier = 0.4f;
+
         private RectTransform _rectTransform;
+        private Image _backgroundImage;
         private Vector2 _originalPosition;
         private Tween _moveTween;
         private SkillSO _currentSkill;
+        private SkillComponent _skillCompo;
         private bool _isSelected;
         private bool _isInteractable;
+
+        private Color _originBgColor = Color.white;
+        private Color _originIconColor = Color.white;
+        private Color _originDamageColor = Color.white;
+        private Color _originCostColor = Color.white;
+        
+        private Pool _pool;
+
+        public PoolingItemSO PoolingType => poolingType;
+        public GameObject GameObject => gameObject;
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
+            _backgroundImage = GetComponent<Image>();
             _originalPosition = _rectTransform.anchoredPosition;
+
+            if (_backgroundImage != null) _originBgColor = _backgroundImage.color;
+            if (skillIcon != null) _originIconColor = skillIcon.color;
+            if (damageText != null) _originDamageColor = damageText.color;
+            if (costText != null) _originCostColor = costText.color;
             
             Bus<CombatSkillCancelEvent>.Subscribe(HandleSkillCancel);
             Bus<CombatSkillSelectEvent>.Subscribe(HandleOtherSkillSelected);
@@ -44,28 +65,66 @@ namespace Code.UI
             _moveTween?.Kill();
         }
 
-        public void SetupSkill(SkillSO skill, int currentTurnCost)
+        public void SetUpPool(Pool pool)
+        {
+            _pool = pool;
+        }
+
+        public void ResetItem()
+        {
+            _currentSkill = null;
+            _skillCompo = null;
+            _isSelected = false;
+            _isInteractable = false;
+            ApplyColorMultiplier(1f);
+            ResetPosition();
+        }
+
+        public void ReturnToPool()
+        {
+            if (_pool != null)
+            {
+                _pool.Push(this);
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
+        }
+
+        public void SetupSkill(SkillSO skill, SkillComponent compo, int currentTurnCost)
         {
             _currentSkill = skill;
+            _skillCompo = compo;
             _isSelected = false;
             
-            skillIcon.sprite = skill.skillUIImage;
-            damageText.text = skill.SkillDamage.ToString();
-            costText.text = skill.SkillCost.ToString();
+            if (skillIcon != null) skillIcon.sprite = skill.skillUIImage;
+            if (damageText != null) damageText.text = skill.SkillDamage.ToString();
+            if (costText != null) costText.text = skill.SkillValue.ToString();
 
-            _isInteractable = currentTurnCost >= skill.SkillCost;
+            _isInteractable = currentTurnCost >= skill.SkillValue;
 
             if (!_isInteractable)
             {
                 transform.SetAsFirstSibling();
-                if (dimOverlay != null) dimOverlay.gameObject.SetActive(true);
+                ApplyColorMultiplier(darkenMultiplier);
             }
             else
             {
-                if (dimOverlay != null) dimOverlay.gameObject.SetActive(false);
+                ApplyColorMultiplier(1f);
             }
 
             ResetPosition();
+        }
+
+        private void ApplyColorMultiplier(float multiplier)
+        {
+            Color tint = new Color(multiplier, multiplier, multiplier, 1f);
+
+            if (_backgroundImage != null) _backgroundImage.color = _originBgColor * tint;
+            if (skillIcon != null) skillIcon.color = _originIconColor * tint;
+            if (damageText != null) damageText.color = _originDamageColor * tint;
+            if (costText != null) costText.color = _originCostColor * tint;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -104,6 +163,12 @@ namespace Code.UI
             _moveTween?.Kill();
             _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + selectYOffset, animDuration).SetEase(animEase);
             
+            if (_skillCompo != null && _currentSkill != null)
+            {
+                _skillCompo.CancelAllSkill();
+                _skillCompo.StartSkill(_currentSkill);
+            }
+            
             Bus<CombatSkillSelectEvent>.Raise(new CombatSkillSelectEvent(_currentSkill));
         }
 
@@ -122,6 +187,11 @@ namespace Code.UI
             {
                 _isSelected = false;
                 ResetPosition();
+                
+                if (_skillCompo != null)
+                {
+                    _skillCompo.CancelAllSkill();
+                }
             }
         }
 

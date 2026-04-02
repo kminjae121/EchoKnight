@@ -1,9 +1,27 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
+using Input;
+using UnityEngine;
 
 namespace Code.SkillSystem
 {
     public class UnitSkillComponent : SkillComponent
     {
+        [SerializeField] private InputReader _intputReader;
+
+
+        private void Start()
+        {
+            _intputReader.OnCancelEvent += CancelAllSkill;
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            _intputReader.OnCancelEvent -= CancelAllSkill;
+            
+        }
+
         protected override void StartSkill(BaseSkill skill, SkillSO skillso)
         {
             skill.ConfigureSkillRange(skillso);
@@ -13,9 +31,14 @@ namespace Code.SkillSystem
 
         protected override void CancelSkill(BaseSkill skill)
         {
-            skill.SkillFinished();
-            skill.BooleanSkillUse(false);
-            Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+            BasicUnitSkill basicSkill = skill as BasicUnitSkill;
+
+            if (basicSkill != null)
+            {
+                basicSkill.SkillFinished(true);
+                basicSkill.BooleanSkillUse(false);
+                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+            }
         }
     }
 }

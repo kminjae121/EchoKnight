@@ -15,7 +15,7 @@ namespace Code.UnitSystem.GimicSystem
         
         public override void StartOperation()
         {
-            _addDamage = addDamageList[_operationLevel];
+  //          _addDamage = addDamageList[_operationLevel];
             _skillCompo.SetAddSkillDamage(_addDamage,SkillType.ActiveSkill);
             _operationLevel++;
             Bus<KnightSwordEvent>.Raise(new KnightSwordEvent(_operationLevel));

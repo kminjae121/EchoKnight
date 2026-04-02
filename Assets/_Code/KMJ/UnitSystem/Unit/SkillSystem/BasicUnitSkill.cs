@@ -18,8 +18,6 @@ namespace Code.SkillSystem
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
-        
-
         private void OnEnable()
         {
             if (_characterUnit != null)
@@ -51,7 +49,7 @@ namespace Code.SkillSystem
         public void SetEnemyTargeting(EnemyTargeting targeting)
         {
             _targetingCompo = targeting;
-        }
+        }     
         
         protected override void CanUseSkillTrue()
         {
@@ -66,20 +64,27 @@ namespace Code.SkillSystem
             IsActive = false;
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            _characterUnit.TurnEnd();
+        }
+
+        public override void SkillFinished(bool isCancel)
+        {
+            base.SkillFinished(isCancel);
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+            if(isCancel)
+                _characterUnit.SkillCostUI.ReturnShowFilled();
         }
 
         public override void AttackEnemy()
         {
             if (!isCanUseSkill)
             {
-                SkillFinished();
+                SkillFinished(false);
                 return;
             }
 
             if (_targetEnemy == null) return;
 
-            _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
+            _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
             
             if (RotationCompo != null)
                 RotationCompo.SetDir(_targetEnemy.transform.position);
@@ -96,7 +101,7 @@ namespace Code.SkillSystem
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
            
-            SkillFinished();
+            SkillFinished(false);
         }
 
         public void SetEnemy(GameObject target)
@@ -108,10 +113,20 @@ namespace Code.SkillSystem
         {
             base.ShowSkillRange();
 
-            if (_characterUnit == null || _characterUnit.GaugeManager == null)
+            if (_characterUnit == null || _characterUnit.SkillCostCompo == null)
                 return;
+            
+            
+            if (SkillSO.SkillType == SkillType.BasicSkill && SkillCount >= 1)
+            {
+                SkillFinished(false);
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("일반 공격은 한번만 사용가능합니다."));
+                return;
+            }
+                
+            SkillCount += 1;
 
-            if (!_characterUnit.GaugeManager.CanUseSkill(SkillSO.UsingSkillCost))
+            if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.SkillCost))
             {
                 Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
                 Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
@@ -120,11 +135,14 @@ namespace Code.SkillSystem
                 return;
             }
 
+            _characterUnit.SkillCostUI.SetShowGauge(_characterUnit.SkillCostCompo.CheckSkillCost(SkillSO.SkillCost));
+            
             if (SkillSO.IsOwnSkill)
             {
                 SkillStartEvent();
-                _characterUnit.GaugeManager.UseSkill(SkillSO.UsingSkillCost);
+                _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
                 _characterUnit.MoveCompo.ResetTile();
+                StartEvent();
                 SkillEvent?.Invoke(null);
             }
             else

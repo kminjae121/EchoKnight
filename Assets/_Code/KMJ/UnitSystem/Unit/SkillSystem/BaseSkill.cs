@@ -47,6 +47,9 @@ namespace Code.SkillSystem
         public bool isCanUseSkill = false;
 
         public bool IsActive = false;
+
+        public int SkillCount { get; set; } = 0;
+
         
         public virtual void InitializeSkill()
 
@@ -92,9 +95,14 @@ namespace Code.SkillSystem
 
 
         protected virtual void RemoveEvent()
-
         {
         }
+        
+        public void ResetSkillCnt()
+        {
+            SkillCount = 0;
+        }
+
 
 
         protected virtual void CanUseSkillTrue()
@@ -113,12 +121,13 @@ namespace Code.SkillSystem
         {
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
-
-            rangeCompo.FindObjectInRange();
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
+            
+            rangeCompo.FindObjectInRange(SkillSO.SkillRange);
         }
 
 
-        public virtual void SkillFinished()
+        public virtual void SkillFinished(bool isCancel)
         {
             BooleanSkillUse(false);
 

@@ -7,7 +7,7 @@ namespace GameEventChannel
     public class GameEvent
     { }
     
-    [CreateAssetMenu(menuName = "SO/EventChannel", fileName = "EventChannel")]
+    [CreateAssetMenu(menuName = "EventChannel", fileName = "SO/Event/EventChannel")]
     public class GameEventChannelSO : ScriptableObject
     {
         private Dictionary<Type, Action<GameEvent>> _events = new Dictionary<Type, Action<GameEvent>>();

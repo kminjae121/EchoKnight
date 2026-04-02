@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using Code.UnitSystem.UnitComponent;
 using UnityEngine;
-using UnityEngine.AI;
 
 namespace Code.UnitSystem
 {
@@ -51,7 +49,7 @@ namespace Code.UnitSystem
             _isMoving = false;
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             _nextTile?.SetState(TileState.Enemy,false);
             Bus<UnitSetMoveEvent>.Unsubscribe(StartWalk);
@@ -153,6 +151,7 @@ namespace Code.UnitSystem
                 true, new Vector3(0.1f, 0.1f, 0.1f)));
             
             GridMap.Instance.SetGridVisible(false);
+            _targetMapTile = tile;
             IsActive = false;
             _isMoving = true;
 
@@ -163,20 +162,12 @@ namespace Code.UnitSystem
 
         private void HandleMoveEnd()
         {
-
             GridMap.Instance.SetGridVisible(true);
             _isMoving = false;
             IsActive = true;
-
-            CurrentMapTile = _targetMapTile;
-            _targetMapTile.SetState(TileState.Obstacle,true);
             
-            if (CurrentMapTile != null)
-            {
-                IMapTile tileInfos = CurrentMapTile;
-                tileInfos.SetState(TileState.Obstacle,false);
-                tileInfos.SetState(TileState.Walkable,true);
-            }
+            CurrentMapTile = _targetMapTile;
+
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
                 false, new Vector3(0.1f, 0.1f, 0.1f)));
@@ -197,7 +188,6 @@ namespace Code.UnitSystem
             MoveStart(tileInfo);
             
             _pathMoverCompo.SetPathAndMove(CurrentMapTile.GridPos, tileInfo.GridPos);
-            _targetMapTile = tileInfo;
             moveCount++;
         }
     }

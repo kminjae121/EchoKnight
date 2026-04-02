@@ -1,5 +1,6 @@
 using System.Linq;
 using Code.Core.Debugs;
+using Code.Core.Events.Bus;
 using Code.Managers;
 using Code.Map;
 using Code.SkillSystem;
@@ -25,6 +26,8 @@ namespace Code.UnitSystem.Enemies
         protected Unit CurrentTarget { get; private set; }
 
         private bool _hasEndedTurn;
+        
+        private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
 
         protected override void Awake()
         {
@@ -63,6 +66,7 @@ namespace Code.UnitSystem.Enemies
                 OnTurnEnd();
                 return;
             }
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
 
             TurnChannel?.SendEventMessage();
         }
@@ -73,6 +77,8 @@ namespace Code.UnitSystem.Enemies
                 return;
 
             _hasEndedTurn = true;
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
+                false, new Vector3(0.1f, 0.1f, 0.1f)));
             base.OnTurnEnd();
         }
 

@@ -7,7 +7,7 @@ namespace PixeLadder.EasyTransition.Effects
     /// <summary>
     /// A transition effect that dissolves the screen into pixels.
     /// </summary>
-    [CreateAssetMenu(fileName = "NewPixelateEffect", menuName = "Easy Transition/Pixelate Effect")]
+    [CreateAssetMenu(fileName = "NewPixelateEffect", menuName = "SO/Easy Transition/Pixelate Effect")]
     public class PixelateEffect : TransitionEffect
     {
         public enum AnimationDirection { Reveal, Obscure }

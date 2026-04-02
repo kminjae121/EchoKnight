@@ -53,7 +53,7 @@ namespace Code.UI
 
             if (skillNameText != null) skillNameText.text = evt.Skill.skillName;
             if (skillDescText != null) skillDescText.text = evt.Skill.SkillDescription;
-            if (skillCostText != null) skillCostText.text = evt.Skill.SkillCost.ToString();
+            if (skillCostText != null) skillCostText.text = evt.Skill.SkillValue.ToString();
             if (skillDamageText != null) skillDamageText.text = evt.Skill.SkillDamage.ToString();
             if (skillRangeText != null) skillRangeText.text = evt.Skill.SkillRange.ToString();
 

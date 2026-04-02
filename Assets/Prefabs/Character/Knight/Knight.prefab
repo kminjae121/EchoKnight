@@ -1181,6 +1181,51 @@ Transform:
   - {fileID: 455441814613634135}
   m_Father: {fileID: 1538688301183897621}
   m_LocalEulerAnglesHint: {x: 5.396228, y: 0.1421821, z: -0.566109}
+--- !u!1 &2023561082999447910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5574960889361329749}
+  - component: {fileID: 695884165837359208}
+  m_Layer: 7
+  m_Name: Status
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5574960889361329749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023561082999447910}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 663893733135974173}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &695884165837359208
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023561082999447910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4132b6426184e93a565253cbff9cbbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.StatusEffectCompo
+  statusEffectList: []
 --- !u!1 &2039411791934018225
 GameObject:
   m_ObjectHideFlags: 0
@@ -1544,6 +1589,7 @@ Transform:
   - {fileID: 7332066041044710263}
   - {fileID: 5869072960725527044}
   - {fileID: 1613827450499720720}
+  - {fileID: 5574960889361329749}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2682628836158502387
@@ -3528,11 +3574,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4911891361904644203}
+  - component: {fileID: 3908768748784611848}
   - component: {fileID: 6242146832756852556}
   - component: {fileID: 6919555147147387208}
   - component: {fileID: 4765256548062757306}
   - component: {fileID: 916718369853948393}
-  - component: {fileID: 3908768748784611848}
+  - component: {fileID: 6925025281683835487}
   m_Layer: 7
   m_Name: SkillComponent
   m_TagString: Untagged
@@ -3555,6 +3602,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 663893733135974173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3908768748784611848
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5582696319033170622}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02096773b10642c5be05cfc7efa26a3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.UnitSkillComponent
+  skillList:
+  - {fileID: 11400000, guid: 85ce8256606c74740915e79bfc5b124a, type: 2}
+  - {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
+  - {fileID: 11400000, guid: b8572723cb14fa04580c634e6a40dc30, type: 2}
+  _intputReader: {fileID: 11400000, guid: a0d5dad133beb4c44a762d5d8e9a9457, type: 2}
 --- !u!114 &6242146832756852556
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3581,13 +3645,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
   attackData: {fileID: 11400000, guid: ecfa0452123f0c44487796bbeffe5d30, type: 2}
-  <basicSkillDamage>k__BackingField: 3
   triggerCompo: {fileID: 2009707462312594463}
   statCompo: {fileID: 6435623573887263718}
   rangeCompo: {fileID: 6592657090282267379}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3615,13 +3675,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MeleeAttack
   <SkillSO>k__BackingField: {fileID: 11400000, guid: 85ce8256606c74740915e79bfc5b124a, type: 2}
   attackData: {fileID: 11400000, guid: b6f7f282f7c847f42a11ebd4685a3ff9, type: 2}
-  <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 2009707462312594463}
   statCompo: {fileID: 6435623573887263718}
   rangeCompo: {fileID: 6592657090282267379}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3652,13 +3708,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SheldSkill
   <SkillSO>k__BackingField: {fileID: 11400000, guid: b8572723cb14fa04580c634e6a40dc30, type: 2}
   attackData: {fileID: 11400000, guid: b6f7f282f7c847f42a11ebd4685a3ff9, type: 2}
-  <basicSkillDamage>k__BackingField: 0
   triggerCompo: {fileID: 2009707462312594463}
   statCompo: {fileID: 6435623573887263718}
   rangeCompo: {fileID: 6592657090282267379}
-  SkillStartEvent:
-    m_PersistentCalls:
-      m_Calls: []
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3670,7 +3722,7 @@ MonoBehaviour:
   <CriticalSpot>k__BackingField: {fileID: 5510899783727794854}
   _characterUnit: {fileID: 2682628836158502387}
   effectPrefab: {fileID: 1673384678163543973}
---- !u!114 &3908768748784611848
+--- !u!114 &6925025281683835487
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3679,13 +3731,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5582696319033170622}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02096773b10642c5be05cfc7efa26a3a, type: 3}
+  m_Script: {fileID: 11500000, guid: 7716dad4601f409a91e0b8ffb6899613, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.SkillSystem.UnitSkillComponent
-  skillList:
-  - {fileID: 11400000, guid: 85ce8256606c74740915e79bfc5b124a, type: 2}
-  - {fileID: 11400000, guid: 360758d6c5706a14fb57766e08f97bca, type: 2}
-  - {fileID: 11400000, guid: b8572723cb14fa04580c634e6a40dc30, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitSkillCost
+  skillCostChanged:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &5609123145717175430
 GameObject:
   m_ObjectHideFlags: 0

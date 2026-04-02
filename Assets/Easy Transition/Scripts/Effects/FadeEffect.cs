@@ -7,7 +7,7 @@ namespace PixeLadder.EasyTransition.Effects
     /// <summary>
     /// A simple fade-to-black transition effect.
     /// </summary>
-    [CreateAssetMenu(fileName = "NewFadeEffect", menuName = "Easy Transition/Fade Effect")]
+    [CreateAssetMenu(fileName = "NewFadeEffect", menuName = "SO/Easy Transition/Fade Effect")]
     public class FadeEffect : TransitionEffect
     {
         [Header("Timing")]

@@ -78,7 +78,7 @@ namespace Code.SkillSystem
             Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
         }
 
-        private void OnDestroy()
+        protected virtual void OnDestroy()
         {
             Bus<UsingSkillEvent>.Unsubscribe(BooleanSkill);
         }
@@ -105,6 +105,13 @@ namespace Code.SkillSystem
         private void BooleanSkill(UsingSkillEvent evt)
         {
             isUseSkill = evt.isUsingSkill;
+        }
+        public void ResetSkillsCount()
+        {
+            foreach (var skill in Skills.Values)
+            {
+                skill.ResetSkillCnt();
+            }
         }
         
         public void UpdateSkillUI()

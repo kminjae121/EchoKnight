@@ -7,7 +7,7 @@ namespace PixeLadder.EasyTransition.Effects
     /// <summary>
     /// A transition effect that uses a scrolling Perlin/Simple noise pattern.
     /// </summary>
-    [CreateAssetMenu(fileName = "NewNoiseEffect", menuName = "Easy Transition/Noise Effect")]
+    [CreateAssetMenu(fileName = "NewNoiseEffect", menuName = "SO/Easy Transition/Noise Effect")]
     public class NoiseEffect : TransitionEffect
     {
         public enum AnimationDirection { Reveal, Obscure }

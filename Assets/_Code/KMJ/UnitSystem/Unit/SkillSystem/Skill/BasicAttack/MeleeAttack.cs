@@ -53,54 +53,16 @@ public class MeleeAttack : BasicUnitSkill
     {
         yield return new WaitForSeconds(0.4f);
         
-        _animationCompo.PlaySelectAnimation("MOVE");
-        
-        while (Vector3.Distance(target.transform.position, _characterUnit.transform.position) > attackMoveDistance)
-        {
-            Vector3 currentPos = _characterUnit.transform.position;
-            Vector3 targetPos = target.transform.position;
-            
-            targetPos.y = currentPos.y;
-    
-            _characterUnit.transform.position = Vector3.MoveTowards(
-                currentPos,
-                targetPos,
-                atkMoveSpeed * Time.deltaTime
-            );
-            if (isRunningAttack && Vector3.Distance(_characterUnit.transform.position, target.transform.position) 
-                < attackMoveDistance * 2f)
-            {
-                break;
-            }
-    
-            yield return null;
-        }
-        
-        _animationCompo.PlaySelectAnimation("ATTACK");
-        
-        if(isRunningAttack == false)
          _animationCompo.PlaySelectAnimation("ATTACK");
     }
     
     public void AttackEnd()
     {
-        StartCoroutine(ReturnOwnPos());
+        ReturnOwnPos();
     }
     
-    private IEnumerator ReturnOwnPos()
+    private void ReturnOwnPos()
     {
-        _animationCompo.PlaySelectAnimation("MOVE");
-    
-        while (Vector3.Distance(_characterUnit.transform.position, _ownTrm) > 0.01f)
-        {
-            _characterUnit.transform.position = Vector3.MoveTowards(
-                _characterUnit.transform.position,
-                _ownTrm,
-                atkMoveSpeed * Time.deltaTime
-            );
-            yield return null;
-        }
-        
         _animationCompo.PlaySelectAnimation("IDLE");
         SkillEnd();
     }

@@ -325,7 +325,7 @@ namespace Code.UI
                 var equippedSkills = SkillSendManager.Instance.GetEquipSkills(_unit.UnitType);
                 foreach (var skill in equippedSkills)
                 {
-                    if (skill != null) totalCost += skill.SkillCost;
+                    if (skill != null) totalCost += skill.SkillValue;
                 }
             }
             return totalCost;
@@ -345,7 +345,7 @@ namespace Code.UI
             }
 
             int currentCost = GetCurrentSkillLoadoutCost();
-            if (currentCost + evt.Skill.SkillCost > _unit.LoadOutCost)
+            if (currentCost + evt.Skill.SkillValue > _unit.LoadOutCost)
             {
                 Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬 코스트 총량을 초과하여 장착할 수 없습니다."));
                 return;

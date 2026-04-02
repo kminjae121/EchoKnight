@@ -229,7 +229,7 @@ MonoBehaviour:
   - rid: 9010193814606840308
   - rid: 9010193909693022325
   - rid: 9010193909693022410
-  m_VersionTimestamp: 639105142082701208
+  m_VersionTimestamp: 639105832806223365
   m_SerializedVersion: 1
   m_DebugInfo: {fileID: 8144635310005017613}
   m_RuntimeGraph: {fileID: 7265722388795719433}
@@ -399,7 +399,7 @@ MonoBehaviour:
     NamedChildren: []
     IsPlaceholder: 0
   - Name: UseSkill
-    Story: '[Enemy] use skill [SkillData] to [Target]'
+    Story: '[Enemy] use selected skill to [Target]'
     RuntimeTypeString: Code.UnitSystem.Enemies.AI.UseSkillAction, Assembly-CSharp,
       Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
     RuntimeTypeID:
@@ -410,11 +410,6 @@ MonoBehaviour:
       Type:
         m_SerializableType: Code.UnitSystem.Enemies.AbstractEnemyUnit, Assembly-CSharp,
           Version=0.0.0.0, Culture=neutral, PublicKeyToken=null
-      Tooltip: 
-    - Name: SkillData
-      Type:
-        m_SerializableType: Code.SkillSystem.SkillSO, Assembly-CSharp, Version=0.0.0.0,
-          Culture=neutral, PublicKeyToken=null
       Tooltip: 
     - Name: Target
       Type:
@@ -776,7 +771,6 @@ MonoBehaviour:
           m_FieldValues:
           - rid: 9010193751535518255
           - rid: 9010193751535518256
-          - rid: 9010193894584352952
           OperatorFieldModel:
             rid: -2
         <RequiresAllConditionsTrue>k__BackingField: 0
@@ -1173,7 +1167,6 @@ MonoBehaviour:
         m_FieldValues:
         - rid: 9010193751535518394
         - rid: 9010193751535518395
-        - rid: 9010193894584352954
         OperatorFieldModel:
           rid: -2
     - rid: 9010193751535518394
@@ -1979,7 +1972,6 @@ MonoBehaviour:
           m_Value1: 15572755257063572969
         m_FieldValues:
         - rid: 9010193814606840153
-        - rid: 9010193814606840154
         - rid: 9010193814606840155
     - rid: 9010193814606840151
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
@@ -2010,17 +2002,6 @@ MonoBehaviour:
           rid: 9010193814606840156
         LinkedVariable:
           rid: 9010193814606840198
-    - rid: 9010193814606840154
-      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
-      data:
-        FieldName: SkillData
-        Type:
-          m_SerializableType: Code.SkillSystem.SkillSO, Assembly-CSharp, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        LocalValue:
-          rid: 9010193814606840157
-        LinkedVariable:
-          rid: -2
     - rid: 9010193814606840155
       type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -2040,14 +2021,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: {fileID: 0}
-    - rid: 9010193814606840157
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
     - rid: 9010193814606840158
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2096,7 +2069,6 @@ MonoBehaviour:
           m_Value1: 15572755257063572969
         m_FieldValues:
         - rid: 9010193814606840311
-        - rid: 9010193814606840312
         - rid: 9010193814606840313
     - rid: 9010193814606840309
       type: {class: PortModel, ns: Unity.Behavior.GraphFramework, asm: Unity.Behavior.GraphFramework}
@@ -2127,17 +2099,6 @@ MonoBehaviour:
           rid: 9010193814606840314
         LinkedVariable:
           rid: 9010193814606840198
-    - rid: 9010193814606840312
-      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
-      data:
-        FieldName: SkillData
-        Type:
-          m_SerializableType: Code.SkillSystem.SkillSO, Assembly-CSharp, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        LocalValue:
-          rid: 9010193814606840315
-        LinkedVariable:
-          rid: -2
     - rid: 9010193814606840313
       type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -2157,14 +2118,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: {fileID: 0}
-    - rid: 9010193814606840315
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
     - rid: 9010193814606840316
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2173,44 +2126,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: {fileID: 0}
-    - rid: 9010193894584352952
-      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
-      data:
-        FieldName: SkillData
-        Type:
-          m_SerializableType: Code.SkillSystem.SkillSO, Assembly-CSharp, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        LocalValue:
-          rid: 9010193894584352953
-        LinkedVariable:
-          rid: -2
-    - rid: 9010193894584352953
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
-    - rid: 9010193894584352954
-      type: {class: BehaviorGraphNodeModel/FieldModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
-      data:
-        FieldName: SkillData
-        Type:
-          m_SerializableType: Code.SkillSystem.SkillSO, Assembly-CSharp, Version=0.0.0.0,
-            Culture=neutral, PublicKeyToken=null
-        LocalValue:
-          rid: 9010193894584352955
-        LinkedVariable:
-          rid: -2
-    - rid: 9010193894584352955
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
     - rid: 9010193909693022325
       type: {class: EventNodeModel, ns: Unity.Behavior, asm: Unity.Behavior.Authoring}
       data:
@@ -2414,7 +2329,7 @@ MonoBehaviour:
           rid: 9010193751535518116
         m_EndedNodes:
           rid: 9010193751535518117
-        m_VersionTimestamp: 639105142082701208
+        m_VersionTimestamp: 639105832806223365
     - rid: 9010193751535518114
       type: {class: BlackboardReference, ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2438,14 +2353,6 @@ MonoBehaviour:
         - rid: 9010193917654860164
         - rid: 9010193917654860165
         - rid: 9010193917654860166
-    - rid: 9010193917654860129
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
     - rid: 9010193917654860130
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2454,14 +2361,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: ATTACK
-    - rid: 9010193917654860132
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
     - rid: 9010193917654860133
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2502,14 +2401,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: ATTACK
-    - rid: 9010193917654860150
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
     - rid: 9010193917654860151
       type: {class: 'BlackboardVariable`1[[System.String, mscorlib]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2518,14 +2409,6 @@ MonoBehaviour:
           m_Value1: 0
         Name: 
         m_Value: IDLE
-    - rid: 9010193917654860154
-      type: {class: 'BlackboardVariable`1[[Code.SkillSystem.SkillSO, Assembly-CSharp]]', ns: Unity.Behavior, asm: Unity.Behavior}
-      data:
-        GUID:
-          m_Value0: 0
-          m_Value1: 0
-        Name: 
-        m_Value: {fileID: 11400000, guid: f7275ff2d092b5845ae225047350a9e4, type: 2}
     - rid: 9010193917654860160
       type: {class: 'BlackboardVariable`1[[UnityEngine.GameObject, UnityEngine.CoreModule]]', ns: Unity.Behavior, asm: Unity.Behavior}
       data:
@@ -2740,8 +2623,6 @@ MonoBehaviour:
           rid: 9010193751535518113
         Enemy:
           rid: 9010193917654860252
-        SkillData:
-          rid: 9010193917654860129
         Target:
           rid: 9010193917654860161
     - rid: 9010193917654860243
@@ -2773,8 +2654,6 @@ MonoBehaviour:
           rid: 9010193917654860240
         Enemy:
           rid: 9010193917654860253
-        SkillData:
-          rid: 9010193917654860132
         Target:
           rid: 9010193917654860161
     - rid: 9010193917654860245
@@ -2989,8 +2868,6 @@ MonoBehaviour:
           rid: 9010193917654860256
         Enemy:
           rid: 9010193917654860265
-        SkillData:
-          rid: 9010193917654860150
         Target:
           rid: 9010193917654860161
     - rid: 9010193917654860261
@@ -3039,8 +2916,6 @@ MonoBehaviour:
           rid: 9010193751535518113
         Enemy:
           rid: 9010193917654860267
-        SkillData:
-          rid: 9010193917654860154
         Target:
           rid: 9010193917654860161
     - rid: 9010193917654860265

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Code.Map;
 using Code.Core.Debugs;
 using Code.UnitSystem;
 using Code.Utils;
@@ -28,9 +29,10 @@ namespace Code.Navigation
             try
             {
                 _isCalculating = true;
+                HashSet<Vector3Int> blockedCells = CollectBlockedCells(startPos, destination);
 
                 (List<AstarNode> list, bool isSuccess) =
-                    await Task.Run(() => CalculatePath(startPos, destination), _cts.Token);
+                    await Task.Run(() => CalculatePath(startPos, destination, blockedCells), _cts.Token);
 
                 _isCalculating = false;
 
@@ -83,7 +85,7 @@ namespace Code.Navigation
             }
         }
 
-        private (List<AstarNode>, bool) CalculatePath(Vector3Int startPoint, Vector3Int destination)
+        private (List<AstarNode>, bool) CalculatePath(Vector3Int startPoint, Vector3Int destination, HashSet<Vector3Int> blockedCells)
         {
             UnityLogger.Log("Calculate 진입");
             
@@ -145,6 +147,9 @@ namespace Code.Navigation
                     if (closedSet.Contains(link.endCellPos))
                         continue;
 
+                    if (blockedCells != null && blockedCells.Contains(link.endCellPos))
+                        continue;
+
                     if (!bakedData.GetNodeIfExist(link.endCellPos, out NodeData nextNode))
                         continue;
 
@@ -181,6 +186,36 @@ namespace Code.Navigation
                 path.Reverse();
             }
             return (path, result);
+        }
+
+        private HashSet<Vector3Int> CollectBlockedCells(Vector3Int startPos, Vector3Int destination)
+        {
+            var blockedCells = new HashSet<Vector3Int>();
+            GridMap gridMap = GridMap.Instance;
+
+            if (gridMap == null)
+                return blockedCells;
+
+            for (int y = 0; y < gridMap.Height; ++y)
+            {
+                for (int x = 0; x < gridMap.Width; ++x)
+                {
+                    Vector3Int cellPos = new Vector3Int(x, y, 0);
+
+                    if (cellPos == startPos || cellPos == destination)
+                        continue;
+
+                    var tile = gridMap.GetTile(x, y);
+
+                    if (tile == null)
+                        continue;
+
+                    if (tile.HasState(TileState.Obstacle) || tile.HasState(TileState.Enemy))
+                        blockedCells.Add(cellPos);
+                }
+            }
+
+            return blockedCells;
         }
 
         private float CalculateH(Vector3Int startPoint, Vector3Int destination)

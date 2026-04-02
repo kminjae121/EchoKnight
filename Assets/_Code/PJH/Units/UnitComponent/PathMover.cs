@@ -75,40 +75,23 @@ namespace Code.UnitSystem.UnitComponent
 
                 for (int i = 1; i < _pathLength; ++i)
                 {
-                    Vector3 targetPoint = ToMovePoint(pointArray[i]);
                     Vector3Int nextCell = GridToCell(_gridMap.WorldToGridPosition(pointArray[i]));
-                    int segmentCost = GetSegmentCost(previousCell, nextCell);
+                    Vector3Int reachableCell =
+                        GetReachableCell(previousCell, nextCell, remainingMovePoint, out int movedCost);
 
-                    if (segmentCost <= 0)
-                    {
-                        previousCell = nextCell;
-                        continue;
-                    }
+                    if (movedCost <= 0)
+                        break;
 
-                    if (remainingMovePoint >= segmentCost)
-                    {
-                        RotateToPoint(targetPoint);
-                        await MoveToPoint(targetPoint);
-                        remainingMovePoint -= segmentCost;
-                        previousCell = nextCell;
-                        finalCell = nextCell;
+                    Vector3 targetPoint = GetWorldPosition(reachableCell);
+                    RotateToPoint(targetPoint);
+                    await MoveToPoint(targetPoint);
 
-                        if (remainingMovePoint <= 0)
-                            break;
+                    remainingMovePoint -= movedCost;
+                    previousCell = reachableCell;
+                    finalCell = reachableCell;
 
-                        continue;
-                    }
-
-                    if (remainingMovePoint > 0)
-                    {
-                        Vector3Int partialCell = GetReachableCell(previousCell, nextCell, remainingMovePoint);
-                        Vector3 partialPoint = GetWorldPosition(partialCell);
-                        RotateToPoint(partialPoint);
-                        await MoveToPoint(partialPoint);
-                        finalCell = partialCell;
-                    }
-
-                    break;
+                    if (reachableCell != nextCell || remainingMovePoint <= 0)
+                        break;
                 }
 
                 UpdateUnitTileState(startPos, finalCell);
@@ -139,15 +122,15 @@ namespace Code.UnitSystem.UnitComponent
             _rotationCompo.SetDir(point);
         }
 
-        private int GetSegmentCost(Vector3Int startCell, Vector3Int endCell)
+        private Vector3Int GetReachableCell(Vector3Int startCell, Vector3Int endCell, int remainingMovePoint, out int movedCost)
         {
+            movedCost = 0;
             Vector3Int delta = endCell - startCell;
-            return Mathf.Max(Mathf.Abs(delta.x), Mathf.Abs(delta.y), Mathf.Abs(delta.z));
-        }
+            int segmentCost = Mathf.Max(Mathf.Abs(delta.x), Mathf.Abs(delta.y), Mathf.Abs(delta.z));
 
-        private Vector3Int GetReachableCell(Vector3Int startCell, Vector3Int endCell, int remainingMovePoint)
-        {
-            Vector3Int delta = endCell - startCell;
+            if (segmentCost <= 0 || remainingMovePoint <= 0)
+                return startCell;
+
             Vector3Int direction = new Vector3Int
             (
                 Math.Sign(delta.x),
@@ -155,7 +138,21 @@ namespace Code.UnitSystem.UnitComponent
                 Math.Sign(delta.z)
             );
 
-            return startCell + direction * remainingMovePoint;
+            Vector3Int currentCell = startCell;
+            int maxStep = Mathf.Min(segmentCost, remainingMovePoint);
+
+            for (int step = 0; step < maxStep; ++step)
+            {
+                Vector3Int nextCell = currentCell + direction;
+
+                if (!CanTraverseCell(nextCell))
+                    break;
+
+                currentCell = nextCell;
+                movedCost++;
+            }
+
+            return currentCell;
         }
 
         private Vector3 GetWorldPosition(Vector3Int cellPosition)
@@ -169,6 +166,14 @@ namespace Code.UnitSystem.UnitComponent
 
         private static Vector3Int GridToCell(Vector2Int gridPosition)
             => new(gridPosition.x, gridPosition.y, 0);
+
+        private bool CanTraverseCell(Vector3Int cellPosition)
+        {
+            if (_gridMap == null)
+                return false;
+
+            return _gridMap.CanMoveTo(new Vector2Int(cellPosition.x, cellPosition.y));
+        }
 
         private void UpdateUnitTileState(Vector3Int previousCell, Vector3Int currentCell)
         {

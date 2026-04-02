@@ -13,7 +13,6 @@ namespace Code.Navigation
     public class PathAgent : MonoBehaviour
     {
         [SerializeField] private BakedDataSO bakedData;
-        [SerializeField] private bool reducePath;
 
         private CancellationTokenSource _cts = new();
         private bool _isCalculating;
@@ -51,15 +50,6 @@ namespace Code.Navigation
                 {
                     if (cornerIndex >= pointArr.Length)
                         break;
-
-                    if (reducePath)
-                    {
-                        Vector3Int beforeDir = list[i].cellPos - list[i - 1].cellPos;
-                        Vector3Int nextDir = list[i + 1].cellPos - list[i].cellPos;
-
-                        if (beforeDir == nextDir)
-                            continue;
-                    }
 
                     pointArr[cornerIndex] = list[i].worldPos;
                     ++cornerIndex;

@@ -25,7 +25,6 @@ public class BattleStartCompo : MonoBehaviour
         {
             turnManager.StartBattle();
             isPlaying = true;
-            thisBtn.gameObject.SetActive(false);
         }
     }
 }

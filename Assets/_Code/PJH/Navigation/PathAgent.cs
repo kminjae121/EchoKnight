@@ -97,12 +97,11 @@ namespace Code.Navigation
             bool result = false;
             AstarNode goalNode = null;
 
-            bool f1 = bakedData.GetNodeIfExist(startPoint, out var startNode);
-            bool f2 = bakedData.GetNodeIfExist(destination, out var endNode);
-            UnityLogger.Log($"st : {startPoint}, {f1}, ed : {destination}, {f2}");
+            bool startSuccess = bakedData.GetNodeIfExist(startPoint, out var startNode);
+            bool endSuccess = bakedData.GetNodeIfExist(destination, out var endNode);
+            UnityLogger.Log($"st : {startPoint}, {startSuccess}, ed : {destination}, {endSuccess}");
             
-            if (!f1
-                || !f2)
+            if (!startSuccess || !endSuccess)
                 return (path, false);
 
             var startAstarNode = new AstarNode
@@ -118,7 +117,6 @@ namespace Code.Navigation
             openList.Push(startAstarNode);
             bestGByCell[startAstarNode.cellPos] = startAstarNode.g;
             
-
             while (openList.Count > 0)
             {
                 if (_cts.Token.IsCancellationRequested)
@@ -185,6 +183,7 @@ namespace Code.Navigation
                 path.Add(last); // 시작점
                 path.Reverse();
             }
+            
             return (path, result);
         }
 
@@ -210,7 +209,7 @@ namespace Code.Navigation
                     if (tile == null)
                         continue;
 
-                    if (tile.HasState(TileState.Obstacle) || tile.HasState(TileState.Enemy))
+                    if (tile.HasAnyState(TileState.Enemy | TileState.Obstacle))
                         blockedCells.Add(cellPos);
                 }
             }

@@ -3,7 +3,7 @@ using Code.Core;
 using Code.UnitSystem;
 
 
-namespace _Code.KMJ.UnitSystem
+namespace _Code.UnitSystem
 {
     public struct InGameStat
     {
@@ -11,6 +11,7 @@ namespace _Code.KMJ.UnitSystem
         public StatInfo UpgradeStat;
         public float UpgradeValue;
     }
+    
     public class InGameStatCompo : MonoSingleton<InGameStatCompo>
     {
         private List<InGameStat> _statsList = new List<InGameStat>();

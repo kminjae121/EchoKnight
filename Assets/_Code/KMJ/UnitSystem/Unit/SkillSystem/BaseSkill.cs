@@ -122,7 +122,12 @@ namespace Code.SkillSystem
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(true));
-            
+
+            if (SkillSO.IsOwnSkill)
+            {
+                rangeCompo.FindObjectInRange(0);
+                return;
+            }
             rangeCompo.FindObjectInRange(SkillSO.SkillRange);
         }
 

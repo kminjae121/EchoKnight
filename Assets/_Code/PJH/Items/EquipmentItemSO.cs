@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using _Code.Passive;
+using Code.UnitSystem;
+using UnityEngine;
 
 namespace Code.Items
 {
@@ -15,5 +17,11 @@ namespace Code.Items
     public class EquipmentItemSO : ItemSO
     {
         public ArtifactRarity rarity;
+
+        public StatInfo StatInfo;
+
+        public float StatValue;
+
+        public PassiveSO PassiveSO;
     }
 }

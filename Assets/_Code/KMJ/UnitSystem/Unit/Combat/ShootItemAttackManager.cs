@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Core.Events.Bus;
-using Code.UnitSystem.GimicSystem;
-using Unity.Cinemachine;
 using UnityEngine;
 
 namespace Code.UnitSystem.Combat

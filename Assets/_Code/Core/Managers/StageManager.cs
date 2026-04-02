@@ -83,7 +83,7 @@ namespace Code.Core.Managers
                 if (gameClearUI != null)
                 {
                     Bus<StageClearEvent>.Raise(new StageClearEvent(true));
-                    //gameClearUI.SetActive(true);
+                    gameClearUI.SetActive(true);
                 }
         }
 

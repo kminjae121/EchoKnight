@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using _Code.UnitSystem;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -24,6 +25,7 @@ namespace Code.UI
         public void ReturnHome()
         {
             SceneManager.LoadScene("Lobby");
+            InGameStatCompo.Instance.ReStartGame();
         }
         public void RestartBtn()
         {

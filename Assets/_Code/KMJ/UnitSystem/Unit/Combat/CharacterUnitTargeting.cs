@@ -14,6 +14,7 @@ namespace Code.UnitSystem.Combat
 
         private GameObject _targetEnemy;
         private Unit _targetUnit;
+        private UnitOutLineCompo _targetOutLineCompo;
         private EnemyTargeting _targetingCompo;
         [SerializeField] private CharacterUnit unit;
 
@@ -56,14 +57,37 @@ namespace Code.UnitSystem.Combat
         {
             GameObject enemy = inputSO.GetEnemy();
 
+            if (skillManager.GetSkillInfo().SkillSO.IsOwnSkill)
+            {
+                Unit unit = inputSO.GetUnit();
+                
+                CharacterUnit thisUnit = unit as CharacterUnit;
+
+                if (thisUnit == this.unit)
+                {
+                    skillManager.GetSkillInfo().FindEnemyIsThere(unit.gameObject);
+                    this.unit.OutLineCompo.SetOutLine();
+                }
+                else
+                {
+                    skillManager.GetSkillInfo().SetEnemy(null);
+                    this.unit.OutLineCompo.ResetOutLine();
+                }
+
+                return;
+            }
             if (enemy == null)
             {
                 if (_targetEnemy != null)
                 {
                     _targetingCompo = _targetEnemy.GetComponent<EnemyTargeting>();
+                    _targetOutLineCompo = _targetEnemy.GetComponent<UnitOutLineCompo>();
 
                     if (_targetingCompo != null)
                         _targetingCompo.OffTargeting();
+                    
+                    if(_targetOutLineCompo != null)
+                        _targetOutLineCompo.ResetOutLine();
 
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false,
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage, true));
@@ -91,9 +115,12 @@ namespace Code.UnitSystem.Combat
                 
                 UnitHealth health = enemy.GetComponent<UnitHealth>();
                 _targetingCompo = enemy.GetComponent<EnemyTargeting>();
+                _targetOutLineCompo = _targetEnemy.GetComponent<UnitOutLineCompo>();
                 
                 if (_targetingCompo != null)
                     _targetingCompo.Targeting();
+                if(_targetOutLineCompo != null)
+                    _targetOutLineCompo.SetOutLine();
                 
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(skillManager.GetSkillInfo().AddDamage, health.CurrentHealth,
                     health.MaxHealth,

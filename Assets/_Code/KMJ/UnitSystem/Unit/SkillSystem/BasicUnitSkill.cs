@@ -100,6 +100,10 @@ namespace Code.SkillSystem
             
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
+
+            if (SkillSO.IsOwnSkill)
+                _characterUnit.OutLineCompo.ResetOutLine();
+            
            
             SkillFinished(false);
         }
@@ -137,25 +141,20 @@ namespace Code.SkillSystem
 
             _characterUnit.SkillCostUI.SetShowGauge(_characterUnit.SkillCostCompo.CheckSkillCost(SkillSO.SkillCost));
             
-            if (SkillSO.IsOwnSkill)
-            {
-                SkillStartEvent();
-                _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
-                _characterUnit.MoveCompo.ResetTile();
-                StartEvent();
-                SkillEvent?.Invoke(null);
-            }
-            else
-            {
-                _characterUnit.MoveCompo.ResetTile();
-                SkillStartEvent();
-                CheckCanAttack();
-                BooleanSkillUse(true);
-            }
+            _characterUnit.MoveCompo.ResetTile();
+            SkillStartEvent();
+            CheckCanAttack();
+            BooleanSkillUse(true);
         }
-        
+
         public void FindEnemyIsThere(GameObject enemy)
         {
+            if (SkillSO.IsOwnSkill)
+            {
+                _targetEnemy = enemy;
+                return;
+            }
+            
             if (enemy == null)
             {
                 _targetEnemy = null;

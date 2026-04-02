@@ -29,6 +29,8 @@ namespace Code.UnitSystem
         public UnitSkillCost SkillCostCompo { get; private set; }
 
         public SkillCostUI SkillCostUI { get; set; }
+        
+        public UnitOutLineCompo OutLineCompo { get; private set; }
 
         #endregion
         
@@ -52,6 +54,7 @@ namespace Code.UnitSystem
             UnitRangeCompo =  GetUnitCompo<UnitManageRangeCompo>();
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
             SkillCostCompo =  GetUnitCompo<UnitSkillCost>();
+            OutLineCompo =  GetUnitCompo<UnitOutLineCompo>();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 

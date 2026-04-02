@@ -27,16 +27,13 @@ namespace Code.UnitManaging
         [SerializeField] public List<Vector2Int> startingCoords = new List<Vector2Int>();
 
         [SerializeField] private Button endTurnBtn;
-        [SerializeField] private SkillCostUI skillCostUI;
         
         public List<PoolingItemSO> SelectedUnits { get; private set; } = new List<PoolingItemSO>();
 
         private readonly List<Unit> _myOwnUnitList = new List<Unit>();
 
-
         [Inject] private PoolManagerMono _poolManager;
         
-
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -80,12 +77,9 @@ namespace Code.UnitManaging
 
                 GameObject spawnUnit = _poolManager.Pop<Unit>(SelectedUnits[i]).gameObject;
 
-
                 spawnUnit.transform.position = spawnPos;
-                
                 spawnUnit.transform.rotation = Quaternion.identity;
                 
-
                 tile.SetState(TileState.Obstacle, true);
 
                 Unit unit = spawnUnit.GetComponent<Unit>();
@@ -107,7 +101,7 @@ namespace Code.UnitManaging
                         basicUnit.UnitImage
                     ));
                     
-                    basicUnit.SetObject(endTurnBtn, skillCostUI);
+                    basicUnit.SetObject(endTurnBtn, null);
 
                     StageManager.Instance.AddPlayerCnt();
                 }

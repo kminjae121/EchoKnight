@@ -98,11 +98,27 @@ namespace Code.UI
             _skillCompo = compo;
             _isSelected = false;
             
-            if (skillIcon != null) skillIcon.sprite = skill.skillUIImage;
-            if (damageText != null) damageText.text = skill.SkillDamage.ToString();
-            if (costText != null) costText.text = skill.SkillValue.ToString();
+            if (skillIcon != null)
+            {
+                skillIcon.sprite = skill.skillUIImage;
+            }
 
-            _isInteractable = currentTurnCost >= skill.SkillValue;
+            if (damageText != null)
+            {
+                damageText.text = skill.SkillDamage.ToString();
+            }
+
+            if (costText != null)
+            {
+                costText.text = skill.SkillCost.ToString();
+                Debug.Log($"[CombatSkillButtonUI] {skill.skillName} 스킬의 코스트({skill.SkillCost})를 UI에 적용했습니다.");
+            }
+            else
+            {
+                Debug.LogError("[CombatSkillButtonUI] 인스펙터에 Cost Text 오브젝트가 할당되지 않았습니다!");
+            }
+
+            _isInteractable = currentTurnCost >= skill.SkillCost;
 
             if (!_isInteractable)
             {

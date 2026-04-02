@@ -28,8 +28,6 @@ namespace Code.UnitSystem
         public UnitStatCompo UnitStatCompo { get; private set; }
         public UnitSkillCost SkillCostCompo { get; private set; }
 
-        public SkillCostUI SkillCostUI { get; set; }
-
         #endregion
         
         public int PlayableUnitID { get; set; } = -1;
@@ -74,10 +72,9 @@ namespace Code.UnitSystem
                 TriggerCompo.OnDeadEvent -= HandleDieAnimationEnd;
         }
 
-        public void SetObject(Button btn,SkillCostUI skillCostUI)
+        public void SetObject(Button btn, SkillCostUI skillCostUI)
         {
             endTurnBtn = btn;
-            SkillCostUI = skillCostUI;
         }
 
         public override void OnTurnStart()
@@ -86,8 +83,6 @@ namespace Code.UnitSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-
-            SkillCompo.ResetSkillsCount();
             
             SkillCostCompo.AddSkillCost();
             
@@ -103,7 +98,6 @@ namespace Code.UnitSystem
             }
             
             OnTurnStartEvent?.Invoke();
-            SkillCostUI.SetSkillCostCompo(SkillCostCompo);
             
             Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }
@@ -139,7 +133,6 @@ namespace Code.UnitSystem
             }
         }
 
-        
         public void HandleDieAnimationEnd()
         {
             gameObject.SetActive(false);

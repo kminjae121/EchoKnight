@@ -7,7 +7,7 @@ using Code.Core.Events.Bus;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement; 
 using Code.Expedition.Data;
-using PixeLadder.EasyTransition; 
+using PixeLadder.EasyTransition;
 
 namespace Code.Expedition.Managers
 {

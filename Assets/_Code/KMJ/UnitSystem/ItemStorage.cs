@@ -4,6 +4,7 @@ using _Code.Passive;
 using _Code.UnitSystem;
 using Code.Core;
 using Code.Items;
+using UnityEngine;
 
 namespace _Code.Item
 {
@@ -52,6 +53,7 @@ namespace _Code.Item
                     
                     if (itemSO.PassiveSO != null)
                         PassiveStorage.Instance.SetPassive(unitType, itemSO.PassiveSO);
+                    Debug.Log("와우");
                 }
             }
         }

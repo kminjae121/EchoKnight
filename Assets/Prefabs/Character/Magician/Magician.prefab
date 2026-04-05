@@ -3221,6 +3221,7 @@ GameObject:
   - component: {fileID: 6766155429207633582}
   - component: {fileID: 4836551064000066367}
   - component: {fileID: 1158970851018651326}
+  - component: {fileID: 4882991443673375776}
   m_Layer: 7
   m_Name: Magician
   m_TagString: Untagged
@@ -3329,6 +3330,7 @@ MonoBehaviour:
   normalText: {fileID: 11400000, guid: fc6dd7d9bb3e2cc4581c347ad34cd662, type: 2}
   criticalText: {fileID: 11400000, guid: 06b606e1c3a03674fa90dc9aa08098fc, type: 2}
   textEventChannel: {fileID: 11400000, guid: 249b09a83d3d0854e920cd46632fa8ba, type: 2}
+  storageSO: {fileID: 11400000, guid: 001b4c37e1da0a04bbe3f0aedc15543d, type: 2}
 --- !u!114 &5137460681628610011
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3428,6 +3430,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d95e4422801a459f9fbaae3621702f3c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitOutLineCompo
+--- !u!114 &4882991443673375776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6243688159485738314}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5013bf39a81a460299d21489d564b6dc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Code.Combat.UnitShieldCompo
+  BreakShieldEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  RecoverShieldEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &6321923944653983287
 GameObject:
   m_ObjectHideFlags: 0

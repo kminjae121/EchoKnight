@@ -8,7 +8,6 @@ namespace Code.UnitSystem
         MoveSpeed, 
         AtkDamage,
         MaxHealth,
-        SkillDamage,
         DefensivePower,
         AvoidProbability,
         CriticalProbability,
@@ -20,11 +19,9 @@ namespace Code.UnitSystem
 
         private float MoveSpeed => unitSO.MoveSpeed;
 
-        private float AtkDamage => unitSO.AtkDamage;
-
         private float MaxHealth => unitSO.Maxhealth;
         
-        private float SkillDamage => unitSO.SkillDamage;
+        private float AttackDamage => unitSO.AttackDamage;
         
         private float DefensivePower => unitSO.DefensivePower;
         
@@ -49,14 +46,11 @@ namespace Code.UnitSystem
                 case StatInfo.MoveSpeed:
                     value = MoveSpeed;
                     break;
-                case StatInfo.AtkDamage:
-                    value = AtkDamage;
-                    break;
                 case StatInfo.MaxHealth:
                     value = MaxHealth;
                     break;
-                case StatInfo.SkillDamage:
-                    value =SkillDamage;
+                case StatInfo.AtkDamage:
+                    value =AttackDamage;
                     break;
                 case StatInfo.DefensivePower:
                     value = DefensivePower;

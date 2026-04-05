@@ -1,5 +1,8 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using _Code.Combat;
+using Code.Core.Events.Bus;
 using Code.UI;
+using Code.UnitManaging;
 using EntityComponent;
 using GameEventChannel;
 using UnityEngine;
@@ -13,11 +16,14 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private float currentHealth;
         [SerializeField] private TextInfo normalText, criticalText;
         [SerializeField] private GameEventChannelSO textEventChannel;
-        
+
+        [SerializeField] private UnitStorageSO storageSO; 
+
         private Unit _entity;
         private ActionData _actionData;
         private UnitStatCompo _statCompo;
-        private UnitState unitStateCompo;
+        private UnitState _unitStateCompo;
+        private UnitShieldCompo _shieldCompo;
         
         private float _defensivePower;
         
@@ -32,13 +38,33 @@ namespace Code.UnitSystem.Combat
             _entity = owner;
             _actionData = owner.GetUnitCompo<ActionData>();
             _statCompo = owner.GetUnitCompo<UnitStatCompo>();
+            if(_entity as CharacterUnit)
+                _shieldCompo = owner.GetUnitCompo<UnitShieldCompo>();
         }
         
         private void Start()
         {
-            maxHealth = currentHealth = _statCompo.GetStat(StatInfo.MaxHealth);
             _defensivePower =  _statCompo.GetStat(StatInfo.DefensivePower);
-             unitStateCompo = new UnitState(_entity.unitSO);
+            
+            if (_entity as CharacterUnit)
+            {
+                foreach (var unitState in storageSO.unitStates)
+                {
+                    if(unitState.Data == _entity.unitSO)
+                        _unitStateCompo = unitState;
+                }
+                maxHealth = currentHealth = _unitStateCompo.CurrentHp.Value;   
+            }
+        }
+
+        private void Update()
+        {
+            if (UnityEngine.Input.GetKeyDown(KeyCode.F))
+            {
+                DamageData damage = new DamageData();
+                damage.damage = 3;
+                ApplyDamage(damage, transform.position, transform.position, null, null,false);
+            }
         }
 
         public void HealHp(float amount)
@@ -55,7 +81,7 @@ namespace Code.UnitSystem.Combat
                 Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(characterUnit.PlayableUnitID,CurrentHealth
                     ,MaxHealth, characterUnit.UnitImage));
                 
-                unitStateCompo.Heal(amount);
+                _unitStateCompo.Heal(amount);
             }
         }
         
@@ -64,8 +90,13 @@ namespace Code.UnitSystem.Combat
         {
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
-            _actionData.HitByPowerAttack = attackData.isPowerAttack;
             _actionData.LastDamageData = damageData;
+
+            if (_entity as CharacterUnit && _shieldCompo.GetShieldValue() > 0)
+            {
+                _shieldCompo.BreakShield((int)damageData.damage);
+                return;
+            }
 
             _defensivePower = _entity.unitSO.DefensivePower;
 
@@ -73,7 +104,7 @@ namespace Code.UnitSystem.Combat
             float CalculateDamage = damage * (_defensivePower / 100);
             damage -= CalculateDamage;
             
-            currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
+            currentHealth = Mathf.Clamp(currentHealth - (int)damage, 0, maxHealth);
 
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
@@ -91,7 +122,7 @@ namespace Code.UnitSystem.Combat
                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(characterUnit.PlayableUnitID,CurrentHealth,
                    MaxHealth, characterUnit.UnitImage));
 
-               unitStateCompo.TakeDamage(damage);
+               _unitStateCompo.TakeDamage(damage);
            }
            
            _entity.OnHitEvent?.Invoke();

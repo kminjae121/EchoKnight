@@ -180,7 +180,7 @@ namespace Code.UI
             var data = _currentUnit.Data;
             nameText.text = data.UnitName;
             classText.text = data.UnitClass;
-            atkText.text = (data.AtkDamage + InGameStatCompo.Instance.GetStat(StatInfo.AtkDamage, data.UnitType)).ToString("F1");
+            atkText.text = (data.AttackDamage + InGameStatCompo.Instance.GetStat(StatInfo.AtkDamage, data.UnitType)).ToString("F1");
             defText.text = (data.DefensivePower + InGameStatCompo.Instance.GetStat(StatInfo.DefensivePower, data.UnitType)).ToString("F1");
             moveSpeedText.text = (data.MoveSpeed + InGameStatCompo.Instance.GetStat(StatInfo.MoveSpeed, data.UnitType)).ToString("F1");
             descriptionText.text = data.UnitDescription;

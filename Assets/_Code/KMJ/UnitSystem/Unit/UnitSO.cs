@@ -63,12 +63,12 @@ public class UnitSO : ScriptableObject
 
     public float Maxhealth;
 
-    public float AtkDamage;
-
     [Range(1, 3f)]
-    public float SkillDamage;
+    public float AttackDamage;
 
     public float DefensivePower;
+
+    public int ShieldValue;
 
     [Range(0,100)]
     public float AvoidProbability;

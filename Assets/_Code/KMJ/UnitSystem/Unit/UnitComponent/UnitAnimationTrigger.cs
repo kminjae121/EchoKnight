@@ -8,10 +8,7 @@ namespace Code.UnitSystem
         public Action OnDeadEvent;
         public Action OnAttackTrigger;
         public Action OnAnimationEndTrigger;
-        public Action OnEnemyAnimationEndTrigger;
         public Action OnTakeDamageTrigger;
-        public Action OnEnemyDieEndTrigger;
-        
         
         private Unit _entity;
         
@@ -21,18 +18,9 @@ namespace Code.UnitSystem
         }
 
         private void TakeDamage() => OnTakeDamageTrigger?.Invoke();
-
-        public void TriggerDead() => OnDeadEvent?.Invoke();
-        
-        public void TriggerEnemyIdle() => OnEnemyAnimationEndTrigger?.Invoke();
-        
-        public void TriggerEnemyDead() => OnEnemyDieEndTrigger?.Invoke();
-        
+        private void TriggerDead() => OnDeadEvent?.Invoke();
         private void AnimationEnd() => OnAnimationEndTrigger?.Invoke();
-        
         private void Dead() => OnDeadEvent?.Invoke();
-        private void EnemyDead() => OnEnemyDieEndTrigger?.Invoke();
         private void Attack() => OnAttackTrigger?.Invoke();
-        private void EnemyAnimationEnd() => OnEnemyAnimationEndTrigger?.Invoke();
     }
 }

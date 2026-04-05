@@ -52,6 +52,7 @@ public class BasicAttackSkill : BasicUnitSkill
         yield return new WaitForSeconds(0.4f);
         
         animtionCompo.PlaySelectAnimation("BAS");
+        
     }
     
     public void TakeDamage()

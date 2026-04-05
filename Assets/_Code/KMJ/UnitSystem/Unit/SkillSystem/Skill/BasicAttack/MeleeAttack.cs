@@ -53,6 +53,7 @@ public class MeleeAttack : BasicUnitSkill
     {
         yield return new WaitForSeconds(0.4f);
         
+         SkillFeedbackEvent?.Invoke();
          _animationCompo.PlaySelectAnimation("ATTACK");
     }
     

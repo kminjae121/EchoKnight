@@ -37,6 +37,8 @@ namespace Code.SkillSystem
         
         [Header("Skill Event")] 
         public UnityEvent<GameObject> SkillEvent;
+
+        public UnityEvent SkillFeedbackEvent;
         public UnityEvent SkillEndEvent;
 
 

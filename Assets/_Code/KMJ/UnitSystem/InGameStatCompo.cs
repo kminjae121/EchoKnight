@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Code.Core;
 using Code.UnitSystem;
+using UnityEngine;
 
 
 namespace _Code.UnitSystem
@@ -27,7 +28,7 @@ namespace _Code.UnitSystem
                 if (item.UpgradeStat == upgradeStat && item.UnitType == unitType)
                 {
                     item.UpgradeValue += upgradeValue; 
-                    _statsList[i] = item;            
+                    _statsList[i] = item;        
                     return;
                 }
             }

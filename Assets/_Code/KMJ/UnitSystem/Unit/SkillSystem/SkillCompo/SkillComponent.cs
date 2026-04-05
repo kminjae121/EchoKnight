@@ -64,7 +64,7 @@ namespace Code.SkillSystem
                 {
                     if (_statCompo != null)
                     {
-                        float skillDamageValue = _statCompo.GetStat(StatInfo.SkillDamage);
+                        float skillDamageValue = _statCompo.GetStat(StatInfo.AtkDamage);
                         float floatDamage = skill.BasicSkillDamage * skillDamageValue;
                         basicDamage = (int)floatDamage;
                     }

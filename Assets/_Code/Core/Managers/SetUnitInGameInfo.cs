@@ -13,10 +13,10 @@ namespace Code.Core.Managers
         {
             _units.ForEach(unit =>
             {
-                unit.unitInGame.AtkDamage = unit.AtkDamage;
+                unit.unitInGame.AtkDamage = unit.AttackDamage;
                 unit.unitInGame.DefensivePower = unit.DefensivePower;
                 unit.unitInGame.Maxhealth =  unit.Maxhealth;
-                unit.unitInGame.SkillDamage = unit.SkillDamage; 
+                unit.unitInGame.SkillDamage = unit.AttackDamage; 
             });
         }
     }

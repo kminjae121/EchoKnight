@@ -27,8 +27,6 @@ namespace Code.UnitSystem
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
         public UnitSkillCost SkillCostCompo { get; private set; }
-
-        public SkillCostUI SkillCostUI { get; set; }
         
         public UnitOutLineCompo OutLineCompo { get; private set; }
 
@@ -80,7 +78,6 @@ namespace Code.UnitSystem
         public void SetObject(Button btn,SkillCostUI skillCostUI)
         {
             endTurnBtn = btn;
-            SkillCostUI = skillCostUI;
         }
 
         public override void OnTurnStart()
@@ -106,7 +103,6 @@ namespace Code.UnitSystem
             }
             
             OnTurnStartEvent?.Invoke();
-            SkillCostUI.SetSkillCostCompo(SkillCostCompo);
             
             Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }

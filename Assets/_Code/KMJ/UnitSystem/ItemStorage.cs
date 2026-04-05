@@ -21,7 +21,6 @@ namespace _Code.Item
                 {
                     itemList.Add(itemSO);
                     InGameStatCompo.Instance.SetStat(itemSO.StatInfo, itemSO.StatValue, unitType);
-                    
                     if (itemSO.PassiveSO != null)
                         PassiveStorage.Instance.SetPassive(unitType, itemSO.PassiveSO);
                     
@@ -33,8 +32,7 @@ namespace _Code.Item
                 {
                     itemSO
                 };
-                items.Add(unitType, newList);
-
+                items.Add(unitType, newList);    
                 InGameStatCompo.Instance.SetStat(itemSO.StatInfo, itemSO.StatValue, unitType);
                 
                 if (itemSO.PassiveSO != null)
@@ -53,7 +51,6 @@ namespace _Code.Item
                     
                     if (itemSO.PassiveSO != null)
                         PassiveStorage.Instance.SetPassive(unitType, itemSO.PassiveSO);
-                    Debug.Log("와우");
                 }
             }
         }

@@ -70,8 +70,6 @@ namespace Code.SkillSystem
         {
             base.SkillFinished(isCancel);
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            if(isCancel)
-                _characterUnit.SkillCostUI.ReturnShowFilled();
         }
 
         public override void AttackEnemy()
@@ -138,8 +136,6 @@ namespace Code.SkillSystem
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
                 return;
             }
-
-            _characterUnit.SkillCostUI.SetShowGauge(_characterUnit.SkillCostCompo.CheckSkillCost(SkillSO.SkillCost));
             
             _characterUnit.MoveCompo.ResetTile();
             SkillStartEvent();

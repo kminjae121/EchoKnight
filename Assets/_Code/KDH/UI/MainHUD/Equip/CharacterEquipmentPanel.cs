@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using _Code.Item;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.Items;
@@ -225,7 +226,8 @@ namespace Code.UI
                 Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent($"아티팩트는 최대 {maxArtifactEquipCount}개까지만 장착할 수 있습니다."));
                 return;
             }
-
+            
+            ItemStorage.Instance.SetItem(_unit.UnitType, evt.EquipmentItem);
             _unit.EquippedArtifacts.artifacts.Add(evt.EquipmentItem);
             RefreshArtifactUI();
         }
@@ -233,7 +235,11 @@ namespace Code.UI
         private void HandleArtifactUnequip(ArtifactUnequipEvent evt)
         {
             if (_unit == null || _unit.EquippedArtifacts == null) return;
-            if (_unit.EquippedArtifacts.artifacts.Remove(evt.EquipmentItem)) RefreshArtifactUI();
+            if (_unit.EquippedArtifacts.artifacts.Remove(evt.EquipmentItem))
+            {
+                RefreshArtifactUI();
+                ItemStorage.Instance.RemoveItem(_unit.UnitType, evt.EquipmentItem);
+            }
         }
 
         private void RefreshSkillList()

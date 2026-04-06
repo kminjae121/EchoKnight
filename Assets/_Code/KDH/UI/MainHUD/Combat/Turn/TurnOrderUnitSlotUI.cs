@@ -15,6 +15,11 @@ namespace Code.UI
         [SerializeField] private Image unitIcon;
         [SerializeField] private GameObject highlightFrame;
         
+        [Header("Team Indicator")]
+        [SerializeField] private Image teamIndicatorImage;
+        [SerializeField] private Sprite allyIndicatorSprite;
+        [SerializeField] private Sprite enemyIndicatorSprite;
+        
         private ITurnable _targetUnit;
         private Pool _pool;
 
@@ -32,6 +37,10 @@ namespace Code.UI
             if (highlightFrame != null)
             {
                 highlightFrame.SetActive(false);
+            }
+            if (teamIndicatorImage != null)
+            {
+                teamIndicatorImage.sprite = null;
             }
         }
 
@@ -54,6 +63,20 @@ namespace Code.UI
             if (unitIcon != null)
             {
                 unitIcon.sprite = unit.UnitImage;
+            }
+            
+            if (teamIndicatorImage != null)
+            {
+                teamIndicatorImage.sprite = unit.IsPlayerUnit ? allyIndicatorSprite : enemyIndicatorSprite;
+                
+                if (teamIndicatorImage.sprite != null)
+                {
+                    teamIndicatorImage.gameObject.SetActive(true);
+                }
+                else
+                {
+                    teamIndicatorImage.gameObject.SetActive(false);
+                }
             }
             
             if (highlightFrame != null)

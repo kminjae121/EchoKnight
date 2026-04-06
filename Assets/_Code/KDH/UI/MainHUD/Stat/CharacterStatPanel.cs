@@ -30,14 +30,12 @@ namespace Code.UI
         [Header("Stat & Info")]
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI classText;
-        [SerializeField] private TextMeshProUGUI descriptionText;
         
         [SerializeField] private TextMeshProUGUI maxHealthText;
         [SerializeField] private TextMeshProUGUI atkText;
         [SerializeField] private TextMeshProUGUI defText;
         [SerializeField] private TextMeshProUGUI moveSpeedText;
         [SerializeField] private TextMeshProUGUI turnSpeedText;
-        [SerializeField] private TextMeshProUGUI avoidProbabilityText;
         [SerializeField] private TextMeshProUGUI criticalProbabilityText;
         [SerializeField] private TextMeshProUGUI criticalDamageIncreaseText;
         [SerializeField] private TextMeshProUGUI maxSkillCostText;
@@ -188,7 +186,6 @@ namespace Code.UI
             
             if (nameText != null) nameText.text = data.UnitName;
             if (classText != null) classText.text = data.UnitClass;
-            if (descriptionText != null) descriptionText.text = data.UnitDescription;
             
             if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
             if (atkText != null) atkText.text = data.AttackDamage.ToString("F1");
@@ -196,7 +193,6 @@ namespace Code.UI
             if (moveSpeedText != null) moveSpeedText.text = data.MoveSpeed.ToString("F1");
             if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
             
-            if (avoidProbabilityText != null) avoidProbabilityText.text = $"{data.AvoidProbability:F1}%";
             if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";
             if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease.ToString("F1");
             

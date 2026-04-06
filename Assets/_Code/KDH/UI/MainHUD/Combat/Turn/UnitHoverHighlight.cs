@@ -12,6 +12,8 @@ namespace Code.UnitSystem
 
         private ITurnable _myTurnable;
 
+        private GameObject _targetUnit;
+
         private void Awake()
         {
             _myTurnable = GetComponent<ITurnable>();
@@ -36,7 +38,14 @@ namespace Code.UnitSystem
         private void HandleHoverEvent(CombatUnitHoverEvent evt)
         {
             if (_myTurnable == null || evt.HoveredUnit == null) return;
-
+            
+            if(_targetUnit != null)
+                _targetUnit.GetComponentInChildren<UnitOutLineCompo>().ResetOutLine();
+            
+            _targetUnit = evt.HoveredUnit.UnitObj;
+            
+            _targetUnit.GetComponentInChildren<UnitOutLineCompo>().SetOutLine();
+            
             if (_myTurnable.Equals(evt.HoveredUnit))
             {
                 if (highlightEffectObj != null)

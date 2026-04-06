@@ -92,7 +92,7 @@ namespace Code.UnitSystem.Combat
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false,
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage, true));
 
-                    _targetingCompo = null;
+                    _targetUnit = null;
                     skillManager.GetSkillInfo().SetEnemyTargeting(null);
                     skillManager.GetSkillInfo().SetEnemy(null);
                 }
@@ -117,10 +117,10 @@ namespace Code.UnitSystem.Combat
                 _targetingCompo = enemy.GetComponent<EnemyTargeting>();
                 _targetOutLineCompo = _targetEnemy.GetComponent<UnitOutLineCompo>();
                 
-                if (_targetingCompo != null)
-                    _targetingCompo.Targeting();
                 if(_targetOutLineCompo != null)
                     _targetOutLineCompo.SetOutLine();
+                if (_targetingCompo != null)
+                    _targetingCompo.Targeting();
                 
                 Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(skillManager.GetSkillInfo().AddDamage, health.CurrentHealth,
                     health.MaxHealth,
@@ -168,6 +168,12 @@ namespace Code.UnitSystem.Combat
 
                 if (_targetingCompo != null)
                     _targetingCompo.OffTargeting();
+                
+                _targetOutLineCompo = _targetEnemy.GetComponent<UnitOutLineCompo>();
+
+                if (_targetOutLineCompo != null)
+                    _targetOutLineCompo.ResetOutLine();
+                
 
                 Sprite img = null;
 

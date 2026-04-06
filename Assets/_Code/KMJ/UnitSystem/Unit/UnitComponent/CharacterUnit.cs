@@ -58,7 +58,7 @@ namespace Code.UnitSystem
             SkillCostCompo =  GetUnitCompo<UnitSkillCost>();
             OutLineCompo =  GetUnitCompo<UnitOutLineCompo>();
             PassiveCompo = GetUnitCompo<PassiveComponent>();
-            HealthCompo = GetUnitCompo<UnitHealth>();
+            HealthCompo = GetUnitCompo<UnitHealth>();   
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 

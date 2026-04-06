@@ -106,7 +106,7 @@ namespace Code.UnitSystem
 
             if (MoveCompo != null)
             {
-                MoveCompo.FindObjectInRange(unitSO.moveRange);
+                MoveCompo.FindObjectInRange(unitSO.MoveRange);
                 MoveCompo.moveCount = 0;
             }
             

@@ -193,7 +193,7 @@ namespace Code.UI
             if (maxHealthText != null) maxHealthText.text = (data.Maxhealth + InGameStatCompo.Instance.GetStat(StatInfo.MaxHealth,_currentUnit.Data.UnitType)).ToString("F1");
             if (atkText != null) atkText.text = (data.AttackDamage + InGameStatCompo.Instance.GetStat(StatInfo.AtkDamage,_currentUnit.Data.UnitType)).ToString("F1");
             if (defText != null) defText.text = (data.DefensivePower + InGameStatCompo.Instance.GetStat(StatInfo.DefensivePower,_currentUnit.Data.UnitType)).ToString("F1");
-            if (moveSpeedText != null) moveSpeedText.text = (data.MovePower + InGameStatCompo.Instance.GetStat(StatInfo.MoveSpeed,_currentUnit.Data.UnitType)).ToString("F1");
+            if (moveSpeedText != null) moveSpeedText.text = (data.MoveRange + InGameStatCompo.Instance.GetStat(StatInfo.MoveSpeed,_currentUnit.Data.UnitType)).ToString("F1");
             if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
             
             if (avoidProbabilityText != null) avoidProbabilityText.text = $"{(data.AvoidProbability + InGameStatCompo.Instance.GetStat(StatInfo.AvoidProbability,_currentUnit.Data.UnitType)) :F1}%";

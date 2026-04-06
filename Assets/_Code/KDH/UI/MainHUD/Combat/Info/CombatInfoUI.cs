@@ -124,7 +124,7 @@ namespace Code.UI
             if (unitClassText != null) unitClassText.text = data.UnitClass;
 
             if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
-            if (moveSpeedText != null) moveSpeedText.text = data.MovePower.ToString("F1");
+            if (moveSpeedText != null) moveSpeedText.text = data.MoveRange.ToString("F1");
             if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
             if (attackDamageText != null) attackDamageText.text = data.AttackDamage.ToString("F1");
             if (defensivePowerText != null) defensivePowerText.text = data.DefensivePower.ToString("F1");

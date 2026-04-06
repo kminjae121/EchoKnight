@@ -17,7 +17,7 @@ namespace Code.UnitSystem
     {
         [SerializeField] private UnitSO unitSO;
 
-        private float MoveSpeed => unitSO.MovePower;
+        private float MoveSpeed => unitSO.MoveRange;
 
         private float MaxHealth => unitSO.Maxhealth;
         

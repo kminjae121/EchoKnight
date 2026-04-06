@@ -21,27 +21,49 @@ namespace Code.UnitSystem.Enemies
         public TurnChannel TurnChannel { get; private set; }
         public UnitAnimation UnitAnimator { get; private set; }
         public UnitRotation UnitRotationCompo { get; private set; }
+        public UnitAnimationTrigger AnimationTrigger { get; private set; }
         protected GridMap GridMapInstance { get; private set; }
         protected UnitManager UnitManager { get; private set; }
         protected Unit CurrentTarget { get; private set; }
 
         private bool _hasEndedTurn;
+        private bool _isDead;
         
-        private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
+        private readonly Vector3 _dampingSpeed = new(1.5f, 1.5f, 1.5f);
 
         protected override void Awake()
         {
             base.Awake();
+            
             BTAgent = GetComponent<BehaviorGraphAgent>();
         }
 
         protected override void AfterInitComponents()
         {
             base.AfterInitComponents();
+            
             PathMover = GetUnitCompo<PathMover>();
             SkillCompo = GetUnitCompo<EnemySkillComponent>();
             UnitAnimator = GetUnitCompo<UnitAnimation>();
             UnitRotationCompo = GetUnitCompo<UnitRotation>();
+            AnimationTrigger = GetUnitCompo<UnitAnimationTrigger>();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            _isDead = false;
+
+            if (AnimationTrigger != null)
+                AnimationTrigger.OnDeadEvent += HandleDeathAnimEnd;
+        }
+
+        protected override void OnDisable()
+        {
+            if (AnimationTrigger != null)
+                AnimationTrigger.OnDeadEvent -= HandleDeathAnimEnd;
+
+            base.OnDisable();
         }
 
         protected virtual void Start()
@@ -66,7 +88,8 @@ namespace Code.UnitSystem.Enemies
                 OnTurnEnd();
                 return;
             }
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
+            
+            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false, _dampingSpeed));
 
             TurnChannel?.SendEventMessage();
         }
@@ -79,14 +102,51 @@ namespace Code.UnitSystem.Enemies
             _hasEndedTurn = true;
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
                 false, new Vector3(0.1f, 0.1f, 0.1f)));
+            
             base.OnTurnEnd();
         }
 
         protected override void Dead()
         {
+            if (_isDead)
+                return;
+
+            _isDead = true;
             base.Dead();
+
+            if (UnitAnimator == null || AnimationTrigger == null)
+            {
+                HandleDeathAnimEnd();
+                return;
+            }
+
+            UnitAnimator.PlaySelectAnimation("DIE");
+        }
+
+        protected override void Hit()
+        {
+            if (_isDead)
+                return;
+
+            if (UnitAnimator != null)
+            {
+                UnitAnimator.RestartFromEntry();
+                UnitAnimator.PlaySelectAnimation("HIT");
+            }
+
+            base.Hit();
+        }
+
+        private void HandleDeathAnimEnd()
+        {
+            if (!_isDead)
+                return;
+
+            _isDead = false;
+
             if (Core.Managers.StageManager.Instance != null)
-                Core.Managers.StageManager.Instance.RemoveEnemy(this.gameObject);
+                Core.Managers.StageManager.Instance.RemoveEnemy(gameObject);
+
             gameObject.SetActive(false);
         }
 

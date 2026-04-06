@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using _Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem;
@@ -31,10 +30,18 @@ namespace Code.UI
         [Header("Stat & Info")]
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI classText;
+        [SerializeField] private TextMeshProUGUI descriptionText;
+        
+        [SerializeField] private TextMeshProUGUI maxHealthText;
         [SerializeField] private TextMeshProUGUI atkText;
         [SerializeField] private TextMeshProUGUI defText;
         [SerializeField] private TextMeshProUGUI moveSpeedText;
-        [SerializeField] private TextMeshProUGUI descriptionText;
+        [SerializeField] private TextMeshProUGUI turnSpeedText;
+        [SerializeField] private TextMeshProUGUI avoidProbabilityText;
+        [SerializeField] private TextMeshProUGUI criticalProbabilityText;
+        [SerializeField] private TextMeshProUGUI criticalDamageIncreaseText;
+        [SerializeField] private TextMeshProUGUI maxSkillCostText;
+        [SerializeField] private TextMeshProUGUI recoverySkillCostText;
 
         private UnitState _currentUnit;
 
@@ -178,19 +185,30 @@ namespace Code.UI
         private void RefreshInfoTexts()
         {
             var data = _currentUnit.Data;
-            nameText.text = data.UnitName;
-            classText.text = data.UnitClass;
-            atkText.text = (data.AttackDamage + InGameStatCompo.Instance.GetStat(StatInfo.AtkDamage, data.UnitType)).ToString("F1");
-            defText.text = (data.DefensivePower + InGameStatCompo.Instance.GetStat(StatInfo.DefensivePower, data.UnitType)).ToString("F1");
-            moveSpeedText.text = (data.MovePower + InGameStatCompo.Instance.GetStat(StatInfo.MoveSpeed, data.UnitType)).ToString("F1");
-            descriptionText.text = "";
+            
+            if (nameText != null) nameText.text = data.UnitName;
+            if (classText != null) classText.text = data.UnitClass;
+            if (descriptionText != null) descriptionText.text = data.UnitDescription;
+            
+            if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
+            if (atkText != null) atkText.text = data.AttackDamage.ToString("F1");
+            if (defText != null) defText.text = data.DefensivePower.ToString("F1");
+            if (moveSpeedText != null) moveSpeedText.text = data.MoveSpeed.ToString("F1");
+            if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
+            
+            if (avoidProbabilityText != null) avoidProbabilityText.text = $"{data.AvoidProbability:F1}%";
+            if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";
+            if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease.ToString("F1");
+            
+            if (maxSkillCostText != null) maxSkillCostText.text = data.MaxSkillCost.ToString();
+            if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoverySkillCost.ToString();
         }
 
         private void RefreshHpBar(float prevValue, float nextValue)
         {
             float maxHp = _currentUnit.Data.Maxhealth;
-            hpText.text = $"{nextValue:F0} / {maxHp:F0}";
-            hpBarFill.fillAmount = maxHp > 0 ? nextValue / maxHp : 0f;
+            if (hpText != null) hpText.text = $"{nextValue:F0} / {maxHp:F0}";
+            if (hpBarFill != null) hpBarFill.fillAmount = maxHp > 0 ? nextValue / maxHp : 0f;
         }
 
         private void RefreshSkillSlots()

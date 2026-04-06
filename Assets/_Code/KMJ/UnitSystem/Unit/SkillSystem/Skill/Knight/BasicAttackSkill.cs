@@ -49,16 +49,17 @@ public class BasicAttackSkill : BasicUnitSkill
 
     private IEnumerator MeleeAttackAction(GameObject target)
     {
-        yield return new WaitForSeconds(0.4f);
+        yield return new WaitForSeconds(0.2f);
+        SkillFeedbackEvent?.Invoke();
+        yield return new WaitForSeconds(0.2f);
         
         animtionCompo.PlaySelectAnimation("BAS");
-        
     }
     
     public void TakeDamage()
     {
         Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.45f));
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_target,AddDamage,_characterUnit,false));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_target,AddDamage,_characterUnit,false,false));
     }
 
     public void AttackEnd()

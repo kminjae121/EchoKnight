@@ -182,8 +182,8 @@ namespace Code.UI
             classText.text = data.UnitClass;
             atkText.text = (data.AttackDamage + InGameStatCompo.Instance.GetStat(StatInfo.AtkDamage, data.UnitType)).ToString("F1");
             defText.text = (data.DefensivePower + InGameStatCompo.Instance.GetStat(StatInfo.DefensivePower, data.UnitType)).ToString("F1");
-            moveSpeedText.text = (data.MoveSpeed + InGameStatCompo.Instance.GetStat(StatInfo.MoveSpeed, data.UnitType)).ToString("F1");
-            descriptionText.text = data.UnitDescription;
+            moveSpeedText.text = (data.MovePower + InGameStatCompo.Instance.GetStat(StatInfo.MoveSpeed, data.UnitType)).ToString("F1");
+            descriptionText.text = "";
         }
 
         private void RefreshHpBar(float prevValue, float nextValue)

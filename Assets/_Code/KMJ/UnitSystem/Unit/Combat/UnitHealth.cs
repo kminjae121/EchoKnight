@@ -6,6 +6,7 @@ using Code.UnitManaging;
 using EntityComponent;
 using GameEventChannel;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Code.UnitSystem.Combat
 {
@@ -29,7 +30,9 @@ namespace Code.UnitSystem.Combat
         
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
-        
+
+
+        public UnityEvent<Unit,int> OnInteractionEvent;
         public delegate void OnHealthChanged(float current, float max);
         public event OnHealthChanged OnHealthChangedEvent;
         
@@ -44,7 +47,7 @@ namespace Code.UnitSystem.Combat
         
         private void Start()
         {
-            _defensivePower =  _statCompo.GetStat(StatInfo.DefensivePower);
+            _defensivePower = _statCompo.GetStat(StatInfo.DefensivePower);
             
             if (_entity as CharacterUnit)
             {
@@ -55,15 +58,9 @@ namespace Code.UnitSystem.Combat
                 }
                 maxHealth = currentHealth = _unitStateCompo.CurrentHp.Value;   
             }
-        }
-
-        private void Update()
-        {
-            if (UnityEngine.Input.GetKeyDown(KeyCode.F))
+            else
             {
-                DamageData damage = new DamageData();
-                damage.damage = 3;
-                ApplyDamage(damage, transform.position, transform.position, null, null,false);
+                maxHealth = currentHealth = _entity.unitSO.Maxhealth;
             }
         }
 
@@ -86,25 +83,30 @@ namespace Code.UnitSystem.Combat
         }
         
 
-        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer,bool isCritical)
+        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData,
+            Unit dealer,bool isCritical, bool isPenetrate)
         {
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
             _actionData.LastDamageData = damageData;
 
-            if (_entity as CharacterUnit && _shieldCompo.GetShieldValue() > 0)
-            {
-                _shieldCompo.BreakShield((int)damageData.damage);
-                return;
-            }
-
-            _defensivePower = _entity.unitSO.DefensivePower;
-
-            float damage = damageData.damage;
-            float CalculateDamage = damage * (_defensivePower / 100);
-            damage -= CalculateDamage;
+            int damage = damageData.damage;
             
-            currentHealth = Mathf.Clamp(currentHealth - (int)damage, 0, maxHealth);
+            if (isPenetrate != true)
+            {
+                if (_entity as CharacterUnit && _shieldCompo.GetShieldValue() > 0)
+                {
+                    _shieldCompo.BreakShield((int)damageData.damage);
+                    return;
+                }
+
+                _defensivePower = _entity.unitSO.DefensivePower;
+                
+                int CalculateDamage = (int)(damage * (_defensivePower / 100));
+                damage -= CalculateDamage;
+            
+                currentHealth = Mathf.Clamp(currentHealth - (int)damage, 0, maxHealth);   
+            }
 
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
@@ -126,6 +128,7 @@ namespace Code.UnitSystem.Combat
            }
            
            _entity.OnHitEvent?.Invoke();
+           OnInteractionEvent?.Invoke(dealer, damage);
            
            if (currentHealth <= 0)
                _entity.OnDeathEvent?.Invoke();

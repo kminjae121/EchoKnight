@@ -15,18 +15,18 @@ namespace Code.Core.Events.Bus
 
         public Unit Owner;
 
-        public bool isUseOwnGimic;
+        public bool IsCritical;
 
-        public bool isConfirmationSkill;
-        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target, float addDamage, Unit Owenr,  bool isConfirmationSkill, bool isUseOwnGimic = true)
+        public bool IsPenetrate;
+        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target, float addDamage, Unit Owenr,  bool IsCritical, bool IsPenetrate)
         {
             DamageData = data;
             this.atkData = atkData;
             this.target = target;
             this.addDamage = addDamage;
             this.Owner = Owenr;
-            this.isUseOwnGimic = isUseOwnGimic;
-            this.isConfirmationSkill = isConfirmationSkill;
+            this.IsCritical = IsCritical;
+            this.IsPenetrate = IsPenetrate;
         }
     }
 }

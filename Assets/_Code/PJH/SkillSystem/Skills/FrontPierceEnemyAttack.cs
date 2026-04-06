@@ -52,7 +52,7 @@ namespace Code.SkillSystem
                 return;
 
             foreach (GameObject hitTarget in GetHitTargets(_target))
-                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage, null, false));
+                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage, null, false,false));
             
             UnityLogger.Log("관통 공격으로 데미지");
         }

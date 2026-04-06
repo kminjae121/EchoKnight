@@ -45,9 +45,6 @@ public class UnitSO : ScriptableObject
     [Space(4)]
     [Header("LoadOutCost")]
     public int LoadOutCost;
-
-    [Space(3)] 
-    [TextArea]public string UnitDescription;
     
     [Space(4)]
     [Header("UnitSettings")]
@@ -59,14 +56,13 @@ public class UnitSO : ScriptableObject
     
     public bool isPlayerUnit = false;
     
-    public float MoveSpeed;
+    public int MovePower;
 
-    public float Maxhealth;
+    public int Maxhealth;
+    
+    public int AttackDamage;
 
-    [Range(1, 3f)]
-    public float AttackDamage;
-
-    public float DefensivePower;
+    public int DefensivePower;
 
     public int ShieldValue;
 

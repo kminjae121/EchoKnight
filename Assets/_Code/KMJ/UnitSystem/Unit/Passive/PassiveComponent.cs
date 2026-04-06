@@ -7,33 +7,39 @@ using Code.UnitSystem;
 using NUnit.Framework;
 using UnityEngine;
 
+public enum PassiveType
+{
+    AlwaysPassive,
+    TurnPassive,
+}
 namespace _Code.Passive
 {
     public class PassiveComponent : MonoBehaviour, IUnitComponent
     {
         private Unit _unit;
 
-        private List<PassiveSO> _passiveList;
+        [SerializeField] private List<PassiveSO> _passiveList;
         
-        private Dictionary<PassiveSO, BasePassive> _passiveDict;
+        private Dictionary<PassiveSO, BasePassive> _passiveDict = new Dictionary<PassiveSO, BasePassive>();
         
         public void Initialize(Unit owner)
         {
             _unit = owner;
 
-            _passiveList = PassiveStorage.Instance.GetPassive(_unit.unitSO.UnitType);
+            if(PassiveStorage.Instance.GetPassive(_unit.unitSO.UnitType) != null)
+                _passiveList = PassiveStorage.Instance.GetPassive(_unit.unitSO.UnitType);
 
             FindPassive();
         }
 
         private void Start()
         {
-            StartAllPassives();
+            StartAllTurnPassives();
         }
 
         private void OnDestroy()
         {
-            StopAllPassives();
+            StopAllTurnPassives();
         }
 
         private void FindPassive()
@@ -58,6 +64,7 @@ namespace _Code.Passive
                     if (component == null)
                         continue;
                     _passiveDict.TryAdd(passiveData, basePassive);
+                    basePassive.SetOwner(_unit);
                 }
                 else
                     Debug.LogWarning($"[Passive] '{_unit.name}'에 패시프 컴포넌트에 '{type.Name}'가 부착되어 있지 않습니다.");
@@ -83,19 +90,39 @@ namespace _Code.Passive
             return null;
         }
 
-        public void StartAllPassives()
+        public void StartAllAlwaysPassives()
         {
             foreach (var passive in _passiveDict)
             {
-                passive.Value.StartPassive();
+                if(passive.Value.PassiveType == PassiveType.AlwaysPassive)
+                    passive.Value.StartPassive();
             }
         }
 
-        public void StopAllPassives()
+        public void StopAllAlwaysPassives()
         {
             foreach (var passive in _passiveDict)
             {
-                passive.Value.StopPassive();
+                if(passive.Value.PassiveType == PassiveType.AlwaysPassive)
+                    passive.Value.StopPassive();
+            }
+        }
+        
+        public void StartAllTurnPassives()
+        {
+            foreach (var passive in _passiveDict)
+            {
+                if(passive.Value.PassiveType == PassiveType.TurnPassive)
+                    passive.Value.StartPassive();
+            }
+        }
+        
+        public void StopAllTurnPassives()
+        {
+            foreach (var passive in _passiveDict)
+            {
+                if(passive.Value.PassiveType == PassiveType.TurnPassive)
+                    passive.Value.StopPassive();
             }
         }
 

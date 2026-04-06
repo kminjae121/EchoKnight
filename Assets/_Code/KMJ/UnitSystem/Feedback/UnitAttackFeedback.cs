@@ -1,11 +1,10 @@
 ﻿using Code.Effects;
-using Code.UnitSystem.Combat;
 using DG.Tweening;
 using GondrLib.Dependencies;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem
+namespace Code.Feedbacks
 {
     public class UnitAttackFeedback : Feedback
     {

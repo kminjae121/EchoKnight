@@ -5,6 +5,7 @@ namespace Code.Managers
 {
     public class RoundTracker : ITurnable
     {
+        public GameObject UnitObj { get; set; } = null;
         public string UnitName => "Round Marker";
         public bool IsPlayerUnit => false;
         

@@ -21,6 +21,8 @@ namespace Code.UnitSystem
         public float TurnSpeed { get; private set; }
         public Sprite UnitImage { get; private set; }
         public bool IsReadyDoAct => TurnGauge >= 100f;
+
+        public GameObject UnitObj { get; set; } 
         public string UnitName => unitSO != null ? unitSO.UnitName : "Unknown";
         
         protected Dictionary<Type, IUnitComponent> _components = new();
@@ -32,7 +34,7 @@ namespace Code.UnitSystem
         public Action OnDeathEvent;
         public Action OnHitEvent;
         
-        public float AddDefensivePower { get; set; }
+        public int AddDefensivePower { get; set; }
         
         public float AddAvoidProbability { get; set; }
         
@@ -46,6 +48,7 @@ namespace Code.UnitSystem
             AddUnitComponents();
             InitComponents();
             AfterInitComponents();
+            UnitObj = gameObject;
         }
         
         protected virtual void OnEnable()

@@ -48,7 +48,7 @@ namespace Code.UnitSystem
             {
                 Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.5f));
                 
-                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null,false));
+                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null,false,false));
                 
                 _collider.enabled = false;
                 gameObject.SetActive(false);

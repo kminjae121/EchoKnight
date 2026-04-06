@@ -17,7 +17,7 @@ namespace Code.SkillSystem
         protected UnitStatCompo _statCompo;
         protected Unit _unit;
 
-        protected float basicDamage = 0;
+        protected int basicDamage = 0;
         protected bool isUseSkill = true;
 
         public void Initialize(Unit owner)
@@ -58,24 +58,31 @@ namespace Code.SkillSystem
                 else
                     Debug.LogWarning($"[SkillComponent] '{_unit.name}'에 스킬 컴포넌트 '{type.Name}'가 부착되어 있지 않습니다.");
             }
-            
+
+            SkillSetDamage();
+
+            Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
+        }
+
+        private void SkillSetDamage()
+        {
             if (Skills.Count > 0)
+            {
                 foreach (var skill in Skills.Values)
                 {
                     if (_statCompo != null)
                     {
-                        float skillDamageValue = _statCompo.GetStat(StatInfo.AtkDamage);
-                        float floatDamage = skill.BasicSkillDamage * skillDamageValue;
-                        basicDamage = (int)floatDamage;
+                        int skillDamageValue = (int)_statCompo.GetStat(StatInfo.AtkDamage);
+                        int finallyDamage = skill.BasicSkillDamage * skillDamageValue;
+                        basicDamage = finallyDamage;
                     }
                     else
                         basicDamage = skill.BasicSkillDamage;
-                        
+
                     skill.InitializeSkill();
-                    skill.SetDamage(basicDamage);   
+                    skill.SetDamage(basicDamage);
                 }
-            
-            Bus<UsingSkillEvent>.Subscribe(BooleanSkill);
+            }
         }
 
         protected virtual void OnDestroy()
@@ -125,7 +132,7 @@ namespace Code.SkillSystem
             {
                 if (skill.SkillSO.SkillType == skillType)
                 {
-                    float damage = basicDamage + addDamage;
+                    int damage = basicDamage + (int)addDamage;
                     skill.SetDamage(damage);
                 }
             }

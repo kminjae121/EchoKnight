@@ -101,9 +101,9 @@ namespace Code.Cam
 
        
             if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.OrthographicSize >= 10)
-                battleCam.Lens.OrthographicSize -= 100 * Time.deltaTime;
+                ZoomInCam();
             else if (inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.OrthographicSize <= 35)
-                battleCam.Lens.OrthographicSize += 100 * Time.deltaTime;
+                ZoomOutCam();
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))
                 moveSpeed = _reduceSpeed;
@@ -129,6 +129,15 @@ namespace Code.Cam
                 transform.position = newPos;
             }
         }
-        
+
+        public void ZoomInCam()
+        {
+            battleCam.Lens.OrthographicSize -= 100 * Time.deltaTime;
+        }
+
+        public void ZoomOutCam()
+        {
+            battleCam.Lens.OrthographicSize += 100 * Time.deltaTime;
+        }
     }
 }

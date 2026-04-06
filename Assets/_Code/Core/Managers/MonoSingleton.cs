@@ -4,7 +4,7 @@ namespace Code.Core
 {
     public abstract class MonoSingleton<T> : MonoBehaviour where T : MonoBehaviour
     {
-        [SerializeField] private bool isDontDestroyOnLoad = true;
+        [SerializeField] protected bool isDontDestroyOnLoad = true;
 
         //private static readonly object locker = new();
         private static T instance;

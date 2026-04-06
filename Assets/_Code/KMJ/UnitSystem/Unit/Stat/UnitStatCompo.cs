@@ -17,7 +17,7 @@ namespace Code.UnitSystem
     {
         [SerializeField] private UnitSO unitSO;
 
-        private float MoveSpeed => unitSO.MoveSpeed;
+        private float MoveSpeed => unitSO.MovePower;
 
         private float MaxHealth => unitSO.Maxhealth;
         
@@ -50,7 +50,7 @@ namespace Code.UnitSystem
                     value = MaxHealth;
                     break;
                 case StatInfo.AtkDamage:
-                    value =AttackDamage;
+                    value = AttackDamage;
                     break;
                 case StatInfo.DefensivePower:
                     value = DefensivePower;
@@ -68,7 +68,7 @@ namespace Code.UnitSystem
             
             value += InGameStatCompo.Instance.GetStat(statInfo, unitSO.UnitType);
             
-            return (float)value;
+            return value;
         }
     }
 }

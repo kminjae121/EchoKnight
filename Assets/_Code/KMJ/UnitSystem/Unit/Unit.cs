@@ -32,7 +32,7 @@ namespace Code.UnitSystem
         public Action OnDeathEvent;
         public Action OnHitEvent;
         
-        public float AddDefensivePower { get; set; }
+        public int AddDefensivePower { get; set; }
         
         public float AddAvoidProbability { get; set; }
         

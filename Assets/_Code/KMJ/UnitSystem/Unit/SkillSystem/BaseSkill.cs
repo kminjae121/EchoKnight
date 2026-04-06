@@ -20,9 +20,9 @@ namespace Code.SkillSystem
         [Header("Base Settings")] 
         [field: SerializeField] public SkillSO SkillSO { get; private set; }
         [SerializeField] protected AttackDataSO attackData;
-        public float BasicSkillDamage => SkillSO.SkillDamage;
+        public int BasicSkillDamage => SkillSO.SkillDamage;
         
-        public float AddDamage { get; private set; } = 0;
+        public int AddDamage { get; private set; } = 0;
         public float Damage { get; set; }
         protected int SkillRange { get; private set; }
 
@@ -74,7 +74,7 @@ namespace Code.SkillSystem
         }
 
 
-        public void SetDamage(float damage)
+        public void SetDamage(int damage)
         {
             DamageData.damage = damage += AddDamage;
         }
@@ -84,7 +84,7 @@ namespace Code.SkillSystem
         {
         }
 
-        public void SetAddDamage(float addDamage)
+        public void SetAddDamage(int addDamage)
         {
             AddDamage = addDamage;
         }

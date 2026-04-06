@@ -1,10 +1,12 @@
 using System.Collections;
+using _Code.Passive;
 using Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
 using Code.SkillSystem;
 using Code.UI;
+using Code.UnitSystem.Combat;
 using Input;
 using UnityEngine;
 using UnityEngine.Events;
@@ -20,6 +22,8 @@ namespace Code.UnitSystem
         [SerializeField] private Image unitImage;
 
         #region UnitCompo
+        
+        public UnitHealth HealthCompo { get; private set; }
 
         public UnitMoveCompo MoveCompo { get; private set; }
         [field:SerializeField] public SkillComponent SkillCompo { get; private set; }
@@ -27,6 +31,8 @@ namespace Code.UnitSystem
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
         public UnitSkillCost SkillCostCompo { get; private set; }
+        
+        public PassiveComponent PassiveCompo { get; private set; }
         
         public UnitOutLineCompo OutLineCompo { get; private set; }
 
@@ -36,13 +42,11 @@ namespace Code.UnitSystem
         public bool IsConfirmationSkill { get; set; }
         
         public GameObject _startTile;
-        
         private Button endTurnBtn;
         
         private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
 
         public UnityEvent OnTurnStartEvent;
-        
         public UnityEvent OnTurnEndEvent;
 
         private void Start()
@@ -53,6 +57,8 @@ namespace Code.UnitSystem
             UnitStatCompo = GetUnitCompo<UnitStatCompo>();
             SkillCostCompo =  GetUnitCompo<UnitSkillCost>();
             OutLineCompo =  GetUnitCompo<UnitOutLineCompo>();
+            PassiveCompo = GetUnitCompo<PassiveComponent>();
+            HealthCompo = GetUnitCompo<UnitHealth>();
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
@@ -93,6 +99,8 @@ namespace Code.UnitSystem
             
             SkillCompo.UpdateSkillUI();
             
+            PassiveCompo.StartAllAlwaysPassives();
+            
             if (endTurnBtn != null)
                 endTurnBtn.onClick.AddListener(TurnEnd);
 
@@ -111,6 +119,7 @@ namespace Code.UnitSystem
         {
             base.OnTurnEnd();
             OnTurnEndEvent?.Invoke();
+            PassiveCompo.StopAllAlwaysPassives();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
         }

@@ -1,63 +1,75 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core;
+using Code.Core.Events.Bus;
 using UnityEngine;
 using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 namespace Code.UnitSystem.Combat
 {
-    public class AttackApplyCompo : MonoBehaviour
+    public class AttackApplyCompo : MonoSingleton<AttackApplyCompo>
     {
+        public delegate void AttackHandler(ref DamageEvent evt, ref bool isCritical, ref bool isPenetrate);
+        public event AttackHandler AttackStartEvent;
+
         public UnityEvent<Vector3> AttackEndEvent;
-        
-        
+
+        protected override void Awake()
+        {
+            isDontDestroyOnLoad = false;
+            base.Awake();
+        }
+
         private void Start()
         {
             Bus<DamageEvent>.Subscribe(GetApplyDamage);
-        }   
+            
+            AttackStartEvent += CalculateCritical;
+        }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<DamageEvent>.Unsubscribe(GetApplyDamage);
+            AttackStartEvent -= CalculateCritical;
         }
 
         public void GetApplyDamage(DamageEvent evt)
         {
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
 
-            if (evt.target != null)
+            if (evt.target != null && evt.target.TryGetComponent(out IDamageable damageable))
             {
-                if (evt.target.TryGetComponent(out IDamageable damageable))
+                bool isCritical = false;
+                bool isPenetrate = false;
+                
+                AttackStartEvent?.Invoke(ref evt, ref isCritical, ref isPenetrate);
+                
+                damageable.ApplyDamage(evt.DamageData, evt.target.transform.position, evt.target.transform.position,
+                    evt.atkData, evt.Owner, isCritical, isPenetrate);
+
+                var anim = evt.target.GetComponentInChildren<UnitAnimation>();
+                if (anim != null)
                 {
-                    bool isCritical = CalculateCritical(ref evt);
-
-                    damageable.ApplyDamage(evt.DamageData, evt.target.transform.position,
-                        evt.target.transform.position, evt.atkData, evt.Owner, isCritical);
-
-                    Vector3 TargetTrm = evt.target.GetComponentInChildren<UnitAnimation>().transform.position;
-                    TargetTrm.y += 1f;
-                    AttackEndEvent?.Invoke(TargetTrm);
+                    Vector3 targetPos = anim.transform.position;
+                    targetPos.y += 1f;
+                    AttackEndEvent?.Invoke(targetPos);
                 }
-            }   
+            }
         }
-
-        private bool CalculateCritical(ref DamageEvent evt)
+        
+        private void CalculateCritical(ref DamageEvent evt, ref bool isCritical, ref bool isPenetrate)
         {
-            bool isCritical = false;
+            isCritical = false;
 
             float damage = evt.DamageData.damage;
-                    
-            float criticalProbilityValue =
-                Random.Range(0f, 100f);
+            float criticalProbilityValue = Random.Range(0f, 100f);
 
             if (evt.Owner != null && criticalProbilityValue <= evt.Owner.unitSO.CriticalProbability)
             {
                 isCritical = true;
-                damage = damage * evt.Owner.unitSO.CriticalDamageIncrease;
-
+                damage *= evt.Owner.unitSO.CriticalDamageIncrease;
                 evt.DamageData.damage = (int)damage;
             }
-
-            return isCritical;
         }
     }
 }

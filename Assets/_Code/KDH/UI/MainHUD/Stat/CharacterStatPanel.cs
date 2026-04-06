@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem;
@@ -188,17 +189,16 @@ namespace Code.UI
             
             if (nameText != null) nameText.text = data.UnitName;
             if (classText != null) classText.text = data.UnitClass;
-            if (descriptionText != null) descriptionText.text = data.UnitDescription;
             
-            if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
-            if (atkText != null) atkText.text = data.AttackDamage.ToString("F1");
-            if (defText != null) defText.text = data.DefensivePower.ToString("F1");
-            if (moveSpeedText != null) moveSpeedText.text = data.MoveSpeed.ToString("F1");
+            if (maxHealthText != null) maxHealthText.text = (data.Maxhealth + InGameStatCompo.Instance.GetStat(StatInfo.MaxHealth,_currentUnit.Data.UnitType)).ToString("F1");
+            if (atkText != null) atkText.text = (data.AttackDamage + InGameStatCompo.Instance.GetStat(StatInfo.AtkDamage,_currentUnit.Data.UnitType)).ToString("F1");
+            if (defText != null) defText.text = (data.DefensivePower + InGameStatCompo.Instance.GetStat(StatInfo.DefensivePower,_currentUnit.Data.UnitType)).ToString("F1");
+            if (moveSpeedText != null) moveSpeedText.text = (data.MovePower + InGameStatCompo.Instance.GetStat(StatInfo.MoveSpeed,_currentUnit.Data.UnitType)).ToString("F1");
             if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
             
-            if (avoidProbabilityText != null) avoidProbabilityText.text = $"{data.AvoidProbability:F1}%";
-            if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";
-            if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease.ToString("F1");
+            if (avoidProbabilityText != null) avoidProbabilityText.text = $"{(data.AvoidProbability + InGameStatCompo.Instance.GetStat(StatInfo.AvoidProbability,_currentUnit.Data.UnitType)) :F1}%";
+            if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability + InGameStatCompo.Instance.GetStat(StatInfo.CriticalProbability,_currentUnit.Data.UnitType):F1}%";
+            if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = (data.CriticalDamageIncrease  + InGameStatCompo.Instance.GetStat(StatInfo.CriticalIncreaseValue,_currentUnit.Data.UnitType)).ToString("F1");
             
             if (maxSkillCostText != null) maxSkillCostText.text = data.MaxSkillCost.ToString();
             if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoverySkillCost.ToString();

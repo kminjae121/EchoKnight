@@ -6,11 +6,12 @@ using UnityEngine;
 
 namespace _Code.Passive
 {
-    public class ThornmailPassive : BasePassive
+    public class ThornmailPassive : AlwaysTurnPassive
     {
         private CharacterUnit _character; 
-        private void Start()
+        protected override void Start()
         {
+            base.Start();
             _character = _unit as CharacterUnit;
         }
 

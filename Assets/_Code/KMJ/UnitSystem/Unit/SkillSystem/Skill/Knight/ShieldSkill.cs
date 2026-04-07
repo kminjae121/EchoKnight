@@ -43,24 +43,9 @@ public class ShieldSkill : BasicUnitSkill
 
     public void SetShield()
     {
-        //TurnManager.Instance.OnTurnStart += HandleShieldEvent;
-    }
-
-    private void HandleShieldEvent()
-    {
-        if (turnCnt >= 1)
-        {
-            //TurnManager.Instance.OnTurnStart -= HandleShieldEvent;
-            _characterUnit.InitializeDefensivePower();
-            _shieldCompo.SetBaseMaterial();
-            return;
-        }
         
-        _shieldCompo.SetChangeMaterial();
-        turnCnt+=1;
-        _characterUnit.AddDefensivePower += 10;
-        _characterUnit.unitSO.DefensivePower += _characterUnit.AddDefensivePower;
     }
+    
 
     private IEnumerator Shield()
     {

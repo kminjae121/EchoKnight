@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _Code.Passive
 {
-    public class DamageReducePassive : BasePassive
+    public class DamageReducePassive : MyTurnPassive
     {
         private CharacterUnit _character; 
         private void Start()

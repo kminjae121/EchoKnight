@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace _Code.Passive
 {
-    public class LifeDrainPassive : BasePassive
+    public class LifeDrainPassive : MyTurnPassive
     {
         private CharacterUnit _character; 
         private void Start()

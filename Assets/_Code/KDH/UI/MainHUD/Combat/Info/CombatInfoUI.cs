@@ -3,6 +3,7 @@ using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.SkillSystem;
 using Code.UnitSystem;
+using Code.Items;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -14,10 +15,12 @@ namespace Code.UI
     {
         [Header("UI Panel & Animation")]
         [SerializeField] private RectTransform panelRect;
-        [SerializeField] private Vector2 hiddenPosition = Vector2.zero;
+        [SerializeField] private GameObject backgroundPanel;
+        [SerializeField] private Vector2 hiddenPosition = new Vector2(-1000f, 0f);
         [SerializeField] private Vector2 visiblePosition = Vector2.zero;
         [SerializeField] private float slideDuration = 0.3f;
         [SerializeField] private Ease slideEase = Ease.OutQuart;
+        [SerializeField] private Button openButton;
         [SerializeField] private Button closeButton;
 
         [Header("Basic Info")]
@@ -56,6 +59,16 @@ namespace Code.UI
             
             panelRect.anchoredPosition = hiddenPosition;
             
+            if (backgroundPanel != null)
+            {
+                backgroundPanel.SetActive(false);
+            }
+
+            if (openButton != null)
+            {
+                openButton.onClick.AddListener(ShowUI);
+            }
+
             if (closeButton != null)
             {
                 closeButton.onClick.AddListener(HideUI);
@@ -69,6 +82,11 @@ namespace Code.UI
 
         private void OnDestroy()
         {
+            if (openButton != null)
+            {
+                openButton.onClick.RemoveListener(ShowUI);
+            }
+
             if (closeButton != null)
             {
                 closeButton.onClick.RemoveListener(HideUI);
@@ -97,6 +115,12 @@ namespace Code.UI
             if (_isVisible) return;
             
             _isVisible = true;
+            
+            if (backgroundPanel != null)
+            {
+                backgroundPanel.SetActive(true);
+            }
+
             _slideTween?.Kill();
             _slideTween = panelRect.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
         }
@@ -106,8 +130,15 @@ namespace Code.UI
             if (!_isVisible) return;
             
             _isVisible = false;
+            
             _slideTween?.Kill();
-            _slideTween = panelRect.DOAnchorPos(hiddenPosition, slideDuration).SetEase(Ease.InBack);
+            _slideTween = panelRect.DOAnchorPos(hiddenPosition, slideDuration).SetEase(Ease.InBack).OnComplete(() => 
+            {
+                if (backgroundPanel != null)
+                {
+                    backgroundPanel.SetActive(false);
+                }
+            });
             
             Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
             Bus<CombatArtifactHoverEvent>.Raise(new CombatArtifactHoverEvent(null, false));

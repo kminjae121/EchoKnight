@@ -14,12 +14,12 @@ namespace _Code.Passive
         
         public override void StartPassive()
         {
-            TurnManager.Instance.OnTurnStart += HealHp;
+            //TurnManager.Instance.OnTurnStart += HealHp;
         }
 
         public override void StopPassive()
         {
-            TurnManager.Instance.OnTurnStart -= HealHp;
+            //TurnManager.Instance.OnTurnStart -= HealHp;
         }
 
         private void HealHp()

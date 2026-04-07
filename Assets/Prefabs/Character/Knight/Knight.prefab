@@ -496,7 +496,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.PathMover
   maxPathCount: 50
   movePoint: 8
-  moveSpeed: 4
+  moveSpeed: 2
   pointArray: []
 --- !u!1 &796521775763925212
 GameObject:
@@ -6606,6 +6606,7 @@ MonoBehaviour:
   currentHealth: 0
   normalText: {fileID: 11400000, guid: fc6dd7d9bb3e2cc4581c347ad34cd662, type: 2}
   criticalText: {fileID: 11400000, guid: 06b606e1c3a03674fa90dc9aa08098fc, type: 2}
+  healText: {fileID: 11400000, guid: c010e00c7b125644ea114bc354429c36, type: 2}
   textEventChannel: {fileID: 11400000, guid: 249b09a83d3d0854e920cd46632fa8ba, type: 2}
   storageSO: {fileID: 11400000, guid: 001b4c37e1da0a04bbe3f0aedc15543d, type: 2}
   OnInteractionEvent:
@@ -6682,7 +6683,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdbeb9df4dd94388902413e11adc8e84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Navigation.PathAgent
-  bakedData: {fileID: 11400000, guid: af1ba32832d0427478ef0f1ba19d152a, type: 2}
 --- !u!114 &8463126022489257270
 MonoBehaviour:
   m_ObjectHideFlags: 0

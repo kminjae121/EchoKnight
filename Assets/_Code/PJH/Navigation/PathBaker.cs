@@ -1,6 +1,7 @@
 using Code.Core.Debugs;
 using Code.Core.Interfaces;
 using Code.Map;
+using GondrLib.Dependencies;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
@@ -8,9 +9,10 @@ using UnityEngine;
 
 namespace Code.Navigation
 {
-    public class PathBaker : MonoBehaviour
+    [Provide]
+    public class PathBaker : MonoBehaviour, IDependencyProvider
     {
-        [SerializeField] private BakedDataSO bakedData;
+        [field : SerializeField] public BakedDataSO bakedData { get; private set; }
         [SerializeField] private bool isDrawGizmo = true;
         [SerializeField] private bool isCornerCheck = true;
         [SerializeField] private Color nodeColor, edgeColor;

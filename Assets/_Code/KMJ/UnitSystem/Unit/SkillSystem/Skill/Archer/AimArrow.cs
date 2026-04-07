@@ -62,8 +62,6 @@ public class AimArrow : BasicUnitSkill
     {
         Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.4f));
         Vector3 pos = _characterUnit.transform.position;
-
-        pos.y += 2f;
             
         Vector3 slashRot = transform.rotation.eulerAngles;
         

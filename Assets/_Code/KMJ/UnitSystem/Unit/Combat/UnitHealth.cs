@@ -15,7 +15,7 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private StatSO hpStat;
         [SerializeField] private float maxHealth;
         [SerializeField] private float currentHealth;
-        [SerializeField] private TextInfo normalText, criticalText;
+        [SerializeField] private TextInfo normalText, criticalText, healText;
         [SerializeField] private GameEventChannelSO textEventChannel;
 
         [SerializeField] private UnitStorageSO storageSO; 
@@ -80,6 +80,13 @@ namespace Code.UnitSystem.Combat
                 
                 _unitStateCompo.Heal(amount);
             }
+
+            int healHash = healText.nameHash;
+            
+            PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(amount.ToString(), healHash
+                , _entity.transform.position, 0.5f);  
+            
+            textEventChannel.RaiseEvent(textEvt);
         }
         
 

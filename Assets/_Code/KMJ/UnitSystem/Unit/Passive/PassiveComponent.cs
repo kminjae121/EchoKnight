@@ -65,7 +65,6 @@ namespace _Code.Passive
                     basePassive.SetOwner(_unit);
                     
                     var f = basePassive as AlwaysTurnPassive;
-
                 }
                 else
                     Debug.LogWarning($"[Passive] '{_unit.name}'에 패시프 컴포넌트에 '{type.Name}'가 부착되어 있지 않습니다.");

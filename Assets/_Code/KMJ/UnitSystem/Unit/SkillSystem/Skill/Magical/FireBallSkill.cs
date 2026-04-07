@@ -62,8 +62,6 @@ using UnityEngine;
             Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.4f));
             Vector3 pos = transform.position;
 
-            pos.y += 3f;
-
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);

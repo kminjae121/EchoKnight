@@ -2,6 +2,7 @@
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using GondrLib.ObjectPool.Runtime;
+using TMPro;
 using UnityEngine;
 
 namespace Code.UI
@@ -10,6 +11,7 @@ namespace Code.UI
     {
         [Header("UI Elements")]
         [SerializeField] private Transform costIconGroup;
+        [SerializeField] private TextMeshProUGUI costAmountText;
         [SerializeField] private PoolingItemSO costIconPoolingSO;
         
         private PoolManagerMono _poolManager;
@@ -101,6 +103,11 @@ namespace Code.UI
                 }
             }
             _activeIcons.Clear();
+            
+            if (costAmountText != null)
+            {
+                costAmountText.text = string.Empty;
+            }
         }
 
         private void InitializeIcons(int maxCost)
@@ -146,6 +153,12 @@ namespace Code.UI
 
         private void RefreshIcons(int currentCost)
         {
+            if (_currentUnit != null && costAmountText != null)
+            {
+                int maxCost = _currentUnit.SkillCostCompo.GetMaxSkillCost();
+                costAmountText.text = $"{currentCost}/{maxCost}";
+            }
+
             for (int i = 0; i < _activeIcons.Count; i++)
             {
                 if (_activeIcons[i] == null) continue;

@@ -14,7 +14,7 @@ namespace Code.UI
     {
         [Header("UI Panel & Animation")]
         [SerializeField] private RectTransform panelRect;
-        [SerializeField] private Vector2 hiddenPosition = new Vector2(-1000f, 0f);
+        [SerializeField] private Vector2 hiddenPosition = Vector2.zero;
         [SerializeField] private Vector2 visiblePosition = Vector2.zero;
         [SerializeField] private float slideDuration = 0.3f;
         [SerializeField] private Ease slideEase = Ease.OutQuart;

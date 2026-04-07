@@ -51,12 +51,10 @@ public class UnitSO : ScriptableObject
     public bool isLongRange;
 
     public float turnSpeed = 3f;
-
-    public int moveRange;
     
     public bool isPlayerUnit = false;
     
-    public int MovePower;
+    public int MoveRange;
 
     public int Maxhealth;
     

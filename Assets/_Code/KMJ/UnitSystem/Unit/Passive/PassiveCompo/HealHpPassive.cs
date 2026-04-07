@@ -29,7 +29,5 @@ namespace _Code.Passive
             int healHp = Mathf.FloorToInt(lostHp * 0.1f);
             _character.HealthCompo.HealHp(healHp);
         }
-        
-        
     }
 }

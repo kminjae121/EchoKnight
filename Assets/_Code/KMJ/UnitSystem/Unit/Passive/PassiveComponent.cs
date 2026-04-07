@@ -34,12 +34,12 @@ namespace _Code.Passive
 
         private void Start()
         {
-            StartAllTurnPassives();
+            StartAllAlwaysPassives();
         }
 
         private void OnDestroy()
         {
-            StopAllTurnPassives();
+            StopAllAlwaysPassives();
         }
 
         private void FindPassive()
@@ -65,6 +65,11 @@ namespace _Code.Passive
                         continue;
                     _passiveDict.TryAdd(passiveData, basePassive);
                     basePassive.SetOwner(_unit);
+
+                    if (basePassive.PassiveType == PassiveType.AlwaysPassive)
+                    {
+                        //턴을 넣어준다.
+                    }
                 }
                 else
                     Debug.LogWarning($"[Passive] '{_unit.name}'에 패시프 컴포넌트에 '{type.Name}'가 부착되어 있지 않습니다.");

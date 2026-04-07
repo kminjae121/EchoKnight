@@ -23,7 +23,6 @@ namespace Code.Managers
         private ITurnable _currentTurnUnit;
         private List<ITurnable> _units;
         private RoundTracker _roundTracker;
-
         public event Action OnTurnStart;
 
         private void Awake()

@@ -58,7 +58,7 @@ namespace Code.UnitSystem
             SkillCostCompo =  GetUnitCompo<UnitSkillCost>();
             OutLineCompo =  GetUnitCompo<UnitOutLineCompo>();
             PassiveCompo = GetUnitCompo<PassiveComponent>();
-            HealthCompo = GetUnitCompo<UnitHealth>();
+            HealthCompo = GetUnitCompo<UnitHealth>();   
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
@@ -106,7 +106,7 @@ namespace Code.UnitSystem
 
             if (MoveCompo != null)
             {
-                MoveCompo.FindObjectInRange(unitSO.moveRange);
+                MoveCompo.FindObjectInRange(unitSO.MoveRange);
                 MoveCompo.moveCount = 0;
             }
             

@@ -93,8 +93,16 @@ namespace Code.SkillSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_characterUnit.gameObject, true,new Vector3(0.1f,0.1f,0.1f)));
             Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false, 
                 null,true));
+            Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
+            
+            UnitOutLineCompo _targetOutLineCompo = _targetEnemy.GetComponent<UnitOutLineCompo>();
+                
+            if(_targetOutLineCompo != null)
+                _targetOutLineCompo.ResetOutLine();
             
             StartEvent();
+            
+            SkillCount += 1;
             
             GridMap.Instance.SetGridVisible(false);
             SkillEvent?.Invoke(_targetEnemy);
@@ -102,7 +110,6 @@ namespace Code.SkillSystem
             if (SkillSO.IsOwnSkill)
                 _characterUnit.OutLineCompo.ResetOutLine();
             
-           
             SkillFinished(false);
         }
 
@@ -125,8 +132,6 @@ namespace Code.SkillSystem
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("일반 공격은 한번만 사용가능합니다."));
                 return;
             }
-                
-            SkillCount += 1;
 
             if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.SkillCost))
             {

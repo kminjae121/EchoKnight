@@ -190,7 +190,7 @@ namespace Code.UI
             if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
             if (atkText != null) atkText.text = data.AttackDamage.ToString("F1");
             if (defText != null) defText.text = data.DefensivePower.ToString("F1");
-            if (moveSpeedText != null) moveSpeedText.text = data.MovePower.ToString("F1");
+            if (moveSpeedText != null) moveSpeedText.text = data.MoveRange.ToString("F1");
             if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
             
             if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";

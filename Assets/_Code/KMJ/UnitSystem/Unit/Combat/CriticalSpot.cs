@@ -11,7 +11,7 @@ namespace Code.UnitSystem.Combat
             _characterUnit = owner as CharacterUnit;
         }
         
-        public float CheckEnemyBody(DamageData damageData, GameObject target, float atkDamage)
+        public int CheckEnemyBody(DamageData damageData, GameObject target, float atkDamage)
         {
             atkDamage = damageData.damage;
             
@@ -35,11 +35,11 @@ namespace Code.UnitSystem.Combat
 
             if (_characterUnit.unitSO.EntityType == EntityType.MeleeAttacker && type == BodyType.Head)
             {
-                return atkDamage * 1.2f;
+                return (int)(atkDamage * 1.5f);
             }
             else if (_characterUnit.unitSO.EntityType == EntityType.LongRanger && type == BodyType.Back)
             {
-                return atkDamage * 1.2f;
+                return (int)(atkDamage * 1.5f);
             }
             else
                 return 0;

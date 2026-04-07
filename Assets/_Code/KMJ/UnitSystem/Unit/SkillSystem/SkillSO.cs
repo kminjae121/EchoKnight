@@ -17,7 +17,7 @@ namespace Code.SkillSystem
         public int skillPrice;
 
         [Header("Detail Info")]
-        public float SkillDamage;
+        public int SkillDamage;
         public int SkillRange;
         public bool IsOwnSkill;
         public SkillType SkillType;

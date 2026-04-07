@@ -45,30 +45,24 @@ public class UnitSO : ScriptableObject
     [Space(4)]
     [Header("LoadOutCost")]
     public int LoadOutCost;
-
-    [Space(3)] 
-    [TextArea]public string UnitDescription;
     
     [Space(4)]
     [Header("UnitSettings")]
     public bool isLongRange;
 
     public float turnSpeed = 3f;
-
-    public int moveRange;
     
     public bool isPlayerUnit = false;
     
-    public float MoveSpeed;
+    public int MoveRange;
 
-    public float Maxhealth;
+    public int Maxhealth;
+    
+    public int AttackDamage;
 
-    public float AtkDamage;
+    public int DefensivePower;
 
-    [Range(1, 3f)]
-    public float SkillDamage;
-
-    public float DefensivePower;
+    public int ShieldValue;
 
     [Range(0,100)]
     public float AvoidProbability;

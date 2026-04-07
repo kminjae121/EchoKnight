@@ -5,6 +5,7 @@ namespace Code.Core.Interfaces
 {
     public interface ITurnable
     {
+        GameObject UnitObj { get; set; }
         string UnitName { get; }
         bool IsPlayerUnit { get; }
 

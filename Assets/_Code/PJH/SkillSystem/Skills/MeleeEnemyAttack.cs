@@ -41,7 +41,7 @@ namespace Code.SkillSystem
         private void TakeDamage()
         {
             UnityLogger.Log("일반 공격으로 데미지");
-            Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage, null, false));
+            Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage, null, false,false));
         }
 
         private void SkillEnd()

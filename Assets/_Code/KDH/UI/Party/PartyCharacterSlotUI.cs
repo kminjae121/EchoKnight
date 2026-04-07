@@ -69,9 +69,8 @@ namespace Code.UI
             if (characterInfo != null)
             {
                 Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(
-                    characterInfo.UnitImage, 
-                    characterInfo.UnitName, 
-                    characterInfo.UnitDescription));
+                    characterInfo.UnitImage,
+                    characterInfo.UnitName,null));
             }
         }
 

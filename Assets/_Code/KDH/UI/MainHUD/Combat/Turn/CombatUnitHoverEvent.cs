@@ -1,8 +1,9 @@
 ﻿using Code.Core.Interfaces;
+using Code.UnitSystem;
 
 namespace Code.Core.Events.Bus
 {
-    public class CombatUnitHoverEvent : IEvent
+    public struct CombatUnitHoverEvent : IEvent
     {
         public ITurnable HoveredUnit { get; }
         public bool IsHoverEnter { get; }

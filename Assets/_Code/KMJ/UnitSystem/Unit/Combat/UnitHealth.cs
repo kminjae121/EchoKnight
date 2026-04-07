@@ -1,8 +1,12 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using _Code.Combat;
+using Code.Core.Events.Bus;
 using Code.UI;
+using Code.UnitManaging;
 using EntityComponent;
 using GameEventChannel;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Code.UnitSystem.Combat
 {
@@ -13,17 +17,22 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private float currentHealth;
         [SerializeField] private TextInfo normalText, criticalText;
         [SerializeField] private GameEventChannelSO textEventChannel;
-        
+
+        [SerializeField] private UnitStorageSO storageSO; 
+
         private Unit _entity;
         private ActionData _actionData;
         private UnitStatCompo _statCompo;
-        private UnitState unitStateCompo;
+        private UnitState _unitStateCompo;
+        private UnitShieldCompo _shieldCompo;
         
         private float _defensivePower;
         
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
-        
+
+
+        public UnityEvent<Unit,int> OnInteractionEvent;
         public delegate void OnHealthChanged(float current, float max);
         public event OnHealthChanged OnHealthChangedEvent;
         
@@ -32,13 +41,27 @@ namespace Code.UnitSystem.Combat
             _entity = owner;
             _actionData = owner.GetUnitCompo<ActionData>();
             _statCompo = owner.GetUnitCompo<UnitStatCompo>();
+            if(_entity as CharacterUnit)
+                _shieldCompo = owner.GetUnitCompo<UnitShieldCompo>();
         }
         
         private void Start()
         {
-            maxHealth = currentHealth = _statCompo.GetStat(StatInfo.MaxHealth);
-            _defensivePower =  _statCompo.GetStat(StatInfo.DefensivePower);
-             unitStateCompo = new UnitState(_entity.unitSO);
+            _defensivePower = _statCompo.GetStat(StatInfo.DefensivePower);
+            
+            if (_entity as CharacterUnit)
+            {
+                foreach (var unitState in storageSO.unitStates)
+                {
+                    if(unitState.Data == _entity.unitSO)
+                        _unitStateCompo = unitState;
+                }
+                maxHealth = currentHealth = _unitStateCompo.CurrentHp.Value;   
+            }
+            else
+            {
+                maxHealth = currentHealth = _entity.unitSO.Maxhealth;
+            }
         }
 
         public void HealHp(float amount)
@@ -55,25 +78,35 @@ namespace Code.UnitSystem.Combat
                 Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(characterUnit.PlayableUnitID,CurrentHealth
                     ,MaxHealth, characterUnit.UnitImage));
                 
-                unitStateCompo.Heal(amount);
+                _unitStateCompo.Heal(amount);
             }
         }
         
 
-        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData, Unit dealer,bool isCritical)
+        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData,
+            Unit dealer,bool isCritical, bool isPenetrate)
         {
             _actionData.HitNormal = hitNormal;
             _actionData.HitPoint = hitPoint;
-            _actionData.HitByPowerAttack = attackData.isPowerAttack;
             _actionData.LastDamageData = damageData;
 
-            _defensivePower = _entity.unitSO.DefensivePower;
-
-            float damage = damageData.damage;
-            float CalculateDamage = damage * (_defensivePower / 100);
-            damage -= CalculateDamage;
+            int damage = damageData.damage;
             
-            currentHealth = Mathf.Clamp(currentHealth - damage, 0, maxHealth);
+            if (isPenetrate != true)
+            {
+                if (_entity as CharacterUnit && _shieldCompo.GetShieldValue() > 0)
+                {
+                    _shieldCompo.BreakShield((int)damageData.damage);
+                    return;
+                }
+
+                _defensivePower = _entity.unitSO.DefensivePower;
+                
+                int CalculateDamage = (int)(damage * (_defensivePower / 100));
+                damage -= CalculateDamage;
+            
+                currentHealth = Mathf.Clamp(currentHealth - (int)damage, 0, maxHealth);   
+            }
 
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
@@ -91,10 +124,11 @@ namespace Code.UnitSystem.Combat
                Bus<SetUpUnitHealthBar>.Raise(new SetUpUnitHealthBar(characterUnit.PlayableUnitID,CurrentHealth,
                    MaxHealth, characterUnit.UnitImage));
 
-               unitStateCompo.TakeDamage(damage);
+               _unitStateCompo.TakeDamage(damage);
            }
            
            _entity.OnHitEvent?.Invoke();
+           OnInteractionEvent?.Invoke(dealer, damage);
            
            if (currentHealth <= 0)
                _entity.OnDeathEvent?.Invoke();

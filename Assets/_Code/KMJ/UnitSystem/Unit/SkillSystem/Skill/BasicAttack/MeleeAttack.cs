@@ -53,6 +53,7 @@ public class MeleeAttack : BasicUnitSkill
     {
         yield return new WaitForSeconds(0.4f);
         
+         SkillFeedbackEvent?.Invoke();
          _animationCompo.PlaySelectAnimation("ATTACK");
     }
     
@@ -79,6 +80,6 @@ public class MeleeAttack : BasicUnitSkill
     {
         Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.6f));
         
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target,AddDamage, _characterUnit, _characterUnit.IsConfirmationSkill));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target,AddDamage, _characterUnit,false,false));
     }
 }

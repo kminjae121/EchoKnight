@@ -16,6 +16,7 @@ namespace Code.UI
         [SerializeField] private Image skillIcon;
         [SerializeField] private TextMeshProUGUI damageText;
         [SerializeField] private TextMeshProUGUI costText;
+        [SerializeField] private GameObject hoverImage;
         
         [SerializeField] private float hoverYOffset = 15f;
         [SerializeField] private float selectYOffset = 30f;
@@ -54,6 +55,8 @@ namespace Code.UI
             if (damageText != null) _originDamageColor = damageText.color;
             if (costText != null) _originCostColor = costText.color;
             
+            if (hoverImage != null) hoverImage.SetActive(false);
+            
             Bus<CombatSkillCancelEvent>.Subscribe(HandleSkillCancel);
             Bus<CombatSkillSelectEvent>.Subscribe(HandleOtherSkillSelected);
         }
@@ -77,6 +80,9 @@ namespace Code.UI
             _isSelected = false;
             _isInteractable = false;
             ApplyColorMultiplier(1f);
+            
+            if (hoverImage != null) hoverImage.SetActive(false);
+            
             ResetPosition();
         }
 
@@ -98,6 +104,8 @@ namespace Code.UI
             _skillCompo = compo;
             _isSelected = false;
             
+            if (hoverImage != null) hoverImage.SetActive(false);
+            
             if (skillIcon != null)
             {
                 skillIcon.sprite = skill.skillUIImage;
@@ -111,7 +119,6 @@ namespace Code.UI
             if (costText != null)
             {
                 costText.text = skill.SkillCost.ToString();
-                Debug.Log($"[CombatSkillButtonUI] {skill.skillName} 스킬의 코스트({skill.SkillCost})를 UI에 적용했습니다.");
             }
             else
             {
@@ -147,6 +154,8 @@ namespace Code.UI
         {
             if (!_isInteractable || _isSelected) return;
 
+            if (hoverImage != null) hoverImage.SetActive(true);
+
             _moveTween?.Kill();
             _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + hoverYOffset, animDuration).SetEase(animEase);
         }
@@ -154,6 +163,8 @@ namespace Code.UI
         public void OnPointerExit(PointerEventData eventData)
         {
             if (!_isInteractable || _isSelected) return;
+
+            if (hoverImage != null) hoverImage.SetActive(false);
 
             _moveTween?.Kill();
             _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y, animDuration).SetEase(animEase);
@@ -176,6 +187,9 @@ namespace Code.UI
         private void SelectThisSkill()
         {
             _isSelected = true;
+            
+            if (hoverImage != null) hoverImage.SetActive(true);
+            
             _moveTween?.Kill();
             _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + selectYOffset, animDuration).SetEase(animEase);
             
@@ -193,6 +207,9 @@ namespace Code.UI
             if (evt.SelectedSkill != _currentSkill && _isSelected)
             {
                 _isSelected = false;
+                
+                if (hoverImage != null) hoverImage.SetActive(false);
+                
                 ResetPosition();
             }
         }
@@ -202,6 +219,9 @@ namespace Code.UI
             if (_isSelected)
             {
                 _isSelected = false;
+                
+                if (hoverImage != null) hoverImage.SetActive(false);
+                
                 ResetPosition();
                 
                 if (_skillCompo != null)

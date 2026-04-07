@@ -4,6 +4,7 @@ using _Code.Passive;
 using _Code.UnitSystem;
 using Code.Core;
 using Code.Items;
+using UnityEngine;
 
 namespace _Code.Item
 {
@@ -19,8 +20,10 @@ namespace _Code.Item
                 if (!itemList.Contains(itemSO))
                 {
                     itemList.Add(itemSO);
-                    InGameStatCompo.Instance.SetStat(itemSO.StatInfo, itemSO.StatValue, unitType);
-                    
+                    foreach (var statInfo in itemSO.Stats)
+                    {
+                        InGameStatCompo.Instance.SetStat(statInfo.StatInfo, statInfo.StatValue, unitType);   
+                    }
                     if (itemSO.PassiveSO != null)
                         PassiveStorage.Instance.SetPassive(unitType, itemSO.PassiveSO);
                     
@@ -33,8 +36,10 @@ namespace _Code.Item
                     itemSO
                 };
                 items.Add(unitType, newList);
-
-                InGameStatCompo.Instance.SetStat(itemSO.StatInfo, itemSO.StatValue, unitType);
+                foreach (var StatInfo in itemSO.Stats)
+                {
+                    InGameStatCompo.Instance.SetStat(StatInfo.StatInfo, StatInfo.StatValue, unitType);   
+                }
                 
                 if (itemSO.PassiveSO != null)
                     PassiveStorage.Instance.SetPassive(unitType, itemSO.PassiveSO);
@@ -48,7 +53,11 @@ namespace _Code.Item
                 if (itemList.Contains(itemSO))
                 {
                     itemList.Remove(itemSO);
-                    InGameStatCompo.Instance.SetStat(itemSO.StatInfo, -itemSO.StatValue, unitType);
+                    
+                    foreach (var statInfo in itemSO.Stats)
+                    {
+                        InGameStatCompo.Instance.SetStat(statInfo.StatInfo, -statInfo.StatValue, unitType);   
+                    }
                     
                     if (itemSO.PassiveSO != null)
                         PassiveStorage.Instance.SetPassive(unitType, itemSO.PassiveSO);

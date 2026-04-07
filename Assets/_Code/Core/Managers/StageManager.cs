@@ -68,6 +68,7 @@ namespace Code.Core.Managers
 
                 tile.SetState(TileState.Enemy | TileState.Obstacle, true);
                 AbstractEnemyUnit enemy = enemyObj.GetComponent<AbstractEnemyUnit>();
+                
                 if (enemy != null)
                     Injector.InjectInto(enemy);
 

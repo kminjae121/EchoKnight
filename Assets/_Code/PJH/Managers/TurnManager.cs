@@ -99,14 +99,13 @@ namespace Code.Managers
                     rt.NextRound = CurrentRound + 1;
                     rt.TurnGauge = roundInterval;
                     _currentTurnUnit = null;
-
                     continue;
                 }
 
                 OnTurnStart?.Invoke();
                 _currentTurnUnit.OnTurnStart();
                 Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
-                break;
+                return;
             }
             
             UnityLogger.LogError("Start next turn safe count over");

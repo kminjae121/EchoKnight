@@ -254,70 +254,10 @@ namespace Code.UnitSystem.Enemies
 
         public bool TrySelectAttackSkill(GameObject target, out SkillSO selectedSkillSO)
         {
+            if (EnemyManager != null)
+                return EnemyManager.TrySelectAttackSkill(this, target, out selectedSkillSO);
+
             selectedSkillSO = null;
-
-            if (target == null || SkillCompo?.Skills == null || SkillCompo.Skills.Count == 0)
-                return false;
-
-            SkillSO bestPierceSkill = null;
-            int bestPierceHitCount = 0;
-            SkillSO basicSkill = null;
-            SkillSO fallbackSkill = null;
-
-            foreach (var pair in SkillCompo.Skills)
-            {
-                SkillSO skillSO = pair.Key;
-                BaseSkill skill = pair.Value;
-
-                if (skillSO == null || skill == null)
-                    continue;
-
-                if (!CanUseSkillOnTarget(skillSO, target))
-                    continue;
-
-                fallbackSkill ??= skillSO;
-
-                if (skill is FrontPierceEnemyAttack pierceSkill)
-                {
-                    int hitCount = pierceSkill.GetPredictedHitCount(target);
-
-                    if (hitCount > bestPierceHitCount)
-                    {
-                        bestPierceHitCount = hitCount;
-                        bestPierceSkill = skillSO;
-                    }
-
-                    continue;
-                }
-
-                if (skillSO.SkillType == SkillType.BasicSkill)
-                    basicSkill ??= skillSO;
-            }
-
-            if (bestPierceSkill != null && bestPierceHitCount >= 2)
-            {
-                selectedSkillSO = bestPierceSkill;
-                return true;
-            }
-
-            if (basicSkill != null)
-            {
-                selectedSkillSO = basicSkill;
-                return true;
-            }
-
-            if (bestPierceSkill != null)
-            {
-                selectedSkillSO = bestPierceSkill;
-                return true;
-            }
-
-            if (fallbackSkill != null)
-            {
-                selectedSkillSO = fallbackSkill;
-                return true;
-            }
-
             return false;
         }
 

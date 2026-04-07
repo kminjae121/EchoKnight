@@ -4,22 +4,25 @@ using UnityEngine;
 
 namespace _Code.Passive
 {
-    public class HealHpPassive : BasePassive
+    public class HealHpPassive : AlwaysTurnPassive
     {
         private CharacterUnit _character; 
-        private void Start()
+        
+        protected override void Start()
         {
+            base.Start();
+            Debug.Log(_turnManager);
             _character = _unit as CharacterUnit;
         }
         
         public override void StartPassive()
         {
-            //TurnManager.Instance.OnTurnStart += HealHp;
+            _turnManager.OnTurnStart += HealHp;
         }
 
         public override void StopPassive()
         {
-            //TurnManager.Instance.OnTurnStart -= HealHp;
+            _turnManager.OnTurnStart -= HealHp;
         }
 
         private void HealHp()

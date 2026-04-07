@@ -252,6 +252,9 @@ MonoBehaviour:
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
+  SkillFeedbackEvent:
+    m_PersistentCalls:
+      m_Calls: []
   SkillEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -2478,6 +2481,9 @@ MonoBehaviour:
   SkillEvent:
     m_PersistentCalls:
       m_Calls: []
+  SkillFeedbackEvent:
+    m_PersistentCalls:
+      m_Calls: []
   SkillEndEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -3524,7 +3530,6 @@ GameObject:
   - component: {fileID: 3584659239764075055}
   - component: {fileID: 2550625214469592120}
   - component: {fileID: 5446457073614788353}
-  - component: {fileID: 5983212269499877758}
   - component: {fileID: 5799591044095117756}
   - component: {fileID: 8030031756001605360}
   m_Layer: 8
@@ -3544,7 +3549,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 278427819667817285}
@@ -3622,7 +3627,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Navigation.PathAgent
   bakedData: {fileID: 11400000, guid: af1ba32832d0427478ef0f1ba19d152a, type: 2}
-  reducePath: 0
 --- !u!114 &2550625214469592120
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3656,21 +3660,10 @@ MonoBehaviour:
   normalText: {fileID: 11400000, guid: fc6dd7d9bb3e2cc4581c347ad34cd662, type: 2}
   criticalText: {fileID: 11400000, guid: 06b606e1c3a03674fa90dc9aa08098fc, type: 2}
   textEventChannel: {fileID: 11400000, guid: 249b09a83d3d0854e920cd46632fa8ba, type: 2}
---- !u!114 &5983212269499877758
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6855422769672034763}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1da580a3a6eb4e3e941e50ce324daa6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.GimicSystem.MarkComponent
-  markUI: {fileID: 8271199161321589897}
-  markText: {fileID: 7180455446240464752}
-  killUI: {fileID: 3203223115612991172}
+  storageSO: {fileID: 0}
+  OnInteractionEvent:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &5799591044095117756
 MonoBehaviour:
   m_ObjectHideFlags: 0

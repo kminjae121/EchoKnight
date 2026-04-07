@@ -4,11 +4,13 @@ using System.Linq;
 using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using GondrLib.Dependencies;
 using UnityEngine;
 
 namespace Code.Managers
 {
-    public class TurnManager : MonoBehaviour
+    [Provide]
+    public class TurnManager : MonoBehaviour, IDependencyProvider
     {
         [Header("Turn Settings")]
         [SerializeField] private float baseTurnGauge = 100f;

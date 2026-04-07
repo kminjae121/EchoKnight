@@ -2,16 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Code.KMJ.UnitSystem;
+using Code.Managers;
 using Code.SkillSystem;
 using Code.UnitSystem;
+using GondrLib.Dependencies;
 using NUnit.Framework;
 using UnityEngine;
 
-public enum PassiveType
-{
-    AlwaysPassive,
-    TurnPassive,
-}
+
 namespace _Code.Passive
 {
     public class PassiveComponent : MonoBehaviour, IUnitComponent
@@ -65,11 +63,9 @@ namespace _Code.Passive
                         continue;
                     _passiveDict.TryAdd(passiveData, basePassive);
                     basePassive.SetOwner(_unit);
+                    
+                    var f = basePassive as AlwaysTurnPassive;
 
-                    if (basePassive.PassiveType == PassiveType.AlwaysPassive)
-                    {
-                        //턴을 넣어준다.
-                    }
                 }
                 else
                     Debug.LogWarning($"[Passive] '{_unit.name}'에 패시프 컴포넌트에 '{type.Name}'가 부착되어 있지 않습니다.");
@@ -99,7 +95,7 @@ namespace _Code.Passive
         {
             foreach (var passive in _passiveDict)
             {
-                if(passive.Value.PassiveType == PassiveType.AlwaysPassive)
+                if(passive.Value as AlwaysTurnPassive)
                     passive.Value.StartPassive();
             }
         }
@@ -108,7 +104,7 @@ namespace _Code.Passive
         {
             foreach (var passive in _passiveDict)
             {
-                if(passive.Value.PassiveType == PassiveType.AlwaysPassive)
+                if(passive.Value as AlwaysTurnPassive)
                     passive.Value.StopPassive();
             }
         }
@@ -117,7 +113,7 @@ namespace _Code.Passive
         {
             foreach (var passive in _passiveDict)
             {
-                if(passive.Value.PassiveType == PassiveType.TurnPassive)
+                if(passive.Value as MyTurnPassive)
                     passive.Value.StartPassive();
             }
         }
@@ -126,7 +122,7 @@ namespace _Code.Passive
         {
             foreach (var passive in _passiveDict)
             {
-                if(passive.Value.PassiveType == PassiveType.TurnPassive)
+                if(passive.Value as MyTurnPassive)
                     passive.Value.StopPassive();
             }
         }

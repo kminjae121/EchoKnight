@@ -5,7 +5,6 @@ namespace _Code.Passive
 {
     public abstract class BasePassive : MonoBehaviour
     {
-        [field:SerializeField] public PassiveType PassiveType { get; set; }
         protected Unit _unit;
         
         public abstract void StartPassive();

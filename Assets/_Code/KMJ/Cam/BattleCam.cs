@@ -100,9 +100,9 @@ namespace Code.Cam
                 moveDir.Normalize();
 
        
-            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.OrthographicSize >= 10)
+            if (inputReader.MouseUpDownValue.y > 0 && battleCam.Lens.OrthographicSize >= 3)
                 ZoomInCam();
-            else if (inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.OrthographicSize <= 35)
+            else if (inputReader.MouseUpDownValue.y < 0 && battleCam.Lens.OrthographicSize <= 10)
                 ZoomOutCam();
 
             if (UnityEngine.Input.GetKeyDown(KeyCode.LeftShift))

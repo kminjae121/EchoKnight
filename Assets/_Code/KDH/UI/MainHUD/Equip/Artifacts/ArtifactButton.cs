@@ -83,7 +83,7 @@ namespace Code.UI
             iconImage.color = Color.white; 
             _isEquipped = isEquipped;
 
-            if (hoverImage != null) hoverImage.SetActive(false);
+            if (hoverImage != null) hoverImage.SetActive(_isEquipped);
             ApplyRaritySprite(equipmentItem.rarity);
         }
 
@@ -112,18 +112,18 @@ namespace Code.UI
             if (_equipmentItem != null && evt.EquipmentItem == _equipmentItem)
             {
                 _isSelected = true;
-                if (hoverImage != null) hoverImage.SetActive(true);
+                if (hoverImage != null && !_isEquipped) hoverImage.SetActive(true);
             }
             else
             {
                 _isSelected = false;
-                if (hoverImage != null) hoverImage.SetActive(false);
+                if (hoverImage != null && !_isEquipped) hoverImage.SetActive(false);
             }
         }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (_equipmentItem != null && hoverImage != null) hoverImage.SetActive(true);
+            if (_equipmentItem != null && hoverImage != null && !_isEquipped) hoverImage.SetActive(true);
             
             if (openPopupOnHover && _equipmentItem != null)
             {
@@ -133,7 +133,7 @@ namespace Code.UI
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (_equipmentItem != null && hoverImage != null && !_isSelected) hoverImage.SetActive(false);
+            if (_equipmentItem != null && hoverImage != null && !_isSelected && !_isEquipped) hoverImage.SetActive(false);
 
             if (openPopupOnHover && _equipmentItem != null)
             {

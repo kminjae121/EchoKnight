@@ -17,6 +17,7 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI damageText;
         [SerializeField] private TextMeshProUGUI costText;
         [SerializeField] private GameObject hoverImage;
+        [SerializeField] private GameObject blindImage;
         
         [SerializeField] private float hoverYOffset = 15f;
         [SerializeField] private float selectYOffset = 30f;
@@ -56,6 +57,7 @@ namespace Code.UI
             if (costText != null) _originCostColor = costText.color;
             
             if (hoverImage != null) hoverImage.SetActive(false);
+            if (blindImage != null) blindImage.SetActive(false);
             
             Bus<CombatSkillCancelEvent>.Subscribe(HandleSkillCancel);
             Bus<CombatSkillSelectEvent>.Subscribe(HandleOtherSkillSelected);
@@ -82,6 +84,7 @@ namespace Code.UI
             ApplyColorMultiplier(1f);
             
             if (hoverImage != null) hoverImage.SetActive(false);
+            if (blindImage != null) blindImage.SetActive(false);
             
             ResetPosition();
         }
@@ -126,6 +129,11 @@ namespace Code.UI
             }
 
             _isInteractable = currentTurnCost >= skill.SkillCost;
+
+            if (blindImage != null)
+            {
+                blindImage.SetActive(!_isInteractable);
+            }
 
             if (!_isInteractable)
             {

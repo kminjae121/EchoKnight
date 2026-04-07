@@ -99,7 +99,7 @@ namespace Code.UnitSystem
             
             SkillCompo.UpdateSkillUI();
             
-            PassiveCompo.StartAllAlwaysPassives();
+            PassiveCompo.StartAllTurnPassives();
             
             if (endTurnBtn != null)
                 endTurnBtn.onClick.AddListener(TurnEnd);
@@ -119,7 +119,7 @@ namespace Code.UnitSystem
         {
             base.OnTurnEnd();
             OnTurnEndEvent?.Invoke();
-            PassiveCompo.StopAllAlwaysPassives();
+            PassiveCompo.StopAllTurnPassives();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
             Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
         }

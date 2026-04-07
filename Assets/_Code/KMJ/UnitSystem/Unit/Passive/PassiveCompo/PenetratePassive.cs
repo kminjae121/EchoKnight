@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace _Code.Passive
 {
-    public class PenetratePassive : BasePassive
+    public class PenetratePassive : MyTurnPassive
     {
         public override void StartPassive()
         {

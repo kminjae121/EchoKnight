@@ -5,6 +5,7 @@ using Code.Map;
 using Code.UI;
 using Code.UnitSystem.Enemies;
 using EnemySystem;
+using GondrLib.Dependencies;
 using UnityEngine;
 
 namespace Code.Core.Managers
@@ -67,6 +68,10 @@ namespace Code.Core.Managers
 
                 tile.SetState(TileState.Enemy | TileState.Obstacle, true);
                 AbstractEnemyUnit enemy = enemyObj.GetComponent<AbstractEnemyUnit>();
+                
+                if (enemy != null)
+                    Injector.InjectInto(enemy);
+
                 Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(enemy));
                 enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
 

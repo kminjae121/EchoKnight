@@ -7,9 +7,11 @@ using Code.SkillSystem;
 using Code.UnitSystem.Enemies.AI;
 using Code.UnitSystem.UnitComponent;
 using Code.Utils;
+using GondrLib.Dependencies;
 using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.Events;
+using System.Collections;
 
 namespace Code.UnitSystem.Enemies
 {
@@ -22,9 +24,12 @@ namespace Code.UnitSystem.Enemies
         public UnitAnimation UnitAnimator { get; private set; }
         public UnitRotation UnitRotationCompo { get; private set; }
         public UnitAnimationTrigger AnimationTrigger { get; private set; }
+        public EnemyManager EnemyManager => _enemyManager;
         protected GridMap GridMapInstance { get; private set; }
         protected UnitManager UnitManager { get; private set; }
         protected Unit CurrentTarget { get; private set; }
+
+        [Inject] private EnemyManager _enemyManager;
 
         private bool _hasEndedTurn;
         private bool _isDead;
@@ -85,13 +90,21 @@ namespace Code.UnitSystem.Enemies
 
             if (!PrepareTurnStart())
             {
-                OnTurnEnd();
+                StartCoroutine(EndTurnNextFrame());
                 return;
             }
             
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false, _dampingSpeed));
 
             TurnChannel?.SendEventMessage();
+        }
+
+        private IEnumerator EndTurnNextFrame()
+        {
+            yield return null;
+
+            if (this != null && gameObject.activeInHierarchy)
+                OnTurnEnd();
         }
 
         public override void OnTurnEnd()
@@ -310,7 +323,8 @@ namespace Code.UnitSystem.Enemies
 
         protected virtual bool UpdateTargetBlackboard()
         {
-            CurrentTarget = FindClosestPlayerTarget();
+            EnemyPlan plan = EnemyManager?.BuildPlan(this);
+            CurrentTarget = plan?.Target ?? FindClosestPlayerTarget();
             SetVariableValue(BTVars.Target, CurrentTarget != null ? CurrentTarget.gameObject : null);
             return CurrentTarget != null;
         }

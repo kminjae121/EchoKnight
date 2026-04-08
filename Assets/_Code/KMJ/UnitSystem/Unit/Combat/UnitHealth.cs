@@ -56,7 +56,9 @@ namespace Code.UnitSystem.Combat
                     if(unitState.Data == _entity.unitSO)
                         _unitStateCompo = unitState;
                 }
-                maxHealth = currentHealth = _unitStateCompo.CurrentHp.Value;   
+
+                maxHealth = _unitStateCompo.MaxHealth;
+                currentHealth = _unitStateCompo.CurrentHp.Value;   
             }
             else
             {

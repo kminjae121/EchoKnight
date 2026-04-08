@@ -19,7 +19,6 @@ namespace Code.UI
         [SerializeField] private List<RectTransform> skillSlotPositions;
         [SerializeField] private Button nextPageButton;
         [SerializeField] private Button prevPageButton;
-        [SerializeField] private Button backgroundCancelButton;
 
         [Header("Slide Animation")]
         [SerializeField] private float slideDuration = 0.3f;
@@ -30,9 +29,18 @@ namespace Code.UI
         private Tween _slideTween;
         private List<SkillSO> _equippedSkills = new List<SkillSO>();
         private SkillComponent _currentSkillCompo;
+        private CharacterUnit _currentUnit;
         private int _currentPage = 0;
         private const int MaxSkillsPerPage = 3;
+        
         private bool _isSkillSelected = false;
+        private bool _isCurrentlyVisible = false;
+
+        private bool _isSkillPlaying = false;
+        private bool _isMovePlaying = false;
+        private bool _isAtkUIHidden = false;
+        private bool _isTurnEnded = true;
+        private bool _isSkillReceived = false;
         
         private PoolManagerMono _poolManager;
         private List<CombatSkillButtonUI> _activeSkillButtons = new List<CombatSkillButtonUI>();
@@ -40,16 +48,6 @@ namespace Code.UI
         private void Awake()
         {
             _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
-
-            if (_poolManager == null)
-            {
-                Debug.LogError("[CombatSkillUIManager] 풀 매니저를 씬에서 찾을 수 없습니다.");
-            }
-
-            if (skillButtonPoolingSO == null)
-            {
-                Debug.LogError("[CombatSkillUIManager] 스킬 버튼 풀링 SO가 할당되지 않았습니다.");
-            }
 
             if (skillArea != null)
             {
@@ -65,69 +63,80 @@ namespace Code.UI
             {
                 prevPageButton.onClick.AddListener(GoToPrevPage);
             }
-            
-            if (backgroundCancelButton != null)
-            {
-                backgroundCancelButton.onClick.AddListener(CancelSkillSelection);
-                backgroundCancelButton.gameObject.SetActive(false);
-            }
 
             Bus<SkillUIEvent>.Subscribe(HandleSkillReceived);
             Bus<CombatSkillSelectEvent>.Subscribe(HandleSkillSelected);
             Bus<UnitTurnEndEvent>.Subscribe(HandleTurnEnd);
+            Bus<SetAtkUIEvent>.Subscribe(HandleAtkUI);
+            Bus<UnitSkilStartEvent>.Subscribe(HandleSkillStart);
+            Bus<UnitMoveControlEvent>.Subscribe(HandleMoveControl);
+            Bus<CombatSkillCancelEvent>.Subscribe(HandleSkillCancel);
         }
 
         private void OnDestroy()
         {
-            if (nextPageButton != null)
-            {
-                nextPageButton.onClick.RemoveListener(GoToNextPage);
-            }
-            
-            if (prevPageButton != null)
-            {
-                prevPageButton.onClick.RemoveListener(GoToPrevPage);
-            }
-            
-            if (backgroundCancelButton != null)
-            {
-                backgroundCancelButton.onClick.RemoveListener(CancelSkillSelection);
-            }
+            if (nextPageButton != null) nextPageButton.onClick.RemoveListener(GoToNextPage);
+            if (prevPageButton != null) prevPageButton.onClick.RemoveListener(GoToPrevPage);
 
             Bus<SkillUIEvent>.Unsubscribe(HandleSkillReceived);
             Bus<CombatSkillSelectEvent>.Unsubscribe(HandleSkillSelected);
             Bus<UnitTurnEndEvent>.Unsubscribe(HandleTurnEnd);
+            Bus<SetAtkUIEvent>.Unsubscribe(HandleAtkUI);
+            Bus<UnitSkilStartEvent>.Unsubscribe(HandleSkillStart);
+            Bus<UnitMoveControlEvent>.Unsubscribe(HandleMoveControl);
+            Bus<CombatSkillCancelEvent>.Unsubscribe(HandleSkillCancel);
 
+            UnsubscribeCurrentUnit();
             _slideTween?.Kill();
         }
 
         private void Update()
         {
-            if (_isSkillSelected && UnityEngine.Input.GetMouseButtonDown(1))
+            if (_isSkillSelected && UnityEngine.Input.GetMouseButtonDown(0))
             {
                 CancelSkillSelection();
             }
         }
 
+        private void EvaluateVisibility()
+        {
+            bool canShow = !_isSkillPlaying && !_isMovePlaying && !_isAtkUIHidden && !_isTurnEnded && _isSkillReceived;
+            
+            if (canShow) SafeShowUI();
+            else HideUI(false);
+        }
+
         private void HandleSkillReceived(SkillUIEvent evt)
         {
-            if (evt.SkillCompo == null)
+            UnsubscribeCurrentUnit();
+
+            _isTurnEnded = false;
+            _isSkillSelected = false;
+
+            HideUI(false);
+
+            if (evt.SkillCompo == null || evt.Skills == null || evt.Skills.Count == 0)
             {
-                Debug.LogWarning("[CombatSkillUIManager] 이벤트로 전달된 스킬 컴포넌트가 존재하지 않습니다.");
-                HideUI();
+                _isSkillReceived = false;
+                _equippedSkills = null;
+                _currentSkillCompo = null;
+                _currentUnit = null;
+                RefreshSkillSlots();
+                EvaluateVisibility();
                 return;
             }
 
+            _isSkillReceived = true;
             _equippedSkills = evt.Skills;
             _currentSkillCompo = evt.SkillCompo;
+            _currentUnit = _currentSkillCompo.GetComponentInParent<CharacterUnit>();
             
-            _currentPage = 0;
-            _isSkillSelected = false;
-
-            if (backgroundCancelButton != null)
+            if (_currentUnit != null && _currentUnit.SkillCostCompo != null)
             {
-                backgroundCancelButton.gameObject.SetActive(false);
+                _currentUnit.SkillCostCompo.skillCostChanged.AddListener(HandleCostChanged);
             }
+
+            _currentPage = 0;
 
             if (_equippedSkills != null && _equippedSkills.Count > MaxSkillsPerPage)
             {
@@ -140,29 +149,77 @@ namespace Code.UI
                 if (prevPageButton != null) prevPageButton.gameObject.SetActive(false);
             }
 
-            if (_equippedSkills == null || _equippedSkills.Count == 0)
-            {
-                HideUI();
-                return;
-            }
-
             RefreshSkillSlots();
-            ShowUI();
+
+            DOVirtual.DelayedCall(0.5f, () => 
+            {
+                if (this == null) return;
+                EvaluateVisibility();
+            });
+        }
+
+        private void UnsubscribeCurrentUnit()
+        {
+            if (_currentUnit != null && _currentUnit.SkillCostCompo != null)
+            {
+                _currentUnit.SkillCostCompo.skillCostChanged.RemoveListener(HandleCostChanged);
+            }
+        }
+
+        private void HandleCostChanged(int newCost)
+        {
+            foreach (var btn in _activeSkillButtons)
+            {
+                if (btn != null)
+                {
+                    btn.UpdateInteractability(newCost);
+                }
+            }
+        }
+
+        private void HandleAtkUI(SetAtkUIEvent evt)
+        {
+            _isAtkUIHidden = !evt.IsActive;
+            EvaluateVisibility();
+        }
+
+        private void HandleSkillStart(UnitSkilStartEvent evt)
+        {
+            _isSkillPlaying = evt.isStart;
+            if (!evt.isStart) _isAtkUIHidden = false;
+            EvaluateVisibility();
+        }
+
+        private void HandleMoveControl(UnitMoveControlEvent evt)
+        {
+            _isMovePlaying = !evt.isMoving;
+            if (evt.isMoving) _isAtkUIHidden = false;
+            EvaluateVisibility();
         }
 
         private void HandleTurnEnd(UnitTurnEndEvent evt)
         {
-            HideUI();
+            _isTurnEnded = true;
+            _isSkillPlaying = false;
+            _isMovePlaying = false;
+            _isAtkUIHidden = false;
+            EvaluateVisibility();
+        }
+
+        private void HandleSkillCancel(CombatSkillCancelEvent evt)
+        {
+            if (!_isSkillPlaying && !_isMovePlaying)
+            {
+                _isAtkUIHidden = false;
+                EvaluateVisibility();
+            }
         }
 
         private void RefreshSkillSlots()
         {
             foreach (var btn in _activeSkillButtons)
             {
-                if (btn != null)
-                {
-                    btn.ReturnToPool();
-                }
+                if (btn != null) btn.ReturnToPool();
             }
             _activeSkillButtons.Clear();
 
@@ -187,10 +244,6 @@ namespace Code.UI
                             
                             btn.SetupSkill(_equippedSkills[skillIndex], _currentSkillCompo, currentTurnCost);
                             _activeSkillButtons.Add(btn);
-                        }
-                        else
-                        {
-                            Debug.LogWarning("[CombatSkillUIManager] 스킬 버튼 프리팹을 풀에서 가져오지 못했습니다.");
                         }
                     }
                 }
@@ -218,10 +271,6 @@ namespace Code.UI
         private void HandleSkillSelected(CombatSkillSelectEvent evt)
         {
             _isSkillSelected = true;
-            if (backgroundCancelButton != null)
-            {
-                backgroundCancelButton.gameObject.SetActive(true);
-            }
         }
 
         private void CancelSkillSelection()
@@ -230,48 +279,48 @@ namespace Code.UI
 
             _isSkillSelected = false;
             Bus<CombatSkillCancelEvent>.Raise(new CombatSkillCancelEvent());
-            
-            if (backgroundCancelButton != null)
-            {
-                backgroundCancelButton.gameObject.SetActive(false);
-            }
         }
 
         private int GetCurrentUnitCost()
         {
-            if (_currentSkillCompo != null)
+            if (_currentUnit != null && _currentUnit.SkillCostCompo != null)
             {
-                CharacterUnit unit = _currentSkillCompo.GetComponentInParent<CharacterUnit>();
-                
-                if (unit != null && unit.SkillCostCompo != null)
-                {
-                    return unit.SkillCostCompo.GetUnitSkillCost();
-                }
-                else
-                {
-                    Debug.LogWarning("[CombatSkillUIManager] 캐릭터 유닛 또는 코스트 컴포넌트를 찾을 수 없습니다.");
-                }
+                return _currentUnit.SkillCostCompo.GetUnitSkillCost();
             }
             return 0;
         }
 
-        private void ShowUI()
+        private void SafeShowUI()
         {
-            _slideTween?.Kill();
-            if (skillArea != null)
+            if (_equippedSkills != null && _equippedSkills.Count > 0 && _currentSkillCompo != null)
             {
-                _slideTween = skillArea.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
+                ShowUI();
             }
         }
 
-        private void HideUI()
+        private void ShowUI()
         {
-            CancelSkillSelection();
+            if (_isCurrentlyVisible) return;
+            
+            _isCurrentlyVisible = true;
             _slideTween?.Kill();
+            
             if (skillArea != null)
-            {
+                _slideTween = skillArea.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
+        }
+
+        private void HideUI(bool raiseCancelEvent)
+        {
+            if (raiseCancelEvent) 
+                CancelSkillSelection();
+                
+            if (!_isCurrentlyVisible) return;
+            
+            _isCurrentlyVisible = false;
+            _slideTween?.Kill();
+            
+            if (skillArea != null)
                 _slideTween = skillArea.DOAnchorPos(hiddenPosition, slideDuration).SetEase(Ease.InBack);
-            }
         }
     }
 }

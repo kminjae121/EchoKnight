@@ -123,12 +123,16 @@ namespace Code.UI
             {
                 costText.text = skill.SkillCost.ToString();
             }
-            else
-            {
-                Debug.LogError("[CombatSkillButtonUI] 인스펙터에 Cost Text 오브젝트가 할당되지 않았습니다!");
-            }
+            
+            UpdateInteractability(currentTurnCost);
+            ResetPosition();
+        }
 
-            _isInteractable = currentTurnCost >= skill.SkillCost;
+        public void UpdateInteractability(int currentTurnCost)
+        {
+            if (_currentSkill == null) return;
+            
+            _isInteractable = currentTurnCost >= _currentSkill.SkillCost;
 
             if (blindImage != null)
             {
@@ -144,8 +148,6 @@ namespace Code.UI
             {
                 ApplyColorMultiplier(1f);
             }
-
-            ResetPosition();
         }
 
         private void ApplyColorMultiplier(float multiplier)

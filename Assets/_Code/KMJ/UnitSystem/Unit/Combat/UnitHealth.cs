@@ -82,9 +82,11 @@ namespace Code.UnitSystem.Combat
             }
 
             int healHash = healText.nameHash;
+
+            Vector3 pos = _entity.transform.position + new Vector3(0, 1.2f);;
             
             PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(amount.ToString(), healHash
-                , _entity.transform.position, 0.5f);  
+                , pos, 0.5f);  
             
             textEventChannel.RaiseEvent(textEvt);
         }

@@ -79,8 +79,7 @@ namespace Code.UnitSystem.Combat
 
         private void GiveDamage()
         {
-            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.56f));
-            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target.gameObject,_addDamage,_unit, false,false));
+            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target.gameObject,_addDamage,_unit, false,false,0.2f));
         }
     }
 }

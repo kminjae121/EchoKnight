@@ -9,8 +9,6 @@ using UnityEngine.UIElements;
 
 public class HealSkill : BasicUnitSkill
     {
-        [SerializeField] private GameObject healPrefab;
-        
         private UnitAnimation animtionCompo;
 
         protected  void Start()
@@ -60,7 +58,6 @@ public class HealSkill : BasicUnitSkill
             UnitHealth health = _characterUnit.GetUnitCompo<UnitHealth>();
             
             health.HealHp(20);
-            healPrefab.SetActive(true);
-            healPrefab.GetComponent<ParticleSystem>().Play();
+            SkillFeedbackEvent?.Invoke();
         }
     }

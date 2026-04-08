@@ -1,4 +1,5 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using UnityEditor.Rendering;
@@ -8,10 +9,10 @@ namespace _Code.Passive
 {
     public class ThornmailPassive : AlwaysTurnPassive
     {
-        private CharacterUnit _character; 
-        protected override void Start()
+        private CharacterUnit _character;
+
+        private void Awake()
         {
-            base.Start();
             _character = _unit as CharacterUnit;
         }
 
@@ -29,8 +30,12 @@ namespace _Code.Passive
         {
             DamageData damageData = new DamageData();
             damageData.damage = (int)(value * 0.3f);
-            target.GetComponent<IDamageable>().ApplyDamage(damageData, target.transform.position,
-                transform.transform.position, null, _character, false, false);
+
+            if (target.TryGetComponent<IDamageable>(out var damageable))
+            {
+                damageable.ApplyDamage(damageData, target.transform.position,
+                    transform.transform.position, null, _character, false, false);
+            }
         }
     }
 }

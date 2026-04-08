@@ -18,6 +18,8 @@ namespace Code.SkillSystem
         
         private InputReader _inputReader;
         private EnemyTargeting _targetingCompo;
+        private SkillManageComponent _skillManageCompo;
+        
         private void OnEnable()
         {
             if (_characterUnit != null)
@@ -69,6 +71,8 @@ namespace Code.SkillSystem
         public override void SkillFinished(bool isCancel)
         {
             base.SkillFinished(isCancel);
+            _characterUnit.SetMoveTile();
+            Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
         }
 
@@ -128,7 +132,7 @@ namespace Code.SkillSystem
             
             if (SkillSO.SkillType == SkillType.BasicSkill && SkillCount >= 1)
             {
-                SkillFinished(false);
+                SkillFinished(true);
                 Bus<WarningUIEvent>.Raise(new WarningUIEvent("일반 공격은 한번만 사용가능합니다."));
                 return;
             }

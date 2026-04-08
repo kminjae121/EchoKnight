@@ -115,6 +115,15 @@ namespace Code.UnitSystem
             Bus<WhatUnitTurnEvent>.Raise(new WhatUnitTurnEvent(unitSO.UnitType));
         }
 
+        public void SetMoveTile()
+        {
+            if (MoveCompo != null)
+            {
+                if(MoveCompo.moveCount == 0)
+                    MoveCompo.FindObjectInRange(unitSO.MoveRange);
+            }
+        }
+
         public override void OnTurnEnd()
         {
             base.OnTurnEnd();

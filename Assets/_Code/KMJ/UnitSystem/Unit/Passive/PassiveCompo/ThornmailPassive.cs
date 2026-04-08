@@ -1,9 +1,5 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using Code.UnitSystem;
+﻿using Code.UnitSystem;
 using Code.UnitSystem.Combat;
-using UnityEditor.Rendering;
-using UnityEngine;
 
 namespace _Code.Passive
 {

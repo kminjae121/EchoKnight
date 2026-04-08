@@ -23,6 +23,10 @@ namespace _Code.Passive
 
         public override void StopPassive()
         {
+            if (_character == null)
+                return;
+            if (_character.HealthCompo == null)
+                return;
             _character.HealthCompo.OnInteractionEvent.RemoveListener(Thornmail);
         }
 

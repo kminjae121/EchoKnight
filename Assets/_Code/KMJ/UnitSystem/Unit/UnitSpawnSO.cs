@@ -9,5 +9,6 @@ namespace Code.UnitSystem
         public string UnitName;
         public GameObject UnitPrefab;
         public PoolingItemSO poolingItem;
+        public UnitSO UnitSO;
     }
 }

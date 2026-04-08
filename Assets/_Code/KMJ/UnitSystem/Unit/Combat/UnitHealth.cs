@@ -18,7 +18,7 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private TextInfo normalText, criticalText, healText;
         [SerializeField] private GameEventChannelSO textEventChannel;
 
-        [SerializeField] private UnitStorageSO storageSO; 
+        [field : SerializeField] public UnitStorageSO storageSO; 
 
         private Unit _entity;
         private ActionData _actionData;
@@ -138,9 +138,11 @@ namespace Code.UnitSystem.Combat
            
            _entity.OnHitEvent?.Invoke();
            OnInteractionEvent?.Invoke(dealer, damage);
-           
+
            if (currentHealth <= 0)
+           {
                _entity.OnDeathEvent?.Invoke();
+           }
         }
     }
 }

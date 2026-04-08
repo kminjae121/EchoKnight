@@ -167,6 +167,8 @@ namespace Code.UnitSystem
             if (StageManager.Instance != null)
                 StageManager.Instance.PlayerDie();
             
+            
+            
             gameObject.SetActive(false);
         }
             

@@ -1,4 +1,5 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
 using UnityEditor.Rendering;
@@ -8,10 +9,10 @@ namespace _Code.Passive
 {
     public class ThornmailPassive : AlwaysTurnPassive
     {
-        private CharacterUnit _character; 
-        protected override void Start()
+        private CharacterUnit _character;
+
+        private void Awake()
         {
-            base.Start();
             _character = _unit as CharacterUnit;
         }
 

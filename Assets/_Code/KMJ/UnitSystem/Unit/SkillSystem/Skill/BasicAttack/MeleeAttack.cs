@@ -78,8 +78,6 @@ public class MeleeAttack : BasicUnitSkill
     
     public void TakeDamage()
     {
-        Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.6f));
-        
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target,AddDamage, _characterUnit,false,false));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target,AddDamage, _characterUnit,false,false,0.3f));
     }
 }

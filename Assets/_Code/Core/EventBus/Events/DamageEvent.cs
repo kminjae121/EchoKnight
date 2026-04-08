@@ -18,7 +18,9 @@ namespace Code.Core.Events.Bus
         public bool IsCritical;
 
         public bool IsPenetrate;
-        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target, float addDamage, Unit Owenr,  bool IsCritical, bool IsPenetrate)
+
+        public float ShakeValue;
+        public DamageEvent(DamageData data, AttackDataSO atkData, GameObject target, float addDamage, Unit Owenr,  bool IsCritical, bool IsPenetrate,float shakeValue)
         {
             DamageData = data;
             this.atkData = atkData;
@@ -27,6 +29,7 @@ namespace Code.Core.Events.Bus
             this.Owner = Owenr;
             this.IsCritical = IsCritical;
             this.IsPenetrate = IsPenetrate;
+            this.ShakeValue =  shakeValue;
         }
     }
 }

@@ -74,7 +74,10 @@ namespace Code.UI
             if (openButton != null) openButton.onClick.AddListener(ShowUI);
             if (closeButton != null) closeButton.onClick.AddListener(HideUI);
 
+            // 이벤트 구독 설정
             Bus<ShowCombatInfoEvent>.Subscribe(HandleShowCombatInfo);
+            Bus<SkillUIEvent>.Subscribe(HandleSkillReceived); // 턴 자동 추적용 이벤트
+            
             SetupArtifactTriggers();
         }
 
@@ -84,16 +87,43 @@ namespace Code.UI
             if (closeButton != null) closeButton.onClick.RemoveListener(HideUI);
             
             Bus<ShowCombatInfoEvent>.Unsubscribe(HandleShowCombatInfo);
+            Bus<SkillUIEvent>.Unsubscribe(HandleSkillReceived);
+            
             UnsubscribeHealth();
             _slideTween?.Kill();
         }
 
+        // [핵심] 아군 턴이 시작될 때마다 현재 턴의 유닛을 자동 추적합니다.
+        private void HandleSkillReceived(SkillUIEvent evt)
+        {
+            if (evt.SkillCompo != null)
+            {
+                var unitState = evt.SkillCompo.GetComponentInParent<UnitState>();
+                if (unitState != null)
+                {
+                    UnsubscribeHealth();
+                    _currentUnit = unitState;
+
+                    if (_currentUnit.CurrentHp != null)
+                    {
+                        _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
+                    }
+
+                    // 패널이 열려있는 상태라면 즉시 화면을 갱신합니다.
+                    if (_isVisible)
+                    {
+                        RefreshAllUI();
+                    }
+                }
+            }
+        }
+
+        // 수동으로 적군이나 다른 아군을 클릭했을 때 정보를 띄우는 로직
         private void HandleShowCombatInfo(ShowCombatInfoEvent evt)
         {
-            UnsubscribeHealth();
-
             if (evt.IsShow && evt.TargetUnit != null)
             {
+                UnsubscribeHealth();
                 _currentUnit = evt.TargetUnit;
                 
                 if (_currentUnit.CurrentHp != null)
@@ -101,13 +131,11 @@ namespace Code.UI
                     _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
                 }
                 
-                RefreshAllUI();
                 ShowUI();
             }
             else
             {
                 HideUI();
-                _currentUnit = null;
             }
         }
 
@@ -129,6 +157,9 @@ namespace Code.UI
             if (_isVisible) return;
             _isVisible = true;
             if (backgroundPanel != null) backgroundPanel.SetActive(true);
+
+            // 패널이 열리는 순간 추적해둔 현재 유닛의 정보를 UI에 갱신시킵니다.
+            RefreshAllUI();
 
             _slideTween?.Kill();
             _slideTween = panelRect.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
@@ -190,8 +221,17 @@ namespace Code.UI
         private void RefreshSkills()
         {
             SkillSO[] equippedSkills = System.Array.Empty<SkillSO>();
-            if (SkillSendManager.Instance != null && _currentUnit != null)
+            
+            // 아군인지 확인 후 스킬 정보를 받아옵니다.
+            if (SkillSendManager.Instance != null && _currentUnit != null && _currentUnit.Data != null)
+            {
                 equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.Data.UnitType);
+            }
+
+            if (equippedSkills == null)
+            {
+                equippedSkills = System.Array.Empty<SkillSO>();
+            }
 
             foreach (var btn in _activeSkillButtons)
             {

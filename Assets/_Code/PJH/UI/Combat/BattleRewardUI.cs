@@ -17,10 +17,12 @@ namespace Code.UI
 
         private readonly List<RewardItemButton> spawnedButtons = new();
 
+        [SerializeField] private GameObject rewardUI;
+
         private void Awake()
         {
             nextButton.onClick.AddListener(HandleNextButton);
-            gameObject.SetActive(false);
+            rewardUI.SetActive(false);
         }
 
         private void OnDestroy()
@@ -30,7 +32,7 @@ namespace Code.UI
 
         public void Open(List<ItemSO> rewards)
         {
-            gameObject.SetActive(true);
+            rewardUI.SetActive(true);
 
             foreach (var item in rewards)
             {

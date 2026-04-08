@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c199a87c9dc41448acd2874c3660890, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.Managers.EnemyManager
+  unitManager: {fileID: 115942396050675707}
 --- !u!1 &950718412531017022
 GameObject:
   m_ObjectHideFlags: 0
@@ -55,7 +56,6 @@ GameObject:
   - component: {fileID: 1464575430777660900}
   - component: {fileID: 4215123572567445162}
   - component: {fileID: 8199758987144701135}
-  - component: {fileID: 5687378078436813717}
   m_Layer: 0
   m_Name: StageManager
   m_TagString: Untagged
@@ -114,18 +114,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0e14d498191d98a40ad2f42bfd4b50ee, type: 2}
   - {fileID: 11400000, guid: c24a34b1e686854438cfc110b5fce05d, type: 2}
   battleRewardUI: {fileID: 0}
---- !u!114 &5687378078436813717
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 950718412531017022}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c199a87c9dc41448acd2874c3660890, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Code.Managers.EnemyManager
 --- !u!1 &2223276181220410144
 GameObject:
   m_ObjectHideFlags: 0
@@ -409,6 +397,17 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 94844984890717366}
   m_SourcePrefab: {fileID: 100100000, guid: 06e5a120713112e4a8c7cf4376664f85, type: 3}
+--- !u!114 &115942396050675707 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8476312003721138193, guid: 06e5a120713112e4a8c7cf4376664f85, type: 3}
+  m_PrefabInstance: {fileID: 8375006616234199018}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 920454097530433a8f71be04bdbe99eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &600360693994930503 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 8966360076608816813, guid: 06e5a120713112e4a8c7cf4376664f85, type: 3}

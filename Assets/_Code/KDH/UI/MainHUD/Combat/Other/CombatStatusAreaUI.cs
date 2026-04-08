@@ -21,7 +21,12 @@ namespace Code.UI
         private Tween _buffTween;
         private Tween _debuffTween;
         private bool _isCurrentlyVisible = false;
-        private bool _isActionPlaying = false;
+
+        private bool _isSkillPlaying = false;
+        private bool _isMovePlaying = false;
+        private bool _isAtkUIHidden = false;
+        private bool _isTurnEnded = true;
+        private bool _isSkillReceived = false;
 
         private void Awake()
         {
@@ -49,55 +54,63 @@ namespace Code.UI
             _debuffTween?.Kill();
         }
 
+        private void EvaluateVisibility()
+        {
+            bool canShow = !_isSkillPlaying && !_isMovePlaying && !_isAtkUIHidden && !_isTurnEnded && _isSkillReceived;
+            
+            if (canShow) ShowUI();
+            else HideUI();
+        }
+
         private void HandleSkillUI(SkillUIEvent evt)
         {
+            _isTurnEnded = false;
+            _isSkillReceived = evt.SkillCompo != null;
+
             HideUI();
 
-            if (evt.SkillCompo != null) 
+            DOVirtual.DelayedCall(0.5f, () => 
             {
-                DOVirtual.DelayedCall(0.5f, () => 
-                {
-                    if (this == null) return;
-                    if (!_isActionPlaying) ShowUI();
-                });
-            }
+                if (this == null) return;
+                EvaluateVisibility();
+            });
         }
 
         private void HandleAtkUI(SetAtkUIEvent evt)
         {
-            _isActionPlaying = !evt.IsActive;
-            
-            if (evt.IsActive) ShowUI();
-            else HideUI();
+            _isAtkUIHidden = !evt.IsActive;
+            EvaluateVisibility();
         }
 
         private void HandleSkillStart(UnitSkilStartEvent evt)
         {
-            _isActionPlaying = evt.isStart;
-            
-            if (evt.isStart) HideUI();
-            else ShowUI();
+            _isSkillPlaying = evt.isStart;
+            if (!evt.isStart) _isAtkUIHidden = false;
+            EvaluateVisibility();
         }
 
         private void HandleMoveControl(UnitMoveControlEvent evt)
         {
-            _isActionPlaying = !evt.isMoving; 
-            
-            if (evt.isMoving) ShowUI();
-            else HideUI();
+            _isMovePlaying = !evt.isMoving; 
+            if (evt.isMoving) _isAtkUIHidden = false;
+            EvaluateVisibility();
         }
 
         private void HandleUnitTurnEnd(UnitTurnEndEvent evt)
         {
-            _isActionPlaying = false;
-            HideUI();
+            _isTurnEnded = true;
+            _isSkillPlaying = false;
+            _isMovePlaying = false;
+            _isAtkUIHidden = false;
+            EvaluateVisibility();
         }
 
         private void HandleSkillCancel(CombatSkillCancelEvent evt)
         {
-            if (!_isActionPlaying) 
+            if (!_isSkillPlaying && !_isMovePlaying) 
             {
-                ShowUI();
+                _isAtkUIHidden = false;
+                EvaluateVisibility();
             }
         }
 

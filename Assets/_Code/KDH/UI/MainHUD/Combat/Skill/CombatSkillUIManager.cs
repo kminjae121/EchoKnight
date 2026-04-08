@@ -35,7 +35,12 @@ namespace Code.UI
         
         private bool _isSkillSelected = false;
         private bool _isCurrentlyVisible = false;
-        private bool _isActionPlaying = false;
+
+        private bool _isSkillPlaying = false;
+        private bool _isMovePlaying = false;
+        private bool _isAtkUIHidden = false;
+        private bool _isTurnEnded = true;
+        private bool _isSkillReceived = false;
         
         private PoolManagerMono _poolManager;
         private List<CombatSkillButtonUI> _activeSkillButtons = new List<CombatSkillButtonUI>();
@@ -43,11 +48,6 @@ namespace Code.UI
         private void Awake()
         {
             _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
-
-            if (_poolManager == null)
-            {
-                Debug.LogError("[CombatSkillUIManager] 씬에서 PoolManagerMono를 찾을 수 없습니다.");
-            }
 
             if (skillArea != null)
             {
@@ -98,22 +98,35 @@ namespace Code.UI
             }
         }
 
+        private void EvaluateVisibility()
+        {
+            bool canShow = !_isSkillPlaying && !_isMovePlaying && !_isAtkUIHidden && !_isTurnEnded && _isSkillReceived;
+            
+            if (canShow) SafeShowUI();
+            else HideUI(false);
+        }
+
         private void HandleSkillReceived(SkillUIEvent evt)
         {
             UnsubscribeCurrentUnit();
 
-            HideUI(false);
+            _isTurnEnded = false;
             _isSkillSelected = false;
 
-            if (evt.SkillCompo == null)
+            HideUI(false);
+
+            if (evt.SkillCompo == null || evt.Skills == null || evt.Skills.Count == 0)
             {
+                _isSkillReceived = false;
                 _equippedSkills = null;
                 _currentSkillCompo = null;
                 _currentUnit = null;
                 RefreshSkillSlots();
+                EvaluateVisibility();
                 return;
             }
 
+            _isSkillReceived = true;
             _equippedSkills = evt.Skills;
             _currentSkillCompo = evt.SkillCompo;
             _currentUnit = _currentSkillCompo.GetComponentInParent<CharacterUnit>();
@@ -141,7 +154,7 @@ namespace Code.UI
             DOVirtual.DelayedCall(0.5f, () => 
             {
                 if (this == null) return;
-                if (!_isActionPlaying) SafeShowUI();
+                EvaluateVisibility();
             });
         }
 
@@ -166,40 +179,39 @@ namespace Code.UI
 
         private void HandleAtkUI(SetAtkUIEvent evt)
         {
-            _isActionPlaying = !evt.IsActive;
-            
-            if (evt.IsActive) SafeShowUI();
-            else HideUI(false);
+            _isAtkUIHidden = !evt.IsActive;
+            EvaluateVisibility();
         }
 
         private void HandleSkillStart(UnitSkilStartEvent evt)
         {
-            _isActionPlaying = evt.isStart;
-            
-            if (evt.isStart) HideUI(false);
-            else SafeShowUI();
+            _isSkillPlaying = evt.isStart;
+            if (!evt.isStart) _isAtkUIHidden = false;
+            EvaluateVisibility();
         }
 
         private void HandleMoveControl(UnitMoveControlEvent evt)
         {
-            _isActionPlaying = !evt.isMoving;
-            
-            if (evt.isMoving) SafeShowUI();
-            else HideUI(false);
+            _isMovePlaying = !evt.isMoving;
+            if (evt.isMoving) _isAtkUIHidden = false;
+            EvaluateVisibility();
         }
 
         private void HandleTurnEnd(UnitTurnEndEvent evt)
         {
-            _isActionPlaying = false;
-            _isSkillSelected = false;
-            HideUI(false);
+            _isTurnEnded = true;
+            _isSkillPlaying = false;
+            _isMovePlaying = false;
+            _isAtkUIHidden = false;
+            EvaluateVisibility();
         }
 
         private void HandleSkillCancel(CombatSkillCancelEvent evt)
         {
-            if (!_isActionPlaying)
+            if (!_isSkillPlaying && !_isMovePlaying)
             {
-                SafeShowUI();
+                _isAtkUIHidden = false;
+                EvaluateVisibility();
             }
         }
 

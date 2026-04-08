@@ -14,6 +14,7 @@ namespace Code.Managers
     {
         [Header("Turn Settings")]
         [SerializeField] private float baseTurnGauge = 100f;
+        [SerializeField] private float firstRoundInterval = 150f;
         [SerializeField] private float roundInterval = 100f;
 
         [Header("Dependencies")]
@@ -52,8 +53,8 @@ namespace Code.Managers
             CurrentRound = 1;
             
             _roundTracker = new RoundTracker();
-            _roundTracker.NextRound = 1;
-            _roundTracker.TurnGauge = roundInterval;
+            _roundTracker.NextRound = 2;
+            _roundTracker.TurnGauge = firstRoundInterval;
 
             RefreshUnits();
 
@@ -161,7 +162,52 @@ namespace Code.Managers
 
         public List<ITurnable> GetTimelineUnits(int count)
         {
-            return _units.OrderBy(u => u.TurnGauge).Take(count).ToList();
+            List<ITurnable> timeline = new List<ITurnable>();
+            if (_units == null || _units.Count == 0) return timeline;
+
+            Dictionary<ITurnable, float> currentGauges = new Dictionary<ITurnable, float>();
+            foreach (var u in _units)
+            {
+                currentGauges[u] = u.TurnGauge;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                if (currentGauges.Count == 0) break;
+
+                ITurnable nextUnit = null;
+                float minGauge = float.MaxValue;
+
+                foreach (var kvp in currentGauges)
+                {
+                    if (kvp.Value < minGauge)
+                    {
+                        minGauge = kvp.Value;
+                        nextUnit = kvp.Key;
+                    }
+                }
+
+                if (nextUnit == null) break;
+
+                timeline.Add(nextUnit);
+
+                var keys = currentGauges.Keys.ToList();
+                foreach (var k in keys)
+                {
+                    currentGauges[k] -= minGauge;
+                }
+
+                if (nextUnit is RoundTracker)
+                {
+                    currentGauges[nextUnit] += roundInterval;
+                }
+                else
+                {
+                    currentGauges[nextUnit] += CalculateBaseTurnGauge(nextUnit);
+                }
+            }
+
+            return timeline;
         }
     }
 }

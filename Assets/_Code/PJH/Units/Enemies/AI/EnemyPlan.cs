@@ -18,6 +18,12 @@ namespace Code.UnitSystem.Enemies.AI
         public void SetSkill(SkillSO skillSO)
             => SelectedSkill = skillSO;
 
+        public void ClearCombatDecision()
+        {
+            Target = null;
+            SelectedSkill = null;
+        }
+
         public void SetMoveTile(Vector2Int moveTile)
         {
             MoveTile = moveTile;
@@ -32,8 +38,7 @@ namespace Code.UnitSystem.Enemies.AI
 
         public void Clear()
         {
-            Target = null;
-            SelectedSkill = null;
+            ClearCombatDecision();
             ClearMoveTile();
         }
     }

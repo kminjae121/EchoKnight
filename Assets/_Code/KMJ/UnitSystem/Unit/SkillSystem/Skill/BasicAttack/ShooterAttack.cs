@@ -57,8 +57,6 @@ public class ShooterAttack : BasicUnitSkill
         private void Shoot()
         {
             Vector3 pos = _characterUnit.transform.position;
-
-            pos.y += 1.6f;
             
             Vector3 slashRot = _characterUnit.transform.rotation.eulerAngles;
             
@@ -66,7 +64,7 @@ public class ShooterAttack : BasicUnitSkill
             _shootItemManager.SetDamageData(DamageData,AddDamage);
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);   
             
-            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.3f));
+            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.15f));
         }
 
         protected override void SkillEnd()

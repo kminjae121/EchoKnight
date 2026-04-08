@@ -13,9 +13,17 @@ namespace Code.UnitSystem.Enemies.AI
 
         public override bool IsTrue()
         {
-            return Enemy.Value != null &&
-                   Target.Value != null &&
-                   Enemy.Value.TrySelectAttackSkill(Target.Value, out _);
+            if (Enemy.Value == null || Enemy.Value.EnemyManager == null)
+                return false;
+
+            Enemy.Value.EnemyManager.RefreshPlan(Enemy.Value);
+            
+            if (!Enemy.Value.EnemyManager.TryGetPlan(Enemy.Value, out EnemyPlan plan)
+                || !plan.CanAttackImmediately || plan.Target == null)
+                return false;
+
+            Target.Value = plan.Target.gameObject;
+            return true;
         }
     }
 }

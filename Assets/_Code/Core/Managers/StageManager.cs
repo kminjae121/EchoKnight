@@ -3,9 +3,11 @@ using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Map;
 using Code.UI;
+using Code.UnitSystem;
 using Code.UnitSystem.Enemies;
 using EnemySystem;
 using GondrLib.Dependencies;
+using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 
 namespace Code.Core.Managers
@@ -15,7 +17,7 @@ namespace Code.Core.Managers
         [System.Serializable]
         public struct EnemySpawnData
         {
-            public GameObject enemyPrefab;
+            public PoolingItemSO enemyPrefab;
             public Vector2Int spawnCoord;
         }
 
@@ -29,9 +31,9 @@ namespace Code.Core.Managers
 
         [SerializeField] private GameObject gameClearUI;
         [SerializeField] private GameObject gameOverUI;
-
         [SerializeField] private GameObject cam;
 
+        [Inject] private PoolManagerMono _poolManager;
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -64,7 +66,13 @@ namespace Code.Core.Managers
                 }
 
                 Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(data.spawnCoord.x, data.spawnCoord.y);
-                GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
+                //GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
+                
+                GameObject enemyObj = _poolManager.Pop<Unit>(data.enemyPrefab).gameObject;
+
+                enemyObj.transform.position = spawnPos;
+                
+                enemyObj.transform.rotation = Quaternion.identity;
 
                 tile.SetState(TileState.Enemy | TileState.Obstacle, true);
                 AbstractEnemyUnit enemy = enemyObj.GetComponent<AbstractEnemyUnit>();

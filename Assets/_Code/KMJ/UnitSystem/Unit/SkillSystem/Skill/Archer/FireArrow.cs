@@ -60,9 +60,6 @@ using UnityEngine;
         public void MakeArrow()
         {
             Vector3 pos = _characterUnit.transform.position;
-
-            pos.y += 2f;
-
             Vector3 slashRot = transform.rotation.eulerAngles;
             
             _shootItemManager.SetTarget(_target);

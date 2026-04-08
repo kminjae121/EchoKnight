@@ -18,14 +18,17 @@ namespace Code.UnitSystem.Enemies.AI
     
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Target.Value == null)
+            if (Enemy.Value == null || Enemy.Value.EnemyManager == null)
                 return Status.Failure;
 
-            if (!Enemy.Value.TrySelectAttackSkill(Target.Value, out SkillSO selectedSkill))
+            Enemy.Value.EnemyManager.RefreshPlan(Enemy.Value);
+            if (!Enemy.Value.EnemyManager.TryGetPlan(Enemy.Value, out EnemyPlan plan) ||
+                !plan.CanAttackImmediately || plan.Target == null || plan.SelectedSkill == null)
                 return Status.Failure;
 
+            Target.Value = plan.Target.gameObject;
             _isAttacking = true;
-            Enemy.Value.OrderSkill(selectedSkill, Target.Value, HandleAttackEnd);
+            Enemy.Value.OrderSkill(plan.SelectedSkill, Target.Value, HandleAttackEnd);
         
             return Status.Running;
         }

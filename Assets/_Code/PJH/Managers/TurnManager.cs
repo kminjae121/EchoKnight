@@ -50,44 +50,43 @@ namespace Code.Managers
         public void StartBattle()
         {
             CurrentRound = 1;
-
-            _roundTracker = new RoundTracker
-            {
-                TurnGauge = roundInterval
-            };
+            
+            _roundTracker = new RoundTracker();
+            _roundTracker.NextRound = 1;
+            _roundTracker.TurnGauge = roundInterval;
 
             RefreshUnits();
 
             foreach (var unit in _units)
             {
-                if (unit is RoundTracker)
-                    continue;
-
+                if (unit is RoundTracker) continue;
                 unit.TurnGauge = CalculateBaseTurnGauge(unit);
             }
 
             StartNextTurn();
         }
 
-        private float CalculateBaseTurnGauge(ITurnable unit) 
-            => baseTurnGauge / Mathf.Max(1f, unit.TurnSpeed);
+        private float CalculateBaseTurnGauge(ITurnable unit)
+        {
+            return baseTurnGauge / Mathf.Max(1f, unit.TurnSpeed);
+        }
 
         private void OnUnitTurnEnd(UnitTurnEndEvent evt)
         {
-            if (_currentTurnUnit == null)
-                return;
-
+            if (_currentTurnUnit == null) return;
+            
             _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
             _currentTurnUnit = null;
+
             _turnFlag = true;
         }
 
         private void StartNextTurn()
         {
             int safeCount = 0;
-
-            while (safeCount++ < 30)
+            while (safeCount < 100)
             {
+                safeCount++;
                 RefreshUnits();
 
                 _currentTurnUnit = GetNextUnit();
@@ -99,11 +98,14 @@ namespace Code.Managers
                     rt.NextRound = CurrentRound + 1;
                     rt.TurnGauge = roundInterval;
                     _currentTurnUnit = null;
+                    
+                    Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
                     continue;
                 }
 
                 OnTurnStart?.Invoke();
                 _currentTurnUnit.OnTurnStart();
+
                 Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
                 return;
             }
@@ -154,6 +156,8 @@ namespace Code.Managers
         }
 
         public List<ITurnable> GetTimelineUnits(int count)
-            => _units.OrderBy(u => u.TurnGauge).Take(count).ToList();
+        {
+            return _units.OrderBy(u => u.TurnGauge).Take(count).ToList();
+        }
     }
 }

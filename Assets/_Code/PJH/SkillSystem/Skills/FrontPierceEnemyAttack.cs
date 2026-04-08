@@ -4,21 +4,33 @@ using Code.Core.Events.Bus;
 using Code.Managers;
 using Code.Map;
 using Code.UnitSystem;
+using Code.UnitSystem.Enemies;
 using UnityEngine;
 
 namespace Code.SkillSystem
 {
-    public class FrontPierceEnemyAttack : BaseSkill
+    public class FrontPierceEnemyAttack : EnemyBaseSkill
     { 
         [SerializeField] private int pierceLength = 3;
 
         private GameObject _target;
+        private AbstractEnemyUnit _ownerEnemy;
         private UnitManager _unitManager;
+
+        private void Awake()
+        {
+            _ownerEnemy = GetComponentInParent<AbstractEnemyUnit>();
+            UnityLogger.Log(_ownerEnemy);
+        }
 
         protected void Start()
         {
             SkillEvent.AddListener(AttackAction);
-            _unitManager = FindFirstObjectByType<UnitManager>();
+            
+            if (_ownerEnemy != null)
+                _unitManager = _ownerEnemy.UnitManager;
+            
+            UnityLogger.Log(_unitManager);
         }
 
         protected override void StartEvent()
@@ -52,7 +64,7 @@ namespace Code.SkillSystem
                 return;
 
             foreach (GameObject hitTarget in GetHitTargets(_target))
-                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage, null, false,false));
+                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage, null, false,false,0.1f));
             
             UnityLogger.Log("관통 공격으로 데미지");
         }
@@ -83,8 +95,24 @@ namespace Code.SkillSystem
             return false;
         }
 
+        public override bool CanUseOnTarget(GameObject target)
+            => CanHitTarget(target);
+
         public int GetPredictedHitCount(GameObject target)
             => GetHitTargets(target).Count;
+
+        public override float EvaluateEnemyUseScore(GameObject target)
+        {
+            if (target == null || SkillSO == null)
+                return float.MinValue;
+
+            int predictedHitCount = GetPredictedHitCount(target);
+            
+            if (predictedHitCount <= 0)
+                return float.MinValue;
+
+            return predictedHitCount * SkillSO.SkillDamage;
+        }
 
         private List<GameObject> GetHitTargets(GameObject target)
         {
@@ -101,9 +129,9 @@ namespace Code.SkillSystem
                 return hitTargets;
             }
 
-            if (_unitManager == null)
-                _unitManager = FindFirstObjectByType<UnitManager>();
-
+            if (_ownerEnemy != null)
+                _unitManager = _ownerEnemy.UnitManager;
+            
             if (_unitManager == null)
             {
                 UnityLogger.LogError($"[{nameof(FrontPierceEnemyAttack)}] UnitManager is missing.");
@@ -119,7 +147,7 @@ namespace Code.SkillSystem
 
             HashSet<GameObject> hitTargetSet = new HashSet<GameObject>();
 
-            for (int i = 1; i <= pierceLength; i++)
+            for (int i = 1; i <= pierceLength; ++i)
             {
                 Vector2Int hitPos = origin + forwardDir * i;
 

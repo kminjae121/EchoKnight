@@ -59,10 +59,8 @@ using UnityEngine;
         
         public void MakeArrow()
         {
-            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.4f));
+            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.25f));
             Vector3 pos = transform.position;
-
-            pos.y += 3f;
 
             Vector3 slashRot = transform.rotation.eulerAngles;
             

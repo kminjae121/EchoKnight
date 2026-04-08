@@ -25,11 +25,13 @@ namespace Code.UnitSystem.Enemies
         public UnitRotation UnitRotationCompo { get; private set; }
         public UnitAnimationTrigger AnimationTrigger { get; private set; }
         public EnemyManager EnemyManager => _enemyManager;
+        public UnitManager UnitManager => _unitManager;
+        
         protected GridMap GridMapInstance { get; private set; }
-        protected UnitManager UnitManager { get; private set; }
         protected Unit CurrentTarget { get; private set; }
 
-        [Inject] private EnemyManager _enemyManager;
+        [Inject] protected EnemyManager _enemyManager;
+        [Inject] protected UnitManager _unitManager;
 
         private bool _hasEndedTurn;
         private bool _isDead;
@@ -79,7 +81,6 @@ namespace Code.UnitSystem.Enemies
                 TurnChannel = targetChannel.Value;
 
             GridMapInstance = GridMap.Instance;
-            UnitManager = FindFirstObjectByType<UnitManager>();
             UpdateTargetBlackboard();
         }
 
@@ -232,38 +233,46 @@ namespace Code.UnitSystem.Enemies
                 return false;
             }
 
-            if (!TryGetSkill(skillSO, out var selectedSkillSO, out var selectedSkill))
+            if (!TryGetSkill(skillSO, out _, out var selectedSkill))
                 return false;
 
-            if (selectedSkill is FrontPierceEnemyAttack pierceAttack)
-                return pierceAttack.CanHitTarget(target);
-
-            GridMap gridMap = GridMap.Instance;
-
-            if (gridMap == null)
+            if (selectedSkill is not EnemyBaseSkill enemySkill)
+            {
+                UnityLogger.LogError($"[{nameof(AbstractEnemyUnit)}] {name} tried to evaluate a non-enemy skill.");
                 return false;
+            }
 
-            Vector2Int myPos = gridMap.WorldToGridPosition(transform.position);
-            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
-
-            float distance = DistanceUtils.GetEuclideanDistance(myPos, targetPos);
-            float range = Mathf.Max(0f, selectedSkillSO.SkillRange);
-
-            return distance <= range;
+            return enemySkill.CanUseOnTarget(target);
         }
 
         public bool TrySelectAttackSkill(GameObject target, out SkillSO selectedSkillSO)
         {
-            if (EnemyManager != null)
-                return EnemyManager.TrySelectAttackSkill(this, target, out selectedSkillSO);
-
             selectedSkillSO = null;
-            return false;
+
+            if (EnemyManager == null)
+                return false;
+
+            EnemyManager.RefreshPlan(this);
+            if (!EnemyManager.TryGetPlan(this, out EnemyPlan plan) || plan.Target == null || plan.SelectedSkill == null)
+                return false;
+
+            if (target != null && plan.Target.gameObject != target)
+                return false;
+
+            selectedSkillSO = plan.SelectedSkill;
+            return true;
         }
 
         protected virtual bool UpdateTargetBlackboard()
         {
-            EnemyPlan plan = EnemyManager?.BuildPlan(this);
+            EnemyPlan plan = null;
+
+            if (EnemyManager != null)
+            {
+                EnemyManager.RefreshPlan(this);
+                EnemyManager.TryGetPlan(this, out plan);
+            }
+
             CurrentTarget = plan?.Target ?? FindClosestPlayerTarget();
             SetVariableValue(BTVars.Target, CurrentTarget != null ? CurrentTarget.gameObject : null);
             return CurrentTarget != null;

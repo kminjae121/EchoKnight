@@ -9,7 +9,6 @@ using UnityEngine;
 
 public class ShieldSkill : BasicUnitSkill
 {
-    [SerializeField] private GameObject effectPrefab;
 
     private KnightShieldCompo _shieldCompo;
     private UnitAnimation animtionCompo;
@@ -50,10 +49,9 @@ public class ShieldSkill : BasicUnitSkill
     private IEnumerator Shield()
     {
         yield return new WaitForSeconds(0.4f);
-        effectPrefab.SetActive(true);
         SetShield();
+        SkillFeedbackEvent?.Invoke();
         animtionCompo.PlaySelectAnimation("SHELD");
-        effectPrefab.GetComponent<ParticleSystem>().Play();
     }
     
     protected override void SkillEnd()

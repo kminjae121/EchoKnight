@@ -4,6 +4,7 @@ using Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
+using Code.Map;
 using Code.SkillSystem;
 using Code.UI;
 using Code.UnitSystem.Combat;
@@ -71,6 +72,8 @@ namespace Code.UnitSystem
                 transform.position = _startTile.transform.position;
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
+            
+            AnimationCompo.PlaySelectAnimation("IDLE");
         }
         
         protected override void OnDestroy()
@@ -159,11 +162,14 @@ namespace Code.UnitSystem
         
         public void HandleDieAnimationEnd()
         {
-            gameObject.SetActive(false);
+            MoveCompo.CurrentMapTile.SetState(TileState.Obstacle,false);
             
             if (StageManager.Instance != null)
                 StageManager.Instance.PlayerDie();
+            
+            gameObject.SetActive(false);
         }
+            
 
         public void Die()
         {

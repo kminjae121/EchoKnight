@@ -112,7 +112,7 @@ namespace Code.UI
 
         private void UpdateHealthUI(float currentHp, float maxHp)
         {
-            if (hpText != null) hpText.text = $"{Mathf.CeilToInt(currentHp)} / {Mathf.CeilToInt(maxHp)}";
+            if (hpText != null) hpText.text = $"{Mathf.CeilToInt(currentHp)}";
             if (hpFillImage != null) hpFillImage.fillAmount = maxHp > 0 ? (currentHp / maxHp) : 0f;
         }
 

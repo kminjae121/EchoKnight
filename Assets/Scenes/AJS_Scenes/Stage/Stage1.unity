@@ -45815,6 +45815,14 @@ PrefabInstance:
       propertyPath: cam
       value: 
       objectReference: {fileID: 733307256}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: gameOverUI
+      value: 
+      objectReference: {fileID: 2614356043838047499}
+    - target: {fileID: 4215123572567445162, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: gameClearUI
+      value: 
+      objectReference: {fileID: 76828889694423947}
     - target: {fileID: 4264538353261752983, guid: d587fee46528bcb4396971826c10f454, type: 3}
       propertyPath: m_Name
       value: StageSetting
@@ -45859,6 +45867,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5754089432759215070, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: endTurnBtn
+      value: 
+      objectReference: {fileID: 401699004}
+    - target: {fileID: 8199758987144701135, guid: d587fee46528bcb4396971826c10f454, type: 3}
+      propertyPath: battleRewardUI
+      value: 
+      objectReference: {fileID: 1866133465355912538}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -61023,7 +61039,7 @@ MonoBehaviour:
   visiblePosition: {x: 25, y: -25}
   slideDuration: 0.3
   slideEase: 27
-  profileIconImage: {fileID: 663490793}
+  profileIconImage: {fileID: 1998674253}
   hpText: {fileID: 1364342998}
   hpFillImage: {fileID: 1338504583}
 --- !u!114 &1078626688
@@ -118285,21 +118301,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3634243085230022983}
   m_Mesh: {fileID: 1890910595786045333, guid: 1375c009bcd67e04fa9fea88c84732a0, type: 3}
---- !u!114 &555799919862139781
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7302144371129154466}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b2e93fd46d14e05b9ac5a75e431a5b5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  nextButton: {fileID: 1969811406848855162}
-  reawardButtonPrefab: {fileID: 8710014375374044146, guid: efda7b6e0f547c240a548c7df944e724, type: 3}
-  rewardTrm: {fileID: 938302293242143768}
 --- !u!224 &603822253294895254
 RectTransform:
   m_ObjectHideFlags: 0
@@ -118550,6 +118551,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1866133465355912537}
+  - component: {fileID: 1866133465355912538}
   m_Layer: 5
   m_Name: ResultUI
   m_TagString: Untagged
@@ -118998,6 +119000,22 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1866133465355912538
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 945396401942607990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b2e93fd46d14e05b9ac5a75e431a5b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  nextButton: {fileID: 1969811406848855162}
+  reawardButtonPrefab: {fileID: 8710014375374044146, guid: efda7b6e0f547c240a548c7df944e724, type: 3}
+  rewardTrm: {fileID: 938302293242143768}
+  rewardUI: {fileID: 7302144371129154466}
 --- !u!222 &1867166009773292566
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -121741,7 +121759,6 @@ GameObject:
   - component: {fileID: 1491584160088336045}
   - component: {fileID: 6291706465604515592}
   - component: {fileID: 1375123020010477313}
-  - component: {fileID: 555799919862139781}
   m_Layer: 5
   m_Name: Battle Reward UI
   m_TagString: Untagged

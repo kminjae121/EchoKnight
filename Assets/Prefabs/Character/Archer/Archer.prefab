@@ -655,6 +655,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   unitImage: {fileID: 0}
+  unitSpawnSO: {fileID: 11400000, guid: 79d879a8bcf09e84c9975c11290a2b59, type: 2}
   <SkillCompo>k__BackingField: {fileID: 7012801265034030826}
   _startTile: {fileID: 0}
   OnTurnStartEvent:
@@ -706,7 +707,7 @@ MonoBehaviour:
   criticalText: {fileID: 11400000, guid: 06b606e1c3a03674fa90dc9aa08098fc, type: 2}
   healText: {fileID: 11400000, guid: c010e00c7b125644ea114bc354429c36, type: 2}
   textEventChannel: {fileID: 11400000, guid: 249b09a83d3d0854e920cd46632fa8ba, type: 2}
-  storageSO: {fileID: 11400000, guid: 001b4c37e1da0a04bbe3f0aedc15543d, type: 2}
+  StorageSO: {fileID: 11400000, guid: 001b4c37e1da0a04bbe3f0aedc15543d, type: 2}
   OnInteractionEvent:
     m_PersistentCalls:
       m_Calls: []
@@ -23898,7 +23899,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.PathMover
   maxPathCount: 50
-  moveSpeed: 2
+  moveSpeed: 3
   pointArray: []
 --- !u!1 &7561882472613966106
 GameObject:

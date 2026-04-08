@@ -1,9 +1,5 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using Code.UnitSystem;
+﻿using Code.UnitSystem;
 using Code.UnitSystem.Combat;
-using UnityEditor.Rendering;
-using UnityEngine;
 
 namespace _Code.Passive
 {
@@ -23,6 +19,10 @@ namespace _Code.Passive
 
         public override void StopPassive()
         {
+            if (_character == null)
+                return;
+            if (_character.HealthCompo == null)
+                return;
             _character.HealthCompo.OnInteractionEvent.RemoveListener(Thornmail);
         }
 

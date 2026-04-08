@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
+  m_SubtractiveShadowColor: {r: 1, g: 1, b: 1, a: 1}
   m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -93,7 +93,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 20201, guid: 0000000000000000f000000000000000, type: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: e581145a1ed38cf4db3d01cf14129b5f, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -1788,55 +1788,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!1 &106869400
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 106869402}
-  - component: {fileID: 106869401}
-  m_Layer: 0
-  m_Name: Global Volume
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &106869401
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 106869400}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.Volume
-  m_IsGlobal: 1
-  priority: 0
-  blendDistance: 0
-  weight: 1
-  sharedProfile: {fileID: 11400000, guid: 9e2bb1f616ea45c46a23e56e3e5cc04d, type: 2}
---- !u!4 &106869402
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 106869400}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &107314099
 GameObject:
   m_ObjectHideFlags: 0
@@ -5357,7 +5308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeData: {fileID: 11400000, guid: 33e6c8a853146204483e3423609aee80, type: 2}
-  targetSceneName: Stage1
+  targetSceneName: Stage6
   isUnlocked: 1
   isCleared: 0
   outlinable: {fileID: 295801290}
@@ -7515,7 +7466,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4310738326142391416, guid: 72cad89d56f064a4da80a8a03fa47db9, type: 3}
       propertyPath: 'scenesName.Array.data[3]'
-      value: Stage1
+      value: Stage6
       objectReference: {fileID: 0}
     - target: {fileID: 5172779121907639654, guid: 72cad89d56f064a4da80a8a03fa47db9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18165,7 +18116,7 @@ MonoBehaviour:
   priority: 0.47
   blendDistance: 0
   weight: 1
-  sharedProfile: {fileID: 11400000, guid: 27c334c38b5c36640957e223845954ce, type: 2}
+  sharedProfile: {fileID: 11400000, guid: 48afc71036dd21144937208e12343316, type: 2}
 --- !u!1 &912268192
 GameObject:
   m_ObjectHideFlags: 0
@@ -45589,7 +45540,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   nodeData: {fileID: 11400000, guid: b4a941340d4612c4e9aaacb3217332b5, type: 2}
-  targetSceneName: Stage1
+  targetSceneName: Stage6
   isUnlocked: 0
   isCleared: 0
   outlinable: {fileID: 2123540254}
@@ -46560,7 +46511,6 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 1245110071}
-  - {fileID: 106869402}
   - {fileID: 1965051426}
   - {fileID: 502440583}
   - {fileID: 1896286857}

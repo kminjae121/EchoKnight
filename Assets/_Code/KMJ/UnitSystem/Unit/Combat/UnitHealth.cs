@@ -18,7 +18,7 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private TextInfo normalText, criticalText, healText;
         [SerializeField] private GameEventChannelSO textEventChannel;
 
-        [SerializeField] private UnitStorageSO storageSO; 
+        [field : SerializeField] public UnitStorageSO StorageSO; 
 
         private Unit _entity;
         private ActionData _actionData;
@@ -51,12 +51,14 @@ namespace Code.UnitSystem.Combat
             
             if (_entity as CharacterUnit)
             {
-                foreach (var unitState in storageSO.unitStates)
+                foreach (var unitState in StorageSO.unitStates)
                 {
                     if(unitState.Data == _entity.unitSO)
                         _unitStateCompo = unitState;
                 }
-                maxHealth = currentHealth = _unitStateCompo.CurrentHp.Value;   
+
+                maxHealth = _unitStateCompo.MaxHealth;
+                currentHealth = _unitStateCompo.CurrentHp.Value;   
             }
             else
             {
@@ -138,9 +140,14 @@ namespace Code.UnitSystem.Combat
            
            _entity.OnHitEvent?.Invoke();
            OnInteractionEvent?.Invoke(dealer, damage);
-           
+
            if (currentHealth <= 0)
+           {
+               if(_entity as CharacterUnit)
+                    StorageSO.unitStates.Remove(_unitStateCompo);
+               
                _entity.OnDeathEvent?.Invoke();
+           }
         }
     }
 }

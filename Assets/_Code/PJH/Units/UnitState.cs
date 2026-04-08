@@ -12,6 +12,8 @@ namespace Code.UnitSystem
         
         public NotifyValue<float> CurrentHp { get; private set; }
         public bool IsDead => CurrentHp.Value <= 0;
+        
+        public float MaxHealth { get; private set; }
 
         public UnitState(UnitSO data)
         {
@@ -22,6 +24,7 @@ namespace Code.UnitSystem
             }
             
             Data = data;
+            MaxHealth = Data.Maxhealth;
             CurrentHp = new NotifyValue<float>(Data.Maxhealth);
         }
         

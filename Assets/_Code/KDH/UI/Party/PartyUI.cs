@@ -27,7 +27,7 @@ namespace Code.UI
         {
             Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
-
+            
             startButton.onClick.AddListener(HandleStartButton);
         }
 

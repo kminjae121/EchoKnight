@@ -13,11 +13,11 @@ namespace Code.SkillSystem
             Bus<SendSkillEvent>.Subscribe(SetSkillSO);
         }
 
-        private void OnDisable()
+        private void OnDestroy()
         {
             Bus<SendSkillEvent>.Unsubscribe(SetSkillSO);
         }
-
+        
         public void SetSkillSO(SendSkillEvent skillSo)
         {
             usingSkill = skillSo.skill;

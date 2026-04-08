@@ -64,7 +64,7 @@ public class ShooterAttack : BasicUnitSkill
             _shootItemManager.SetDamageData(DamageData,AddDamage);
             _shootItemManager.CreateShootItem("ShootItem",pos, slashRot);   
             
-            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.3f));
+            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.15f));
         }
 
         protected override void SkillEnd()

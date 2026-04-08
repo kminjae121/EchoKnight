@@ -58,8 +58,7 @@ public class BasicAttackSkill : BasicUnitSkill
     
     public void TakeDamage()
     {
-        Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.45f));
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_target,AddDamage,_characterUnit,false,false));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_target,AddDamage,_characterUnit,false,false,0.15f));
     }
 
     public void AttackEnd()

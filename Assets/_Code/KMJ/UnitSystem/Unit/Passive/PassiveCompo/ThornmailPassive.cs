@@ -30,8 +30,12 @@ namespace _Code.Passive
         {
             DamageData damageData = new DamageData();
             damageData.damage = (int)(value * 0.3f);
-            target.GetComponent<IDamageable>().ApplyDamage(damageData, target.transform.position,
-                transform.transform.position, null, _character, false, false);
+
+            if (target.TryGetComponent<IDamageable>(out var damageable))
+            {
+                damageable.ApplyDamage(damageData, target.transform.position,
+                    transform.transform.position, null, _character, false, false);
+            }
         }
     }
 }

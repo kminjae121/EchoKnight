@@ -4,6 +4,7 @@ using Code.Core.Events.Bus;
 using Code.Managers;
 using Code.Map;
 using Code.UnitSystem;
+using Code.UnitSystem.Enemies;
 using UnityEngine;
 
 namespace Code.SkillSystem
@@ -13,12 +14,23 @@ namespace Code.SkillSystem
         [SerializeField] private int pierceLength = 3;
 
         private GameObject _target;
+        private AbstractEnemyUnit _ownerEnemy;
         private UnitManager _unitManager;
+
+        private void Awake()
+        {
+            _ownerEnemy = GetComponentInParent<AbstractEnemyUnit>();
+            UnityLogger.Log(_ownerEnemy);
+        }
 
         protected void Start()
         {
             SkillEvent.AddListener(AttackAction);
-            _unitManager = FindFirstObjectByType<UnitManager>();
+            
+            if (_ownerEnemy != null)
+                _unitManager = _ownerEnemy.UnitManager;
+            
+            UnityLogger.Log(_unitManager);
         }
 
         protected override void StartEvent()
@@ -117,9 +129,9 @@ namespace Code.SkillSystem
                 return hitTargets;
             }
 
-            if (_unitManager == null)
-                _unitManager = FindFirstObjectByType<UnitManager>();
-
+            if (_ownerEnemy != null)
+                _unitManager = _ownerEnemy.UnitManager;
+            
             if (_unitManager == null)
             {
                 UnityLogger.LogError($"[{nameof(FrontPierceEnemyAttack)}] UnitManager is missing.");
@@ -135,7 +147,7 @@ namespace Code.SkillSystem
 
             HashSet<GameObject> hitTargetSet = new HashSet<GameObject>();
 
-            for (int i = 1; i <= pierceLength; i++)
+            for (int i = 1; i <= pierceLength; ++i)
             {
                 Vector2Int hitPos = origin + forwardDir * i;
 

@@ -110,7 +110,7 @@ namespace Code.Managers
                 return;
             }
             
-            UnityLogger.LogError("Start next turn safe count over");
+            UnityLogger.LogError("턴을 계산하는 과정에서 무한 루프가 발생했습니다.");
         }
 
         private void RefreshUnits()
@@ -131,7 +131,9 @@ namespace Code.Managers
             float delta = actingUnit.TurnGauge;
 
             foreach (var unit in _units)
+            {
                 unit.TurnGauge -= delta;
+            }
 
             ClampAllTurnGauge();
         }
@@ -139,7 +141,9 @@ namespace Code.Managers
         private void ClampAllTurnGauge()
         {
             foreach (var unit in _units)
+            {
                 unit.TurnGauge = Mathf.Max(0f, unit.TurnGauge);
+            }
         }
 
         public void ModifyTurnGauge(ITurnable unit, float delta)

@@ -8,6 +8,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using GondrLib.ObjectPool.Runtime;
 
 namespace Code.UI
 {
@@ -16,7 +17,7 @@ namespace Code.UI
         [Header("UI Panel & Animation")]
         [SerializeField] private RectTransform panelRect;
         [SerializeField] private GameObject backgroundPanel;
-        [SerializeField] private Vector2 hiddenPosition = new Vector2(-1000f, 0f);
+        [SerializeField] private Vector2 hiddenPosition = Vector2.zero;
         [SerializeField] private Vector2 visiblePosition = Vector2.zero;
         [SerializeField] private float slideDuration = 0.3f;
         [SerializeField] private Ease slideEase = Ease.OutQuart;
@@ -34,24 +35,32 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI maxHealthText;
         [SerializeField] private TextMeshProUGUI attackDamageText;
         [SerializeField] private TextMeshProUGUI defensivePowerText;
-        [SerializeField] private TextMeshProUGUI avoidProbabilityText;
         [SerializeField] private TextMeshProUGUI criticalProbabilityText;
         [SerializeField] private TextMeshProUGUI criticalDamageIncreaseText;
         [SerializeField] private TextMeshProUGUI maxSkillCostText;
         [SerializeField] private TextMeshProUGUI recoverySkillCostText;
 
         [Header("Skills & Artifacts")]
-        [SerializeField] private List<Image> skillIcons;
-        [SerializeField] private Sprite emptySkillSprite;
+        [SerializeField] private RectTransform skillPanelGroup;
+        [SerializeField] private PoolingItemSO characterSkillButtonPoolingSO;
         [SerializeField] private List<Image> artifactIcons;
         [SerializeField] private Sprite emptyArtifactSprite;
 
         private Tween _slideTween;
         private UnitState _currentUnit;
         private bool _isVisible;
+        private PoolManagerMono _poolManager;
+        private List<CharacterSkillButton> _activeSkillButtons = new List<CharacterSkillButton>();
 
         private void Awake()
         {
+            _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
+
+            if (_poolManager == null)
+            {
+                Debug.LogError("[CombatInfoUI] 풀 매니저를 찾을 수 없습니다.");
+            }
+
             if (panelRect == null)
             {
                 panelRect = GetComponent<RectTransform>();
@@ -76,7 +85,6 @@ namespace Code.UI
 
             Bus<ShowCombatInfoEvent>.Subscribe(HandleShowCombatInfo);
 
-            SetupSkillTriggers();
             SetupArtifactTriggers();
         }
 
@@ -160,7 +168,6 @@ namespace Code.UI
             if (attackDamageText != null) attackDamageText.text = data.AttackDamage.ToString("F1");
             if (defensivePowerText != null) defensivePowerText.text = data.DefensivePower.ToString("F1");
             
-            if (avoidProbabilityText != null) avoidProbabilityText.text = $"{data.AvoidProbability:F1}%";
             if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";
             
             if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease.ToString("F1");
@@ -180,16 +187,30 @@ namespace Code.UI
                 equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.Data.UnitType);
             }
 
-            for (int i = 0; i < skillIcons.Count; i++)
+            foreach (var btn in _activeSkillButtons)
             {
-                bool hasSkill = i < equippedSkills.Length && equippedSkills[i] != null;
-                
-                skillIcons[i].sprite = hasSkill ? equippedSkills[i].skillUIImage : emptySkillSprite;
-                
-                var trigger = skillIcons[i].GetComponent<SlotHoverClickTrigger>();
-                if (trigger != null)
+                if (btn != null)
                 {
-                    trigger.SetInteractable(hasSkill);
+                    btn.ReturnToPool();
+                }
+            }
+            _activeSkillButtons.Clear();
+
+            if (equippedSkills != null && skillPanelGroup != null && characterSkillButtonPoolingSO != null)
+            {
+                for (int i = 0; i < equippedSkills.Length; i++)
+                {
+                    if (equippedSkills[i] != null)
+                    {
+                        var btn = _poolManager.Pop<CharacterSkillButton>(characterSkillButtonPoolingSO);
+                        if (btn != null)
+                        {
+                            btn.transform.SetParent(skillPanelGroup);
+                            btn.transform.localScale = Vector3.one;
+                            btn.SetSkill(equippedSkills[i], true);
+                            _activeSkillButtons.Add(btn);
+                        }
+                    }
                 }
             }
         }
@@ -212,34 +233,6 @@ namespace Code.UI
                 {
                     trigger.SetInteractable(hasArtifact);
                 }
-            }
-        }
-
-        private void SetupSkillTriggers()
-        {
-            for (int i = 0; i < skillIcons.Count; i++)
-            {
-                int index = i;
-                var trigger = skillIcons[i].GetComponent<SlotHoverClickTrigger>();
-                
-                if (trigger == null)
-                {
-                    trigger = skillIcons[i].gameObject.AddComponent<SlotHoverClickTrigger>();
-                }
-                
-                trigger.useHoverVisuals = false;
-                trigger.OnHoverEnter = (pivot, triggerOffset) =>
-                {
-                    if (_currentUnit != null && SkillSendManager.Instance != null)
-                    {
-                        var equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.Data.UnitType);
-                        if (index < equippedSkills.Length && equippedSkills[index] != null)
-                        {
-                            Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(equippedSkills[index], pivot, triggerOffset));
-                        }
-                    }
-                };
-                trigger.OnHoverExit = () => Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
             }
         }
 

@@ -26,7 +26,6 @@ namespace Code.SkillSystem
         public float Damage { get; set; }
         protected int SkillRange { get; private set; }
 
-
         [Header("Unit Component")] 
         protected SkillComponent _skillCompo;
         [SerializeField] protected UnitAnimationTrigger triggerCompo;
@@ -34,51 +33,39 @@ namespace Code.SkillSystem
         [SerializeField] protected RangeComponent rangeCompo;
         public UnitRotation RotationCompo { get; set; }
         
-        
         [Header("Skill Event")] 
         public UnityEvent<GameObject> SkillEvent;
-
         public UnityEvent SkillFeedbackEvent;
         public UnityEvent SkillEndEvent;
-
 
         [Header("Camera & Effects")] 
         public DamageData DamageData;
 
         protected GameObject _targetEnemy = null;
         public bool isCanUseSkill = false;
-
         public bool IsActive = false;
-
         public int SkillCount { get; set; } = 0;
 
-        
         public virtual void InitializeSkill()
-
         {
             SkillEndEvent.AddListener(CanUseSkillTrue);
-
             SkillEvent.AddListener(StartSkill);
         }
-
 
         public void ConfigureSkillRange(SkillSO skillData)
         {
             SkillRange = skillData == null ? 0 : Mathf.Max(0, Mathf.RoundToInt(skillData.SkillRange));
         }
 
-
         protected virtual void OnDestroy()
         {
             SkillEndEvent.RemoveListener(CanUseSkillTrue);
         }
 
-
         public void SetDamage(int damage)
         {
             DamageData.damage = damage += AddDamage;
         }
-
 
         private void StartSkill(GameObject arg0)
         {
@@ -89,12 +76,10 @@ namespace Code.SkillSystem
             AddDamage = addDamage;
         }
 
-
         protected virtual void StartEvent()
         {
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
         }
-
 
         protected virtual void RemoveEvent()
         {
@@ -105,19 +90,14 @@ namespace Code.SkillSystem
             SkillCount = 0;
         }
 
-
-
         protected virtual void CanUseSkillTrue()
-
         {
         }
-
 
         public virtual void ShowSkillRange()
         {
             IsActive = true;
         }
-
 
         public virtual void CheckCanAttack()
         {
@@ -133,19 +113,17 @@ namespace Code.SkillSystem
             rangeCompo.FindObjectInRange(SkillSO.SkillRange);
         }
 
-
         public virtual void SkillFinished(bool isCancel)
         {
             BooleanSkillUse(false);
-
             rangeCompo.ResetTile();
+            
+            Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(false));
         }
-
 
         public virtual void AttackEnemy()
         {
         }
-
 
         public virtual void UseSkill()
         {
@@ -155,36 +133,28 @@ namespace Code.SkillSystem
             AttackEnemy();
         }
 
-
         public void BooleanSkillUse(bool isSkill)
         {
             isCanUseSkill = isSkill;
         }
 
-
         public virtual void ForceUseSkill(GameObject target)
         {
             if (target == null) return;
 
-
             _targetEnemy = target;
-
             isCanUseSkill = true;
 
-
             if (RotationCompo != null)
-
                 RotationCompo.SetDir(target.transform.position);
 
-
             StartEvent();
+            
+            Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
 
             SkillEvent?.Invoke(_targetEnemy);
         }
 
-
-        protected int GetRange()
-            => SkillRange;
-
+        protected int GetRange() => SkillRange;
     }
 }

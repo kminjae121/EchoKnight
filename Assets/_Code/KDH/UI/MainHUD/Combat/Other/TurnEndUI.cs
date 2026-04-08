@@ -1,7 +1,7 @@
-﻿using System.Reflection;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using DG.Tweening;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Code.UI
 {
@@ -9,6 +9,7 @@ namespace Code.UI
     {
         [Header("UI Elements")]
         [SerializeField] private RectTransform panelRect;
+        [SerializeField] private Button turnEndButton;
 
         [Header("Animation Settings")]
         [SerializeField] private Vector2 visiblePosition;
@@ -18,6 +19,7 @@ namespace Code.UI
 
         private Tween _slideTween;
         private bool _isCurrentlyVisible = false;
+        private bool _isActionPlaying = false;
 
         private void Awake()
         {
@@ -28,53 +30,91 @@ namespace Code.UI
             
             panelRect.anchoredPosition = hiddenPosition;
 
+            if (turnEndButton != null)
+            {
+                turnEndButton.onClick.AddListener(OnTurnEndButtonClicked);
+            }
+
             Bus<SkillUIEvent>.Subscribe(HandleSkillUI);
-            Bus<UsingSkillEvent>.Subscribe(HandleUsingSkill);
+            Bus<SetAtkUIEvent>.Subscribe(HandleAtkUI);
+            Bus<UnitSkilStartEvent>.Subscribe(HandleSkillStart);
             Bus<UnitMoveControlEvent>.Subscribe(HandleMoveControl);
             Bus<UnitTurnEndEvent>.Subscribe(HandleUnitTurnEnd);
+            Bus<CombatSkillCancelEvent>.Subscribe(HandleSkillCancel);
         }
 
         private void OnDestroy()
         {
+            if (turnEndButton != null)
+            {
+                turnEndButton.onClick.RemoveListener(OnTurnEndButtonClicked);
+            }
+
             Bus<SkillUIEvent>.Unsubscribe(HandleSkillUI);
-            Bus<UsingSkillEvent>.Unsubscribe(HandleUsingSkill);
+            Bus<SetAtkUIEvent>.Unsubscribe(HandleAtkUI);
+            Bus<UnitSkilStartEvent>.Unsubscribe(HandleSkillStart);
             Bus<UnitMoveControlEvent>.Unsubscribe(HandleMoveControl);
             Bus<UnitTurnEndEvent>.Unsubscribe(HandleUnitTurnEnd);
+            Bus<CombatSkillCancelEvent>.Unsubscribe(HandleSkillCancel);
             
             _slideTween?.Kill();
         }
 
+        private void OnTurnEndButtonClicked()
+        {
+            Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent());
+        }
+
         private void HandleSkillUI(SkillUIEvent evt)
         {
-            if (evt.SkillCompo != null) ShowUI();
+            HideUI();
+            
+            if (evt.SkillCompo != null) 
+            {
+                DOVirtual.DelayedCall(0.5f, () => 
+                {
+                    if (this == null) return;
+                    if (!_isActionPlaying) ShowUI();
+                });
+            }
+        }
+
+        private void HandleAtkUI(SetAtkUIEvent evt)
+        {
+            _isActionPlaying = !evt.IsActive;
+            
+            if (evt.IsActive) ShowUI();
             else HideUI();
         }
 
-        private void HandleUsingSkill(UsingSkillEvent evt)
+        private void HandleSkillStart(UnitSkilStartEvent evt)
         {
-            if (evt.isUsingSkill) HideUI();
+            _isActionPlaying = evt.isStart;
+            
+            if (evt.isStart) HideUI();
             else ShowUI();
         }
 
         private void HandleMoveControl(UnitMoveControlEvent evt)
         {
-            bool isControl = true; 
+            _isActionPlaying = !evt.isMoving; 
             
-            var field = typeof(UnitMoveControlEvent).GetField("isControl") ?? typeof(UnitMoveControlEvent).GetField("isMoveControl");
-            if (field != null) isControl = (bool)field.GetValue(evt);
-            else
-            {
-                var prop = typeof(UnitMoveControlEvent).GetProperty("isControl") ?? typeof(UnitMoveControlEvent).GetProperty("isMoveControl");
-                if (prop != null) isControl = (bool)prop.GetValue(evt);
-            }
-
-            if (isControl) HideUI();
-            else ShowUI();
+            if (evt.isMoving) ShowUI();
+            else HideUI();
         }
 
         private void HandleUnitTurnEnd(UnitTurnEndEvent evt)
         {
+            _isActionPlaying = false;
             HideUI();
+        }
+
+        private void HandleSkillCancel(CombatSkillCancelEvent evt)
+        {
+            if (!_isActionPlaying) 
+            {
+                ShowUI();
+            }
         }
 
         private void ShowUI()

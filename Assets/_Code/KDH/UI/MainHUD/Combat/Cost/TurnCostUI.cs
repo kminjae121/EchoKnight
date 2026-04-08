@@ -27,11 +27,6 @@ namespace Code.UI
             {
                 Debug.LogError("[TurnCostUI] 풀 매니저를 씬에서 찾을 수 없습니다.");
             }
-
-            if (costIconPoolingSO == null)
-            {
-                Debug.LogError("[TurnCostUI] 코스트 아이콘 풀링 SO가 할당되지 않았습니다.");
-            }
             
             Bus<SkillUIEvent>.Subscribe(HandleSkillReceived);
             Bus<CombatSkillSelectEvent>.Subscribe(HandleSkillSelected);
@@ -45,6 +40,7 @@ namespace Code.UI
             Bus<CombatSkillSelectEvent>.Unsubscribe(HandleSkillSelected);
             Bus<CombatSkillCancelEvent>.Unsubscribe(HandleSkillCanceled);
             Bus<UnitTurnEndEvent>.Unsubscribe(HandleTurnEnd);
+            
             UnsubscribeCurrentUnit();
         }
 
@@ -62,14 +58,6 @@ namespace Code.UI
                     InitializeIcons(_currentUnit.SkillCostCompo.GetMaxSkillCost());
                     return;
                 }
-                else
-                {
-                    Debug.LogWarning("[TurnCostUI] 캐릭터 유닛 또는 스킬 코스트 컴포넌트를 찾을 수 없습니다.");
-                }
-            }
-            else
-            {
-                Debug.LogWarning("[TurnCostUI] 이벤트로 전달된 스킬 컴포넌트가 존재하지 않습니다.");
             }
             
             ClearIcons();
@@ -97,27 +85,18 @@ namespace Code.UI
         {
             foreach (var icon in _activeIcons)
             {
-                if (icon != null)
-                {
-                    icon.ReturnToPool();
-                }
+                if (icon != null) icon.ReturnToPool();
             }
             _activeIcons.Clear();
             
-            if (costAmountText != null)
-            {
-                costAmountText.text = string.Empty;
-            }
+            if (costAmountText != null) costAmountText.text = string.Empty;
         }
 
         private void InitializeIcons(int maxCost)
         {
             ClearIcons();
 
-            if (_poolManager == null || costIconPoolingSO == null)
-            {
-                return;
-            }
+            if (_poolManager == null || costIconPoolingSO == null) return;
 
             for (int i = 0; i < maxCost; i++)
             {
@@ -127,10 +106,6 @@ namespace Code.UI
                     icon.transform.SetParent(costIconGroup);
                     icon.transform.localScale = Vector3.one;
                     _activeIcons.Add(icon);
-                }
-                else
-                {
-                    Debug.LogWarning("[TurnCostUI] 코스트 아이콘 프리팹을 풀에서 가져오지 못했습니다.");
                 }
             }
             
@@ -164,8 +139,9 @@ namespace Code.UI
                 if (_activeIcons[i] == null) continue;
 
                 bool isActive = i < currentCost;
-                
-                if (isActive && i >= currentCost - _currentPreviewCost)
+                bool isPreview = isActive && i >= currentCost - _currentPreviewCost;
+
+                if (isPreview)
                 {
                     _activeIcons[i].SetPreviewState();
                 }

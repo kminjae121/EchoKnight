@@ -4,6 +4,7 @@ using Code.Core.Interfaces;
 using Code.Managers;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
+using DG.Tweening;
 
 namespace Code.UI
 {
@@ -31,7 +32,6 @@ namespace Code.UI
         {
             if (unitSlotPoolingSO == null || roundSlotPoolingSO == null)
             {
-                Debug.LogWarning($"[TurnOrderUI] 풀링 SO가 할당되지 않은 유령 컴포넌트가 감지되어 이벤트를 차단합니다. 대상: [{gameObject.name}]");
                 _isGhostComponent = true;
                 return;
             }
@@ -64,6 +64,7 @@ namespace Code.UI
                 if (i < units.Count)
                 {
                     var turnable = units[i];
+                    RectTransform targetRect = null;
                     
                     if (turnable is RoundTracker roundTracker)
                     {
@@ -75,6 +76,8 @@ namespace Code.UI
                             roundSlot.transform.localScale = Vector3.one;
                             roundSlot.Setup(roundTracker);
                             _activeRoundSlots.Add(roundSlot);
+                            
+                            targetRect = roundSlot.GetComponent<RectTransform>();
                         }
                     }
                     else
@@ -87,7 +90,17 @@ namespace Code.UI
                             unitSlot.transform.localScale = Vector3.one;
                             unitSlot.Setup(turnable);
                             _activeUnitSlots.Add(unitSlot);
+                            
+                            targetRect = unitSlot.GetComponent<RectTransform>();
                         }
+                    }
+
+                    if (targetRect != null)
+                    {
+                        targetRect.DOKill();
+                        Vector2 pos = targetRect.anchoredPosition;
+                        pos.y = 0f;
+                        targetRect.anchoredPosition = pos;
                     }
                 }
             }
@@ -99,6 +112,7 @@ namespace Code.UI
             {
                 if (slot != null)
                 {
+                    slot.GetComponent<RectTransform>().DOKill();
                     slot.ReturnToPool();
                 }
             }
@@ -108,6 +122,7 @@ namespace Code.UI
             {
                 if (slot != null)
                 {
+                    slot.GetComponent<RectTransform>().DOKill();
                     slot.ReturnToPool();
                 }
             }

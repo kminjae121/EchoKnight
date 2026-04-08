@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code.SkillSystem
 {
-    public class MeleeEnemyAttack : BaseSkill
+    public class MeleeEnemyAttack : EnemyBaseSkill
     {
         private GameObject _target;
 

@@ -57,8 +57,6 @@ public class ShooterAttack : BasicUnitSkill
         private void Shoot()
         {
             Vector3 pos = _characterUnit.transform.position;
-
-            pos.y += 1.6f;
             
             Vector3 slashRot = _characterUnit.transform.rotation.eulerAngles;
             

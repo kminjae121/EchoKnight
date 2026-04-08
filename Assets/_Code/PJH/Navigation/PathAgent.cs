@@ -6,17 +6,23 @@ using Code.Map;
 using Code.Core.Debugs;
 using Code.UnitSystem;
 using Code.Utils;
+using GondrLib.Dependencies;
 using UnityEngine;
 
 namespace Code.Navigation
 {
     public class PathAgent : MonoBehaviour
     {
-        [SerializeField] private BakedDataSO bakedData;
+        [Inject] private PathBaker _pathBaker;
 
         private CancellationTokenSource _cts = new();
         private bool _isCalculating;
-        
+
+        private void Awake()
+        {
+            Injector.InjectInto(this);
+        }
+
         public async Task<int> GetPath(Vector3Int startPos, Vector3Int destination, Vector3[] pointArr)
         {
             if (_isCalculating && _cts != null)
@@ -87,8 +93,8 @@ namespace Code.Navigation
             bool result = false;
             AstarNode goalNode = null;
 
-            bool startSuccess = bakedData.GetNodeIfExist(startPoint, out var startNode);
-            bool endSuccess = bakedData.GetNodeIfExist(destination, out var endNode);
+            bool startSuccess = _pathBaker.bakedData.GetNodeIfExist(startPoint, out var startNode);
+            bool endSuccess = _pathBaker.bakedData.GetNodeIfExist(destination, out var endNode);
             UnityLogger.Log($"st : {startPoint}, {startSuccess}, ed : {destination}, {endSuccess}");
             
             if (!startSuccess || !endSuccess)
@@ -138,7 +144,7 @@ namespace Code.Navigation
                     if (blockedCells != null && blockedCells.Contains(link.endCellPos))
                         continue;
 
-                    if (!bakedData.GetNodeIfExist(link.endCellPos, out NodeData nextNode))
+                    if (!_pathBaker.bakedData.GetNodeIfExist(link.endCellPos, out NodeData nextNode))
                         continue;
 
                     float newG = currentNode.g + link.cost;

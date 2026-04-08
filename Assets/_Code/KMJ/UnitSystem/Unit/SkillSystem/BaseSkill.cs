@@ -185,6 +185,6 @@ namespace Code.SkillSystem
 
         protected int GetRange()
             => SkillRange;
-        
+
     }
 }

@@ -17,8 +17,6 @@ namespace Code.UI
 
         private void Update()
         {
-            if(markUI != null)
-               markUI.transform.LookAt(cam.transform);
         }
     }
 }

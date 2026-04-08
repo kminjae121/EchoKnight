@@ -11,7 +11,6 @@ namespace _Code.Passive
         protected override void Start()
         {
             base.Start();
-            Debug.Log(_turnManager);
             _character = _unit as CharacterUnit;
         }
         

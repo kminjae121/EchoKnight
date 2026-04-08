@@ -21,6 +21,7 @@ namespace Code.UnitSystem
         [field: SerializeField] public InputReader InputSO { get; private set; }
         [SerializeField] private LayerMask whatIsGround;
         [SerializeField] private Image unitImage;
+        [SerializeField] private UnitSpawnSO unitSpawnSO;
 
         #region UnitCompo
         
@@ -166,8 +167,8 @@ namespace Code.UnitSystem
             
             if (StageManager.Instance != null)
                 StageManager.Instance.PlayerDie();
-            
-            
+
+            HealthCompo.StorageSO.units.Remove(unitSpawnSO);
             
             gameObject.SetActive(false);
         }

@@ -27,11 +27,6 @@ namespace Code.UI
         [SerializeField] private Button artifactSortButton;
         [SerializeField] private TextMeshProUGUI artifactSortText;
         [SerializeField] private int maxArtifactInventoryCapacity = 20;
-
-        [Header("Artifact Equipped Area")]
-        [SerializeField] private List<Image> equippedArtifactSlotImages; 
-        [SerializeField] private List<Image> equippedArtifactRarityImages;
-        [SerializeField] private Sprite emptyArtifactSlotSprite;
         [SerializeField] private int maxArtifactEquipCount = 2;
 
         [Header("Skill Containers")]
@@ -65,36 +60,6 @@ namespace Code.UI
             Bus<ArtifactUnequipEvent>.Subscribe(HandleArtifactUnequip);
             Bus<SkillEquipEvent>.Subscribe(HandleSkillEquipped);
             Bus<SkillUnequipEvent>.Subscribe(HandleSkillUnequipped);
-
-            Vector2 defaultArtifactOffset = Vector2.zero;
-            if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
-            {
-                var btn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
-                if (btn != null) defaultArtifactOffset = btn.EquippedPopupOffset;
-            }
-
-            for (int i = 0; i < equippedArtifactSlotImages.Count; i++)
-            {
-                int index = i;
-                var trigger = equippedArtifactSlotImages[i].GetComponent<SlotHoverClickTrigger>();
-                
-                if (trigger == null)
-                {
-                    trigger = equippedArtifactSlotImages[i].gameObject.AddComponent<SlotHoverClickTrigger>();
-                }
-
-                trigger.useHoverVisuals = false;
-                
-                trigger.OnLeftClick = (pivot, triggerOffset) =>
-                {
-                    if (_unit != null && _unit.EquippedArtifacts != null && index < _unit.EquippedArtifacts.artifacts.Count)
-                    {
-                        var artifact = _unit.EquippedArtifacts.artifacts[index];
-                        Vector2 finalOffset = triggerOffset != Vector2.zero ? triggerOffset : defaultArtifactOffset;
-                        Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(artifact, true, pivot, finalOffset));
-                    }
-                };
-            }
         }
 
         protected override void OnDestroy()
@@ -157,9 +122,8 @@ namespace Code.UI
             foreach (var btn in _activeArtifactButtons) btn.ReturnToPool();
             _activeArtifactButtons.Clear();
 
-            var displayList = _unit.OwnArtifactStorage.artifacts
-                .Where(a => _unit.EquippedArtifacts == null || !_unit.EquippedArtifacts.artifacts.Contains(a))
-                .ToList();
+            var displayList = _unit.OwnArtifactStorage.artifacts.ToList();
+            var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
 
             if (_isArtifactSortedByRarity) displayList = displayList.OrderByDescending(a => a.rarity).ToList();
 
@@ -167,52 +131,15 @@ namespace Code.UI
             {
                 var btn = _poolManager.Pop<ArtifactButton>(artifactButtonPoolingSO);
                 btn.transform.SetParent(artifactInventoryTrm);
-                btn.transform.SetAsLastSibling(); 
                 btn.transform.localScale = Vector3.one;
 
-                btn.SetArtifact(artifact, false);
+                bool isEquipped = equippedList.Contains(artifact);
+                btn.SetArtifact(artifact, isEquipped);
+                
+                if (isEquipped) btn.transform.SetAsFirstSibling();
+                else btn.transform.SetAsLastSibling();
+
                 _activeArtifactButtons.Add(btn);
-            }
-
-            RefreshEquippedArtifactSlots();
-        }
-
-        private void RefreshEquippedArtifactSlots()
-        {
-            var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
-            ArtifactButton prefabBtn = null;
-
-            if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
-                prefabBtn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
-
-            for (int i = 0; i < equippedArtifactSlotImages.Count; i++)
-            {
-                var trigger = equippedArtifactSlotImages[i].GetComponent<SlotHoverClickTrigger>();
-                bool hasArtifact = i < equippedList.Count;
-
-                if (hasArtifact)
-                {
-                    equippedArtifactSlotImages[i].sprite = equippedList[i].itemIcon;
-                    
-                    if (equippedArtifactRarityImages != null && i < equippedArtifactRarityImages.Count && equippedArtifactRarityImages[i] != null)
-                    {
-                        if (prefabBtn != null)
-                            equippedArtifactRarityImages[i].sprite = prefabBtn.GetRaritySprite(equippedList[i].rarity);
-                        equippedArtifactRarityImages[i].gameObject.SetActive(true);
-                    }
-                }
-                else
-                {
-                    equippedArtifactSlotImages[i].sprite = emptyArtifactSlotSprite;
-                    
-                    if (equippedArtifactRarityImages != null && i < equippedArtifactRarityImages.Count && equippedArtifactRarityImages[i] != null)
-                    {
-                        equippedArtifactRarityImages[i].sprite = null;
-                        equippedArtifactRarityImages[i].gameObject.SetActive(false);
-                    }
-                }
-
-                if (trigger != null) trigger.SetInteractable(hasArtifact);
             }
         }
 

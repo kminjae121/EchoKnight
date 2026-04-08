@@ -58,7 +58,7 @@ namespace Code.UnitSystem.Enemies.AI
 
             _isMoving = true;
             _mover.OnMoveEnd += HandleMovementEnd;
-            _mover.SetPathAndMove(startPos, destination);
+            _mover.SetPathAndMove(startPos, destination, true);
 
             return Status.Running;
         }
@@ -120,48 +120,8 @@ namespace Code.UnitSystem.Enemies.AI
             if (TryGetNearestTile(sourceTile, targetTile, out destination))
                 return true;
 
-            return TryGetFallbackTile(sourceTile, targetTile, out destination);
-        }
-
-        private bool TryGetFallbackTile(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int fallbackTile)
-        {
-            fallbackTile = sourceTile;
-
-            float currentDistance = DistanceUtils.GetEuclideanDistance(sourceTile, targetTile);
-            float bestTargetDistance = currentDistance;
-            float bestSourceDistance = Mathf.Infinity;
-            bool found = false;
-
-            for (int y = 0; y < _gridMap.Height; ++y)
-            {
-                for (int x = 0; x < _gridMap.Width; ++x)
-                {
-                    Vector2Int candidate = new Vector2Int(x, y);
-
-                    if (candidate == sourceTile)
-                        continue;
-
-                    if (!_gridMap.CanMoveTo(candidate))
-                        continue;
-
-                    float targetDistance = DistanceUtils.GetEuclideanDistance(candidate, targetTile);
-
-                    if (targetDistance >= bestTargetDistance)
-                        continue;
-
-                    float sourceDistance = DistanceUtils.GetEuclideanDistance(sourceTile, candidate);
-
-                    if (Mathf.Approximately(targetDistance, bestTargetDistance) && sourceDistance >= bestSourceDistance)
-                        continue;
-
-                    bestTargetDistance = targetDistance;
-                    bestSourceDistance = sourceDistance;
-                    fallbackTile = candidate;
-                    found = true;
-                }
-            }
-
-            return found;
+            destination = targetTile;
+            return true;
         }
     }
 }

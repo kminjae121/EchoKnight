@@ -11,7 +11,6 @@ namespace Code.UnitSystem.UnitComponent
     public class PathMover : MonoBehaviour, IUnitComponent
     {
         [SerializeField] private int maxPathCount = 50;
-        [SerializeField] private int movePoint = 8;
         [SerializeField] private float moveSpeed = 6f;
         [SerializeField] private Vector3[] pointArray;
 
@@ -32,12 +31,12 @@ namespace Code.UnitSystem.UnitComponent
             pointArray = new Vector3[maxPathCount];
         }
 
-        public void SetPathAndMove(Vector2Int startPos, Vector2Int destination)
+        public void SetPathAndMove(Vector2Int startPos, Vector2Int destination, bool allowPartialPath = false)
         {
-            SetPathAndMove(GridToCell(startPos), GridToCell(destination));
+            SetPathAndMove(GridToCell(startPos), GridToCell(destination), allowPartialPath);
         }
 
-        private async void SetPathAndMove(Vector3Int startPos, Vector3Int destination)
+        private async void SetPathAndMove(Vector3Int startPos, Vector3Int destination, bool allowPartialPath)
         {
             try
             {
@@ -60,7 +59,7 @@ namespace Code.UnitSystem.UnitComponent
                 _rotationCompo ??= _owner.GetUnitCompo<UnitRotation>();
 
                 UnityLogger.Log($"Start : {startPos}, Destination : {destination}");
-                _pathLength = await _pathAgent.GetPath(startPos, destination, pointArray);
+                _pathLength = await _pathAgent.GetPath(startPos, destination, pointArray, allowPartialPath);
 
                 if (_pathLength <= 0)
                 {
@@ -69,7 +68,7 @@ namespace Code.UnitSystem.UnitComponent
                     return;
                 }
 
-                int remainingMovePoint = movePoint;
+                int remainingMovePoint = GetMoveRange();
                 Vector3Int previousCell = startPos;
                 Vector3Int finalCell = startPos;
 
@@ -166,6 +165,14 @@ namespace Code.UnitSystem.UnitComponent
 
         private static Vector3Int GridToCell(Vector2Int gridPosition)
             => new(gridPosition.x, gridPosition.y, 0);
+
+        private int GetMoveRange()
+        {
+            if (_owner?.unitSO == null)
+                return 0;
+
+            return Mathf.Max(0, _owner.unitSO.MoveRange);
+        }
 
         private bool CanTraverseCell(Vector3Int cellPosition)
         {

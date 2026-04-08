@@ -23,7 +23,7 @@ namespace Code.Navigation
             Injector.InjectInto(this);
         }
 
-        public async Task<int> GetPath(Vector3Int startPos, Vector3Int destination, Vector3[] pointArr)
+        public async Task<int> GetPath(Vector3Int startPos, Vector3Int destination, Vector3[] pointArr, bool allowPartialPath = false)
         {
             if (_isCalculating && _cts != null)
                 _cts.Cancel();
@@ -37,7 +37,7 @@ namespace Code.Navigation
                 HashSet<Vector3Int> blockedCells = CollectBlockedCells(startPos, destination);
 
                 (List<AstarNode> list, bool isSuccess) =
-                    await Task.Run(() => CalculatePath(startPos, destination, blockedCells), _cts.Token);
+                    await Task.Run(() => CalculatePath(startPos, destination, blockedCells, allowPartialPath), _cts.Token);
 
                 _isCalculating = false;
 
@@ -81,7 +81,7 @@ namespace Code.Navigation
             }
         }
 
-        private (List<AstarNode>, bool) CalculatePath(Vector3Int startPoint, Vector3Int destination, HashSet<Vector3Int> blockedCells)
+        private (List<AstarNode>, bool) CalculatePath(Vector3Int startPoint, Vector3Int destination, HashSet<Vector3Int> blockedCells, bool allowPartialPath)
         {
             UnityLogger.Log("Calculate 진입");
             
@@ -92,12 +92,16 @@ namespace Code.Navigation
             
             bool result = false;
             AstarNode goalNode = null;
+            AstarNode bestReachableNode = null;
+            float bestReachableDistance = float.MaxValue;
+            float bestReachableCost = float.MaxValue;
 
             bool startSuccess = _pathBaker.bakedData.GetNodeIfExist(startPoint, out var startNode);
             bool endSuccess = _pathBaker.bakedData.GetNodeIfExist(destination, out var endNode);
+            Vector3Int destinationCell = endSuccess ? endNode.cellPos : destination;
             UnityLogger.Log($"st : {startPoint}, {startSuccess}, ed : {destination}, {endSuccess}");
             
-            if (!startSuccess || !endSuccess)
+            if (!startSuccess || (!endSuccess && !allowPartialPath))
                 return (path, false);
 
             var startAstarNode = new AstarNode
@@ -107,11 +111,12 @@ namespace Code.Navigation
                 worldPos = startNode.worldPos,
                 parentNode = null,
                 g = 0,
-                f = CalculateH(startNode.cellPos, endNode.cellPos)
+                f = CalculateH(startNode.cellPos, destinationCell)
             };
 
             openList.Push(startAstarNode);
             bestGByCell[startAstarNode.cellPos] = startAstarNode.g;
+            UpdateBestReachableNode(startAstarNode, destination, ref bestReachableNode, ref bestReachableDistance, ref bestReachableCost);
             
             while (openList.Count > 0)
             {
@@ -128,8 +133,9 @@ namespace Code.Navigation
                     continue;
 
                 closedSet.Add(currentNode.cellPos);
+                UpdateBestReachableNode(currentNode, destination, ref bestReachableNode, ref bestReachableDistance, ref bestReachableCost);
 
-                if (currentNode.nodeData == endNode)
+                if (endSuccess && currentNode.nodeData == endNode)
                 {
                     result = true;
                     goalNode = currentNode;
@@ -161,7 +167,7 @@ namespace Code.Navigation
                         worldPos = nextNode.worldPos,
                         parentNode = currentNode,
                         g = newG,
-                        f = newG + CalculateH(nextNode.cellPos, endNode.cellPos)
+                        f = newG + CalculateH(nextNode.cellPos, destinationCell)
                     });
                 }
             }
@@ -179,7 +185,21 @@ namespace Code.Navigation
                 path.Add(last); // 시작점
                 path.Reverse();
             }
-            
+            else if (allowPartialPath && bestReachableNode != null && bestReachableNode.parentNode != null)
+            {
+                AstarNode last = bestReachableNode;
+
+                while (last.parentNode != null)
+                {
+                    path.Add(last);
+                    last = last.parentNode;
+                }
+
+                path.Add(last);
+                path.Reverse();
+                result = path.Count > 1;
+            }
+             
             return (path, result);
         }
 
@@ -226,6 +246,29 @@ namespace Code.Navigation
             // int max = Mathf.Max(dx, dy);
             //
             // return min * Mathf.Sqrt(2)+ (max - min);
+        }
+
+        private static void UpdateBestReachableNode(
+            AstarNode candidate,
+            Vector3Int destination,
+            ref AstarNode bestNode,
+            ref float bestDistance,
+            ref float bestCost)
+        {
+            if (candidate == null)
+                return;
+
+            float candidateDistance = Vector3Int.Distance(candidate.cellPos, destination);
+
+            if (bestNode != null && candidateDistance > bestDistance)
+                return;
+
+            if (bestNode != null && Mathf.Approximately(candidateDistance, bestDistance) && candidate.g >= bestCost)
+                return;
+
+            bestNode = candidate;
+            bestDistance = candidateDistance;
+            bestCost = candidate.g;
         }
     }
 }

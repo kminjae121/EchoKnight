@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Code.SkillSystem
 {
-    public class FrontPierceEnemyAttack : BaseSkill
+    public class FrontPierceEnemyAttack : EnemyBaseSkill
     { 
         [SerializeField] private int pierceLength = 3;
 
@@ -83,8 +83,24 @@ namespace Code.SkillSystem
             return false;
         }
 
+        public override bool CanUseOnTarget(GameObject target)
+            => CanHitTarget(target);
+
         public int GetPredictedHitCount(GameObject target)
             => GetHitTargets(target).Count;
+
+        public override float EvaluateEnemyUseScore(GameObject target)
+        {
+            if (target == null || SkillSO == null)
+                return float.MinValue;
+
+            int predictedHitCount = GetPredictedHitCount(target);
+            
+            if (predictedHitCount <= 0)
+                return float.MinValue;
+
+            return predictedHitCount * SkillSO.SkillDamage;
+        }
 
         private List<GameObject> GetHitTargets(GameObject target)
         {

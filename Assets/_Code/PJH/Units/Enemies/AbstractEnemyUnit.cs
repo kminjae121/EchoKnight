@@ -29,7 +29,7 @@ namespace Code.UnitSystem.Enemies
         protected UnitManager UnitManager { get; private set; }
         protected Unit CurrentTarget { get; private set; }
 
-        [Inject] private EnemyManager _enemyManager;
+        [Inject] protected EnemyManager _enemyManager;
 
         private bool _hasEndedTurn;
         private bool _isDead;
@@ -232,24 +232,16 @@ namespace Code.UnitSystem.Enemies
                 return false;
             }
 
-            if (!TryGetSkill(skillSO, out var selectedSkillSO, out var selectedSkill))
+            if (!TryGetSkill(skillSO, out _, out var selectedSkill))
                 return false;
 
-            if (selectedSkill is FrontPierceEnemyAttack pierceAttack)
-                return pierceAttack.CanHitTarget(target);
-
-            GridMap gridMap = GridMap.Instance;
-
-            if (gridMap == null)
+            if (selectedSkill is not EnemyBaseSkill enemySkill)
+            {
+                UnityLogger.LogError($"[{nameof(AbstractEnemyUnit)}] {name} tried to evaluate a non-enemy skill.");
                 return false;
+            }
 
-            Vector2Int myPos = gridMap.WorldToGridPosition(transform.position);
-            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
-
-            float distance = DistanceUtils.GetEuclideanDistance(myPos, targetPos);
-            float range = Mathf.Max(0f, selectedSkillSO.SkillRange);
-
-            return distance <= range;
+            return enemySkill.CanUseOnTarget(target);
         }
 
         public bool TrySelectAttackSkill(GameObject target, out SkillSO selectedSkillSO)

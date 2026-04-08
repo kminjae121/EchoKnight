@@ -43,10 +43,8 @@ namespace Code.Managers
             if (enemy == null || target == null || enemy.SkillCompo?.Skills == null || enemy.SkillCompo.Skills.Count == 0)
                 return false;
 
-            SkillSO bestPierceSkill = null;
-            int bestPierceHitCount = 0;
-            SkillSO basicSkill = null;
-            SkillSO fallbackSkill = null;
+            SkillSO bestSkill = null;
+            float bestScore = float.MinValue;
 
             foreach (var (skillSO, skill) in enemy.SkillCompo.Skills)
             {
@@ -56,50 +54,27 @@ namespace Code.Managers
                 if (!enemy.CanUseSkillOnTarget(skillSO, target))
                     continue;
 
-                fallbackSkill ??= skillSO;
-
-                if (skill is FrontPierceEnemyAttack pierceSkill)
-                {
-                    int hitCount = pierceSkill.GetPredictedHitCount(target);
-
-                    if (hitCount > bestPierceHitCount)
-                    {
-                        bestPierceHitCount = hitCount;
-                        bestPierceSkill = skillSO;
-                    }
-
+                if (skill is not EnemyBaseSkill enemySkill)
                     continue;
-                }
 
-                if (skillSO.SkillType == SkillType.BasicSkill)
-                    basicSkill ??= skillSO;
+                float score = enemySkill.EvaluateEnemyUseScore(target);
+                
+                if (Mathf.Approximately(score, float.MinValue))
+                    continue;
+
+                if (bestSkill != null && score < bestScore)
+                    continue;
+
+                if (bestSkill != null && Mathf.Approximately(score, bestScore) &&
+                    !IsBetterSkillCandidate(skillSO, bestSkill))
+                    continue;
+
+                bestSkill = skillSO;
+                bestScore = score;
             }
 
-            if (bestPierceSkill != null && bestPierceHitCount >= 2)
-            {
-                selectedSkillSO = bestPierceSkill;
-                return true;
-            }
-
-            if (basicSkill != null)
-            {
-                selectedSkillSO = basicSkill;
-                return true;
-            }
-
-            if (bestPierceSkill != null)
-            {
-                selectedSkillSO = bestPierceSkill;
-                return true;
-            }
-
-            if (fallbackSkill != null)
-            {
-                selectedSkillSO = fallbackSkill;
-                return true;
-            }
-
-            return false;
+            selectedSkillSO = bestSkill;
+            return selectedSkillSO != null;
         }
 
         public bool TryGetPlan(AbstractEnemyUnit enemy, out EnemyPlan plan)
@@ -182,6 +157,23 @@ namespace Code.Managers
                 .OrderBy(unit => DistanceUtils.GetEuclideanDistance(myPos,
                     GridMap.Instance.WorldToGridPosition(unit.transform.position)))
                 .FirstOrDefault();
+        }
+
+        private static bool IsBetterSkillCandidate(SkillSO candidate, SkillSO current)
+        {
+            if (candidate == null)
+                return false;
+
+            if (current == null)
+                return true;
+
+            if (candidate.SkillDamage != current.SkillDamage)
+                return candidate.SkillDamage > current.SkillDamage;
+
+            if (candidate.SkillCost != current.SkillCost)
+                return candidate.SkillCost < current.SkillCost;
+
+            return string.CompareOrdinal(candidate.skillName, current.skillName) < 0;
         }
     }
 }

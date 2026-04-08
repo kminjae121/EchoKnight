@@ -28,10 +28,10 @@ namespace Code.Managers
             plan.Clear();
             
             Unit target = GetBestTarget(enemy);
-            plan.SetTarget(target);
+            plan.Target = target;
 
             if (target != null && TrySelectAttackSkill(enemy, target.gameObject, out SkillSO selectedSkill))
-                plan.SetSkill(selectedSkill);
+                plan.SelectedSkill = selectedSkill;
 
             return plan;
         }

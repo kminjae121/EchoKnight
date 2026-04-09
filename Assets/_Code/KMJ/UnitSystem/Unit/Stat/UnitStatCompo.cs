@@ -17,7 +17,7 @@ namespace Code.UnitSystem
     {
         [SerializeField] private UnitSO unitSO;
 
-        private float MoveSpeed => unitSO.MoveRange;
+        private float MoveRange => unitSO.MoveRange;
 
         private float MaxHealth => unitSO.Maxhealth;
         
@@ -44,7 +44,7 @@ namespace Code.UnitSystem
             switch (statInfo)
             {
                 case StatInfo.MoveRange:
-                    value = MoveSpeed;
+                    value = MoveRange;
                     break;
                 case StatInfo.MaxHealth:
                     value = MaxHealth;

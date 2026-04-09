@@ -12,6 +12,7 @@ using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Code.UnitManaging;
 
 namespace Code.UI
 {
@@ -20,6 +21,9 @@ namespace Code.UI
         [Header("Pool Settings")]
         [SerializeField] private PoolingItemSO artifactButtonPoolingSO;
         [SerializeField] private PoolingItemSO skillButtonPoolingSO;
+
+        [Header("Unit Data")]
+        [SerializeField] private UnitStorageSO unitStorageSO;
 
         [Header("Artifact Inventory Area")]
         [SerializeField] private Transform artifactInventoryTrm; 
@@ -112,6 +116,24 @@ namespace Code.UI
             RefreshArtifactUI();
         }
 
+        private bool IsEquippedByOtherUnit(EquipmentItemSO item)
+        {
+            if (unitStorageSO == null || _unit == null) return false;
+
+            foreach (var state in unitStorageSO.unitStates)
+            {
+                if (state.Data != null && state.Data != _unit)
+                {
+                    if (state.Data.EquippedArtifacts != null && 
+                        state.Data.EquippedArtifacts.artifacts.Contains(item))
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+
         private void RefreshArtifactUI()
         {
             if (_unit == null || _unit.OwnArtifactStorage == null) return;
@@ -122,8 +144,11 @@ namespace Code.UI
             foreach (var btn in _activeArtifactButtons) btn.ReturnToPool();
             _activeArtifactButtons.Clear();
 
-            var displayList = _unit.OwnArtifactStorage.artifacts.ToList();
             var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
+
+            var displayList = _unit.OwnArtifactStorage.artifacts
+                .Where(a => !IsEquippedByOtherUnit(a))
+                .ToList();
 
             if (_isArtifactSortedByRarity) displayList = displayList.OrderByDescending(a => a.rarity).ToList();
 
@@ -150,7 +175,7 @@ namespace Code.UI
 
             if (_unit.EquippedArtifacts.artifacts.Count >= maxArtifactEquipCount)
             {
-                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent($"아티팩트는 최대 {maxArtifactEquipCount}개까지만 장착할 수 있습니다."));
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent($"아티팩트는 최대 {maxArtifactEquipCount}개까지만 장착할 수 있습니다."));
                 return;
             }
             
@@ -273,14 +298,14 @@ namespace Code.UI
 
             if (equippedSkills.Length >= 4)
             {
-                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬은 최대 4개까지만 장착할 수 있습니다."));
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("스킬은 최대 4개까지만 장착할 수 있습니다."));
                 return;
             }
 
             int currentCost = GetCurrentSkillLoadoutCost();
             if (currentCost + evt.Skill.SkillValue > _unit.LoadOutCost)
             {
-                Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("스킬 코스트 총량을 초과하여 장착할 수 없습니다."));
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("스킬 코스트 총량을 초과하여 장착할 수 없습니다."));
                 return;
             }
 

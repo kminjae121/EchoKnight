@@ -19,6 +19,7 @@ namespace Code.UI
 
         [Header("Profile Elements")]
         [SerializeField] private Image profileIconImage;
+        [SerializeField] private TextMeshProUGUI unitNameText;
         [SerializeField] private TextMeshProUGUI hpText;
         [SerializeField] private Image hpFillImage;
 
@@ -83,6 +84,9 @@ namespace Code.UI
                 {
                     if (profileIconImage != null && _currentAllyUnit.unitSO != null)
                         profileIconImage.sprite = _currentAllyUnit.unitSO.UnitImage;
+
+                    if (unitNameText != null && _currentAllyUnit.unitSO != null)
+                        unitNameText.text = _currentAllyUnit.unitSO.UnitName;
 
                     _currentHealthCompo = _currentAllyUnit.HealthCompo;
                     

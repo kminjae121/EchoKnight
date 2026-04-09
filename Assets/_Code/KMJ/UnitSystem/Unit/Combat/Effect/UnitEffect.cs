@@ -1,7 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.Combat
+namespace _Code.UnitSystem
 {
     public class UnitEffect : MonoBehaviour
     {

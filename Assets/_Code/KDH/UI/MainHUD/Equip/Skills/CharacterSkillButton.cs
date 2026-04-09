@@ -25,6 +25,8 @@ namespace Code.UI
         [Header("Equipped Popup Settings")]
         [SerializeField] private Vector2 equippedPopupOffset;
 
+        public bool IsCombatMode { get; set; } = false;
+
         private SkillSO _skill;
         private bool _isEquipped;
         private bool _isTooltipSuppressed;
@@ -72,6 +74,7 @@ namespace Code.UI
             _isEquipped = false;
             _isTooltipSuppressed = false;
             _isHovering = false;
+            IsCombatMode = false;
             UpdateHoverState();
         }
 
@@ -97,7 +100,11 @@ namespace Code.UI
             _isTooltipSuppressed = false;
             UpdateHoverState();
             
-            if (_skill != null) Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+            if (_skill != null) 
+            {
+                if (IsCombatMode) Bus<CombatSkillHoverEvent>.Raise(new CombatSkillHoverEvent(null, null));
+                else Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+            }
         }
 
         public void SetSkill(SkillSO skill, bool isEquipped)
@@ -126,7 +133,8 @@ namespace Code.UI
                 
                 if (!_isTooltipSuppressed)
                 {
-                    Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skill, GetPivot(), GetOffset()));
+                    if (IsCombatMode) Bus<CombatSkillHoverEvent>.Raise(new CombatSkillHoverEvent(_skill, GetPivot(), GetOffset()));
+                    else Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(_skill, GetPivot(), GetOffset()));
                 }
             }
         }
@@ -139,7 +147,9 @@ namespace Code.UI
                 UpdateHoverState();
                 
                 _isTooltipSuppressed = false;
-                Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
+                
+                if (IsCombatMode) Bus<CombatSkillHoverEvent>.Raise(new CombatSkillHoverEvent(null, null));
+                else Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
             }
         }
 
@@ -155,7 +165,7 @@ namespace Code.UI
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            if (_skill == null) return;
+            if (_skill == null || IsCombatMode) return;
 
             if (eventData.button == PointerEventData.InputButton.Left)
             {

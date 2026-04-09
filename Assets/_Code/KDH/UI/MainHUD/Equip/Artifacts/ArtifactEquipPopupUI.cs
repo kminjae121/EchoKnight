@@ -1,6 +1,8 @@
-﻿using Code.Core.Events.Bus;
+﻿using System.Collections.Generic;
+using Code.Core.Events.Bus;
 using Code.Items;
 using Code.UnitSystem.ArtifactSystem;
+using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -17,17 +19,25 @@ namespace Code.UI
         [SerializeField] private Button equipButton;
         [SerializeField] private Button unequipButton;
 
+        [Header("Stat Pooling Elements")]
+        [SerializeField] private RectTransform statContentArea;
+        [SerializeField] private PoolingItemSO statSlotPoolingSO;
+
         private RectTransform _rectTransform;
         private CanvasGroup _canvasGroup;
         private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
         
         private bool _isJustOpened;
+        
+        private PoolManagerMono _poolManager;
+        private List<ArtifactStatSlotUI> _activeStatSlots = new List<ArtifactStatSlotUI>();
 
         private void Awake()
         {
             _rectTransform = GetComponent<RectTransform>();
             _canvasGroup = GetComponent<CanvasGroup>();
+            _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
 
             Bus<ArtifactPopupEvent>.Subscribe(HandlePopupEvent);
             
@@ -85,6 +95,8 @@ namespace Code.UI
                 SetTierTextColor(_targetEquipmentItem.rarity);
             }
 
+            UpdateStatUI(); 
+
             equipButton.gameObject.SetActive(!_isCurrentlyEquipped && !evt.IsReadOnly);
             unequipButton.gameObject.SetActive(_isCurrentlyEquipped && !evt.IsReadOnly);
 
@@ -97,6 +109,53 @@ namespace Code.UI
             gameObject.SetActive(true);
             _isJustOpened = true; 
             transform.SetAsLastSibling();
+        }
+
+        private void UpdateStatUI()
+        {
+            ClearStatSlots();
+
+            if (statContentArea == null || statSlotPoolingSO == null) return;
+
+            if (_targetEquipmentItem.Stats != null && _targetEquipmentItem.Stats.Count > 0)
+            {
+                foreach (var stat in _targetEquipmentItem.Stats)
+                {
+                    var slot = _poolManager.Pop<ArtifactStatSlotUI>(statSlotPoolingSO);
+                    if (slot != null)
+                    {
+                        slot.transform.SetParent(statContentArea);
+                        slot.transform.localScale = Vector3.one;
+                        
+                        slot.SetStat(GetKoreanStatName(stat.StatInfo.ToString()), stat.StatValue);
+                        _activeStatSlots.Add(slot);
+                    }
+                }
+            }
+        }
+
+        private void ClearStatSlots()
+        {
+            foreach (var slot in _activeStatSlots)
+            {
+                if (slot != null) slot.ReturnToPool();
+            }
+            _activeStatSlots.Clear();
+        }
+
+        private string GetKoreanStatName(string statInfoStr)
+        {
+            switch (statInfoStr)
+            {
+                case "MoveRange": return "이동 범위";
+                case "AtkDamage": return "공격력";
+                case "MaxHealth": return "체력";
+                case "DefensivePower": return "방어력";
+                case "AvoidProbability": return "회피율";
+                case "CriticalProbability": return "치명타율";
+                case "CriticalIncreaseValue": return "치명타배율";
+                default: return statInfoStr; 
+            }
         }
 
         private void SetTierTextColor(ArtifactRarity rarity)
@@ -129,6 +188,8 @@ namespace Code.UI
 
         private void Hide()
         {
+            ClearStatSlots();
+
             if (!gameObject.activeSelf && _targetEquipmentItem == null) return;
             
             gameObject.SetActive(false);

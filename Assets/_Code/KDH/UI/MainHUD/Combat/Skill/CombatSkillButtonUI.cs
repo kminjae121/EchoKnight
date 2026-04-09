@@ -19,7 +19,6 @@ namespace Code.UI
         [SerializeField] private GameObject hoverImage;
         [SerializeField] private GameObject blindImage;
         
-        [SerializeField] private float hoverYOffset = 15f;
         [SerializeField] private float selectYOffset = 30f;
         [SerializeField] private float animDuration = 0.2f;
         [SerializeField] private Ease animEase = Ease.OutCubic;
@@ -163,11 +162,7 @@ namespace Code.UI
         public void OnPointerEnter(PointerEventData eventData)
         {
             if (!_isInteractable || _isSelected) return;
-
             if (hoverImage != null) hoverImage.SetActive(true);
-
-            _moveTween?.Kill();
-            _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + hoverYOffset, animDuration).SetEase(animEase);
         }
 
         public void OnPointerExit(PointerEventData eventData)
@@ -175,23 +170,22 @@ namespace Code.UI
             if (!_isInteractable || _isSelected) return;
 
             if (hoverImage != null) hoverImage.SetActive(false);
-
-            _moveTween?.Kill();
-            _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y, animDuration).SetEase(animEase);
         }
 
         public void OnPointerClick(PointerEventData eventData)
+        {
+            //마우스 클릭(선택) 기능 삭제함.
+        }
+
+        public void TrySelectSkill()
         {
             if (!_isInteractable)
             {
                 Bus<ShowMessageUIEvent>.Raise(new ShowMessageUIEvent("코스트가 부족하여 스킬을 사용할 수 없습니다."));
                 return;
             }
-
-            if (eventData.button == PointerEventData.InputButton.Left)
-            {
-                SelectThisSkill();
-            }
+            
+            SelectThisSkill();
         }
 
         private void SelectThisSkill()

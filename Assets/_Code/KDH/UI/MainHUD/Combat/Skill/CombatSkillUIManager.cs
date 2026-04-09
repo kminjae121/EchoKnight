@@ -52,17 +52,11 @@ namespace Code.UI
             if (skillArea != null)
             {
                 skillArea.anchoredPosition = hiddenPosition;
+                skillArea.gameObject.SetActive(true);
             }
 
-            if (nextPageButton != null)
-            {
-                nextPageButton.onClick.AddListener(GoToNextPage);
-            }
-            
-            if (prevPageButton != null)
-            {
-                prevPageButton.onClick.AddListener(GoToPrevPage);
-            }
+            if (nextPageButton != null) nextPageButton.onClick.AddListener(GoToNextPage);
+            if (prevPageButton != null) prevPageButton.onClick.AddListener(GoToPrevPage);
 
             Bus<SkillUIEvent>.Subscribe(HandleSkillReceived);
             Bus<CombatSkillSelectEvent>.Subscribe(HandleSkillSelected);
@@ -92,9 +86,26 @@ namespace Code.UI
 
         private void Update()
         {
-            if (_isSkillSelected && UnityEngine.Input.GetMouseButtonDown(0))
+            if (_isSkillSelected && UnityEngine.Input.GetKeyDown(KeyCode.Escape))
             {
                 CancelSkillSelection();
+            }
+
+            if (_isCurrentlyVisible && !_isSkillPlaying && !_isMovePlaying && !_isAtkUIHidden)
+            {
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha1) || UnityEngine.Input.GetKeyDown(KeyCode.Keypad1)) SelectSkillByIndex(0);
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha2) || UnityEngine.Input.GetKeyDown(KeyCode.Keypad2)) SelectSkillByIndex(1);
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha3) || UnityEngine.Input.GetKeyDown(KeyCode.Keypad3)) SelectSkillByIndex(2);
+                if (UnityEngine.Input.GetKeyDown(KeyCode.Alpha4) || UnityEngine.Input.GetKeyDown(KeyCode.Keypad4)) SelectSkillByIndex(3);
+            }
+        }
+
+        private void SelectSkillByIndex(int index)
+        {
+            if (index >= 0 && index < _activeSkillButtons.Count)
+            {
+                var btn = _activeSkillButtons[index];
+                if (btn != null) btn.TrySelectSkill();
             }
         }
 
@@ -113,9 +124,20 @@ namespace Code.UI
             _isTurnEnded = false;
             _isSkillSelected = false;
 
-            HideUI(false);
+            _currentSkillCompo = evt.SkillCompo;
+            _currentUnit = _currentSkillCompo != null ? _currentSkillCompo.GetComponentInParent<CharacterUnit>() : null;
 
-            if (evt.SkillCompo == null || evt.Skills == null || evt.Skills.Count == 0)
+            List<SkillSO> validSkills = evt.Skills;
+            if ((validSkills == null || validSkills.Count == 0) && _currentUnit != null && _currentUnit.unitSO != null)
+            {
+                if (_currentUnit.unitSO.SkillStorage != null && _currentUnit.unitSO.SkillStorage.skills.Count > 0)
+                {
+                    validSkills = _currentUnit.unitSO.SkillStorage.skills;
+                    Debug.LogWarning("[CombatSkillUIManager] SkillSendManager가 비어있어 UnitSO에서 직접 스킬을 로드합니다.");
+                }
+            }
+
+            if (_currentSkillCompo == null || validSkills == null || validSkills.Count == 0)
             {
                 _isSkillReceived = false;
                 _equippedSkills = null;
@@ -127,9 +149,7 @@ namespace Code.UI
             }
 
             _isSkillReceived = true;
-            _equippedSkills = evt.Skills;
-            _currentSkillCompo = evt.SkillCompo;
-            _currentUnit = _currentSkillCompo.GetComponentInParent<CharacterUnit>();
+            _equippedSkills = validSkills;
             
             if (_currentUnit != null && _currentUnit.SkillCostCompo != null)
             {
@@ -150,12 +170,7 @@ namespace Code.UI
             }
 
             RefreshSkillSlots();
-
-            DOVirtual.DelayedCall(0.5f, () => 
-            {
-                if (this == null) return;
-                EvaluateVisibility();
-            });
+            EvaluateVisibility();
         }
 
         private void UnsubscribeCurrentUnit()
@@ -306,7 +321,10 @@ namespace Code.UI
             _slideTween?.Kill();
             
             if (skillArea != null)
+            {
+                skillArea.gameObject.SetActive(true);
                 _slideTween = skillArea.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
+            }
         }
 
         private void HideUI(bool raiseCancelEvent)

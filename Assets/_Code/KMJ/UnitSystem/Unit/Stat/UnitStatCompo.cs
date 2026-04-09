@@ -5,7 +5,7 @@ namespace Code.UnitSystem
 {
     public enum StatInfo
     {
-        MoveSpeed, 
+        MoveRange, 
         AtkDamage,
         MaxHealth,
         DefensivePower,
@@ -43,7 +43,7 @@ namespace Code.UnitSystem
             
             switch (statInfo)
             {
-                case StatInfo.MoveSpeed:
+                case StatInfo.MoveRange:
                     value = MoveSpeed;
                     break;
                 case StatInfo.MaxHealth:

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Code.Core.Debugs;
 using UnityEngine;
 
-namespace _Code.KMJ.UnitSystem.Unit.Combat
+namespace _Code.UnitSystem
 {
     enum EffectType
     {

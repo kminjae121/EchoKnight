@@ -20,6 +20,7 @@ namespace Code.UI
 
         public void ReturnHome()
         {
+            Time.timeScale = 1;
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

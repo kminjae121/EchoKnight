@@ -97,7 +97,7 @@ namespace Code.UnitSystem.Combat
         public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData,
             Unit dealer,bool isCritical, bool isPenetrate)
         {
-            _actionData.HitNormal = hitNormal;
+            _actionData.HitNormal = hitNormal;      
             _actionData.HitPoint = hitPoint;
             _actionData.LastDamageData = damageData;
 

@@ -19,7 +19,7 @@ namespace Code.UnitSystem.Enemies.AI
             Enemy.Value.EnemyManager.RefreshPlan(Enemy.Value);
             
             if (!Enemy.Value.EnemyManager.TryGetPlan(Enemy.Value, out EnemyPlan plan)
-                || !plan.CanAttackImmediately || plan.Target == null)
+                || !plan.CanAttackImmediately)
                 return false;
 
             Target.Value = plan.Target.gameObject;

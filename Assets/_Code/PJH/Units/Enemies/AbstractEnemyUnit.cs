@@ -12,6 +12,7 @@ using Unity.Behavior;
 using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
+using Code.Core.Interfaces;
 
 namespace Code.UnitSystem.Enemies
 {
@@ -157,11 +158,25 @@ namespace Code.UnitSystem.Enemies
                 return;
 
             _isDead = false;
+            ClearCurrentTile();
 
             if (Core.Managers.StageManager.Instance != null)
                 Core.Managers.StageManager.Instance.RemoveEnemy(gameObject);
 
             gameObject.SetActive(false);
+        }
+
+        private void ClearCurrentTile()
+        {
+            Vector2Int gridPos = GridMapInstance.WorldToGridPosition(transform.position);
+            IMapTile currentTile = GridMapInstance.GetTile(gridPos);
+
+            if (currentTile == null)
+                return;
+
+            currentTile.SetState(TileState.Enemy, false);
+            currentTile.SetState(TileState.Obstacle, false);
+            currentTile.SetState(TileState.Walkable, true);
         }
 
         protected virtual bool PrepareTurnStart()

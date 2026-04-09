@@ -5,7 +5,7 @@ namespace Code.UnitSystem
 {
     public enum StatInfo
     {
-        MoveSpeed, 
+        MoveRange, 
         AtkDamage,
         MaxHealth,
         DefensivePower,
@@ -17,7 +17,7 @@ namespace Code.UnitSystem
     {
         [SerializeField] private UnitSO unitSO;
 
-        private float MoveSpeed => unitSO.MoveRange;
+        private float MoveRange => unitSO.MoveRange;
 
         private float MaxHealth => unitSO.Maxhealth;
         
@@ -43,8 +43,8 @@ namespace Code.UnitSystem
             
             switch (statInfo)
             {
-                case StatInfo.MoveSpeed:
-                    value = MoveSpeed;
+                case StatInfo.MoveRange:
+                    value = MoveRange;
                     break;
                 case StatInfo.MaxHealth:
                     value = MaxHealth;

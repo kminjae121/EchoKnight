@@ -32,6 +32,7 @@ namespace Code.UI
 
         public void Open(List<ItemSO> rewards)
         {
+            Time.timeScale = 0;
             rewardUI.SetActive(true);
 
             foreach (var item in rewards)
@@ -44,6 +45,7 @@ namespace Code.UI
         
         private void HandleNextButton()
         {
+            Time.timeScale = 1;
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

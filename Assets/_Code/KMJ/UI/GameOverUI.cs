@@ -29,6 +29,7 @@ namespace Code.UI
         }
         public void RestartBtn()
         {
+            Time.timeScale = 1;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }

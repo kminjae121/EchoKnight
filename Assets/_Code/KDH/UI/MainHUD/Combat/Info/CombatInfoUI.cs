@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Reflection;
+using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.Managers; 
 using Code.SkillSystem;
 using Code.UnitSystem;
+using Code.UnitSystem.Combat;
 using Code.Items;
 using DG.Tweening;
 using TMPro;
@@ -55,7 +56,9 @@ namespace Code.UI
         [SerializeField] private Sprite emptyArtifactSprite;
 
         private Tween _slideTween;
-        private UnitState _currentUnit;
+        private UnitState _currentUnitState; 
+        private Unit _currentInGameUnit;     
+        
         private bool _isVisible;
         private bool _isManualTargeting; 
         
@@ -110,11 +113,11 @@ namespace Code.UI
             if (evt.IsShow && evt.TargetUnit != null)
             {
                 _isManualTargeting = true; 
-                _currentUnit = evt.TargetUnit;
+                _currentUnitState = evt.TargetUnit;
                 
-                if (_currentUnit.CurrentHp != null)
+                if (_currentUnitState.CurrentHp != null)
                 {
-                    _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
+                    _currentUnitState.CurrentHp.OnValueChanged += OnHealthChangedState;
                 }
                 
                 ShowUI();
@@ -132,18 +135,18 @@ namespace Code.UI
             if (_turnManager != null)
             {
                 var units = _turnManager.GetTimelineUnits(1);
-                if (units != null && units.Count > 0 && units[0] is MonoBehaviour mb)
+                
+                if (units != null && units.Count > 0 && units[0] is Unit newTurnUnit)
                 {
-                    var newTurnUnit = GetUnitStateFromMonoBehaviour(mb);
-                    
-                    if (newTurnUnit != null && _currentUnit != newTurnUnit)
+                    if (_currentInGameUnit != newTurnUnit)
                     {
                         UnsubscribeHealth();
-                        _currentUnit = newTurnUnit;
+                        _currentInGameUnit = newTurnUnit;
                         
-                        if (_currentUnit.CurrentHp != null)
+                        var healthCompo = _currentInGameUnit.GetUnitCompo<UnitHealth>();
+                        if (healthCompo != null)
                         {
-                            _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
+                            healthCompo.OnHealthChangedEvent += OnHealthChangedInGame;
                         }
                         
                         if (_isVisible) RefreshAllUI();
@@ -152,50 +155,32 @@ namespace Code.UI
             }
         }
 
-        private UnitState GetUnitStateFromMonoBehaviour(MonoBehaviour mb)
-        {
-            if (mb == null) return null;
-            
-            System.Type currentType = mb.GetType();
-            
-            while (currentType != null && currentType != typeof(MonoBehaviour))
-            {
-                foreach (var prop in currentType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-                {
-                    if (prop.PropertyType == typeof(UnitState)) 
-                        return prop.GetValue(mb) as UnitState;
-                }
-                
-                foreach (var field in currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
-                {
-                    if (field.FieldType == typeof(UnitState)) 
-                        return field.GetValue(mb) as UnitState;
-                }
-                
-                currentType = currentType.BaseType;
-            }
-            
-            return null;
-        }
-
         private void UnsubscribeHealth()
         {
-            if (_currentUnit != null && _currentUnit.CurrentHp != null)
+            if (_currentUnitState != null && _currentUnitState.CurrentHp != null)
             {
-                _currentUnit.CurrentHp.OnValueChanged -= OnHealthChanged;
+                _currentUnitState.CurrentHp.OnValueChanged -= OnHealthChangedState;
+            }
+            
+            if (_currentInGameUnit != null)
+            {
+                var healthCompo = _currentInGameUnit.GetUnitCompo<UnitHealth>();
+                if (healthCompo != null)
+                {
+                    healthCompo.OnHealthChangedEvent -= OnHealthChangedInGame;
+                }
             }
         }
 
-        private void OnHealthChanged(float prevHp, float nextHp)
-        {
-            RefreshHealthUI();
-        }
+        private void OnHealthChangedState(float prevHp, float nextHp) => RefreshHealthUI();
+
+        private void OnHealthChangedInGame(float current, float max) => RefreshHealthUI();
 
         public void ShowUI()
         {
             if (_isVisible) return;
             
-            if (_currentUnit == null && !_isManualTargeting)
+            if (_currentUnitState == null && !_isManualTargeting)
             {
                 UpdateToCurrentTurnUnit();
             }
@@ -226,14 +211,24 @@ namespace Code.UI
             Bus<CombatArtifactHoverEvent>.Raise(new CombatArtifactHoverEvent(null, false));
 
             UnsubscribeHealth();
-            _currentUnit = null; 
+            _currentUnitState = null; 
+            _currentInGameUnit = null;
+        }
+        
+        private UnitSO GetCurrentUnitData()
+        {
+            if (_isManualTargeting && _currentUnitState != null)
+                return _currentUnitState.Data;
+            if (!_isManualTargeting && _currentInGameUnit != null)
+                return _currentInGameUnit.unitSO;
+                
+            return null;
         }
 
         private void RefreshAllUI()
         {
-            if (_currentUnit == null || _currentUnit.Data == null) return;
-            
-            var data = _currentUnit.Data;
+            UnitSO data = GetCurrentUnitData();
+            if (data == null) return;
 
             if (unitImage != null) unitImage.sprite = data.UnitImage;
             if (unitNameText != null) unitNameText.text = data.UnitName;
@@ -257,24 +252,55 @@ namespace Code.UI
 
         private void RefreshHealthUI()
         {
-            if (_currentUnit != null && _currentUnit.Data != null)
-            {
-                float currentHp = _currentUnit.CurrentHp.Value;
-                float maxHp = _currentUnit.Data.Maxhealth;
+            float currentHp = 0f;
+            float maxHp = 0f;
 
-                if (hpText != null) hpText.text = $"{Mathf.CeilToInt(currentHp)} / {Mathf.CeilToInt(maxHp)}";
-                if (hpFillImage != null) hpFillImage.fillAmount = maxHp > 0 ? (currentHp / maxHp) : 0f;
+            if (_isManualTargeting && _currentUnitState != null && _currentUnitState.Data != null)
+            {
+                currentHp = _currentUnitState.CurrentHp.Value;
+                maxHp = _currentUnitState.Data.Maxhealth;
             }
+            else if (!_isManualTargeting && _currentInGameUnit != null)
+            {
+                var healthCompo = _currentInGameUnit.GetUnitCompo<UnitHealth>();
+                if (healthCompo != null)
+                {
+                    currentHp = healthCompo.CurrentHealth;
+                    maxHp = healthCompo.MaxHealth;
+                }
+            }
+
+            if (hpText != null) hpText.text = $"{Mathf.CeilToInt(currentHp)} / {Mathf.CeilToInt(maxHp)}";
+            if (hpFillImage != null) hpFillImage.fillAmount = maxHp > 0 ? (currentHp / maxHp) : 0f;
         }
 
         private void RefreshSkills()
         {
-            SkillSO[] equippedSkills = System.Array.Empty<SkillSO>();
-            
-            if (SkillSendManager.Instance != null && _currentUnit != null && _currentUnit.Data != null)
-                equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.Data.UnitType);
+            List<SkillSO> equippedSkills = new List<SkillSO>();
+            UnitSO data = GetCurrentUnitData();
 
-            if (equippedSkills == null) equippedSkills = System.Array.Empty<SkillSO>();
+            if (!_isManualTargeting && _currentInGameUnit != null)
+            {
+                Code.SkillSystem.SkillComponent skillCompo = null;
+                
+                if (_currentInGameUnit is CharacterUnit charUnit)
+                    skillCompo = charUnit.SkillCompo;
+                else if (_currentInGameUnit is Code.UnitSystem.Enemies.AbstractEnemyUnit enemyUnit)
+                    skillCompo = enemyUnit.SkillCompo;
+
+                if (skillCompo != null && skillCompo.Skills != null)
+                {
+                    equippedSkills.AddRange(skillCompo.Skills.Keys);
+                }
+            }
+            else if (_isManualTargeting && _currentUnitState != null)
+            {
+                if (SkillSendManager.Instance != null && data != null)
+                {
+                    var skills = SkillSendManager.Instance.GetEquipSkills(data.UnitType);
+                    if (skills != null) equippedSkills.AddRange(skills);
+                }
+            }
 
             foreach (var btn in _activeSkillButtons)
             {
@@ -284,16 +310,16 @@ namespace Code.UI
 
             if (skillPanelGroup != null && characterSkillButtonPoolingSO != null)
             {
-                for (int i = 0; i < equippedSkills.Length; i++)
+                foreach(var skillData in equippedSkills)
                 {
-                    if (equippedSkills[i] != null)
+                    if (skillData != null)
                     {
                         var btn = _poolManager.Pop<CharacterSkillButton>(characterSkillButtonPoolingSO);
                         if (btn != null)
                         {
                             btn.transform.SetParent(skillPanelGroup);
                             btn.transform.localScale = Vector3.one;
-                            btn.SetSkill(equippedSkills[i], true);
+                            btn.SetSkill(skillData, true);
                             _activeSkillButtons.Add(btn);
                         }
                     }
@@ -303,31 +329,36 @@ namespace Code.UI
 
         private void RefreshArtifacts()
         {
-            var data = _currentUnit?.Data;
+            UnitSO data = GetCurrentUnitData();
+            
             for (int i = 0; i < artifactIcons.Count; i++)
             {
-                bool hasArtifact = data != null && data.EquippedArtifacts != null && 
-                                   i < data.EquippedArtifacts.artifacts.Count && data.EquippedArtifacts.artifacts[i] != null;
+                bool hasArtifact = false;
+                EquipmentItemSO equipSO = null;
 
-                if (hasArtifact)
+                if (data != null && data.EquippedArtifacts != null && data.EquippedArtifacts.artifacts != null)
                 {
-                    var artifact = data.EquippedArtifacts.artifacts[i];
-                    artifactIcons[i].sprite = artifact.itemIcon;
+                    if (i < data.EquippedArtifacts.artifacts.Count && data.EquippedArtifacts.artifacts[i] != null)
+                    {
+                        if (data.EquippedArtifacts.artifacts[i] is EquipmentItemSO item)
+                        {
+                            hasArtifact = true;
+                            equipSO = item;
+                        }
+                    }
+                }
+
+                if (hasArtifact && equipSO != null)
+                {
+                    artifactIcons[i].sprite = equipSO.itemIcon;
 
                     if (i < artifactRarityImages.Count && artifactRarityImages[i] != null)
                     {
-                        if (artifact is EquipmentItemSO equipSO)
+                        artifactRarityImages[i].gameObject.SetActive(true);
+                        int rarityIndex = (int)equipSO.rarity;
+                        if (raritySprites != null && rarityIndex >= 0 && rarityIndex < raritySprites.Count)
                         {
-                            artifactRarityImages[i].gameObject.SetActive(true);
-                            int rarityIndex = (int)equipSO.rarity;
-                            if (raritySprites != null && rarityIndex >= 0 && rarityIndex < raritySprites.Count)
-                            {
-                                artifactRarityImages[i].sprite = raritySprites[rarityIndex];
-                            }
-                        }
-                        else
-                        {
-                            artifactRarityImages[i].gameObject.SetActive(false);
+                            artifactRarityImages[i].sprite = raritySprites[rarityIndex];
                         }
                     }
                 }
@@ -356,9 +387,10 @@ namespace Code.UI
                 trigger.useHoverVisuals = false;
                 trigger.OnHoverEnter = (pivot, triggerOffset) =>
                 {
-                    if (_currentUnit != null && _currentUnit.Data != null && _currentUnit.Data.EquippedArtifacts != null)
+                    UnitSO data = GetCurrentUnitData();
+                    if (data != null && data.EquippedArtifacts != null && data.EquippedArtifacts.artifacts != null)
                     {
-                        var artifacts = _currentUnit.Data.EquippedArtifacts.artifacts;
+                        var artifacts = data.EquippedArtifacts.artifacts;
                         if (index < artifacts.Count && artifacts[index] != null)
                             Bus<CombatArtifactHoverEvent>.Raise(new CombatArtifactHoverEvent(artifacts[index], true));
                     }

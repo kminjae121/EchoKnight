@@ -52,14 +52,14 @@ namespace Code.UI
             if (skillButtonPoolingSO != null && skillButtonPoolingSO.prefab != null)
             {
                 var btn = skillButtonPoolingSO.prefab.GetComponent<CharacterSkillButton>();
-                if (btn != null) defaultSkillOffset = btn.EquippedPopupOffset;
+                if (btn != null) defaultSkillOffset = btn.GetOffset();
             }
 
             Vector2 defaultArtifactOffset = Vector2.zero;
             if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
             {
                 var btn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
-                if (btn != null) defaultArtifactOffset = btn.EquippedPopupOffset;
+                if (btn != null) defaultArtifactOffset = btn.GetOffset();
             }
 
             for (int i = 0; i < skillIcons.Count; i++)

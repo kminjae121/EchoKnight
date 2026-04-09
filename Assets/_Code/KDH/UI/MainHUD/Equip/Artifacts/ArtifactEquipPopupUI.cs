@@ -21,6 +21,8 @@ namespace Code.UI
         private CanvasGroup _canvasGroup;
         private EquipmentItemSO _targetEquipmentItem;
         private bool _isCurrentlyEquipped;
+        
+        private bool _isJustOpened;
 
         private void Awake()
         {
@@ -40,6 +42,25 @@ namespace Code.UI
             Bus<ArtifactPopupEvent>.Unsubscribe(HandlePopupEvent);
             equipButton.onClick.RemoveListener(HandleEquip);
             unequipButton.onClick.RemoveListener(HandleUnequip);
+        }
+
+        private void Update()
+        {
+            if (!gameObject.activeSelf) return;
+
+            if (_isJustOpened)
+            {
+                _isJustOpened = false;
+                return;
+            }
+
+            if (UnityEngine.Input.GetMouseButtonDown(0) || UnityEngine.Input.GetMouseButtonDown(1))
+            {
+                if (!RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, UnityEngine.Input.mousePosition, null))
+                {
+                    Hide();
+                }
+            }
         }
 
         private void HandlePopupEvent(ArtifactPopupEvent evt)
@@ -74,6 +95,7 @@ namespace Code.UI
             }
 
             gameObject.SetActive(true);
+            _isJustOpened = true; 
             transform.SetAsLastSibling();
         }
 
@@ -93,14 +115,16 @@ namespace Code.UI
         {
             if (_targetEquipmentItem != null && !_isCurrentlyEquipped)
                 Bus<ArtifactEquipEvent>.Raise(new ArtifactEquipEvent(_targetEquipmentItem));
-            Hide();
+                
+            Hide(); 
         }
 
         private void HandleUnequip()
         {
             if (_targetEquipmentItem != null && _isCurrentlyEquipped)
                 Bus<ArtifactUnequipEvent>.Raise(new ArtifactUnequipEvent(_targetEquipmentItem));
-            Hide();
+                
+            Hide(); 
         }
 
         private void Hide()

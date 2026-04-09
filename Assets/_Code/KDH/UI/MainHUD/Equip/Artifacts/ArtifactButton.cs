@@ -25,11 +25,8 @@ namespace Code.UI
         [SerializeField] private Sprite epicSprite;
         [SerializeField] private Sprite legendarySprite;
 
-        [Header("Normal Popup Settings")]
+        [Header("Popup Settings")]
         [SerializeField] private Vector2 popupOffset;
-
-        [Header("Equipped Popup Settings")]
-        [SerializeField] private Vector2 equippedPopupOffset;
 
         [Header("Behavior Settings")]
         [SerializeField] private bool openPopupOnHover = false; 
@@ -42,7 +39,6 @@ namespace Code.UI
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
-        public Vector2 EquippedPopupOffset => equippedPopupOffset;
 
         private void Awake()
         {
@@ -56,7 +52,7 @@ namespace Code.UI
         }
 
         public RectTransform GetPivot() => _rectTransform;
-        public Vector2 GetOffset() => _isEquipped ? equippedPopupOffset : popupOffset;
+        public Vector2 GetOffset() => popupOffset;
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 

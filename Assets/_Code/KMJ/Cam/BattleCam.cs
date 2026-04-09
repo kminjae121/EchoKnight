@@ -38,10 +38,10 @@ namespace Code.Cam
             if (positionComposer == null)
                 positionComposer = GetComponent<CinemachinePositionComposer>();
 
-            minX = transform.position.x - 50;
-            maxX = transform.position.x + 50;
-            minZ = transform.position.z - 50;
-            maxZ = transform.position.z + 50;
+            minX = transform.position.x - 20;
+            maxX = transform.position.x + 20;
+            minZ = transform.position.z - 20;
+            maxZ = transform.position.z + 20;
         }
 
         private void Start()

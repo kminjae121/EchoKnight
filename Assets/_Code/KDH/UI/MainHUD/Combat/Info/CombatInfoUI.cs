@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
+using Code.Managers; 
 using Code.SkillSystem;
 using Code.UnitSystem;
 using Code.Items;
@@ -55,17 +57,18 @@ namespace Code.UI
         private Tween _slideTween;
         private UnitState _currentUnit;
         private bool _isVisible;
+        private bool _isManualTargeting; 
+        
         private PoolManagerMono _poolManager;
+        private TurnManager _turnManager; 
         private List<CharacterSkillButton> _activeSkillButtons = new List<CharacterSkillButton>();
 
         private void Awake()
         {
             _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
+            _turnManager = UnityEngine.Object.FindFirstObjectByType<TurnManager>();
 
-            if (_poolManager == null)
-            {
-                Debug.LogError("[CombatInfoUI] 풀 매니저를 찾을 수 없습니다.");
-            }
+            if (_poolManager == null) Debug.LogError("[CombatInfoUI] 풀 매니저를 찾을 수 없습니다.");
 
             if (panelRect == null) panelRect = GetComponent<RectTransform>();
             panelRect.anchoredPosition = hiddenPosition;
@@ -74,9 +77,8 @@ namespace Code.UI
             if (openButton != null) openButton.onClick.AddListener(ShowUI);
             if (closeButton != null) closeButton.onClick.AddListener(HideUI);
 
-            // 이벤트 구독 설정
             Bus<ShowCombatInfoEvent>.Subscribe(HandleShowCombatInfo);
-            Bus<SkillUIEvent>.Subscribe(HandleSkillReceived); // 턴 자동 추적용 이벤트
+            Bus<TurnOrderUpdateEvent>.Subscribe(HandleTurnUpdate); 
             
             SetupArtifactTriggers();
         }
@@ -87,43 +89,27 @@ namespace Code.UI
             if (closeButton != null) closeButton.onClick.RemoveListener(HideUI);
             
             Bus<ShowCombatInfoEvent>.Unsubscribe(HandleShowCombatInfo);
-            Bus<SkillUIEvent>.Unsubscribe(HandleSkillReceived);
+            Bus<TurnOrderUpdateEvent>.Unsubscribe(HandleTurnUpdate);
             
             UnsubscribeHealth();
             _slideTween?.Kill();
         }
 
-        // [핵심] 아군 턴이 시작될 때마다 현재 턴의 유닛을 자동 추적합니다.
-        private void HandleSkillReceived(SkillUIEvent evt)
+        private void HandleTurnUpdate(TurnOrderUpdateEvent evt)
         {
-            if (evt.SkillCompo != null)
+            if (_isVisible && !_isManualTargeting)
             {
-                var unitState = evt.SkillCompo.GetComponentInParent<UnitState>();
-                if (unitState != null)
-                {
-                    UnsubscribeHealth();
-                    _currentUnit = unitState;
-
-                    if (_currentUnit.CurrentHp != null)
-                    {
-                        _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
-                    }
-
-                    // 패널이 열려있는 상태라면 즉시 화면을 갱신합니다.
-                    if (_isVisible)
-                    {
-                        RefreshAllUI();
-                    }
-                }
+                UpdateToCurrentTurnUnit();
             }
         }
 
-        // 수동으로 적군이나 다른 아군을 클릭했을 때 정보를 띄우는 로직
         private void HandleShowCombatInfo(ShowCombatInfoEvent evt)
         {
+            UnsubscribeHealth();
+
             if (evt.IsShow && evt.TargetUnit != null)
             {
-                UnsubscribeHealth();
+                _isManualTargeting = true; 
                 _currentUnit = evt.TargetUnit;
                 
                 if (_currentUnit.CurrentHp != null)
@@ -137,6 +123,59 @@ namespace Code.UI
             {
                 HideUI();
             }
+        }
+
+        private void UpdateToCurrentTurnUnit()
+        {
+            if (_turnManager == null) _turnManager = UnityEngine.Object.FindFirstObjectByType<TurnManager>();
+            
+            if (_turnManager != null)
+            {
+                var units = _turnManager.GetTimelineUnits(1);
+                if (units != null && units.Count > 0 && units[0] is MonoBehaviour mb)
+                {
+                    var newTurnUnit = GetUnitStateFromMonoBehaviour(mb);
+                    
+                    if (newTurnUnit != null && _currentUnit != newTurnUnit)
+                    {
+                        UnsubscribeHealth();
+                        _currentUnit = newTurnUnit;
+                        
+                        if (_currentUnit.CurrentHp != null)
+                        {
+                            _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
+                        }
+                        
+                        if (_isVisible) RefreshAllUI();
+                    }
+                }
+            }
+        }
+
+        private UnitState GetUnitStateFromMonoBehaviour(MonoBehaviour mb)
+        {
+            if (mb == null) return null;
+            
+            System.Type currentType = mb.GetType();
+            
+            while (currentType != null && currentType != typeof(MonoBehaviour))
+            {
+                foreach (var prop in currentType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                {
+                    if (prop.PropertyType == typeof(UnitState)) 
+                        return prop.GetValue(mb) as UnitState;
+                }
+                
+                foreach (var field in currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                {
+                    if (field.FieldType == typeof(UnitState)) 
+                        return field.GetValue(mb) as UnitState;
+                }
+                
+                currentType = currentType.BaseType;
+            }
+            
+            return null;
         }
 
         private void UnsubscribeHealth()
@@ -155,10 +194,15 @@ namespace Code.UI
         public void ShowUI()
         {
             if (_isVisible) return;
+            
+            if (_currentUnit == null && !_isManualTargeting)
+            {
+                UpdateToCurrentTurnUnit();
+            }
+
             _isVisible = true;
             if (backgroundPanel != null) backgroundPanel.SetActive(true);
 
-            // 패널이 열리는 순간 추적해둔 현재 유닛의 정보를 UI에 갱신시킵니다.
             RefreshAllUI();
 
             _slideTween?.Kill();
@@ -168,7 +212,9 @@ namespace Code.UI
         public void HideUI()
         {
             if (!_isVisible) return;
+            
             _isVisible = false;
+            _isManualTargeting = false; 
             
             _slideTween?.Kill();
             _slideTween = panelRect.DOAnchorPos(hiddenPosition, slideDuration).SetEase(Ease.InBack).OnComplete(() => 
@@ -178,6 +224,9 @@ namespace Code.UI
             
             Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
             Bus<CombatArtifactHoverEvent>.Raise(new CombatArtifactHoverEvent(null, false));
+
+            UnsubscribeHealth();
+            _currentUnit = null; 
         }
 
         private void RefreshAllUI()
@@ -222,16 +271,10 @@ namespace Code.UI
         {
             SkillSO[] equippedSkills = System.Array.Empty<SkillSO>();
             
-            // 아군인지 확인 후 스킬 정보를 받아옵니다.
             if (SkillSendManager.Instance != null && _currentUnit != null && _currentUnit.Data != null)
-            {
                 equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.Data.UnitType);
-            }
 
-            if (equippedSkills == null)
-            {
-                equippedSkills = System.Array.Empty<SkillSO>();
-            }
+            if (equippedSkills == null) equippedSkills = System.Array.Empty<SkillSO>();
 
             foreach (var btn in _activeSkillButtons)
             {
@@ -239,7 +282,7 @@ namespace Code.UI
             }
             _activeSkillButtons.Clear();
 
-            if (equippedSkills != null && skillPanelGroup != null && characterSkillButtonPoolingSO != null)
+            if (skillPanelGroup != null && characterSkillButtonPoolingSO != null)
             {
                 for (int i = 0; i < equippedSkills.Length; i++)
                 {
@@ -276,7 +319,6 @@ namespace Code.UI
                         if (artifact is EquipmentItemSO equipSO)
                         {
                             artifactRarityImages[i].gameObject.SetActive(true);
-                            
                             int rarityIndex = (int)equipSO.rarity;
                             if (raritySprites != null && rarityIndex >= 0 && rarityIndex < raritySprites.Count)
                             {
@@ -314,7 +356,7 @@ namespace Code.UI
                 trigger.useHoverVisuals = false;
                 trigger.OnHoverEnter = (pivot, triggerOffset) =>
                 {
-                    if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null)
+                    if (_currentUnit != null && _currentUnit.Data != null && _currentUnit.Data.EquippedArtifacts != null)
                     {
                         var artifacts = _currentUnit.Data.EquippedArtifacts.artifacts;
                         if (index < artifacts.Count && artifacts[index] != null)

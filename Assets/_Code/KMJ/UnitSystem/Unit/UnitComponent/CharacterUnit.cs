@@ -69,9 +69,6 @@ namespace Code.UnitSystem
 
             MoveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
             
-            if(_startTile != null)
-                transform.position = _startTile.transform.position;
-            
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             
             AnimationCompo.PlaySelectAnimation("IDLE");

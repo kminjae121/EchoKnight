@@ -66,7 +66,6 @@ namespace Code.Core.Managers
                 }
 
                 Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(data.spawnCoord.x, data.spawnCoord.y);
-                //GameObject enemyObj = Instantiate(data.enemyPrefab, spawnPos, Quaternion.identity);
                 
                 GameObject enemyObj = _poolManager.Pop<Unit>(data.enemyPrefab).gameObject;
 

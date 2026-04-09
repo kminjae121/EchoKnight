@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Reflection;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
+using Code.Managers; 
 using Code.SkillSystem;
 using Code.UnitSystem;
 using Code.Items;
@@ -55,17 +57,18 @@ namespace Code.UI
         private Tween _slideTween;
         private UnitState _currentUnit;
         private bool _isVisible;
+        private bool _isManualTargeting; 
+        
         private PoolManagerMono _poolManager;
+        private TurnManager _turnManager; 
         private List<CharacterSkillButton> _activeSkillButtons = new List<CharacterSkillButton>();
 
         private void Awake()
         {
             _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
+            _turnManager = UnityEngine.Object.FindFirstObjectByType<TurnManager>();
 
-            if (_poolManager == null)
-            {
-                Debug.LogError("[CombatInfoUI] 풀 매니저를 찾을 수 없습니다.");
-            }
+            if (_poolManager == null) Debug.LogError("[CombatInfoUI] 풀 매니저를 찾을 수 없습니다.");
 
             if (panelRect == null) panelRect = GetComponent<RectTransform>();
             panelRect.anchoredPosition = hiddenPosition;
@@ -75,6 +78,8 @@ namespace Code.UI
             if (closeButton != null) closeButton.onClick.AddListener(HideUI);
 
             Bus<ShowCombatInfoEvent>.Subscribe(HandleShowCombatInfo);
+            Bus<TurnOrderUpdateEvent>.Subscribe(HandleTurnUpdate); 
+            
             SetupArtifactTriggers();
         }
 
@@ -84,8 +89,18 @@ namespace Code.UI
             if (closeButton != null) closeButton.onClick.RemoveListener(HideUI);
             
             Bus<ShowCombatInfoEvent>.Unsubscribe(HandleShowCombatInfo);
+            Bus<TurnOrderUpdateEvent>.Unsubscribe(HandleTurnUpdate);
+            
             UnsubscribeHealth();
             _slideTween?.Kill();
+        }
+
+        private void HandleTurnUpdate(TurnOrderUpdateEvent evt)
+        {
+            if (_isVisible && !_isManualTargeting)
+            {
+                UpdateToCurrentTurnUnit();
+            }
         }
 
         private void HandleShowCombatInfo(ShowCombatInfoEvent evt)
@@ -94,6 +109,7 @@ namespace Code.UI
 
             if (evt.IsShow && evt.TargetUnit != null)
             {
+                _isManualTargeting = true; 
                 _currentUnit = evt.TargetUnit;
                 
                 if (_currentUnit.CurrentHp != null)
@@ -101,14 +117,65 @@ namespace Code.UI
                     _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
                 }
                 
-                RefreshAllUI();
                 ShowUI();
             }
             else
             {
                 HideUI();
-                _currentUnit = null;
             }
+        }
+
+        private void UpdateToCurrentTurnUnit()
+        {
+            if (_turnManager == null) _turnManager = UnityEngine.Object.FindFirstObjectByType<TurnManager>();
+            
+            if (_turnManager != null)
+            {
+                var units = _turnManager.GetTimelineUnits(1);
+                if (units != null && units.Count > 0 && units[0] is MonoBehaviour mb)
+                {
+                    var newTurnUnit = GetUnitStateFromMonoBehaviour(mb);
+                    
+                    if (newTurnUnit != null && _currentUnit != newTurnUnit)
+                    {
+                        UnsubscribeHealth();
+                        _currentUnit = newTurnUnit;
+                        
+                        if (_currentUnit.CurrentHp != null)
+                        {
+                            _currentUnit.CurrentHp.OnValueChanged += OnHealthChanged;
+                        }
+                        
+                        if (_isVisible) RefreshAllUI();
+                    }
+                }
+            }
+        }
+
+        private UnitState GetUnitStateFromMonoBehaviour(MonoBehaviour mb)
+        {
+            if (mb == null) return null;
+            
+            System.Type currentType = mb.GetType();
+            
+            while (currentType != null && currentType != typeof(MonoBehaviour))
+            {
+                foreach (var prop in currentType.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                {
+                    if (prop.PropertyType == typeof(UnitState)) 
+                        return prop.GetValue(mb) as UnitState;
+                }
+                
+                foreach (var field in currentType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance))
+                {
+                    if (field.FieldType == typeof(UnitState)) 
+                        return field.GetValue(mb) as UnitState;
+                }
+                
+                currentType = currentType.BaseType;
+            }
+            
+            return null;
         }
 
         private void UnsubscribeHealth()
@@ -127,8 +194,16 @@ namespace Code.UI
         public void ShowUI()
         {
             if (_isVisible) return;
+            
+            if (_currentUnit == null && !_isManualTargeting)
+            {
+                UpdateToCurrentTurnUnit();
+            }
+
             _isVisible = true;
             if (backgroundPanel != null) backgroundPanel.SetActive(true);
+
+            RefreshAllUI();
 
             _slideTween?.Kill();
             _slideTween = panelRect.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
@@ -137,7 +212,9 @@ namespace Code.UI
         public void HideUI()
         {
             if (!_isVisible) return;
+            
             _isVisible = false;
+            _isManualTargeting = false; 
             
             _slideTween?.Kill();
             _slideTween = panelRect.DOAnchorPos(hiddenPosition, slideDuration).SetEase(Ease.InBack).OnComplete(() => 
@@ -147,6 +224,9 @@ namespace Code.UI
             
             Bus<SkillUIHoverEvent>.Raise(new SkillUIHoverEvent(null, null));
             Bus<CombatArtifactHoverEvent>.Raise(new CombatArtifactHoverEvent(null, false));
+
+            UnsubscribeHealth();
+            _currentUnit = null; 
         }
 
         private void RefreshAllUI()
@@ -190,8 +270,11 @@ namespace Code.UI
         private void RefreshSkills()
         {
             SkillSO[] equippedSkills = System.Array.Empty<SkillSO>();
-            if (SkillSendManager.Instance != null && _currentUnit != null)
+            
+            if (SkillSendManager.Instance != null && _currentUnit != null && _currentUnit.Data != null)
                 equippedSkills = SkillSendManager.Instance.GetEquipSkills(_currentUnit.Data.UnitType);
+
+            if (equippedSkills == null) equippedSkills = System.Array.Empty<SkillSO>();
 
             foreach (var btn in _activeSkillButtons)
             {
@@ -199,7 +282,7 @@ namespace Code.UI
             }
             _activeSkillButtons.Clear();
 
-            if (equippedSkills != null && skillPanelGroup != null && characterSkillButtonPoolingSO != null)
+            if (skillPanelGroup != null && characterSkillButtonPoolingSO != null)
             {
                 for (int i = 0; i < equippedSkills.Length; i++)
                 {
@@ -236,7 +319,6 @@ namespace Code.UI
                         if (artifact is EquipmentItemSO equipSO)
                         {
                             artifactRarityImages[i].gameObject.SetActive(true);
-                            
                             int rarityIndex = (int)equipSO.rarity;
                             if (raritySprites != null && rarityIndex >= 0 && rarityIndex < raritySprites.Count)
                             {
@@ -274,7 +356,7 @@ namespace Code.UI
                 trigger.useHoverVisuals = false;
                 trigger.OnHoverEnter = (pivot, triggerOffset) =>
                 {
-                    if (_currentUnit != null && _currentUnit.Data.EquippedArtifacts != null)
+                    if (_currentUnit != null && _currentUnit.Data != null && _currentUnit.Data.EquippedArtifacts != null)
                     {
                         var artifacts = _currentUnit.Data.EquippedArtifacts.artifacts;
                         if (index < artifacts.Count && artifacts[index] != null)

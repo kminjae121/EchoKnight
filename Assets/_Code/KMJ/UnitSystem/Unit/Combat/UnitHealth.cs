@@ -49,21 +49,21 @@ namespace Code.UnitSystem.Combat
         {
             _defensivePower = _statCompo.GetStat(StatInfo.DefensivePower);
             
-            if (_entity as CharacterUnit)
-            {
-                foreach (var unitState in StorageSO.unitStates)
-                {
-                    if(unitState.Data == _entity.unitSO)
-                        _unitStateCompo = unitState;
-                }
-
-                maxHealth = _unitStateCompo.MaxHealth;
-                currentHealth = _unitStateCompo.CurrentHp.Value;   
-            }
-            else
-            {
+           // if (_entity as CharacterUnit)
+           // {
+           //     foreach (var unitState in StorageSO.unitStates)
+           //     {
+           //         if(unitState.Data == _entity.unitSO)
+           //             _unitStateCompo = unitState;
+           //     }
+           //
+           //     maxHealth = _unitStateCompo.MaxHealth;
+           //     currentHealth = _unitStateCompo.CurrentHp.Value;   
+           // }
+           // else
+            //{
                 maxHealth = currentHealth = _entity.unitSO.Maxhealth;
-            }
+           // }
         }
 
         public void HealHp(float amount)

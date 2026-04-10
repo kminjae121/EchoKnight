@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 namespace Code.UI
 {
+    [RequireComponent(typeof(CanvasGroup))]
     public class CombatArtifactPopupUI : MonoBehaviour
     {
         [Header("UI Elements")]
@@ -20,15 +21,21 @@ namespace Code.UI
         [SerializeField] private RectTransform statContentArea; 
         [SerializeField] private PoolingItemSO statSlotPoolingSO; 
 
-        [Header("Settings")]
-        [SerializeField] private Vector2 offset = new Vector2(20f, -20f);
-
         private PoolManagerMono _poolManager;
         private List<ArtifactStatSlotUI> _activeStatSlots = new List<ArtifactStatSlotUI>();
+        private CanvasGroup _canvasGroup;
 
         private void Awake()
         {
             if (popupRect == null) popupRect = GetComponent<RectTransform>();
+            
+            _canvasGroup = GetComponent<CanvasGroup>();
+            if (_canvasGroup != null)
+            {
+                _canvasGroup.blocksRaycasts = false;
+                _canvasGroup.interactable = false;
+            }
+
             _poolManager = UnityEngine.Object.FindFirstObjectByType<PoolManagerMono>();
             
             HidePopup();
@@ -40,19 +47,22 @@ namespace Code.UI
             Bus<CombatArtifactHoverEvent>.Unsubscribe(HandleArtifactHover);
         }
 
-        private void Update()
-        {
-            if (popupRect != null && popupRect.gameObject.activeSelf)
-            {
-                Vector2 mousePos = UnityEngine.Input.mousePosition;
-                popupRect.position = mousePos + offset;
-            }
-        }
-
         private void HandleArtifactHover(CombatArtifactHoverEvent evt)
         {
-            if (evt.IsShow && evt.Artifact != null) ShowPopup(evt.Artifact);
-            else HidePopup();
+            if (evt.IsShow && evt.Artifact != null) 
+            {
+                ShowPopup(evt.Artifact);
+
+                if (evt.Pivot != null)
+                {
+                    popupRect.position = evt.Pivot.position;
+                    popupRect.anchoredPosition += new Vector2(evt.Offset.x, evt.Offset.y);
+                }
+            }
+            else 
+            {
+                HidePopup();
+            }
         }
 
         private void ShowPopup(ItemSO artifact)

@@ -25,6 +25,9 @@ namespace Code.UI
         [Header("Equipped Popup Settings")]
         [SerializeField] private Vector2 equippedPopupOffset;
 
+        [Header("Combat Popup Settings")]
+        [SerializeField] private Vector2 combatPopupOffset;
+
         public bool IsCombatMode { get; set; } = false;
 
         private SkillSO _skill;
@@ -37,6 +40,7 @@ namespace Code.UI
 
         public PoolingItemSO PoolingType => poolingType;
         public GameObject GameObject => gameObject;
+        
         public Vector2 EquippedPopupOffset => equippedPopupOffset;
 
         private void Awake()
@@ -64,7 +68,12 @@ namespace Code.UI
         }
 
         public RectTransform GetPivot() => _rectTransform;
-        public Vector2 GetOffset() => _isEquipped ? equippedPopupOffset : popupOffset;
+
+        public Vector2 GetOffset()
+        {
+            if (IsCombatMode) return combatPopupOffset;
+            return _isEquipped ? equippedPopupOffset : popupOffset;
+        }
 
         public void SetUpPool(GondrLib.ObjectPool.Runtime.Pool pool) => _pool = pool;
 

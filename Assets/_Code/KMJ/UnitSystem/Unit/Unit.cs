@@ -55,6 +55,8 @@ namespace Code.UnitSystem
         {
             InitializeData();
             RegisterEvents();
+            
+            AnimationCompo.PlaySelectAnimation("IDLE");
         }
         
         protected virtual void OnDisable()

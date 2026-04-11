@@ -40,6 +40,7 @@ namespace Code.UnitSystem
         public int PlayableUnitID { get; set; } = -1;
         public bool IsConfirmationSkill { get; set; }
         
+        
         public GameObject _startTile;
         private Button endTurnBtn;
         

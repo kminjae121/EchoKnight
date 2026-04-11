@@ -17,5 +17,30 @@ namespace Code.Map
         {
             this.point = point;
         }
+
+        public void AddIncoming(Vector2Int p)
+        {
+            if (!incoming.Contains(p)) incoming.Add(p);
+        }
+
+        public void AddOutgoing(Vector2Int p)
+        {
+            if (!outgoing.Contains(p)) outgoing.Add(p);
+        }
+
+        public void RemoveIncoming(Vector2Int p)
+        {
+            incoming.Remove(p);
+        }
+
+        public void RemoveOutgoing(Vector2Int p)
+        {
+            outgoing.Remove(p);
+        }
+
+        public bool HasNoConnections()
+        {
+            return incoming.Count == 0 && outgoing.Count == 0;
+        }
     }
 }

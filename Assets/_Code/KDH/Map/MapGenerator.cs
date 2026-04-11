@@ -6,6 +6,9 @@ namespace Code.Map
 {
     public static class MapGenerator
     {
+        private static MapConfigSO _config;
+        private static List<List<MapNode>> _nodes = new List<List<MapNode>>();
+
         public static MapData GenerateMap(MapConfigSO config)
         {
             if (config == null)
@@ -14,168 +17,229 @@ namespace Code.Map
                 return null;
             }
 
+            _config = config;
+            _nodes.Clear();
+
+            GenerateGrid();
+            List<List<Vector2Int>> paths = GeneratePaths();
+            SetUpConnections(paths);
+            RemoveCrossConnections();
+
+            List<MapNode> finalNodes = _nodes.SelectMany(n => n)
+                .Where(n => !n.HasNoConnections()).ToList();
+
+            AssignNodeTypes(finalNodes);
+            RandomizeNodePositions(finalNodes);
+
             MapData mapData = new MapData();
             mapData.configName = config.name;
-
-            List<List<MapNode>> grid = new List<List<MapNode>>();
-            for (int i = 0; i < config.numOfLayers; i++)
-            {
-                grid.Add(new List<MapNode>());
-                for (int j = 0; j < config.gridWidth; j++)
-                {
-                    grid[i].Add(new MapNode(new Vector2Int(j, i)));
-                }
-            }
-
-            GeneratePaths(grid, config);
-            CullUnreachableNodes(grid);
-            AssignPositions(grid, config);
-            AssignNodeTypes(grid, config);
-
-            foreach (var layer in grid)
-            {
-                foreach (var node in layer)
-                {
-                    if (node.incoming.Count > 0 || node.outgoing.Count > 0 || node.point.y == 0)
-                    {
-                        mapData.nodes.Add(node);
-                    }
-                }
-            }
+            mapData.nodes = finalNodes;
 
             return mapData;
         }
 
-        private static void GeneratePaths(List<List<MapNode>> grid, MapConfigSO config)
+        private static void GenerateGrid()
         {
-            List<int> startNodes = GetRandomIndices(config.gridWidth, config.startingNodesCount);
+            float startX = -((_config.gridWidth - 1) * _config.nodeSpacingX) / 2f;
             
-            foreach (int startIndex in startNodes)
+            for (int y = 0; y < _config.numOfLayers; y++)
             {
-                int currentX = startIndex;
-                for (int y = 0; y < config.numOfLayers - 1; y++)
+                List<MapNode> layerNodes = new List<MapNode>();
+                for (int x = 0; x < _config.gridWidth; x++)
                 {
-                    int nextY = y + 1;
-                    List<int> validNextX = GetValidNextNodes(currentX, config.gridWidth);
-                    int nextX = validNextX[Random.Range(0, validNextX.Count)];
+                    MapNode node = new MapNode(new Vector2Int(x, y));
+                    node.position = new Vector2(startX + (x * _config.nodeSpacingX), y * _config.nodeSpacingY);
+                    layerNodes.Add(node);
+                }
+                _nodes.Add(layerNodes);
+            }
+        }
 
-                    if (!WillCauseCross(grid, currentX, y, nextX, nextY))
+        private static List<List<Vector2Int>> GeneratePaths()
+        {
+            Vector2Int finalNode = GetFinalNode();
+            var paths = new List<List<Vector2Int>>();
+            
+            List<int> candidateXs = new List<int>();
+            for (int i = 0; i < _config.gridWidth; i++) candidateXs.Add(i);
+
+            Shuffle(candidateXs);
+            List<Vector2Int> startingPoints = candidateXs.Take(_config.numOfStartingNodes).Select(x => new Vector2Int(x, 0)).ToList();
+
+            Shuffle(candidateXs);
+            List<Vector2Int> preBossPoints = candidateXs.Take(_config.numOfPreBossNodes).Select(x => new Vector2Int(x, finalNode.y - 1)).ToList();
+
+            int numOfPaths = Mathf.Max(_config.numOfStartingNodes, _config.numOfPreBossNodes) + Mathf.Max(0, _config.extraPaths);
+            
+            for (int i = 0; i < numOfPaths; ++i)
+            {
+                Vector2Int startNode = startingPoints[i % _config.numOfStartingNodes];
+                Vector2Int endNode = preBossPoints[i % _config.numOfPreBossNodes];
+                
+                List<Vector2Int> path = CreatePath(startNode, endNode);
+                path.Add(finalNode);
+                paths.Add(path);
+            }
+
+            return paths;
+        }
+
+        private static List<Vector2Int> CreatePath(Vector2Int fromPoint, Vector2Int toPoint)
+        {
+            int toRow = toPoint.y;
+            int toCol = toPoint.x;
+            int lastNodeCol = fromPoint.x;
+
+            List<Vector2Int> path = new List<Vector2Int> { fromPoint };
+            List<int> candidateCols = new List<int>();
+            
+            for (int row = 1; row < toRow; ++row)
+            {
+                candidateCols.Clear();
+                int verticalDistance = toRow - row;
+
+                if (Mathf.Abs(toCol - lastNodeCol) <= verticalDistance)
+                    candidateCols.Add(lastNodeCol);
+
+                int leftCol = lastNodeCol - 1;
+                if (leftCol >= 0 && Mathf.Abs(toCol - leftCol) <= verticalDistance)
+                    candidateCols.Add(leftCol);
+
+                int rightCol = lastNodeCol + 1;
+                if (rightCol < _config.gridWidth && Mathf.Abs(toCol - rightCol) <= verticalDistance)
+                    candidateCols.Add(rightCol);
+
+                int candidateCol = candidateCols[Random.Range(0, candidateCols.Count)];
+                path.Add(new Vector2Int(candidateCol, row));
+                lastNodeCol = candidateCol;
+            }
+
+            path.Add(toPoint);
+            return path;
+        }
+
+        private static void SetUpConnections(List<List<Vector2Int>> paths)
+        {
+            foreach (List<Vector2Int> path in paths)
+            {
+                for (int i = 0; i < path.Count - 1; ++i)
+                {
+                    MapNode node = GetNode(path[i]);
+                    MapNode nextNode = GetNode(path[i + 1]);
+                    node.AddOutgoing(nextNode.point);
+                    nextNode.AddIncoming(node.point);
+                }
+            }
+        }
+
+        private static void RemoveCrossConnections()
+        {
+            for (int i = 0; i < _config.gridWidth - 1; ++i)
+            {
+                for (int j = 0; j < _config.numOfLayers - 1; ++j)
+                {
+                    MapNode node = GetNode(new Vector2Int(i, j));
+                    if (node == null || node.HasNoConnections()) continue;
+                    
+                    MapNode right = GetNode(new Vector2Int(i + 1, j));
+                    if (right == null || right.HasNoConnections()) continue;
+                    
+                    MapNode top = GetNode(new Vector2Int(i, j + 1));
+                    if (top == null || top.HasNoConnections()) continue;
+                    
+                    MapNode topRight = GetNode(new Vector2Int(i + 1, j + 1));
+                    if (topRight == null || topRight.HasNoConnections()) continue;
+
+                    if (!node.outgoing.Contains(topRight.point)) continue;
+                    if (!right.outgoing.Contains(top.point)) continue;
+
+                    node.AddOutgoing(top.point);
+                    top.AddIncoming(node.point);
+
+                    right.AddOutgoing(topRight.point);
+                    topRight.AddIncoming(right.point);
+
+                    float rnd = Random.Range(0f, 1f);
+                    if (rnd < 0.2f)
                     {
-                        grid[y][currentX].outgoing.Add(new Vector2Int(nextX, nextY));
-                        grid[nextY][nextX].incoming.Add(new Vector2Int(currentX, y));
-                        currentX = nextX;
+                        node.RemoveOutgoing(topRight.point);
+                        topRight.RemoveIncoming(node.point);
+                        right.RemoveOutgoing(top.point);
+                        top.RemoveIncoming(right.point);
+                    }
+                    else if (rnd < 0.6f)
+                    {
+                        node.RemoveOutgoing(topRight.point);
+                        topRight.RemoveIncoming(node.point);
                     }
                     else
                     {
-                        nextX = currentX;
-                        grid[y][currentX].outgoing.Add(new Vector2Int(nextX, nextY));
-                        grid[nextY][nextX].incoming.Add(new Vector2Int(currentX, y));
+                        right.RemoveOutgoing(top.point);
+                        top.RemoveIncoming(right.point);
                     }
                 }
             }
         }
 
-        private static bool WillCauseCross(List<List<MapNode>> grid, int startX, int startY, int endX, int endY)
+        private static MapNode GetNode(Vector2Int p)
         {
-            foreach (var node in grid[startY])
+            if (p.y >= _nodes.Count) return null;
+            if (p.x >= _nodes[p.y].Count) return null;
+            return _nodes[p.y][p.x];
+        }
+
+        private static Vector2Int GetFinalNode()
+        {
+            int y = _config.numOfLayers - 1;
+            
+            if (_config.gridWidth % 2 == 1)
+                return new Vector2Int(_config.gridWidth / 2, y);
+
+            return Random.Range(0, 2) == 0
+                ? new Vector2Int(_config.gridWidth / 2, y)
+                : new Vector2Int(_config.gridWidth / 2 - 1, y);
+        }
+
+        private static void AssignNodeTypes(List<MapNode> finalNodes)
+        {
+            foreach (var node in finalNodes)
             {
-                foreach (var outgoing in node.outgoing)
+                int y = node.point.y;
+
+                if (y == 0)
                 {
-                    if (node.point.x < startX && outgoing.x > endX) return true;
-                    if (node.point.x > startX && outgoing.x < endX) return true;
+                    node.nodeType = MapNodeType.MinorEnemy;
                 }
-            }
-            return false;
-        }
-
-        private static List<int> GetValidNextNodes(int currentX, int gridWidth)
-        {
-            List<int> validNodes = new List<int> { currentX };
-            if (currentX > 0) validNodes.Add(currentX - 1);
-            if (currentX < gridWidth - 1) validNodes.Add(currentX + 1);
-            return validNodes;
-        }
-
-        private static void CullUnreachableNodes(List<List<MapNode>> grid)
-        {
-            for (int y = grid.Count - 2; y >= 0; y--)
-            {
-                foreach (var node in grid[y])
+                else if (y == _config.preBossRestSiteLayer)
                 {
-                    if (node.outgoing.Count == 0)
-                    {
-                        foreach (var incoming in node.incoming)
-                        {
-                            grid[incoming.y][incoming.x].outgoing.Remove(node.point);
-                        }
-                        node.incoming.Clear();
-                    }
+                    node.nodeType = MapNodeType.RestSite;
                 }
-            }
-        }
-
-        private static void AssignPositions(List<List<MapNode>> grid, MapConfigSO config)
-        {
-            float startX = -((config.gridWidth - 1) * config.nodeSpacingX) / 2f;
-            float startY = 0f;
-
-            for (int y = 0; y < grid.Count; y++)
-            {
-                for (int x = 0; x < grid[y].Count; x++)
+                else if (y == _config.numOfLayers - 1)
                 {
-                    float jitterX = Random.Range(-config.positionJitterX, config.positionJitterX);
-                    float jitterY = Random.Range(-config.positionJitterY, config.positionJitterY);
+                    node.nodeType = MapNodeType.Boss;
+                }
+                else
+                {
+                    node.nodeType = GetRandomNodeType(_config);
                     
-                    grid[y][x].position = new Vector2(
-                        startX + (x * config.nodeSpacingX) + jitterX,
-                        startY + (y * config.nodeSpacingY) + jitterY
-                    );
-                }
-            }
-        }
-
-        private static void AssignNodeTypes(List<List<MapNode>> grid, MapConfigSO config)
-        {
-            for (int y = 0; y < grid.Count; y++)
-            {
-                foreach (var node in grid[y])
-                {
-                    if (node.incoming.Count == 0 && node.outgoing.Count == 0) continue;
-
-                    if (y == 0)
+                    if (node.nodeType == MapNodeType.EliteEnemy && y < _config.minEliteLayer)
                     {
                         node.nodeType = MapNodeType.MinorEnemy;
                     }
-                    else if (y == config.preBossRestSiteLayer)
-                    {
-                        node.nodeType = MapNodeType.RestSite;
-                    }
-                    else if (y == config.numOfLayers - 1)
-                    {
-                        node.nodeType = MapNodeType.Boss;
-                    }
-                    else
-                    {
-                        node.nodeType = GetRandomNodeType(config, y);
-                        
-                        if (node.nodeType == MapNodeType.EliteEnemy && y < config.minEliteLayer)
-                        {
-                            node.nodeType = MapNodeType.MinorEnemy;
-                        }
-                        
-                        EnsureNoConsecutiveTypes(grid, node);
-                    }
+                    
+                    EnsureNoConsecutiveTypes(node);
                 }
             }
         }
 
-        private static void EnsureNoConsecutiveTypes(List<List<MapNode>> grid, MapNode node)
+        private static void EnsureNoConsecutiveTypes(MapNode node)
         {
             if (node.nodeType == MapNodeType.EliteEnemy || node.nodeType == MapNodeType.RestSite || node.nodeType == MapNodeType.Store)
             {
                 foreach (var incomingPoint in node.incoming)
                 {
-                    if (grid[incomingPoint.y][incomingPoint.x].nodeType == node.nodeType)
+                    var incomingNode = GetNode(incomingPoint);
+                    if (incomingNode != null && incomingNode.nodeType == node.nodeType)
                     {
                         node.nodeType = MapNodeType.MinorEnemy;
                         break;
@@ -184,10 +248,13 @@ namespace Code.Map
             }
         }
 
-        private static MapNodeType GetRandomNodeType(MapConfigSO config, int currentLayer)
+        private static MapNodeType GetRandomNodeType(MapConfigSO config)
         {
+            if (config.defaultBlueprints == null || config.defaultBlueprints.Count == 0)
+                return MapNodeType.MinorEnemy;
+
             float totalWeight = config.defaultBlueprints.Sum(b => b.weight);
-            float randomVal = Random.Range(0, totalWeight);
+            float randomVal = Random.Range(0f, totalWeight);
             float currentWeight = 0;
 
             foreach (var blueprint in config.defaultBlueprints)
@@ -201,20 +268,29 @@ namespace Code.Map
             return MapNodeType.MinorEnemy;
         }
 
-        private static List<int> GetRandomIndices(int count, int returnCount)
+        private static void RandomizeNodePositions(List<MapNode> finalNodes)
         {
-            List<int> indices = new List<int>();
-            for (int i = 0; i < count; i++) indices.Add(i);
-            
-            for (int i = 0; i < indices.Count; i++)
+            foreach (var node in finalNodes)
             {
-                int temp = indices[i];
-                int randomIndex = Random.Range(i, indices.Count);
-                indices[i] = indices[randomIndex];
-                indices[randomIndex] = temp;
-            }
+                // 보스 노드(가장 위)는 정중앙을 유지하도록 흔들지 않습니다.
+                if (node.nodeType == MapNodeType.Boss) continue;
 
-            return indices.Take(returnCount).ToList();
+                float jitterX = Random.Range(-_config.positionJitterX, _config.positionJitterX);
+                float jitterY = Random.Range(-_config.positionJitterY, _config.positionJitterY);
+                
+                node.position += new Vector2(jitterX, jitterY);
+            }
+        }
+
+        private static void Shuffle<T>(IList<T> list)
+        {
+            for (int i = 0; i < list.Count; i++)
+            {
+                int rnd = Random.Range(i, list.Count);
+                T temp = list[i];
+                list[i] = list[rnd];
+                list[rnd] = temp;
+            }
         }
     }
 }

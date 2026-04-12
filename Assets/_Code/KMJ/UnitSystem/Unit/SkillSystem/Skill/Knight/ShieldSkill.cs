@@ -15,6 +15,8 @@ public class ShieldSkill : BasicUnitSkill
 
     private int turnCnt = 0;
 
+    private int _inGameDefensePower = 0;
+
     protected void Start()
     {
         SkillEvent.AddListener(AddAP);
@@ -31,6 +33,8 @@ public class ShieldSkill : BasicUnitSkill
     protected override void OnDestroy()
     {
         base.OnDestroy();
+        _characterUnit.unitSO.DefensivePower -= _inGameDefensePower;
+            
         SkillEvent.RemoveListener(AddAP);
 
     }
@@ -42,7 +46,8 @@ public class ShieldSkill : BasicUnitSkill
 
     public void SetShield()
     {
-        
+        _inGameDefensePower += 10;
+        _characterUnit.unitSO.DefensivePower += 10;
     }
     
 

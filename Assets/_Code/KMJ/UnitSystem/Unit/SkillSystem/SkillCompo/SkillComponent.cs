@@ -10,7 +10,7 @@ namespace Code.SkillSystem
 {
     public abstract class SkillComponent : MonoBehaviour, IUnitComponent
     {
-        [SerializeField] protected List<SkillSO> skillList;
+        [SerializeField] protected List<SkillSO> skillList = new List<SkillSO>();
 
         public Dictionary<SkillSO, BaseSkill> Skills { get; private set; }
 
@@ -28,7 +28,10 @@ namespace Code.SkillSystem
                 _statCompo = _unit.GetUnitCompo<UnitStatCompo>();
 
             foreach (var skill in SkillSendManager.Instance.GetEquipSkills(_unit.unitSO.UnitType))
-                skillList.Add(skill);
+            {
+                if(!skillList.Contains(skill))
+                  skillList.Add(skill);
+            }
             
             Skills = new Dictionary<SkillSO, BaseSkill>();
             

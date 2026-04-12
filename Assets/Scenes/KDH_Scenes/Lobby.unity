@@ -2107,7 +2107,6 @@ GameObject:
   - component: {fileID: 698708446}
   - component: {fileID: 698708448}
   - component: {fileID: 698708447}
-  - component: {fileID: 698708449}
   m_Layer: 5
   m_Name: Lobby_Name
   m_TagString: Untagged
@@ -2234,21 +2233,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 698708445}
   m_CullTransparentMesh: 1
---- !u!114 &698708449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 698708445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec5b91c84d5949b3ba48577e3191db54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterImage: {fileID: 130037252}
-  characterNameText: {fileID: 698708447}
-  characterDescText: {fileID: 2001077389}
 --- !u!114 &705399124 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 284759067926609847, guid: e602d23fa33024f419619f9a23c31529, type: 3}
@@ -3808,6 +3792,7 @@ GameObject:
   - component: {fileID: 1166224962}
   - component: {fileID: 1166224963}
   - component: {fileID: 1166224964}
+  - component: {fileID: 1166224965}
   m_Layer: 5
   m_Name: SelectUI
   m_TagString: Untagged
@@ -3873,6 +3858,30 @@ MonoBehaviour:
   - {fileID: 705399124}
   unitStorage: {fileID: 11400000, guid: 001b4c37e1da0a04bbe3f0aedc15543d, type: 2}
   maxUnitCount: 3
+--- !u!114 &1166224965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166224961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec5b91c84d5949b3ba48577e3191db54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterImage: {fileID: 130037252}
+  characterNameText: {fileID: 698708447}
+  characterDescText: {fileID: 2001077389}
+  maxHealthText: {fileID: 1697996419}
+  atkText: {fileID: 994109171}
+  defText: {fileID: 1657083591}
+  moveSpeedText: {fileID: 575543163}
+  turnSpeedText: {fileID: 1755594113}
+  criticalProbabilityText: {fileID: 1907284801}
+  criticalDamageIncreaseText: {fileID: 889099965}
+  maxSkillCostText: {fileID: 198721287}
+  recoverySkillCostText: {fileID: 1640962976}
 --- !u!1 &1224364740
 GameObject:
   m_ObjectHideFlags: 0

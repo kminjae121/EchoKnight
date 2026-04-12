@@ -20,6 +20,7 @@ namespace Code.SkillSystem
         private void Awake()
         {
             _ownerEnemy = GetComponentInParent<AbstractEnemyUnit>();
+            triggerCompo = _ownerEnemy.GetUnitCompo<UnitAnimationTrigger>();
             UnityLogger.Log(_ownerEnemy);
         }
 

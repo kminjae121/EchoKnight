@@ -15,9 +15,14 @@ namespace Code.UI
             public GameObject modelPrefab;
         }
 
+        [Header("Render Settings")]
+        [SerializeField] private Camera renderCamera;
         [SerializeField] private Transform modelSpawnPoint;
         [SerializeField] private int renderLayer;
         [SerializeField] private List<UnitModelMapping> modelMappings;
+
+        // 추가: RawImage에 넘겨줄 TargetTexture 프로퍼티
+        public Texture TargetTexture => renderCamera != null ? renderCamera.targetTexture : null;
 
         private GameObject _currentRenderModel;
         private readonly Dictionary<UnitType, GameObject> _modelDict = new();
@@ -49,6 +54,11 @@ namespace Code.UI
             }
 
             SpawnRenderModel(evt.Unit.Data.UnitType);
+        }
+
+        public void Setup(UnitType unitType)
+        {
+            SpawnRenderModel(unitType);
         }
 
         private void ClearCurrentModel()

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using _Code.UnitSystem;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem;
@@ -52,14 +53,14 @@ namespace Code.UI
             if (skillButtonPoolingSO != null && skillButtonPoolingSO.prefab != null)
             {
                 var btn = skillButtonPoolingSO.prefab.GetComponent<CharacterSkillButton>();
-                if (btn != null) defaultSkillOffset = btn.GetOffset();
+                if (btn != null) defaultSkillOffset = btn.EquippedPopupOffset;
             }
 
             Vector2 defaultArtifactOffset = Vector2.zero;
             if (artifactButtonPoolingSO != null && artifactButtonPoolingSO.prefab != null)
             {
                 var btn = artifactButtonPoolingSO.prefab.GetComponent<ArtifactButton>();
-                if (btn != null) defaultArtifactOffset = btn.GetOffset();
+                if (btn != null) defaultArtifactOffset = btn.EquippedPopupOffset;
             }
 
             for (int i = 0; i < skillIcons.Count; i++)
@@ -187,14 +188,14 @@ namespace Code.UI
             if (nameText != null) nameText.text = data.UnitName;
             if (classText != null) classText.text = data.UnitClass;
             
-            if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
-            if (atkText != null) atkText.text = data.AttackDamage.ToString("F1");
-            if (defText != null) defText.text = data.DefensivePower.ToString("F1");
-            if (moveSpeedText != null) moveSpeedText.text = data.MoveRange.ToString("F1");
+            if (maxHealthText != null) maxHealthText.text = data.Maxhealth + InGameStatCompo.Instance.GetStat(StatInfo.MaxHealth, data.UnitType).ToString("F1");
+            if (atkText != null) atkText.text = data.AttackDamage + InGameStatCompo.Instance.GetStat(StatInfo.AtkDamage, data.UnitType).ToString("F1");
+            if (defText != null) defText.text = data.DefensivePower + InGameStatCompo.Instance.GetStat(StatInfo.DefensivePower, data.UnitType).ToString("F1");
+            if (moveSpeedText != null) moveSpeedText.text = data.MoveRange + InGameStatCompo.Instance.GetStat(StatInfo.MoveRange, data.UnitType).ToString("F1");
             if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
             
-            if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";
-            if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease.ToString("F1");
+            if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability + InGameStatCompo.Instance.GetStat(StatInfo.CriticalProbability, data.UnitType):F1}%";
+            if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease + InGameStatCompo.Instance.GetStat(StatInfo.CriticalIncreaseValue, data.UnitType).ToString("F1");
             
             if (maxSkillCostText != null) maxSkillCostText.text = data.MaxSkillCost.ToString();
             if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoverySkillCost.ToString();

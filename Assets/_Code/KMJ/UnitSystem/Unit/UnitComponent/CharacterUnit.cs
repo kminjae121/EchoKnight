@@ -26,22 +26,20 @@ namespace Code.UnitSystem
         #region UnitCompo
         
         public UnitHealth HealthCompo { get; private set; }
-
         public UnitMoveCompo MoveCompo { get; private set; }
         [field:SerializeField] public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
         public UnitManageRangeCompo UnitRangeCompo { get; private set; }
         public UnitStatCompo UnitStatCompo { get; private set; }
         public UnitSkillCost SkillCostCompo { get; private set; }
-        
         public PassiveComponent PassiveCompo { get; private set; }
-        
         public UnitOutLineCompo OutLineCompo { get; private set; }
 
         #endregion
         
         public int PlayableUnitID { get; set; } = -1;
         public bool IsConfirmationSkill { get; set; }
+        
         
         public GameObject _startTile;
         private Button endTurnBtn;
@@ -62,16 +60,20 @@ namespace Code.UnitSystem
             PassiveCompo = GetUnitCompo<PassiveComponent>();
             HealthCompo = GetUnitCompo<UnitHealth>();   
             
+            if (unitSO != null && SkillSendManager.Instance != null)
+            {
+                SkillSendManager.Instance.SyncEquippedSkills(unitSO);
+            }
+
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
 
             if (TriggerCompo != null)
                 TriggerCompo.OnDeadEvent += HandleDieAnimationEnd;
 
             MoveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
+           
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-            
-            AnimationCompo.PlaySelectAnimation("IDLE");
         }
         
         protected override void OnDestroy()
@@ -95,11 +97,8 @@ namespace Code.UnitSystem
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
 
             SkillCompo.ResetSkillsCount();
-            
             SkillCostCompo.AddSkillCost();
-            
             SkillCompo.UpdateSkillUI();
-            
             PassiveCompo.StartAllTurnPassives();
             
             if (endTurnBtn != null)
@@ -157,7 +156,6 @@ namespace Code.UnitSystem
             }
         }
 
-        
         public void HandleDieAnimationEnd()
         {
             MoveCompo.CurrentMapTile.SetState(TileState.Obstacle,false);
@@ -169,7 +167,6 @@ namespace Code.UnitSystem
             
             gameObject.SetActive(false);
         }
-            
 
         public void Die()
         {

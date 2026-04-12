@@ -80,7 +80,6 @@ namespace Code.Core.Managers
                     Injector.InjectInto(enemy);
 
                 Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(enemy));
-                enemy.GetComponentInChildren<MarkUI>().SetObject(cam);
 
                 enemies.Add(enemyObj);
             }

@@ -1,14 +1,12 @@
 ﻿using Code.Core.Events.Bus;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Code.UI
 {
     public class PartyCharacterInfoUI : MonoBehaviour
     {
         [Header("UI Elements")]
-        [SerializeField] private RawImage characterRawImage;
         [SerializeField] private TextMeshProUGUI characterNameText;
         [SerializeField] private TextMeshProUGUI characterDescText;
 
@@ -71,18 +69,11 @@ namespace Code.UI
             
             if (unit == null || renderStudioPrefab == null)
             {
-                if (characterRawImage != null) characterRawImage.gameObject.SetActive(false);
                 return;
             }
 
             _currentStudio = Instantiate(renderStudioPrefab, studioSpawnPoint);
             _currentStudio.Setup(unit.UnitType);
-
-            if (characterRawImage != null)
-            {
-                characterRawImage.texture = _currentStudio.TargetTexture;
-                characterRawImage.gameObject.SetActive(true);
-            }
         }
 
         private void CleanupStudio()

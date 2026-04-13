@@ -9,7 +9,7 @@ namespace Code.UI
     {
         [Header("References")]
         [SerializeField] private UnitHealth targetHealth;
-        [SerializeField] private Slider hpSlider;
+        [SerializeField] private Image hpFillImage;
         [SerializeField] private TextMeshProUGUI hpText;
 
         private Camera _mainCam;
@@ -48,10 +48,9 @@ namespace Code.UI
 
         private void UpdateHpUI(float currentHp, float maxHp)
         {
-            if (hpSlider != null)
+            if (hpFillImage != null && maxHp > 0)
             {
-                hpSlider.maxValue = maxHp;
-                hpSlider.value = currentHp;
+                hpFillImage.fillAmount = currentHp / maxHp;
             }
 
             if (hpText != null)

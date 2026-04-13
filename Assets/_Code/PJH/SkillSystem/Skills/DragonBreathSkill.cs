@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Code.Combat.StatusEffect;
 using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.Managers;
@@ -9,9 +10,11 @@ using UnityEngine;
 
 namespace Code.SkillSystem
 {
-    public class FrontPierceEnemyAttack : EnemyBaseSkill
+    public class DragonBreathSkill : EnemyBaseSkill
     { 
         [SerializeField] private int pierceLength = 3;
+        [SerializeField] private int burnDuration = 2;
+        [SerializeField] private int burnDamage = 5;
 
         private GameObject _target;
         private AbstractEnemyUnit _ownerEnemy;
@@ -21,7 +24,6 @@ namespace Code.SkillSystem
         {
             _ownerEnemy = GetComponentInParent<AbstractEnemyUnit>();
             triggerCompo = _ownerEnemy.GetUnitCompo<UnitAnimationTrigger>();
-            UnityLogger.Log(_ownerEnemy);
         }
 
         protected void Start()
@@ -30,8 +32,6 @@ namespace Code.SkillSystem
             
             if (_ownerEnemy != null)
                 _unitManager = _ownerEnemy.UnitManager;
-            
-            UnityLogger.Log(_unitManager);
         }
 
         protected override void StartEvent()
@@ -65,12 +65,24 @@ namespace Code.SkillSystem
                 return;
 
             foreach (GameObject hitTarget in GetHitTargets(_target))
-                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage, null, false,false,0.1f));
-            
-            UnityLogger.Log("관통 공격으로 데미지");
+            {
+                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage,
+                    null, false,false,0.1f));
+
+                if (burnDuration <= 0 || burnDamage <= 0)
+                    continue;
+
+                if (!hitTarget.TryGetComponent(out Unit targetUnit))
+                    continue;
+
+                Bus<ApplyStatusEffectEvent>.Raise(new ApplyStatusEffectEvent(targetUnit, EffectType.Burn,
+                    new StatusEffectApplyData(burnDuration, burnDamage)));
+            }
+
+            UnityLogger.Log("범위 공격으로 데미지");
         }
 
-        public bool CanHitTarget(GameObject target)
+        private bool CanHitTarget(GameObject target)
         {
             if (target == null)
                 return false;
@@ -87,11 +99,9 @@ namespace Code.SkillSystem
             if (forwardDir == Vector2Int.zero)
                 return false;
 
-            for (int i = 1; i <= pierceLength; i++)
-            {
+            for (int i = 1; i <= pierceLength; ++i)
                 if (origin + (forwardDir * i) == targetPos)
                     return true;
-            }
 
             return false;
         }
@@ -117,16 +127,16 @@ namespace Code.SkillSystem
 
         private List<GameObject> GetHitTargets(GameObject target)
         {
-            List<GameObject> hitTargets = new List<GameObject>();
+            var hitTargets = new List<GameObject>();
 
             if (target == null)
                 return hitTargets;
 
-            GridMap gridMap = GridMap.Instance;
+            var gridMap = GridMap.Instance;
 
             if (gridMap == null)
             {
-                UnityLogger.LogError($"[{nameof(FrontPierceEnemyAttack)}] GridMap is missing.");
+                UnityLogger.LogError($"[{nameof(DragonBreathSkill)}] GridMap is missing.");
                 return hitTargets;
             }
 
@@ -135,7 +145,7 @@ namespace Code.SkillSystem
             
             if (_unitManager == null)
             {
-                UnityLogger.LogError($"[{nameof(FrontPierceEnemyAttack)}] UnitManager is missing.");
+                UnityLogger.LogError($"[{nameof(DragonBreathSkill)}] UnitManager is missing.");
                 return hitTargets;
             }
 
@@ -146,13 +156,13 @@ namespace Code.SkillSystem
             if (forwardDir == Vector2Int.zero)
                 return hitTargets;
 
-            HashSet<GameObject> hitTargetSet = new HashSet<GameObject>();
+            var hitTargetSet = new HashSet<GameObject>();
 
             for (int i = 1; i <= pierceLength; ++i)
             {
                 Vector2Int hitPos = origin + forwardDir * i;
 
-                foreach (Unit unit in _unitManager.GetPlayerUnits())
+                foreach (var unit in _unitManager.GetPlayerUnits())
                 {
                     if (unit == null)
                         continue;

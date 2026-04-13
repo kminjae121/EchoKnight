@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Code.SkillSystem
 {
-    public class MeleeEnemyAttack : EnemyBaseSkill
+    public class EnemyMeleeAttack : EnemyBaseSkill
     {
         private GameObject _target;
 
@@ -40,7 +40,7 @@ namespace Code.SkillSystem
 
         private void TakeDamage()
         {
-            UnityLogger.Log("일반 공격으로 데미지");
+            UnityLogger.Log("근접 공격으로 데미지");
             Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage, null, false,false,0.1f));
         }
 

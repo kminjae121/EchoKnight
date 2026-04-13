@@ -46,6 +46,7 @@ namespace Code.UI
             seq.Append(transform.DOScale(2.5f, scaleTime));
             seq.Append(transform.DOScale(1.2f, scaleTime));
             seq.AppendInterval(showDuration);
+            //seq.Append(transform.DOScale(0, fdeTime));
             seq.Join(popUpText.DOFade(0, fdeTime));
             seq.AppendCallback(() => { _myPool.Push(this); });
         }

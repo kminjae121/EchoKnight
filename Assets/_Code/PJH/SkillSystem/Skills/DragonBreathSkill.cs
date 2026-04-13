@@ -204,6 +204,7 @@ namespace Code.SkillSystem
                 return;
             
             _ownerEnemy.UnitAnimator.PlaySelectAnimation(SkillSO.skillAnimationKey);
+            SkillFeedbackEvent?.Invoke();
         }
 
         private static Vector2Int GetForwardDirection(Vector2Int origin, Vector2Int target)

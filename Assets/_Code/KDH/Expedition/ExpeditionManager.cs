@@ -39,9 +39,9 @@ namespace Code.Expedition.Managers
         private bool _isMoving;
 
         private static string _savedCurrentNodeName = "";
-        private static HashSet<string> _savedClearedNodes = new HashSet<string>();
+        private static readonly HashSet<string> _savedClearedNodes = new();
 
-        private Canvas _canvas = null; 
+        private Canvas _canvas;
 
         protected override void Awake()
         {
@@ -62,9 +62,8 @@ namespace Code.Expedition.Managers
         private void OnEnable()
         {
             if (inputReader != null)
-            {
                 inputReader.OnClickEvent += HandleClick;
-            }
+            
             Bus<StageClearEvent>.Subscribe(OnStageCleared);
             SceneManager.sceneLoaded += OnSceneLoaded; 
         }
@@ -72,9 +71,8 @@ namespace Code.Expedition.Managers
         private void OnDisable()
         {
             if (inputReader != null)
-            {
                 inputReader.OnClickEvent -= HandleClick;
-            }
+            
             Bus<StageClearEvent>.Unsubscribe(OnStageCleared);
             SceneManager.sceneLoaded -= OnSceneLoaded; 
         }
@@ -88,10 +86,14 @@ namespace Code.Expedition.Managers
         {
             ExpeditionNode[] allNodes = FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None);
             
-            if (allNodes.Length == 0) return;
+            if (allNodes.Length == 0)
+                return;
 
-            if (mainCamera == null) mainCamera = Camera.main;
-            if (player == null) player = FindAnyObjectByType<ExpeditionPlayer>();
+            if (mainCamera == null)
+                mainCamera = Camera.main;
+            
+            if (player == null)
+                player = FindAnyObjectByType<ExpeditionPlayer>();
 
             if (string.IsNullOrEmpty(_savedCurrentNodeName))
             {
@@ -105,27 +107,19 @@ namespace Code.Expedition.Managers
             else
             {
                 foreach (var node in allNodes)
-                {
                     if (node.name == _savedCurrentNodeName)
                     {
                         _currentNode = node;
                         break;
                     }
-                }
             }
 
             foreach (var node in allNodes)
-            {
                 if (_savedClearedNodes.Contains(node.name))
-                {
                     node.SetCleared(true);
-                }
-            }
 
             if (_currentNode != null && player != null)
-            {
                 player.Initialize(_currentNode.transform.position);
-            }
             
             UpdateAllNodesVisuals(allNodes);
 
@@ -154,16 +148,17 @@ namespace Code.Expedition.Managers
 
         private void UpdateAllNodesVisuals(ExpeditionNode[] allNodes)
         {
-            if (allNodes == null) return;
+            if (allNodes == null)
+                return;
+            
             foreach (var node in allNodes)
-            {
                 node.UpdateMaterial(node == _currentNode);
-            }
         }
 
         private void HandleHover()
         {
-            if (mainCamera == null || inputReader == null) return;
+            if (mainCamera == null || inputReader == null)
+                return;
 
             Ray ray = mainCamera.ScreenPointToRay(inputReader.MousePosition);
 
@@ -216,9 +211,7 @@ namespace Code.Expedition.Managers
                     else
                     {
                         if (_selectedNodeForMove != null && _selectedNodeForMove != _hoveredNode)
-                        {
                             _selectedNodeForMove.SetOutline(false);
-                        }
 
                         _selectedNodeForMove = hitNode;
                         _selectedNodeForMove.SetOutline(true); 
@@ -231,9 +224,7 @@ namespace Code.Expedition.Managers
                 if (_selectedNodeForMove != null)
                 {
                     if (_selectedNodeForMove != _hoveredNode)
-                    {
                         _selectedNodeForMove.SetOutline(false);
-                    }
                     
                     _selectedNodeForMove = null;
                     Debug.Log("노드 선택이 취소되었습니다.");
@@ -337,20 +328,21 @@ namespace Code.Expedition.Managers
                 return;
             }
 
-            if (string.IsNullOrEmpty(node.TargetSceneName))
+            string targetSceneName = node.TargetSceneName;
+
+            if (node.NodeData is BattleNodeSO battleNodeData)
+                targetSceneName = battleNodeData.GetRandomBattleSceneName();
+
+            if (string.IsNullOrEmpty(targetSceneName))
             {
                 Debug.LogWarning($"[{node.name}] 노드에 이동할 씬 이름이 설정되지 않았습니다.");
                 return;
             }
 
             if (SceneChangeManager.Instance != null)
-            {
-                SceneChangeManager.Instance.ChangeSelectScene(node.TargetSceneName);
-            }
+                SceneChangeManager.Instance.ChangeSelectScene(targetSceneName);
             else
-            {
-                SceneManager.LoadScene(node.TargetSceneName);
-            }
+                SceneManager.LoadScene(targetSceneName);
         }
     }
 }

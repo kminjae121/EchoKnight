@@ -18,7 +18,8 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private TextInfo normalText, criticalText, healText;
         [SerializeField] private GameEventChannelSO textEventChannel;
 
-        [field : SerializeField] public UnitStorageSO StorageSO; 
+        [field : SerializeField] public UnitStorageSO StorageSO;
+        private UnitAnimation _unitAnimation;
 
         private Unit _entity;
         private ActionData _actionData;
@@ -61,9 +62,11 @@ namespace Code.UnitSystem.Combat
                 currentHealth = _unitStateCompo.CurrentHp.Value;   
             }
             else
-            {
-              maxHealth = currentHealth = _entity.unitSO.Maxhealth;
+            { 
+                maxHealth = currentHealth = _entity.unitSO.Maxhealth;
             }
+
+            _unitAnimation = _entity.GetUnitCompo<UnitAnimation>();
         }
 
         public void HealHp(float amount)
@@ -84,8 +87,8 @@ namespace Code.UnitSystem.Combat
             }
 
             int healHash = healText.nameHash;
-
-            Vector3 pos = _entity.transform.position + new Vector3(0, 1.2f);;
+            
+            Vector3 pos = _unitAnimation.gameObject.transform.position + new Vector3(0, 1.2f);;
             
             PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(amount.ToString(), healHash
                 , pos, 0.5f);  
@@ -122,7 +125,8 @@ namespace Code.UnitSystem.Combat
             OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
             
             int typeHash = isCritical ? criticalText.nameHash : normalText.nameHash;
-            Vector3 position = hitPoint + new Vector3(0, 1.2f);
+            
+            Vector3 position = _unitAnimation.gameObject.transform.position + new Vector3(0, 1.2f);
             PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(damage.ToString(), typeHash
                 , position, 0.5f);  
             

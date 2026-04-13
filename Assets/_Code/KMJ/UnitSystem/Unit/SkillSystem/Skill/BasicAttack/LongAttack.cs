@@ -9,7 +9,7 @@ public class LongAttack : BasicUnitSkill
     {
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private Animator animator;
-        [SerializeField] private GameObject effectPrefab;
+        [SerializeField] private BoomingEffect effectPrefab;
         [SerializeField] private NavMeshAgent agent;
         
         private UnitAnimation _animationCompo;
@@ -49,7 +49,7 @@ public class LongAttack : BasicUnitSkill
 
         private IEnumerator MeleeAttackAction(GameObject target)
         {
-            yield return new WaitForSeconds(0.4f);
+            yield return new WaitForSeconds(0.2f);
             
              _target = target;
              
@@ -60,11 +60,11 @@ public class LongAttack : BasicUnitSkill
         private void ShootLongRangeAttack()
         {
             Vector3 dir = _target.transform.position;
-            dir.y += 1.4f;
+            dir.y += 1f;
             
-            effectPrefab.GetComponent<BoomingEffect>().SetDamageData(DamageData,AddDamage);
-            effectPrefab.transform.position = dir;
-            effectPrefab.SetActive(true);
+            effectPrefab.SetDamageData(DamageData,AddDamage, _target);
+            effectPrefab.StartParticleEffect(dir);
+            effectPrefab.gameObject.SetActive(true);
         }
 
 

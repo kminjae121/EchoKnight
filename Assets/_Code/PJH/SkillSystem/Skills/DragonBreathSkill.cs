@@ -34,6 +34,15 @@ namespace Code.SkillSystem
                 _unitManager = _ownerEnemy.UnitManager;
         }
 
+        public override void ForceUseSkill(GameObject target)
+        {
+            if (target == null)
+                return;
+
+            base.ForceUseSkill(target);
+            PlayBreathAnimation();
+        }
+
         protected override void StartEvent()
         {
             base.StartEvent();
@@ -187,6 +196,14 @@ namespace Code.SkillSystem
             _target = null;
             SkillFinished(false);
             SkillEndEvent?.Invoke();
+        }
+
+        private void PlayBreathAnimation()
+        {
+            if (_ownerEnemy?.UnitAnimator == null || string.IsNullOrWhiteSpace(SkillSO.skillAnimationKey))
+                return;
+            
+            _ownerEnemy.UnitAnimator.PlaySelectAnimation(SkillSO.skillAnimationKey);
         }
 
         private static Vector2Int GetForwardDirection(Vector2Int origin, Vector2Int target)

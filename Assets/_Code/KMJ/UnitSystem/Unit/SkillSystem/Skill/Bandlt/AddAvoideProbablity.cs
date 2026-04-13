@@ -6,8 +6,6 @@ using UnityEngine;
 
     public class AddAvoideProbablity : BasicUnitSkill
     {
-        [SerializeField] private GameObject effectPrefab;
-        
         private UnitAnimation animtionCompo;
 
         private int skillCnt = 0;
@@ -40,8 +38,7 @@ using UnityEngine;
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(false));
             yield return new WaitForSeconds(0.4f);
-            effectPrefab.SetActive(true);
-            effectPrefab.GetComponent<ParticleSystem>().Play();
+            SkillFeedbackEvent?.Invoke();   
             animtionCompo.PlaySelectAnimation("HEAL");
         }
 

@@ -6,7 +6,8 @@ namespace Code.Combat.StatusEffect
     public enum EffectType
     {
         None = 0,
-        Poison = 1 << 1,
-        Stun = 1 << 2
+        Burn = 1 << 1,
+        Poison = 1 << 2,
+        Stun = 1 << 3
     }
 }

@@ -98,6 +98,8 @@ namespace Code.UnitSystem
         public virtual void OnTurnStart()
         {
             isMyTurn = true;
+            
+            StatusEffectCompo.StartUpdateStatusEffects();
         }
 
         public void InitializeDefensivePower()
@@ -127,7 +129,7 @@ namespace Code.UnitSystem
         
         public virtual void OnTurnEnd()
         {
-            StatusEffectCompo.UpdateStatusEffects();
+            StatusEffectCompo.EndUpdateStatusEffects();
             isMyTurn = false;
             Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent(this));
         }

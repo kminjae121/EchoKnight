@@ -30,7 +30,7 @@ using UnityEngine;
         }
 
         private void AddAP(GameObject obj)
-        {
+        {   
             StartCoroutine(AddAvoid());
         }
 
@@ -41,7 +41,7 @@ using UnityEngine;
             SkillFeedbackEvent?.Invoke();   
             animtionCompo.PlaySelectAnimation("HEAL");
         }
-
+    
         private void PlusAvoideProbablity()
         {
             if (skillCnt >= 3)

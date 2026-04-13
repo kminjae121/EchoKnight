@@ -50,7 +50,7 @@ public class ShooterAttack : BasicUnitSkill
             
             _target = null;
             _target = target;
-            
+            SkillFeedbackEvent?.Invoke();
             _animationCompo.PlaySelectAnimation("ATTACK");
         }
 

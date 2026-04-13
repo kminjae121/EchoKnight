@@ -8,6 +8,7 @@ namespace Code.SkillSystem
         [Header("Basic Info")]
         public UnitType unitType = UnitType.None;
         public string skillName;
+        public string skillAnimationKey;
         [TextArea(3, 15)]
         public string SkillDescription;
         public int SkillValue;

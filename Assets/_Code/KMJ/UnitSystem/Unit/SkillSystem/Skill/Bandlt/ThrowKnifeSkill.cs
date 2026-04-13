@@ -42,6 +42,7 @@ using UnityEngine;
         private IEnumerator SlashFlag()
         {
             yield return new WaitForSeconds(0.4f);
+            SkillFeedbackEvent?.Invoke();   
             animtionCompo.PlaySelectAnimation("THROW");
         }
         

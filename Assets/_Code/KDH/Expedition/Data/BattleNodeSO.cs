@@ -12,10 +12,29 @@ namespace Code.Expedition.Data
         public StageSO stageData;
         public List<UnitSpawnSO> enemiesToSpawn;
         public string battleSceneName = "BattleScene";
+        public List<string> battleSceneNames = new();
 
         private void OnEnable()
         {
             nodeType = ExpeditionNodeType.Battle;
+        }
+
+        public string GetRandomBattleSceneName()
+        {
+            if (battleSceneNames is not { Count: > 0 })
+                return battleSceneName;
+            
+            List<string> validSceneNames = new();
+
+            foreach (var sceneName in battleSceneNames)
+                if (!string.IsNullOrWhiteSpace(sceneName))
+                    validSceneNames.Add(sceneName);
+
+            if (validSceneNames.Count <= 0)
+                return battleSceneName;
+            
+            int randomIndex = Random.Range(0, validSceneNames.Count);
+            return validSceneNames[randomIndex];
         }
     }
 }

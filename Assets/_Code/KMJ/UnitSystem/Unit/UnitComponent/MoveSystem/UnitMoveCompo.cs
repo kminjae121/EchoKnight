@@ -67,7 +67,7 @@ namespace Code.UnitSystem
             VisualPrefabs.SetActive(false);
         }
 
-        private void SetTargetEnemy(IMapTile tile)
+        private void SetTargetTile(IMapTile tile)
         {
             _nextTile?.SetState(TileState.Enemy,false);
 
@@ -96,7 +96,7 @@ namespace Code.UnitSystem
                 IMapTile tile = _unit.InputSO.GetSelectedTile();
 
                 if (tile != null && _movingTiles.Contains(tile))
-                    SetTargetEnemy(tile);
+                    SetTargetTile(tile);
                 else
                     EndTargeting();
             }

@@ -149,7 +149,19 @@ namespace Code.UnitSystem.Enemies
                 UnitAnimator.PlaySelectAnimation("HIT");
             }
 
+            StartCoroutine(HitIdle());
+
             base.Hit();
+        }
+
+        private IEnumerator HitIdle()
+        {
+            yield return new WaitForSeconds(1f);
+            
+            if(UnitAnimator != null)
+            {
+                UnitAnimator.ReturnIdleAnimation();
+            }
         }
 
         private void HandleDeathAnimEnd()

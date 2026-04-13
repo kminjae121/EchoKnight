@@ -2,7 +2,7 @@
 
 namespace Code.Combat.StatusEffect
 {
-    [CreateAssetMenu(fileName = "StatusEffect", menuName = "SO/StatusEffect", order = 0)]
+    [CreateAssetMenu(fileName = "StatusEffect", menuName = "SO/StatusEffect/Effect", order = 0)]
     public class StatusEffectSO : ScriptableObject
     {
         public string effectName;
@@ -10,6 +10,7 @@ namespace Code.Combat.StatusEffect
         public string className;
         public EffectPolarity polarity;
         public EffectType effectType;
+        public EffectTriggerTiming triggerTiming;
         public Sprite effectIcon;
     }
 }

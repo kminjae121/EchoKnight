@@ -50,7 +50,7 @@ namespace Code.UnitSystem
         {
             TilesInRange.Clear();
             
-            Vector2Int start = GridMap.Instance.WorldToGridPosition(transform.position);
+            Vector2Int start = GetRangeStartGridPos();
 
             Queue<(Vector2Int pos, int dist)> queue = new();
             HashSet<Vector2Int> visited = new();
@@ -92,6 +92,21 @@ namespace Code.UnitSystem
                     queue.Enqueue((next, dist + 1));
                 }
             }
+        }
+
+        private Vector2Int GetRangeStartGridPos()
+        {
+            if (_owner != null)
+            {
+                UnitMoveCompo moveCompo = _owner.GetUnitCompo<UnitMoveCompo>();
+
+                if (moveCompo?.CurrentMapTile != null)
+                    return moveCompo.CurrentMapTile.GridPos;
+
+                return GridMap.Instance.WorldToGridPosition(_owner.transform.position);
+            }
+
+            return GridMap.Instance.WorldToGridPosition(transform.position);
         }
 
         public void ResetTile()

@@ -608,7 +608,7 @@ GameObject:
   - component: {fileID: 8828151466765253910}
   - component: {fileID: 1720830824041754209}
   - component: {fileID: 345794933033457002}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: DragonEnemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -690,7 +690,7 @@ CapsuleCollider:
   m_Radius: 0.8
   m_Height: 2.14
   m_Direction: 2
-  m_Center: {x: 0, y: 0.75, z: 0.25}
+  m_Center: {x: 0, y: 2.2, z: 0.25}
 --- !u!114 &1769259974964271712
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1687,6 +1687,7 @@ GameObject:
   - component: {fileID: 5312797184122257847}
   - component: {fileID: 7041325246815517049}
   - component: {fileID: 8903344709663485480}
+  - component: {fileID: 4372394620913924952}
   m_Layer: 0
   m_Name: Visual
   m_TagString: Untagged
@@ -1758,6 +1759,58 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d61eddddf3d04f308cb29da910381e57, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitAnimationTrigger
+--- !u!114 &4372394620913924952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5735444913188676982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3fe91dc294731a9428c0941ea7579110, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EPO::EPOOutline.Outlinable
+  complexMaskingMode: 0
+  drawingMode: 1
+  outlineLayer: 0
+  outlineTargets:
+  - CutoutMask: 8
+    renderer: {fileID: 9062978380201477033}
+    SubmeshIndex: 0
+    BoundsMode: 0
+    Bounds:
+      m_Center: {x: 0, y: 0, z: 0}
+      m_Extent: {x: 0.5, y: 0.5, z: 0.5}
+    CutoutThreshold: 0.5
+    CullMode: 2
+    cutoutTextureName: 
+    cutoutTextureIndex: 0
+  renderStyle: 1
+  outlineParameters:
+    enabled: 1
+    color: {r: 0.55345905, g: 0, b: 0.008868691, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  backParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
+  frontParameters:
+    enabled: 1
+    color: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+    dilateShift: 1
+    blurShift: 1
+    fillPass:
+      shader: {fileID: 0}
+      serializedProperties: []
 --- !u!1 &5769784446449647825
 GameObject:
   m_ObjectHideFlags: 0
@@ -2178,6 +2231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8876407002609563180}
   - component: {fileID: 9062978380201477033}
+  - component: {fileID: 6256727026752136042}
   m_Layer: 0
   m_Name: DragonMesh
   m_TagString: Untagged
@@ -2305,6 +2359,18 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.53469384, y: -0.36494267, z: -0.041867495}
     m_Extent: {x: 1.2423491, y: 1.2812194, z: 1.2080325}
   m_DirtyAABB: 0
+--- !u!114 &6256727026752136042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8879060920041193287}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 034bc47afcbf5e141a58d5c20b7808e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: EPO::EPOOutline.TargetStateListener
 --- !u!1 &8983586572287929561
 GameObject:
   m_ObjectHideFlags: 0

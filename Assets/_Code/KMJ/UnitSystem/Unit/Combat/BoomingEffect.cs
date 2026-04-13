@@ -7,8 +7,6 @@ namespace Code.UnitSystem
 {
     public class BoomingEffect : MonoBehaviour
     {
-        private Collider _collider;
-        
         [SerializeField] private LayerMask _whatIsEnemy;
 
         private DamageData _damageData;
@@ -16,41 +14,33 @@ namespace Code.UnitSystem
         [SerializeField] private AttackDataSO atkData;
 
         private float _addDamage;
+        private GameObject _target;
+
+        [SerializeField] private ParticleSystem _particleSystem;
 
         private void Awake()
         {
-            _collider = GetComponent<Collider>();
-            _collider.enabled = false;
             _damageData.damage = 4;
         }
-
-        private void OnEnable()
+        public void StartParticleEffect(Vector3 trm)
         {
+            transform.position = trm;
             StartCoroutine(StartEffect());
         }
 
-        public void SetDamageData(DamageData damageData,float addDamage)
+        public void SetDamageData(DamageData damageData,float addDamage,GameObject target)
         {
             _damageData = damageData;
             _addDamage = addDamage;
+            _target =  target;
         }
 
         private IEnumerator StartEffect()
-        {
-            yield return new WaitForSeconds(0.35f);
+        {            
+            _particleSystem.Play();
+            yield return new WaitForSeconds(1.3f);
 
-            _collider.enabled = true;
-        }
-
-        private void OnTriggerEnter(Collider other)
-        {
-            if (((1 << other.gameObject.layer) & _whatIsEnemy) != 0)
-            {
-                Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,other.gameObject,0,null,false,false, 0.3f));
-                
-                _collider.enabled = false;
-                gameObject.SetActive(false);
-            }
+            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target,_addDamage, null,false,false,0.3f));
         }
     }
 }

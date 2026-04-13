@@ -10,7 +10,11 @@ namespace Code.Ajs.Ux
     {
         [SerializeField] private AudioSource audioSource;
         [SerializeField] private AudioClip clickSfx;
+        [SerializeField] private AudioClip cancelClickSfx;
         [SerializeField, Range(0f, 1f)] private float volume = 1f;
+        [Header("Toggle Click Sfx")]
+        [SerializeField] private bool enableToggleCancelSfx;
+        [SerializeField] private bool startAsSelected;
         [Header("Hover/Press UX")]
         [SerializeField] private bool enableHoverScale = true;
         [SerializeField, Range(1f, 1.3f)] private float hoverScale = 1.08f;
@@ -22,6 +26,7 @@ namespace Code.Ajs.Ux
         private Vector3 _baseScale = Vector3.one;
         private Coroutine _scaleRoutine;
         private bool _isHovered;
+        private bool _isSelected;
 
         private void Awake()
         {
@@ -32,6 +37,8 @@ namespace Code.Ajs.Ux
 
             if (audioSource == null)
                 audioSource = GetComponent<AudioSource>();
+
+            _isSelected = startAsSelected;
         }
 
         private void OnEnable()
@@ -72,16 +79,29 @@ namespace Code.Ajs.Ux
 
         private void PlayClickSfx()
         {
-            if (clickSfx == null)
+            AudioClip targetClip = clickSfx;
+
+            if (enableToggleCancelSfx)
+            {
+                targetClip = _isSelected ? cancelClickSfx : clickSfx;
+                _isSelected = !_isSelected;
+            }
+
+            if (targetClip == null)
                 return;
 
             if (audioSource != null)
             {
-                audioSource.PlayOneShot(clickSfx, volume);
+                audioSource.PlayOneShot(targetClip, volume);
                 return;
             }
 
-            AudioSource.PlayClipAtPoint(clickSfx, transform.position, volume);
+            AudioSource.PlayClipAtPoint(targetClip, transform.position, volume);
+        }
+
+        public void SetSelectedState(bool isSelected)
+        {
+            _isSelected = isSelected;
         }
 
         private void AnimateScale(Vector3 target)

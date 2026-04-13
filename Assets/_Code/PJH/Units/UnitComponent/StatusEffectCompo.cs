@@ -10,7 +10,7 @@ namespace Code.UnitSystem.UnitComponent
 {
     public class StatusEffectCompo : MonoBehaviour, IUnitComponent
     {
-        [SerializeField] private List<StatusEffectSO> statusEffectList;
+        [SerializeField] private StatusEffectStorageSO statusEffectList;
         
         private static readonly Dictionary<string, Type> _typeCacheDict = new();
         private readonly List<EffectType> _removeBuffer = new();
@@ -42,7 +42,7 @@ namespace Code.UnitSystem.UnitComponent
             Bus<ApplyStatusEffectEvent>.Unsubscribe(HandleApplyStatusEffect);
         }
 
-        public void UpdateStatusEffects()
+        public void StartUpdateStatusEffects()
         {
             if (_activeEffectDict == null || _activeEffectDict.Count == 0)
                 return;
@@ -51,7 +51,32 @@ namespace Code.UnitSystem.UnitComponent
 
             foreach (var (effectType, effect) in _activeEffectDict)
             {
-                effect.UpdateEffect();
+                if (effect.TriggerTiming != EffectTriggerTiming.TurnStart)
+                    continue;
+                
+                effect.StartUpdateEffect();
+
+                if (effect.IsCompleted)
+                    _removeBuffer.Add(effectType);
+            }
+
+            foreach (var effectType in _removeBuffer)
+                RemoveStatusEffect(effectType);
+        }
+        
+        public void EndUpdateStatusEffects()
+        {
+            if (_activeEffectDict == null || _activeEffectDict.Count == 0)
+                return;
+
+            _removeBuffer.Clear();
+
+            foreach (var (effectType, effect) in _activeEffectDict)
+            {
+                if (effect.TriggerTiming != EffectTriggerTiming.TurnEnd)
+                    continue;
+                
+                effect.EndUpdateEffect();
 
                 if (effect.IsCompleted)
                     _removeBuffer.Add(effectType);
@@ -111,10 +136,10 @@ namespace Code.UnitSystem.UnitComponent
 
         private void RegisterStatusEffects()
         {
-            if (statusEffectList == null || statusEffectList.Count == 0)
+            if (statusEffectList == null || statusEffectList.statusEffects.Count == 0)
                 return;
 
-            foreach (var statusEffectSO in statusEffectList)
+            foreach (var statusEffectSO in statusEffectList.statusEffects)
             {
                 if (statusEffectSO == null)
                     continue;

@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: aad3858511db4ba41b1a33d378f3227e, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 0f1401d983cde1c49a7f687a57e62c5a, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -375,13 +375,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 32079708}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.41215122, y: -0.18854038, z: 0.08746471, w: 0.8870928}
-  m_LocalPosition: {x: 85.016304, y: 106.28615, z: -85.93909}
+  m_LocalRotation: {x: 0, y: 0, z: -0.0001833212, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -0.021}
 --- !u!1 &112833666
 GameObject:
   m_ObjectHideFlags: 0
@@ -1045,7 +1045,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_Resource: {fileID: 8300000, guid: 5e21d9a8be0b6b44b9a3a59cd7442dc2, type: 3}
+  m_Resource: {fileID: 8300000, guid: 0156fae9152df6c478ff5f096be3d76f, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 0.261
   m_Pitch: 1
@@ -2107,7 +2107,6 @@ GameObject:
   - component: {fileID: 698708446}
   - component: {fileID: 698708448}
   - component: {fileID: 698708447}
-  - component: {fileID: 698708449}
   m_Layer: 5
   m_Name: Lobby_Name
   m_TagString: Untagged
@@ -2234,30 +2233,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 698708445}
   m_CullTransparentMesh: 1
---- !u!114 &698708449
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 698708445}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ec5b91c84d5949b3ba48577e3191db54, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  characterImage: {fileID: 130037252}
-  characterNameText: {fileID: 698708447}
-  characterDescText: {fileID: 2001077389}
-  maxHealthText: {fileID: 0}
-  atkText: {fileID: 0}
-  defText: {fileID: 0}
-  moveSpeedText: {fileID: 0}
-  turnSpeedText: {fileID: 0}
-  criticalProbabilityText: {fileID: 0}
-  criticalDamageIncreaseText: {fileID: 0}
-  maxSkillCostText: {fileID: 0}
-  recoverySkillCostText: {fileID: 0}
 --- !u!114 &705399124 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 284759067926609847, guid: e602d23fa33024f419619f9a23c31529, type: 3}
@@ -3817,6 +3792,7 @@ GameObject:
   - component: {fileID: 1166224962}
   - component: {fileID: 1166224963}
   - component: {fileID: 1166224964}
+  - component: {fileID: 1166224965}
   m_Layer: 5
   m_Name: SelectUI
   m_TagString: Untagged
@@ -3882,6 +3858,32 @@ MonoBehaviour:
   - {fileID: 705399124}
   unitStorage: {fileID: 11400000, guid: 001b4c37e1da0a04bbe3f0aedc15543d, type: 2}
   maxUnitCount: 3
+--- !u!114 &1166224965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166224961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec5b91c84d5949b3ba48577e3191db54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  characterRawImage: {fileID: 0}
+  characterNameText: {fileID: 698708447}
+  characterDescText: {fileID: 2001077389}
+  renderStudioPrefab: {fileID: 0}
+  studioSpawnPoint: {fileID: 0}
+  maxHealthText: {fileID: 1697996419}
+  atkText: {fileID: 994109171}
+  defText: {fileID: 1657083591}
+  moveSpeedText: {fileID: 575543163}
+  turnSpeedText: {fileID: 1755594113}
+  criticalProbabilityText: {fileID: 1907284801}
+  criticalDamageIncreaseText: {fileID: 889099965}
+  maxSkillCostText: {fileID: 198721287}
+  recoverySkillCostText: {fileID: 1640962976}
 --- !u!1 &1224364740
 GameObject:
   m_ObjectHideFlags: 0

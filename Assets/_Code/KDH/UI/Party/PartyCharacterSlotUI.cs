@@ -31,20 +31,15 @@ namespace Code.UI
         private void OnDestroy()
         {
             if (slotButton != null)
-            {
                 slotButton.onClick.RemoveListener(HandleSlotButton);
-            }
+            
             Bus<PartyCharacterSelectEvent>.Unsubscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Unsubscribe(HandleCharacterDeselected);
         }
 
         private void HandleSlotButton()
         {
-            if (characterInfo == null)
-            {
-                Debug.LogWarning("슬롯에 캐릭터 정보가 없습니다.");
-                return;
-            }
+            if (characterInfo == null) return;
 
             if (_isSelected)
                 Bus<PartyCharacterDeselectEvent>.Raise(new PartyCharacterDeselectEvent(characterInfo));
@@ -54,14 +49,12 @@ namespace Code.UI
 
         private void HandleCharacterSelected(PartyCharacterSelectEvent evt)
         {
-            if (evt.Unit == characterInfo)
-                _isSelected = true;
+            if (evt.Unit == characterInfo) _isSelected = true;
         }
 
         private void HandleCharacterDeselected(PartyCharacterDeselectEvent evt)
         {
-            if (evt.Unit == characterInfo)
-                _isSelected = false;
+            if (evt.Unit == characterInfo) _isSelected = false;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -70,7 +63,8 @@ namespace Code.UI
             {
                 Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(
                     characterInfo.UnitImage,
-                    characterInfo.UnitName,null));
+                    characterInfo.UnitName, 
+                    characterInfo.UnitClass));
             }
         }
 

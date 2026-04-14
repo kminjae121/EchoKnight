@@ -19,6 +19,8 @@ namespace Code.UI
         [SerializeField] private GameObject hoverImage;
         [SerializeField] private GameObject blindImage;
         
+        [Header("Animation Offset")]
+        [SerializeField] private float hoverYOffset = 15f;
         [SerializeField] private float selectYOffset = 30f;
         [SerializeField] private float animDuration = 0.2f;
         [SerializeField] private Ease animEase = Ease.OutCubic;
@@ -108,20 +110,9 @@ namespace Code.UI
             
             if (hoverImage != null) hoverImage.SetActive(false);
             
-            if (skillIcon != null)
-            {
-                skillIcon.sprite = skill.skillUIImage;
-            }
-
-            if (damageText != null)
-            {
-                damageText.text = skill.SkillDamage.ToString();
-            }
-
-            if (costText != null)
-            {
-                costText.text = skill.SkillCost.ToString();
-            }
+            if (skillIcon != null) skillIcon.sprite = skill.skillUIImage;
+            if (damageText != null) damageText.text = skill.SkillDamage.ToString();
+            if (costText != null) costText.text = skill.SkillCost.ToString();
             
             UpdateInteractability(currentTurnCost);
             ResetPosition();
@@ -133,10 +124,7 @@ namespace Code.UI
             
             _isInteractable = currentTurnCost >= _currentSkill.SkillCost;
 
-            if (blindImage != null)
-            {
-                blindImage.SetActive(!_isInteractable);
-            }
+            if (blindImage != null) blindImage.SetActive(!_isInteractable);
 
             if (!_isInteractable)
             {
@@ -163,18 +151,24 @@ namespace Code.UI
         {
             if (!_isInteractable || _isSelected) return;
             if (hoverImage != null) hoverImage.SetActive(true);
+
+            _moveTween?.Kill();
+            _moveTween = _rectTransform.DOAnchorPosY(_originalPosition.y + hoverYOffset, animDuration).SetEase(animEase);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (!_isInteractable || _isSelected) return;
-
             if (hoverImage != null) hoverImage.SetActive(false);
+            ResetPosition();
         }
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            //마우스 클릭(선택) 기능 삭제함.
+            if (eventData.button == PointerEventData.InputButton.Left)
+            {
+                TrySelectSkill();
+            }
         }
 
         public void TrySelectSkill()
@@ -211,9 +205,7 @@ namespace Code.UI
             if (evt.SelectedSkill != _currentSkill && _isSelected)
             {
                 _isSelected = false;
-                
                 if (hoverImage != null) hoverImage.SetActive(false);
-                
                 ResetPosition();
             }
         }
@@ -223,9 +215,7 @@ namespace Code.UI
             if (_isSelected)
             {
                 _isSelected = false;
-                
                 if (hoverImage != null) hoverImage.SetActive(false);
-                
                 ResetPosition();
                 
                 if (_skillCompo != null)

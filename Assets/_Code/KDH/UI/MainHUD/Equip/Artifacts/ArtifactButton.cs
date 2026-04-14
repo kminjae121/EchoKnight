@@ -32,7 +32,7 @@ namespace Code.UI
         [SerializeField] private Vector2 equippedPopupOffset;
 
         [Header("Behavior Settings")]
-        [SerializeField] private bool openPopupOnHover = false; 
+        [SerializeField] private bool openPopupOnHover = true;
 
         private EquipmentItemSO _equipmentItem;
         private bool _isEquipped;
@@ -128,7 +128,7 @@ namespace Code.UI
             
             if (openPopupOnHover && _equipmentItem != null)
             {
-                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), GetOffset(), true));
+                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), GetOffset(), false));
             }
         }
 
@@ -148,7 +148,7 @@ namespace Code.UI
             
             if (eventData.button == PointerEventData.InputButton.Left)
             {
-                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), GetOffset(), openPopupOnHover));
+                Bus<ArtifactPopupEvent>.Raise(new ArtifactPopupEvent(_equipmentItem, _isEquipped, GetPivot(), GetOffset(), false));
             }
         }
     }

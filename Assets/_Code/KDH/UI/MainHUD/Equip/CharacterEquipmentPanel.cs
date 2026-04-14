@@ -119,12 +119,27 @@ namespace Code.UI
         private List<EquipmentItemSO> GetAvailableArtifacts()
         {
             if (_unit == null || _unit.OwnArtifactStorage == null) return new List<EquipmentItemSO>();
+
             List<EquipmentItemSO> availableArtifacts = new List<EquipmentItemSO>(_unit.OwnArtifactStorage.artifacts);
-            if (unitStorageSO != null)
+
+            if (ItemStorage.Instance != null && ItemStorage.Instance.GetAllEquippedItems().Count > 0)
+            {
+                foreach (var kvp in ItemStorage.Instance.GetAllEquippedItems())
+                {
+                    if (kvp.Key != _unit.UnitType) 
+                    {
+                        foreach (var equippedItem in kvp.Value)
+                        {
+                            availableArtifacts.Remove(equippedItem);
+                        }
+                    }
+                }
+            }
+            else if (unitStorageSO != null)
             {
                 foreach (var state in unitStorageSO.unitStates)
                 {
-                    if (state.Data != null && state.Data != _unit && state.Data.EquippedArtifacts != null)
+                    if (state.Data != null && state.Data.UnitType != _unit.UnitType && state.Data.EquippedArtifacts != null)
                     {
                         foreach (var equippedItem in state.Data.EquippedArtifacts.artifacts)
                         {
@@ -133,6 +148,7 @@ namespace Code.UI
                     }
                 }
             }
+            
             return availableArtifacts;
         }
 

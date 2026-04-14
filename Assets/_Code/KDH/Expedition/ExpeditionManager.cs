@@ -205,16 +205,23 @@ namespace Code.Expedition.Managers
                     if (_selectedNodeForMove == hitNode)
                     {
                         hitNode.SetOutline(false);
+                        hitNode.SetReadyToMoveColor(false);
                         TryMoveToNode(hitNode);
                         _selectedNodeForMove = null; 
                     }
                     else
                     {
-                        if (_selectedNodeForMove != null && _selectedNodeForMove != _hoveredNode)
-                            _selectedNodeForMove.SetOutline(false);
+                        if (_selectedNodeForMove != null)
+                        {
+                            if (_selectedNodeForMove != _hoveredNode)
+                                _selectedNodeForMove.SetOutline(false);
+                            
+                            _selectedNodeForMove.SetReadyToMoveColor(false);
+                        }
 
                         _selectedNodeForMove = hitNode;
                         _selectedNodeForMove.SetOutline(true); 
+                        _selectedNodeForMove.SetReadyToMoveColor(true);
                         Debug.Log($"[{hitNode.name}] 노드가 선택되었습니다. 한 번 더 클릭하면 이동합니다.");
                     }
                 }
@@ -226,6 +233,7 @@ namespace Code.Expedition.Managers
                     if (_selectedNodeForMove != _hoveredNode)
                         _selectedNodeForMove.SetOutline(false);
                     
+                    _selectedNodeForMove.SetReadyToMoveColor(false);
                     _selectedNodeForMove = null;
                     Debug.Log("노드 선택이 취소되었습니다.");
                 }

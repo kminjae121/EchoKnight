@@ -56,6 +56,15 @@ namespace Code.Expedition.Components
                 outlinable.enabled = isActive;
             }
         }
+
+        public void SetReadyToMoveColor(bool isReady)
+        {
+            var visual = GetComponentInChildren<ExpeditionNodeVisual>();
+            if (visual != null)
+            {
+                visual.SetIconColor(isReady ? Color.cyan : Color.white);
+            }
+        }
         
         public void UpdateMaterial(bool isCurrentNode)
         {

@@ -11,11 +11,13 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using GondrLib.ObjectPool.Runtime;
+using Input;
 
 namespace Code.UI
 {
     public class CombatInfoUI : MonoBehaviour
     {
+        [SerializeField] private InputReader input;
         [Header("UI Panel & Animation")]
         [SerializeField] private RectTransform panelRect;
         [SerializeField] private GameObject backgroundPanel;
@@ -197,7 +199,10 @@ namespace Code.UI
             RefreshAllUI();
 
             _slideTween?.Kill();
-            _slideTween = panelRect.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase);
+            _slideTween = panelRect.DOAnchorPos(visiblePosition, slideDuration).SetEase(slideEase).OnComplete(() =>
+            {
+                input._controls.Player.Disable();
+            });
         }
 
         public void HideUI()
@@ -221,6 +226,8 @@ namespace Code.UI
             _manualTargetState = null; 
             _currentInGameUnitSO = null;
             _currentInGameHealth = null;
+            
+            input._controls.Player.Enable();
         }
 
         private UnitSO GetCurrentUnitSO()

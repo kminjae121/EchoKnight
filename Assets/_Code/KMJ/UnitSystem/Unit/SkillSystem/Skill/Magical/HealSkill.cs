@@ -41,6 +41,8 @@ public class HealSkill : BasicUnitSkill
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(false));
             yield return new WaitForSeconds(0.4f);
             animtionCompo.PlaySelectAnimation("HEAL");
+            
+            SkillFeedbackEvent?.Invoke();
         }
 
         protected override void SkillEnd()
@@ -56,8 +58,7 @@ public class HealSkill : BasicUnitSkill
         public void Heal()
         {
             UnitHealth health = _characterUnit.GetUnitCompo<UnitHealth>();
-            
+
             health.HealHp(20);
-            SkillFeedbackEvent?.Invoke();
         }
     }

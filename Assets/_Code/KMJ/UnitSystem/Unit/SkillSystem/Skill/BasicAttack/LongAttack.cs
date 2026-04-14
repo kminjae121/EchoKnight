@@ -60,7 +60,10 @@ public class LongAttack : BasicUnitSkill
         private void ShootLongRangeAttack()
         {
             Vector3 dir = _target.transform.position;
-            dir.y += 1f;
+            dir.y += 1.3f;
+
+            dir.x += 0.4f;
+            dir.z += 0.4f;
             
             effectPrefab.SetDamageData(DamageData,AddDamage, _target);
             effectPrefab.StartParticleEffect(dir);

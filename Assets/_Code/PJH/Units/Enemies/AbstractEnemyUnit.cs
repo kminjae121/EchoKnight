@@ -103,7 +103,7 @@ namespace Code.UnitSystem.Enemies
         
         private IEnumerator WaitActive()
         {
-            yield return new WaitForSeconds(0.8f);
+            yield return new WaitForSeconds(0.4f);
             
             TurnChannel?.SendEventMessage();
         }

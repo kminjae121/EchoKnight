@@ -12,14 +12,14 @@ namespace _Code.UnitSystem
         public StatInfo UpgradeStat;
         public float UpgradeValue;
     }
-    
+
     public class InGameStatCompo : MonoSingleton<InGameStatCompo>
     {
         private List<InGameStat> _statsList = new List<InGameStat>();
 
         public void ReStartGame() =>
             _statsList.Clear();
-        
+
         public void SetStat(StatInfo upgradeStat, float upgradeValue, UnitType unitType)
         {
             for (int i = 0; i < _statsList.Count; i++)
@@ -27,8 +27,8 @@ namespace _Code.UnitSystem
                 var item = _statsList[i];
                 if (item.UpgradeStat == upgradeStat && item.UnitType == unitType)
                 {
-                    item.UpgradeValue += upgradeValue; 
-                    _statsList[i] = item;        
+                    item.UpgradeValue += upgradeValue;
+                    _statsList[i] = item;
                     return;
                 }
             }
@@ -46,8 +46,17 @@ namespace _Code.UnitSystem
             foreach (var stat in _statsList)
                 if (stat.UnitType == unitType && stat.UpgradeStat == statInfo)
                     return stat.UpgradeValue;
-            
+
             return 0f;
+        }
+
+        public int GetStatToInt(StatInfo statInfo, UnitType unitType)
+        {
+            foreach (var stat in _statsList)
+                if (stat.UnitType == unitType && stat.UpgradeStat == statInfo)
+                    return (int)stat.UpgradeValue;
+
+            return 0;
         }
     }
 }

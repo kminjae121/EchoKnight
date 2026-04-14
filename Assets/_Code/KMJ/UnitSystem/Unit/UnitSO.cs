@@ -50,7 +50,7 @@ public class UnitSO : ScriptableObject
     [Header("UnitSettings")]
     public bool isLongRange;
 
-    public float turnSpeed = 3f;
+    public int turnSpeed = 3;
     
     public bool isPlayerUnit = false;
     

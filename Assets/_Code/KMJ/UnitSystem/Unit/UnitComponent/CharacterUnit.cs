@@ -107,7 +107,7 @@ namespace Code.UnitSystem
             if (MoveCompo != null)
             {
                 MoveCompo.FindObjectInRange(unitSO.MoveRange);
-                MoveCompo.moveCount = 0;
+                MoveCompo.MoveCount = 0;
             }
             
             OnTurnStartEvent?.Invoke();
@@ -117,10 +117,14 @@ namespace Code.UnitSystem
 
         public void SetMoveTile()
         {
-            if (MoveCompo != null)
+            if (MoveCompo != null && isMyTurn)
             {
-                if(MoveCompo.moveCount == 0)
+                if (MoveCompo.MoveCount < 1)
+                {
                     MoveCompo.FindObjectInRange(unitSO.MoveRange);
+                }
+                else
+                    return;
             }
         }
 

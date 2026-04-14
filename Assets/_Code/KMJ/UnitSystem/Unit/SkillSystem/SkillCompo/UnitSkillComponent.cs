@@ -9,7 +9,7 @@ namespace Code.SkillSystem
     {
         [SerializeField] private InputReader _intputReader;
 
-
+        [SerializeField] private SkillManageComponent skillManageCompo;
         private void Start()
         {
             _intputReader.OnCancelEvent += CancelAllSkill;
@@ -33,7 +33,7 @@ namespace Code.SkillSystem
         {
             BasicUnitSkill basicSkill = skill as BasicUnitSkill;
 
-            if (basicSkill != null)
+            if (basicSkill != null && skillManageCompo.GetSkillInfo() == basicSkill)
             {
                 basicSkill.SkillFinished(true);
                 basicSkill.BooleanSkillUse(false);

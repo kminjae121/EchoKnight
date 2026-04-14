@@ -1,16 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using Code.Core.Events.Bus;
 using Code.Items;
 using Code.UnitSystem.ArtifactSystem;
 using GondrLib.ObjectPool.Runtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Code.UI
 {
     [RequireComponent(typeof(CanvasGroup))]
-    public class ArtifactEquipPopupUI : MonoBehaviour
+    public class ArtifactEquipPopupUI : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         [Header("UI Elements")]
         [SerializeField] private TextMeshProUGUI nameText;
@@ -29,6 +31,8 @@ namespace Code.UI
         private bool _isCurrentlyEquipped;
         
         private bool _isJustOpened;
+        private bool _isMouseOverPopup = false;
+        private Coroutine _hideCoroutine;
         
         private PoolManagerMono _poolManager;
         private List<ArtifactStatSlotUI> _activeStatSlots = new List<ArtifactStatSlotUI>();
@@ -44,7 +48,7 @@ namespace Code.UI
             equipButton.onClick.AddListener(HandleEquip);
             unequipButton.onClick.AddListener(HandleUnequip);
 
-            Hide();
+            ForceHide();
         }
 
         private void OnDestroy()
@@ -68,17 +72,39 @@ namespace Code.UI
             {
                 if (!RectTransformUtility.RectangleContainsScreenPoint(_rectTransform, UnityEngine.Input.mousePosition, null))
                 {
-                    Hide();
+                    ForceHide();
                 }
             }
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _isMouseOverPopup = true;
+            if (_hideCoroutine != null)
+            {
+                StopCoroutine(_hideCoroutine);
+                _hideCoroutine = null;
+            }
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            _isMouseOverPopup = false;
+            StartHideRoutine();
         }
 
         private void HandlePopupEvent(ArtifactPopupEvent evt)
         {
             if (evt.EquipmentItem == null)
             {
-                Hide();
+                StartHideRoutine();
                 return;
+            }
+
+            if (_hideCoroutine != null)
+            {
+                StopCoroutine(_hideCoroutine);
+                _hideCoroutine = null;
             }
 
             _targetEquipmentItem = evt.EquipmentItem;
@@ -109,6 +135,58 @@ namespace Code.UI
             gameObject.SetActive(true);
             _isJustOpened = true; 
             transform.SetAsLastSibling();
+
+            if (evt.Pivot != null)
+            {
+                ClampToWindow();
+            }
+        }
+
+        private void ClampToWindow()
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas == null) return;
+
+            Canvas.ForceUpdateCanvases();
+            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+            
+            Vector3[] canvasCorners = new Vector3[4];
+            canvasRect.GetWorldCorners(canvasCorners);
+            
+            Vector3[] popupCorners = new Vector3[4];
+            _rectTransform.GetWorldCorners(popupCorners);
+            
+            Vector3 offset = Vector3.zero;
+
+            if (popupCorners[0].x < canvasCorners[0].x)
+                offset.x = canvasCorners[0].x - popupCorners[0].x;
+            else if (popupCorners[2].x > canvasCorners[2].x)
+                offset.x = canvasCorners[2].x - popupCorners[2].x;
+
+            if (popupCorners[0].y < canvasCorners[0].y)
+                offset.y = canvasCorners[0].y - popupCorners[0].y;
+            else if (popupCorners[2].y > canvasCorners[2].y)
+                offset.y = canvasCorners[2].y - popupCorners[2].y;
+
+            _rectTransform.position += offset;
+        }
+
+        private void StartHideRoutine()
+        {
+            if (!gameObject.activeSelf) return;
+            
+            if (_hideCoroutine != null) StopCoroutine(_hideCoroutine);
+            _hideCoroutine = StartCoroutine(CoWaitAndHide());
+        }
+
+        private IEnumerator CoWaitAndHide()
+        {
+            yield return new WaitForSeconds(0.05f);
+            
+            if (!_isMouseOverPopup)
+            {
+                ForceHide();
+            }
         }
 
         private void UpdateStatUI()
@@ -175,7 +253,7 @@ namespace Code.UI
             if (_targetEquipmentItem != null && !_isCurrentlyEquipped)
                 Bus<ArtifactEquipEvent>.Raise(new ArtifactEquipEvent(_targetEquipmentItem));
                 
-            Hide(); 
+            ForceHide(); 
         }
 
         private void HandleUnequip()
@@ -183,11 +261,12 @@ namespace Code.UI
             if (_targetEquipmentItem != null && _isCurrentlyEquipped)
                 Bus<ArtifactUnequipEvent>.Raise(new ArtifactUnequipEvent(_targetEquipmentItem));
                 
-            Hide(); 
+            ForceHide(); 
         }
 
-        private void Hide()
+        private void ForceHide()
         {
+            _isMouseOverPopup = false;
             ClearStatSlots();
 
             if (!gameObject.activeSelf && _targetEquipmentItem == null) return;

@@ -12,6 +12,10 @@ namespace _Code.Item
     {
         private Dictionary<UnitType, List<EquipmentItemSO>> items 
             = new Dictionary<UnitType, List<EquipmentItemSO>>();
+        public Dictionary<UnitType, List<EquipmentItemSO>> GetAllEquippedItems()
+        {
+            return items;
+        }
 
         public void SetItem(UnitType unitType, EquipmentItemSO itemSO)
         {
@@ -60,7 +64,7 @@ namespace _Code.Item
                     }
                     
                     if (itemSO.PassiveSO != null)
-                        PassiveStorage.Instance.SetPassive(unitType, itemSO.PassiveSO);
+                        PassiveStorage.Instance.RemovePassive(unitType, itemSO.PassiveSO);
                 }
             }
         }

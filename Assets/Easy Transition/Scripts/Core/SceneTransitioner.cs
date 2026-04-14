@@ -178,7 +178,8 @@ namespace PixeLadder.EasyTransition
                 
                 if (loadingSlider != null)
                 {
-                    loadingSlider.value = Mathf.Lerp(loadingSlider.value, progress, Time.deltaTime * 5f);
+                    //loadingSlider.value = Mathf.Lerp(loadingSlider.value, progress, Time.deltaTime * 5f);
+                    loadingSlider.value = progress;
                 }
 
                 // 로딩이 완료되었을 때 (progress == 0.9)

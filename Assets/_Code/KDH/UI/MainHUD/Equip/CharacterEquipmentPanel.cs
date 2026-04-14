@@ -116,22 +116,40 @@ namespace Code.UI
             RefreshArtifactUI();
         }
 
-        private bool IsEquippedByOtherUnit(EquipmentItemSO item)
+        private List<EquipmentItemSO> GetAvailableArtifacts()
         {
-            if (unitStorageSO == null || _unit == null) return false;
+            if (_unit == null || _unit.OwnArtifactStorage == null) return new List<EquipmentItemSO>();
 
-            foreach (var state in unitStorageSO.unitStates)
+            List<EquipmentItemSO> availableArtifacts = new List<EquipmentItemSO>(_unit.OwnArtifactStorage.artifacts);
+
+            if (ItemStorage.Instance != null && ItemStorage.Instance.GetAllEquippedItems().Count > 0)
             {
-                if (state.Data != null && state.Data != _unit)
+                foreach (var kvp in ItemStorage.Instance.GetAllEquippedItems())
                 {
-                    if (state.Data.EquippedArtifacts != null && 
-                        state.Data.EquippedArtifacts.artifacts.Contains(item))
+                    if (kvp.Key != _unit.UnitType) 
                     {
-                        return true;
+                        foreach (var equippedItem in kvp.Value)
+                        {
+                            availableArtifacts.Remove(equippedItem);
+                        }
                     }
                 }
             }
-            return false;
+            else if (unitStorageSO != null)
+            {
+                foreach (var state in unitStorageSO.unitStates)
+                {
+                    if (state.Data != null && state.Data.UnitType != _unit.UnitType && state.Data.EquippedArtifacts != null)
+                    {
+                        foreach (var equippedItem in state.Data.EquippedArtifacts.artifacts)
+                        {
+                            availableArtifacts.Remove(equippedItem);
+                        }
+                    }
+                }
+            }
+            
+            return availableArtifacts;
         }
 
         private void RefreshArtifactUI()
@@ -145,10 +163,7 @@ namespace Code.UI
             _activeArtifactButtons.Clear();
 
             var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
-
-            var displayList = _unit.OwnArtifactStorage.artifacts
-                .Where(a => !IsEquippedByOtherUnit(a))
-                .ToList();
+            var displayList = GetAvailableArtifacts();
 
             if (_isArtifactSortedByRarity) displayList = displayList.OrderByDescending(a => a.rarity).ToList();
 

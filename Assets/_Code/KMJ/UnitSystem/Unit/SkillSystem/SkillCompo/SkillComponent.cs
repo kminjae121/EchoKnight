@@ -159,9 +159,12 @@ namespace Code.SkillSystem
 
         public void CancelAllSkill()
         {
-            foreach (var skill in Skills.Values)
+            if (_unit.isMyTurn)
             {
-                CancelSkill(skill);
+                foreach (var skill in Skills.Values)
+                {
+                    CancelSkill(skill);
+                }   
             }
         }
 

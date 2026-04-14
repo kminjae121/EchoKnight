@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Code.Core.Events.Bus;
 using Code.Map;
 using Code.UnitSystem;
@@ -66,12 +67,25 @@ namespace Code.SkillSystem
             IsActive = false;
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+
+            StartCoroutine(MoveTile());
+        }
+
+        private IEnumerator MoveTile()
+        {
+            yield return new WaitForSeconds(0.3f);
+            
+            _characterUnit.SetMoveTile();
+            _characterUnit.MoveCompo.IsActive = true;
         }
 
         public override void SkillFinished(bool isCancel)
         {
             base.SkillFinished(isCancel);
-            _characterUnit.SetMoveTile();
+            if (isCancel)
+            {
+                StartCoroutine(MoveTile());
+            }
             Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
         }
@@ -147,6 +161,7 @@ namespace Code.SkillSystem
             }
             
             _characterUnit.MoveCompo.ResetTile();
+            _characterUnit.MoveCompo.IsActive = false;
             SkillStartEvent();
             CheckCanAttack();
             BooleanSkillUse(true);

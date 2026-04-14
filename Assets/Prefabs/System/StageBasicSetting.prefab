@@ -93,6 +93,10 @@ MonoBehaviour:
   enemySpawns:
   - enemyPrefab: {fileID: 11400000, guid: 5d5dfd4c6ba3fa04fa0cf0d055c556bd, type: 2}
     spawnCoord: {x: 5, y: 12}
+  - enemyPrefab: {fileID: 11400000, guid: 5d5dfd4c6ba3fa04fa0cf0d055c556bd, type: 2}
+    spawnCoord: {x: 4, y: 3}
+  - enemyPrefab: {fileID: 11400000, guid: 5d5dfd4c6ba3fa04fa0cf0d055c556bd, type: 2}
+    spawnCoord: {x: 2, y: 8}
   enemies: []
   playerCount: 0
   gameClearUI: {fileID: 0}
@@ -314,6 +318,10 @@ PrefabInstance:
     - target: {fileID: 3107678514103874095, guid: 06e5a120713112e4a8c7cf4376664f85, type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4014857511883377710, guid: 06e5a120713112e4a8c7cf4376664f85, type: 3}
+      propertyPath: roundInterval
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 4314626561041933364, guid: 06e5a120713112e4a8c7cf4376664f85, type: 3}
       propertyPath: startingCoords.Array.size

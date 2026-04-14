@@ -98,6 +98,13 @@ namespace Code.UnitSystem.Enemies
             
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false, _dampingSpeed));
 
+            StartCoroutine(WaitActive());
+        }
+        
+        private IEnumerator WaitActive()
+        {
+            yield return new WaitForSeconds(0.4f);
+            
             TurnChannel?.SendEventMessage();
         }
 
@@ -156,7 +163,7 @@ namespace Code.UnitSystem.Enemies
 
         private IEnumerator HitIdle()
         {
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(0.4f);
             
             if(UnitAnimator != null)
             {

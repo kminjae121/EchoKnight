@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Code.Core.Debugs;
 using Code.Map;
 using Code.UnitSystem.UnitComponent;
@@ -62,7 +63,7 @@ namespace Code.UnitSystem.Enemies.AI
 
             return Status.Running;
         }
-
+        
         protected override Status OnUpdate()
         {
             return _isMoving ? Status.Running : Status.Success;

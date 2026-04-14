@@ -93,6 +93,8 @@ namespace Code.UnitSystem.Combat
             PopupTextEvent textEvt = TextEvent.PopupTextEvent.Initializer(amount.ToString(), healHash
                 , pos, 0.5f);  
             
+            OnHealthChangedEvent?.Invoke(currentHealth, maxHealth);
+            
             textEventChannel.RaiseEvent(textEvt);
         }
         

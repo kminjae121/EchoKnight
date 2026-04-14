@@ -31,9 +31,8 @@ namespace Code.UI
 
         private void StartGame()
         {
-            DOTween.Sequence(img2.transform.DOMoveX(img2Trm.position.x , 0.8f))
-                .SetDelay(0.7f)
-                .Append(img2.transform.DOMoveX(endTrm.position.x, 0.8f))
+            DOTween.Sequence()
+                .SetDelay(0.35f)
                 .Append(txt.DOFade(0,0.3f))
                 .Append(img.DOFade(0, 2f))
                 .SetEase(Ease.InQuint)

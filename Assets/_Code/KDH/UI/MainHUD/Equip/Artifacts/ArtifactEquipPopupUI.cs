@@ -109,6 +109,41 @@ namespace Code.UI
             gameObject.SetActive(true);
             _isJustOpened = true; 
             transform.SetAsLastSibling();
+
+            if (evt.Pivot != null)
+            {
+                ClampToWindow();
+            }
+        }
+
+        private void ClampToWindow()
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas == null) return;
+
+            Canvas.ForceUpdateCanvases();
+
+            RectTransform canvasRect = canvas.GetComponent<RectTransform>();
+            
+            Vector3[] canvasCorners = new Vector3[4];
+            canvasRect.GetWorldCorners(canvasCorners);
+            
+            Vector3[] popupCorners = new Vector3[4];
+            _rectTransform.GetWorldCorners(popupCorners);
+            
+            Vector3 offset = Vector3.zero;
+
+            if (popupCorners[0].x < canvasCorners[0].x)
+                offset.x = canvasCorners[0].x - popupCorners[0].x;
+            else if (popupCorners[2].x > canvasCorners[2].x)
+                offset.x = canvasCorners[2].x - popupCorners[2].x;
+
+            if (popupCorners[0].y < canvasCorners[0].y)
+                offset.y = canvasCorners[0].y - popupCorners[0].y;
+            else if (popupCorners[2].y > canvasCorners[2].y)
+                offset.y = canvasCorners[2].y - popupCorners[2].y;
+
+            _rectTransform.position += offset;
         }
 
         private void UpdateStatUI()

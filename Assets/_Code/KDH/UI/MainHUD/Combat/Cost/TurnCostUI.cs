@@ -105,6 +105,8 @@ namespace Code.UI
                 {
                     icon.transform.SetParent(costIconGroup);
                     icon.transform.localScale = Vector3.one;
+                    icon.transform.SetAsLastSibling(); 
+                    
                     _activeIcons.Add(icon);
                 }
             }

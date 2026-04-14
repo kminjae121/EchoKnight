@@ -21,14 +21,27 @@ namespace Code.UI
         [SerializeField] private UnitStorageSO unitStorage;
         [SerializeField] private int maxUnitCount = 3;
 
-        private readonly List<UnitSO> _partyUnits = new();
+        private UnitSO[] _partyUnits;
 
         private void Awake()
         {
+            _partyUnits = new UnitSO[maxUnitCount];
+
             Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
             
             startButton.onClick.AddListener(HandleStartButton);
+        }
+
+        private void Start()
+        {
+            for (int i = 0; i < characterSlots.Count; i++)
+            {
+                if (characterSlots[i] != null)
+                {
+                    characterSlots[i].UpdateSlot(null);
+                }
+            }
         }
 
         private void OnDestroy()
@@ -41,40 +54,63 @@ namespace Code.UI
 
         private void HandleCharacterSelected(PartyCharacterSelectEvent evt)
         {
-            if (_partyUnits.Count >= maxUnitCount || _partyUnits.Contains(evt.Unit))
-                return;
+            for (int i = 0; i < _partyUnits.Length; i++)
+            {
+                if (_partyUnits[i] == evt.Unit) return;
+            }
 
-            _partyUnits.Add(evt.Unit);
-            RefreshSlots();
+            for (int i = 0; i < _partyUnits.Length; i++)
+            {
+                if (_partyUnits[i] == null)
+                {
+                    _partyUnits[i] = evt.Unit;
+                    
+                    if (i < characterSlots.Count)
+                    {
+                        characterSlots[i].UpdateSlot(evt.Unit); 
+                    }
+                    break;
+                }
+            }
         }
 
         private void HandleCharacterDeselected(PartyCharacterDeselectEvent evt)
         {
-            if (_partyUnits.Remove(evt.Unit))
-                RefreshSlots();
-        }
-
-        private void RefreshSlots()
-        {
-            for (int i = 0; i < characterSlots.Count; ++i)
-                characterSlots[i].SetUnit(i < _partyUnits.Count ? _partyUnits[i] : null);
+            for (int i = 0; i < _partyUnits.Length; i++)
+            {
+                if (_partyUnits[i] == evt.Unit)
+                {
+                    _partyUnits[i] = null;
+                    
+                    if (i < characterSlots.Count)
+                    {
+                        characterSlots[i].UpdateSlot(null); 
+                    }
+                    break;
+                }
+            }
         }
 
         private void HandleStartButton()
         {
-            if (_partyUnits.Count == 0)
-            {
-                UnityLogger.Log("파티에 유닛이 없습니다.");
-                return;
-            }
-
+            bool hasUnit = false;
             unitStorage.units.Clear();
             unitStorage.unitStates.Clear();
 
             foreach (var unit in _partyUnits)
             {
-                unitStorage.units.Add(unit.UnitSpawn);
-                unitStorage.unitStates.Add(new UnitState(unit));
+                if (unit != null)
+                {
+                    hasUnit = true;
+                    unitStorage.units.Add(unit.UnitSpawn);
+                    unitStorage.unitStates.Add(new UnitState(unit));
+                }
+            }
+
+            if (!hasUnit)
+            {
+                UnityLogger.Log("파티에 유닛이 없습니다.");
+                return;
             }
 
             SceneChangeManager.Instance.ChangeSelectScene("ExpeditionMapScene");

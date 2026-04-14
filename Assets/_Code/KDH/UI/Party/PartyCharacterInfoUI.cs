@@ -36,7 +36,8 @@ namespace Code.UI
         [SerializeField] private TextMeshProUGUI recoverySkillCostText;
 
         private GameObject[] _spawnedModels = new GameObject[3];
-        private List<UnitSO> _selectedUnits = new List<UnitSO>();
+        private UnitSO[] _assignedUnits = new UnitSO[3];
+        private GameObject _previewModel;
 
         private void Awake()
         {
@@ -58,14 +59,36 @@ namespace Code.UI
 
         private void HandleHover(PartyCharacterHoverEvent evt)
         {
-            bool isHovering = evt.Unit != null;
-            
-            if (lobbyStatPanel != null) 
-                lobbyStatPanel.SetActive(isHovering);
+            CleanupPreviewModel();
 
+            bool isHovering = evt.Unit != null;
+            if (lobbyStatPanel != null) lobbyStatPanel.SetActive(isHovering);
+            
             if (isHovering)
             {
                 UpdateStats(evt.Unit);
+
+                bool isAlreadyAssigned = false;
+                for (int i = 0; i < _assignedUnits.Length; i++)
+                {
+                    if (_assignedUnits[i] == evt.Unit)
+                    {
+                        isAlreadyAssigned = true;
+                        break;
+                    }
+                }
+
+                if (!isAlreadyAssigned)
+                {
+                    for (int i = 0; i < _assignedUnits.Length; i++)
+                    {
+                        if (_assignedUnits[i] == null)
+                        {
+                            _previewModel = CreateModelInstance(i, evt.Unit);
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -73,10 +96,21 @@ namespace Code.UI
         {
             if (evt.Unit == null) return;
 
-            if (!_selectedUnits.Contains(evt.Unit) && _selectedUnits.Count < 3)
+            for (int i = 0; i < _assignedUnits.Length; i++)
             {
-                _selectedUnits.Add(evt.Unit);
-                RefreshAllCharacterModels();
+                if (_assignedUnits[i] == evt.Unit) return;
+            }
+
+            CleanupPreviewModel();
+
+            for (int i = 0; i < _assignedUnits.Length; i++)
+            {
+                if (_assignedUnits[i] == null)
+                {
+                    _assignedUnits[i] = evt.Unit;
+                    _spawnedModels[i] = CreateModelInstance(i, evt.Unit);
+                    break;
+                }
             }
         }
 
@@ -84,47 +118,58 @@ namespace Code.UI
         {
             if (evt.Unit == null) return;
 
-            if (_selectedUnits.Contains(evt.Unit))
+            for (int i = 0; i < _assignedUnits.Length; i++)
             {
-                _selectedUnits.Remove(evt.Unit);
-                RefreshAllCharacterModels();
+                if (_assignedUnits[i] == evt.Unit)
+                {
+                    _assignedUnits[i] = null;
+                    if (_spawnedModels[i] != null)
+                    {
+                        Destroy(_spawnedModels[i]);
+                        _spawnedModels[i] = null;
+                    }
+                    break;
+                }
             }
         }
 
-        private void RefreshAllCharacterModels()
+        private GameObject CreateModelInstance(int index, UnitSO unit)
         {
-            CleanupAllModels();
+            if (index >= modelSpawnPoints.Length || modelSpawnPoints[index] == null) return null;
 
-            for (int i = 0; i < _selectedUnits.Count; i++)
+            GameObject prefabToSpawn = GetModelPrefab(unit.UnitType);
+            if (prefabToSpawn != null)
             {
-                if (i >= modelSpawnPoints.Length) break;
-
-                UnitSO unit = _selectedUnits[i];
-                GameObject prefabToSpawn = GetModelPrefab(unit.UnitType);
-
-                if (prefabToSpawn != null && modelSpawnPoints[i] != null)
-                {
-                    _spawnedModels[i] = Instantiate(prefabToSpawn, modelSpawnPoints[i]);
-                    _spawnedModels[i].transform.localPosition = Vector3.zero;
-                    _spawnedModels[i].transform.localRotation = Quaternion.identity;
-                }
+                GameObject instance = Instantiate(prefabToSpawn, modelSpawnPoints[index]);
+                instance.transform.localPosition = Vector3.zero;
+                instance.transform.localRotation = Quaternion.identity;
+                return instance;
             }
+            return null;
         }
 
         private GameObject GetModelPrefab(UnitType unitType)
         {
             if (unitModelMappings == null) return null;
-
             foreach (var mapping in unitModelMappings)
             {
-                if (mapping.unitType == unitType)
-                    return mapping.modelPrefab;
+                if (mapping.unitType == unitType) return mapping.modelPrefab;
             }
             return null;
         }
 
+        private void CleanupPreviewModel()
+        {
+            if (_previewModel != null)
+            {
+                Destroy(_previewModel);
+                _previewModel = null;
+            }
+        }
+
         private void CleanupAllModels()
         {
+            CleanupPreviewModel();
             for (int i = 0; i < _spawnedModels.Length; i++)
             {
                 if (_spawnedModels[i] != null)
@@ -132,21 +177,20 @@ namespace Code.UI
                     Destroy(_spawnedModels[i]);
                     _spawnedModels[i] = null;
                 }
+                _assignedUnits[i] = null;
             }
         }
 
         private void UpdateStats(UnitSO data)
         {
             if (data == null) return;
-
             if (characterNameText != null) characterNameText.text = data.UnitName ?? string.Empty;
             if (characterClassText != null) characterClassText.text = data.UnitClass ?? string.Empty;
-
-            if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
-            if (atkText != null) atkText.text = data.AttackDamage.ToString("F1");
-            if (defText != null) defText.text = data.DefensivePower.ToString("F1");
-            if (moveSpeedText != null) moveSpeedText.text = data.MoveRange.ToString("F1");
-            if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
+            if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString();
+            if (atkText != null) atkText.text = data.AttackDamage.ToString();
+            if (defText != null) defText.text = data.DefensivePower.ToString();
+            if (moveSpeedText != null) moveSpeedText.text = data.MoveRange.ToString();
+            if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString();
             if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";
             if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease.ToString("F1");
             if (maxSkillCostText != null) maxSkillCostText.text = data.MaxSkillCost.ToString();

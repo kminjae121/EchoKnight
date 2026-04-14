@@ -9,47 +9,51 @@ namespace Code.UI
         [Header("UI Elements")]
         [SerializeField] private Image slotImage;
         [SerializeField] private Button slotButton;
-        
-        [Header("Data")]
-        [SerializeField] private UnitSO characterInfo;
+        [SerializeField] private Sprite defaultSprite;
 
-        private Sprite _defaultSprite;
-        
+        private UnitSO _unitData;
+
         private void Awake()
         {
-            slotButton.onClick.AddListener(HandleSlotButton);
-            _defaultSprite = slotImage.sprite;
+            if (slotButton != null)
+            {
+                slotButton.onClick.AddListener(OnSlotButtonClicked);
+            }
+        }
+
+        private void Start()
+        {
+            UpdateSlot(null);
         }
 
         private void OnDestroy()
         {
-            slotButton.onClick.RemoveListener(HandleSlotButton);
-        }
-        
-        public void SetUnit(UnitSO unit)
-        {
-            if (unit == null)
+            if (slotButton != null)
             {
-                characterInfo = null;
-                slotImage.sprite = _defaultSprite;
+                slotButton.onClick.RemoveListener(OnSlotButtonClicked);
+            }
+        }
+
+        public void UpdateSlot(UnitSO unit)
+        {
+            _unitData = unit;
+
+            if (_unitData != null)
+            {
+                slotImage.sprite = _unitData.UnitImage;
+                slotImage.gameObject.SetActive(true);
             }
             else
             {
-                characterInfo = unit;
-                slotImage.sprite = characterInfo.UnitImage;
+                slotImage.sprite = defaultSprite;
+                slotImage.gameObject.SetActive(defaultSprite != null);
             }
         }
 
-        private void HandleSlotButton()
+        private void OnSlotButtonClicked()
         {
-            if (characterInfo == null)
-                return;
-
-            var removedInfo = characterInfo;
-            characterInfo = null;
-            slotImage.sprite = _defaultSprite;
-            
-            Bus<PartyCharacterDeselectEvent>.Raise(new PartyCharacterDeselectEvent(removedInfo));
+            if (_unitData == null) return;
+            Bus<PartyCharacterDeselectEvent>.Raise(new PartyCharacterDeselectEvent(_unitData));
         }
     }
 }

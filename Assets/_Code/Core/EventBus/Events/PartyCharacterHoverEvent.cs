@@ -3,16 +3,12 @@
 namespace Code.Core.Events.Bus
 {
     public struct PartyCharacterHoverEvent : IEvent
-    {
-        public Sprite CharacterImage { get; }
-        public string CharacterName { get; }
-        public string CharacterDesc { get; }
+    { 
+        public UnitSO Unit { get; }
         
-        public PartyCharacterHoverEvent(Sprite characterImage, string characterName, string characterDesc)
+        public PartyCharacterHoverEvent(UnitSO unit)
         {
-            CharacterImage = characterImage;
-            CharacterName = characterName;
-            CharacterDesc = characterDesc;
+            Unit = unit;
         }
     }
 }

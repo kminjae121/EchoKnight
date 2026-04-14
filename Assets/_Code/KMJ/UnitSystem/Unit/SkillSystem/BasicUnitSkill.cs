@@ -36,7 +36,7 @@ namespace Code.SkillSystem
 
             if (_characterUnit != null)
             {
-                RotationCompo = _characterUnit.GetUnitCompo<UnitRotation>();
+                RotatorCompo = _characterUnit.GetUnitCompo<UnitRotator>();
                 triggerCompo = _characterUnit.GetUnitCompo<UnitAnimationTrigger>();
                 _skillCompo = _characterUnit.GetUnitCompo<SkillComponent>();
             }
@@ -102,8 +102,8 @@ namespace Code.SkillSystem
 
             _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
             
-            if (RotationCompo != null)
-                RotationCompo.SetDir(_targetEnemy.transform.position);
+            if (RotatorCompo != null)
+                RotatorCompo.SetDir(_targetEnemy.transform.position);
             
             if (_targetingCompo != null)
                 _targetingCompo.OffTargeting();

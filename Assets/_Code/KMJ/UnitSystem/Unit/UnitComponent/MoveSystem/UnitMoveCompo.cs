@@ -10,7 +10,7 @@ namespace Code.UnitSystem
     public class UnitMoveCompo : RangeComponent
     {
         [SerializeField] private UnitAnimation animationCompo;
-        [SerializeField] private UnitRotation rotationCompo;
+        [SerializeField] private UnitRotator rotatorCompo;
         [SerializeField] private UnitAnimationTrigger triggerCompo;
 
         private PathMover _pathMoverCompo;
@@ -154,7 +154,7 @@ namespace Code.UnitSystem
             IsActive = false;
             _isMoving = true;
 
-            rotationCompo.SetDir(tile.WorldPos);
+            rotatorCompo.SetDir(tile.WorldPos);
             
             animationCompo.PlaySelectAnimation("MOVE");
         }

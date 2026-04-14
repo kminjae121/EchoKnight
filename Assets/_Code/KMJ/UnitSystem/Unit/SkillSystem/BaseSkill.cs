@@ -31,7 +31,7 @@ namespace Code.SkillSystem
         [SerializeField] protected UnitAnimationTrigger triggerCompo;
         [SerializeField] private UnitStatCompo statCompo;
         [SerializeField] protected RangeComponent rangeCompo;
-        public UnitRotation RotationCompo { get; set; }
+        public UnitRotator RotatorCompo { get; set; }
         
         [Header("Skill Event")] 
         public UnityEvent<GameObject> SkillEvent;
@@ -145,8 +145,8 @@ namespace Code.SkillSystem
             _targetEnemy = target;
             isCanUseSkill = true;
 
-            if (RotationCompo != null)
-                RotationCompo.SetDir(target.transform.position);
+            if (RotatorCompo != null)
+                RotatorCompo.SetDir(target.transform.position);
 
             StartEvent();
             

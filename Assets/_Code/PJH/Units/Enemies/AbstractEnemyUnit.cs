@@ -23,7 +23,7 @@ namespace Code.UnitSystem.Enemies
         public EnemySkillComponent SkillCompo { get; private set; }
         public TurnChannel TurnChannel { get; private set; }
         public UnitAnimation UnitAnimator { get; private set; }
-        public UnitRotation UnitRotationCompo { get; private set; }
+        public UnitRotator UnitRotatorCompo { get; private set; }
         public UnitAnimationTrigger AnimationTrigger { get; private set; }
         public EnemyManager EnemyManager => _enemyManager;
         public UnitManager UnitManager => _unitManager;
@@ -53,7 +53,7 @@ namespace Code.UnitSystem.Enemies
             PathMover = GetUnitCompo<PathMover>();
             SkillCompo = GetUnitCompo<EnemySkillComponent>();
             UnitAnimator = GetUnitCompo<UnitAnimation>();
-            UnitRotationCompo = GetUnitCompo<UnitRotation>();
+            UnitRotatorCompo = GetUnitCompo<UnitRotator>();
             AnimationTrigger = GetUnitCompo<UnitAnimationTrigger>();
         }
 
@@ -247,7 +247,7 @@ namespace Code.UnitSystem.Enemies
             };
 
             skill.SkillEndEvent?.AddListener(endListener);
-            skill.RotationCompo = UnitRotationCompo;
+            skill.RotatorCompo = UnitRotatorCompo;
             skill.ConfigureSkillRange(skillSO);
             skill.ForceUseSkill(target);
         }

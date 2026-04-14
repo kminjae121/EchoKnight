@@ -39,8 +39,16 @@ namespace Code.SkillSystem
             if (target == null)
                 return;
 
-            base.ForceUseSkill(target);
-            PlayBreathAnimation();
+            _targetEnemy = target;
+            isCanUseSkill = true;
+
+            if (RotatorCompo != null)
+            {
+                RotatorCompo.SetDir(target.transform.position, BeginBreathSkill);
+                return;
+            }
+
+            BeginBreathSkill();
         }
 
         protected override void StartEvent()
@@ -73,7 +81,7 @@ namespace Code.SkillSystem
             if (_target == null)
                 return;
 
-            foreach (GameObject hitTarget in GetHitTargets(_target))
+            foreach (var hitTarget in GetHitTargets(_target))
             {
                 Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage,
                     null, false,false,0.1f));
@@ -96,7 +104,7 @@ namespace Code.SkillSystem
             if (target == null)
                 return false;
 
-            GridMap gridMap = GridMap.Instance;
+            var gridMap = GridMap.Instance;
 
             if (gridMap == null)
                 return false;
@@ -198,11 +206,23 @@ namespace Code.SkillSystem
             SkillEndEvent?.Invoke();
         }
 
+        private void BeginBreathSkill()
+        {
+            if (_targetEnemy == null)
+                return;
+
+            StartEvent();
+            Bus<UnitSkilStartEvent>.Raise(new UnitSkilStartEvent(true));
+            SkillEvent?.Invoke(_targetEnemy);
+            PlayBreathAnimation();
+        }
+
         private void PlayBreathAnimation()
         {
             if (_ownerEnemy?.UnitAnimator == null || string.IsNullOrWhiteSpace(SkillSO.skillAnimationKey))
                 return;
             
+            _ownerEnemy.UnitAnimator.RestartFromEntry();
             _ownerEnemy.UnitAnimator.PlaySelectAnimation(SkillSO.skillAnimationKey);
             SkillFeedbackEvent?.Invoke();
         }

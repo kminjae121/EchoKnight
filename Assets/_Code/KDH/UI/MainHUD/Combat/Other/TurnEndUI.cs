@@ -2,6 +2,7 @@
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 namespace Code.UI
 {
@@ -26,6 +27,8 @@ namespace Code.UI
         private bool _isTurnEnded = true;
         private bool _isSkillReceived = false;
 
+        private Vector3 _originalButtonScale;
+
         private void Awake()
         {
             if (panelRect == null)
@@ -37,7 +40,19 @@ namespace Code.UI
 
             if (turnEndButton != null)
             {
+                _originalButtonScale = turnEndButton.transform.localScale;
                 turnEndButton.onClick.AddListener(OnTurnEndButtonClicked);
+
+                EventTrigger trigger = turnEndButton.gameObject.GetComponent<EventTrigger>();
+                if (trigger == null) trigger = turnEndButton.gameObject.AddComponent<EventTrigger>();
+
+                EventTrigger.Entry enterEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerEnter };
+                enterEntry.callback.AddListener((data) => { turnEndButton.transform.DOScale(_originalButtonScale * 1.05f, 0.2f).SetEase(Ease.OutQuad); });
+                trigger.triggers.Add(enterEntry);
+
+                EventTrigger.Entry exitEntry = new EventTrigger.Entry { eventID = EventTriggerType.PointerExit };
+                exitEntry.callback.AddListener((data) => { turnEndButton.transform.DOScale(_originalButtonScale, 0.2f).SetEase(Ease.OutQuad); });
+                trigger.triggers.Add(exitEntry);
             }
 
             Bus<SkillUIEvent>.Subscribe(HandleSkillUI);
@@ -67,6 +82,7 @@ namespace Code.UI
 
         private void OnTurnEndButtonClicked()
         {
+            turnEndButton.transform.DOScale(_originalButtonScale, 0.1f);
             Bus<UnitTurnEndEvent>.Raise(new UnitTurnEndEvent());
         }
 

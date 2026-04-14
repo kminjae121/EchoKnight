@@ -122,20 +122,7 @@ namespace Code.UI
 
             List<EquipmentItemSO> availableArtifacts = new List<EquipmentItemSO>(_unit.OwnArtifactStorage.artifacts);
 
-            if (ItemStorage.Instance != null && ItemStorage.Instance.GetAllEquippedItems().Count > 0)
-            {
-                foreach (var kvp in ItemStorage.Instance.GetAllEquippedItems())
-                {
-                    if (kvp.Key != _unit.UnitType) 
-                    {
-                        foreach (var equippedItem in kvp.Value)
-                        {
-                            availableArtifacts.Remove(equippedItem);
-                        }
-                    }
-                }
-            }
-            else if (unitStorageSO != null)
+            if (unitStorageSO != null)
             {
                 foreach (var state in unitStorageSO.unitStates)
                 {
@@ -148,7 +135,6 @@ namespace Code.UI
                     }
                 }
             }
-            
             return availableArtifacts;
         }
 
@@ -163,6 +149,7 @@ namespace Code.UI
             _activeArtifactButtons.Clear();
 
             var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
+
             var displayList = GetAvailableArtifacts();
 
             if (_isArtifactSortedByRarity) displayList = displayList.OrderByDescending(a => a.rarity).ToList();

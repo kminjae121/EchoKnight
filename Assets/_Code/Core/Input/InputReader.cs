@@ -23,8 +23,8 @@ namespace Input
         public Vector2 MovementKey { get; private set; }
         public Vector2 MouseUpDownValue { get; private set; }
         public event Action OnSelectUnitEvent;
-        
-        private Controls _controls;
+
+        public Controls _controls { get; set; }
         private Vector3 _gridPosition;
 
         public Vector2 MousePosition { get; private set; }

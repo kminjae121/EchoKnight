@@ -109,7 +109,7 @@ namespace Code.UnitSystem.Combat
                 
                 if (skill != null)
                 {
-                    skill.RotationCompo.SetDir(enemy.transform.position);
+                    skill.RotatorCompo.SetDir(enemy.transform.position);
                     skill.SetAddDamage(skill.CriticalSpot.CheckEnemyBody(skill.DamageData, enemy, skill.Damage));
                 }
                 

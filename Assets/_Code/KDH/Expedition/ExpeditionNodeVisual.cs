@@ -56,6 +56,14 @@ namespace Code.Expedition.Components
             }
         }
 
+        public void SetIconColor(Color color)
+        {
+            if (iconImage != null)
+            {
+                iconImage.color = color;
+            }
+        }
+
         private void HandleFloating()
         {
             if (_iconRectTransform == null) return;

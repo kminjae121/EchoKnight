@@ -44,7 +44,7 @@ namespace Code.UnitSystem
                     _targetUnit.GetComponentInChildren<UnitOutLineCompo>()?.ResetOutLine();
                 
                 _targetUnit = evt.HoveredUnit.UnitObj;
-                _targetUnit.GetComponentInChildren<UnitOutLineCompo>()?.SetOutLine();
+                _targetUnit.GetComponentInChildren<UnitOutLineCompo>()?.SetOutSelectOutLine();
                 
                 if (_myTurnable.Equals(evt.HoveredUnit))
                 {

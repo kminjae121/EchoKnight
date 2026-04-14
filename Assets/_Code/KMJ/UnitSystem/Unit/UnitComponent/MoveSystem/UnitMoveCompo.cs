@@ -27,7 +27,7 @@ namespace Code.UnitSystem
         private bool _isMoving;
         private float _moveSpeed;
 
-        public float moveCount { get; set; }
+        public float MoveCount { get; set; }
         
         private IMapTile _nextTile;
 
@@ -42,7 +42,6 @@ namespace Code.UnitSystem
             Bus<UnitSetMoveEvent>.Subscribe(StartWalk);
             
             _unit.InputSO.OnClickMoveEvent += Move;
-            _unit.InputSO.OnCancelEvent += HandleResetTile;
             _pathMoverCompo.OnMoveEnd += HandleMoveEnd;
             
             _moveSpeed = 9;
@@ -56,9 +55,9 @@ namespace Code.UnitSystem
 
             if (_unit == null)
                 return;
-            _unit.InputSO.OnCancelEvent -= HandleResetTile;
             _unit.InputSO.OnClickMoveEvent -= Move;
-
+            
+            _pathMoverCompo.OnMoveEnd -= HandleMoveEnd;
         }
 
         private void EndTargeting()
@@ -131,7 +130,7 @@ namespace Code.UnitSystem
             if (_isMoving)
                 return;
 
-            if (moveCount >= 1)
+            if (MoveCount >= 1)
                 return;
             
             IMapTile tile = _unit.InputSO.GetSelectedTile();
@@ -188,7 +187,7 @@ namespace Code.UnitSystem
             MoveStart(tileInfo);
             
             _pathMoverCompo.SetPathAndMove(CurrentMapTile.GridPos, tileInfo.GridPos);
-            moveCount++;
+            MoveCount++;
         }
     }
 }

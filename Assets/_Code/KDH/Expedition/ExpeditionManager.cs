@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.SceneManagement; 
 using Code.Expedition.Data;
-using PixeLadder.EasyTransition;
 
 namespace Code.Expedition.Managers
 {
@@ -280,59 +279,49 @@ namespace Code.Expedition.Managers
         {
             if (node.NodeData != null && node.NodeData.nodeType == ExpeditionNodeType.Event)
             {
-                if (SceneTransitioner.Instance != null)
+                GameObject targetUIPrefab = null;
+                EventNodeSO currentEventData = node.NodeData as EventNodeSO;
+
+                if (_canvas == null)
                 {
-                    _isMoving = true; 
-                    
-                    GameObject targetUI = null;
-                    EventNodeSO currentEventData = node.NodeData as EventNodeSO;
-
-                    foreach (var mapping in eventUIMappings)
+                    Canvas[] canvas = FindObjectsOfType<Canvas>();
+                    foreach (var canva in canvas)
                     {
-                        if (mapping.eventNodeData == currentEventData)
+                        if (canva.gameObject.name == "UI")
                         {
-                            if (_canvas == null)
-                            {
-                                Canvas[] canvas = FindObjectsOfType<Canvas>();
-
-                                foreach (var canva in canvas)
-                                {
-                                    if (canva.gameObject.name == "UI")
-                                        _canvas = canva;
-                                }
-                            }
-                            
-                            targetUI = mapping.uiPanel;
-                            GameObject ui = Instantiate(eventUIMappings[0].uiPanel,_canvas.transform);
-                            ui.transform.localPosition = new Vector3(13, -82, -12f);
+                            _canvas = canva;
                             break;
                         }
                     }
+                }
 
-                    if (targetUI == null && eventUIMappings.Count > 0)
+                foreach (var mapping in eventUIMappings)
+                {
+                    if (mapping.eventNodeData == currentEventData)
                     {
-                        targetUI = eventUIMappings[0].uiPanel;
-                        GameObject ui = Instantiate(eventUIMappings[0].uiPanel,_canvas.transform);
-                        ui.transform.localPosition = new Vector3(13, -82, -12f);
-                        
-                        Debug.Log("매칭되는 EventNodeSO가 없어 기본 UI를 사용합니다.");
+                        targetUIPrefab = mapping.uiPanel;
+                        break;
                     }
+                }
 
-                    SceneTransitioner.Instance.DoTransition(
-                        midTransitionAction: () => 
-                        {
-                            if (targetUI != null) targetUI.SetActive(true);
-                        },
-                        onCompleteAction: () =>
-                        {
-                            _isMoving = false;
-                        }
-                    );
+                if (targetUIPrefab == null && eventUIMappings.Count > 0)
+                {
+                    targetUIPrefab = eventUIMappings[0].uiPanel;
+                    Debug.Log("매칭되는 EventNodeSO가 없어 기본 UI를 사용합니다.");
+                }
+
+                if (targetUIPrefab != null && _canvas != null)
+                {
+                    GameObject uiInstance = Instantiate(targetUIPrefab, _canvas.transform);
+                    uiInstance.transform.localPosition = new Vector3(13, -82, -12f);
+                    uiInstance.SetActive(true);
                 }
                 else
                 {
-                    Debug.LogWarning("SceneTransitioner가 없습니다!");
+                    Debug.LogWarning("이벤트 UI 프리팹 또는 Canvas를 찾을 수 없습니다.");
                 }
+
+                _isMoving = false;
                 return;
             }
 

@@ -18,7 +18,9 @@ namespace Code.UI
 
         private void Awake()
         {
-            slotButton.onClick.AddListener(HandleSlotButton);
+            if (slotButton != null)
+                slotButton.onClick.AddListener(HandleSlotButton);
+                
             Bus<PartyCharacterSelectEvent>.Subscribe(HandleCharacterSelected);
             Bus<PartyCharacterDeselectEvent>.Subscribe(HandleCharacterDeselected);
 
@@ -40,11 +42,9 @@ namespace Code.UI
         private void HandleSlotButton()
         {
             if (characterInfo == null) return;
-
-            if (_isSelected)
-                Bus<PartyCharacterDeselectEvent>.Raise(new PartyCharacterDeselectEvent(characterInfo));
-            else
-                Bus<PartyCharacterSelectEvent>.Raise(new PartyCharacterSelectEvent(characterInfo));
+            
+            if (_isSelected) return;
+            Bus<PartyCharacterSelectEvent>.Raise(new PartyCharacterSelectEvent(characterInfo));
         }
 
         private void HandleCharacterSelected(PartyCharacterSelectEvent evt)
@@ -61,16 +61,13 @@ namespace Code.UI
         {
             if (characterInfo != null)
             {
-                Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(
-                    characterInfo.UnitImage,
-                    characterInfo.UnitName, 
-                    characterInfo.UnitClass));
+                Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(characterInfo));
             }
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(null, null, null));
+            Bus<PartyCharacterHoverEvent>.Raise(new PartyCharacterHoverEvent(null));
         }
     }
 }

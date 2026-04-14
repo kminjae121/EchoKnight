@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Code.Items;
+using Input;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -18,6 +19,7 @@ namespace Code.UI
         private readonly List<RewardItemButton> spawnedButtons = new();
 
         [SerializeField] private GameObject rewardUI;
+        [SerializeField] private InputReader input;
 
         private void Awake()
         {
@@ -32,7 +34,7 @@ namespace Code.UI
 
         public void Open(List<ItemSO> rewards)
         {
-            Time.timeScale = 0;
+            input._controls.Player.Disable();
             rewardUI.SetActive(true);
 
             foreach (var item in rewards)
@@ -45,7 +47,7 @@ namespace Code.UI
         
         private void HandleNextButton()
         {
-            Time.timeScale = 1;
+            input._controls.Player.Enable();
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

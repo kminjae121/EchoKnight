@@ -19,7 +19,7 @@ namespace Code.UnitSystem.UnitComponent
         private PathAgent _pathAgent;
         private Unit _owner;
         private GridMap _gridMap;
-        private UnitRotation _rotationCompo;
+        private UnitRotator _rotatorCompo;
         private int _pathLength;
 
         public void Initialize(Unit owner)
@@ -27,7 +27,7 @@ namespace Code.UnitSystem.UnitComponent
             _owner = owner;
             _pathAgent = owner.GetComponent<PathAgent>();
             _gridMap = GridMap.Instance;
-            _rotationCompo = owner.GetUnitCompo<UnitRotation>();
+            _rotatorCompo = owner.GetUnitCompo<UnitRotator>();
             pointArray = new Vector3[maxPathCount];
         }
 
@@ -56,7 +56,7 @@ namespace Code.UnitSystem.UnitComponent
                     return;
                 }
 
-                _rotationCompo ??= _owner.GetUnitCompo<UnitRotation>();
+                _rotatorCompo ??= _owner.GetUnitCompo<UnitRotator>();
 
                 UnityLogger.Log($"Start : {startPos}, Destination : {destination}");
                 _pathLength = await _pathAgent.GetPath(startPos, destination, pointArray, allowPartialPath);
@@ -115,10 +115,10 @@ namespace Code.UnitSystem.UnitComponent
 
         private void RotateToPoint(Vector3 point)
         {
-            if (_rotationCompo == null)
+            if (_rotatorCompo == null)
                 return;
 
-            _rotationCompo.SetDir(point);
+            _rotatorCompo.SetDir(point);
         }
 
         private Vector3Int GetReachableCell(Vector3Int startCell, Vector3Int endCell, int remainingMovePoint, out int movedCost)

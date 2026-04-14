@@ -36,7 +36,7 @@ namespace Code.SkillSystem
 
             if (_characterUnit != null)
             {
-                RotationCompo = _characterUnit.GetUnitCompo<UnitRotation>();
+                RotatorCompo = _characterUnit.GetUnitCompo<UnitRotator>();
                 triggerCompo = _characterUnit.GetUnitCompo<UnitAnimationTrigger>();
                 _skillCompo = _characterUnit.GetUnitCompo<SkillComponent>();
             }
@@ -102,8 +102,8 @@ namespace Code.SkillSystem
 
             _characterUnit.SkillCostCompo.UseSkillCost(SkillSO.SkillCost);
             
-            if (RotationCompo != null)
-                RotationCompo.SetDir(_targetEnemy.transform.position);
+            if (RotatorCompo != null)
+                RotatorCompo.SetDir(_targetEnemy.transform.position);
             
             if (_targetingCompo != null)
                 _targetingCompo.OffTargeting();
@@ -147,19 +147,19 @@ namespace Code.SkillSystem
             if (SkillSO.SkillType == SkillType.BasicSkill && SkillCount >= 1)
             {
                 SkillFinished(true);
-                Bus<WarningUIEvent>.Raise(new WarningUIEvent("일반 공격은 한번만 사용가능합니다."));
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("일반 공격은 한번만 사용가능합니다."));           
                 return;
-            }
+            }          
 
-            if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.SkillCost))
-            {
-                Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
-                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
-                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
-                Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));
+            if (!_characterUnit.SkillCostCompo.CanUseSkillCost(SkillSO.SkillCost))              
+            {                                                                                                   
+                Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));                                  
+                Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));        
+                Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));                        
+                Bus<WarningUIEvent>.Raise(new WarningUIEvent("코스트가 부족합니다"));                                     
                 return;
-            }
-            
+            }                                                                                                                                 
+                              
             _characterUnit.MoveCompo.ResetTile();
             _characterUnit.MoveCompo.IsActive = false;
             SkillStartEvent();

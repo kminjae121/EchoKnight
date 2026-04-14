@@ -8,12 +8,15 @@ namespace Code.UnitSystem
     {
         private Outlinable[] _outLines;
 
+        private Color _originColor;
+
         public void Initialize(Unit owner)
         {
             _outLines = GetComponentsInChildren<Outlinable>();
         }
         private void Start()
         {
+            _originColor = _outLines[0].OutlineParameters.Color;
             ResetOutLine();
         }
 
@@ -30,8 +33,17 @@ namespace Code.UnitSystem
             foreach (var outline in _outLines)
             {
                 outline.enabled = false;
+                outline.OutlineParameters.Color = _originColor;
             }
         }
 
+        public void SetOutSelectOutLine()
+        {
+            foreach (var outline in _outLines)
+            {
+                outline.enabled = true;
+                outline.OutlineParameters.Color = Color.white;
+            }
+        }
     }
 }

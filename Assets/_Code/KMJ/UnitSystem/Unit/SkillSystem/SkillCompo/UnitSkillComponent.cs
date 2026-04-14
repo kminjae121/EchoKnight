@@ -36,9 +36,10 @@ namespace Code.SkillSystem
             if (basicSkill != null && skillManageCompo.GetSkillInfo() == basicSkill)
             {
                 basicSkill.SkillFinished(true);
-                basicSkill.BooleanSkillUse(false);
-                Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
             }
+            
+            Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(true));
+            basicSkill.BooleanSkillUse(false);
         }
     }
 }

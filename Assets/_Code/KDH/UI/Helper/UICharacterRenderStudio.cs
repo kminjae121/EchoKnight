@@ -21,7 +21,6 @@ namespace Code.UI
         [SerializeField] private int renderLayer;
         [SerializeField] private List<UnitModelMapping> modelMappings;
 
-        // 추가: RawImage에 넘겨줄 TargetTexture 프로퍼티
         public Texture TargetTexture => renderCamera != null ? renderCamera.targetTexture : null;
 
         private GameObject _currentRenderModel;

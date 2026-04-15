@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem;
@@ -11,8 +12,9 @@ namespace Code.SkillSystem
     public abstract class SkillComponent : MonoBehaviour, IUnitComponent
     {
         [SerializeField] protected List<SkillSO> skillList = new List<SkillSO>();
-
         public Dictionary<SkillSO, BaseSkill> Skills { get; private set; }
+
+        [SerializeField] private UnitSkillStorageSO skillStorage;
 
         protected UnitStatCompo _statCompo;
         protected Unit _unit;
@@ -23,6 +25,11 @@ namespace Code.SkillSystem
         public void Initialize(Unit owner)
         {
             _unit = owner;
+            
+            if(skillStorage != null)
+            {
+                skillList = skillStorage.skills;
+            }
             
             if (_unit != null && _statCompo == null)
                 _statCompo = _unit.GetUnitCompo<UnitStatCompo>();

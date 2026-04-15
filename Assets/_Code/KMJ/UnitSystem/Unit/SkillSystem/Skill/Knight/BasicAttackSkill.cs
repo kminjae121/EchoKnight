@@ -68,8 +68,8 @@ public class BasicAttackSkill : BasicUnitSkill
 
     private void ReturnOwnPos()
     {
-        animtionCompo.PlaySelectAnimation("IDLE");
         SkillEnd();
+        animtionCompo.PlaySelectAnimation("IDLE");
     }
 
     protected override void SkillEnd()
@@ -77,6 +77,7 @@ public class BasicAttackSkill : BasicUnitSkill
         base.SkillEnd();
         triggerCompo.OnAnimationEndTrigger -= AttackEnd;
         triggerCompo.OnAttackTrigger -= TakeDamage;
-        SkillEndEvent.Invoke();
+        Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+        SkillEndEvent?.Invoke();
     }
 }

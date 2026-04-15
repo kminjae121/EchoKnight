@@ -25,8 +25,11 @@ namespace Code.SkillSystem
         public void Initialize(Unit owner)
         {
             _unit = owner;
-
-            skillList = skillStorage.skills;
+            
+            if(skillStorage != null)
+            {
+                skillList = skillStorage.skills;
+            }
             
             if (_unit != null && _statCompo == null)
                 _statCompo = _unit.GetUnitCompo<UnitStatCompo>();

@@ -130,7 +130,7 @@ namespace Code.UI
                     {
                         foreach (var equippedItem in state.Data.EquippedArtifacts.artifacts)
                         {
-                            availableArtifacts.Remove(equippedItem);
+                            availableArtifacts.Remove(equippedItem); 
                         }
                     }
                 }
@@ -149,7 +149,6 @@ namespace Code.UI
             _activeArtifactButtons.Clear();
 
             var equippedList = _unit.EquippedArtifacts?.artifacts ?? new List<EquipmentItemSO>();
-
             var displayList = GetAvailableArtifacts();
 
             if (_isArtifactSortedByRarity) displayList = displayList.OrderByDescending(a => a.rarity).ToList();

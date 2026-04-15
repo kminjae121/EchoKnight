@@ -118,23 +118,20 @@ namespace Code.UI
 
         private List<EquipmentItemSO> GetAvailableArtifacts()
         {
-            if (_unit == null || _unit.OwnArtifactStorage == null) return new List<EquipmentItemSO>();
+            List<EquipmentItemSO> availableArtifacts = new List<EquipmentItemSO>();
+            
+            if (_unit == null) return availableArtifacts;
 
-            List<EquipmentItemSO> availableArtifacts = new List<EquipmentItemSO>(_unit.OwnArtifactStorage.artifacts);
-
-            if (unitStorageSO != null)
+            if (_unit.EquippedArtifacts != null && _unit.EquippedArtifacts.artifacts != null)
             {
-                foreach (var state in unitStorageSO.unitStates)
-                {
-                    if (state.Data != null && state.Data.UnitType != _unit.UnitType && state.Data.EquippedArtifacts != null)
-                    {
-                        foreach (var equippedItem in state.Data.EquippedArtifacts.artifacts)
-                        {
-                            availableArtifacts.Remove(equippedItem); 
-                        }
-                    }
-                }
+                availableArtifacts.AddRange(_unit.EquippedArtifacts.artifacts);
             }
+
+            if (_unit.OwnArtifactStorage != null && _unit.OwnArtifactStorage.artifacts != null)
+            {
+                availableArtifacts.AddRange(_unit.OwnArtifactStorage.artifacts);
+            }
+
             return availableArtifacts;
         }
 
@@ -142,7 +139,8 @@ namespace Code.UI
         {
             if (_unit == null || _unit.OwnArtifactStorage == null) return;
 
-            int currentCount = _unit.OwnArtifactStorage.artifacts.Count;
+            int currentCount = (_unit.OwnArtifactStorage.artifacts?.Count ?? 0) + 
+                               (_unit.EquippedArtifacts?.artifacts?.Count ?? 0);
             if (artifactCountText != null) artifactCountText.text = $"{currentCount}/{maxArtifactInventoryCapacity}";
 
             foreach (var btn in _activeArtifactButtons) btn.ReturnToPool();
@@ -180,18 +178,31 @@ namespace Code.UI
                 return;
             }
             
+            if (_unit.OwnArtifactStorage != null)
+            {
+                _unit.OwnArtifactStorage.artifacts.Remove(evt.EquipmentItem);
+            }
+
             ItemStorage.Instance.SetItem(_unit.UnitType, evt.EquipmentItem);
             _unit.EquippedArtifacts.artifacts.Add(evt.EquipmentItem);
+            
             RefreshArtifactUI();
         }
 
         private void HandleArtifactUnequip(ArtifactUnequipEvent evt)
         {
             if (_unit == null || _unit.EquippedArtifacts == null) return;
+            
             if (_unit.EquippedArtifacts.artifacts.Remove(evt.EquipmentItem))
             {
-                RefreshArtifactUI();
+                if (_unit.OwnArtifactStorage != null)
+                {
+                    _unit.OwnArtifactStorage.artifacts.Add(evt.EquipmentItem);
+                }
+
                 ItemStorage.Instance.RemoveItem(_unit.UnitType, evt.EquipmentItem);
+                
+                RefreshArtifactUI();
             }
         }
 

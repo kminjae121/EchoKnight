@@ -36,7 +36,7 @@ namespace Code.UnitSystem
         
         public int AddDefensivePower { get; set; }
         
-        public float AddAvoidProbability { get; set; }
+        public int AddAvoidProbability { get; set; }
         
         [field: SerializeField] public PoolingItemSO PoolingType { get; private set; }
         public GameObject GameObject => gameObject;

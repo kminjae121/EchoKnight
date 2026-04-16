@@ -1,24 +1,46 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
-using TMPro;
+using GondrLib.Dependencies;
 using UnityEngine;
 
 namespace Code.Managers
 {
-    public class TurnManager : MonoBehaviour
+    [Provide]
+    public class TurnManager : MonoBehaviour, IDependencyProvider
     {
+        [Header("Turn Settings")]
         [SerializeField] private float baseTurnGauge = 100f;
+        [SerializeField] private float firstRoundInterval = 150f;
+        [SerializeField] private float roundInterval = 100f;
+
+        [Header("Dependencies")]
         [SerializeField] private UnitManager unitManager;
-        [SerializeField] private TextMeshProUGUI turnUnitText;
+
+        public int CurrentRound { get; private set; }
+
+        public event Action OnTurnStart;
 
         private ITurnable _currentTurnUnit;
         private List<ITurnable> _units;
+        private RoundTracker _roundTracker;
+        private bool _turnFlag;
 
         private void Awake()
         {
             Bus<UnitTurnEndEvent>.Subscribe(OnUnitTurnEnd);
+        }
+
+        private void Update()
+        {
+            if (!_turnFlag)
+                return;
+            
+            _turnFlag = false;
+            StartNextTurn();
         }
 
         private void OnDestroy()
@@ -28,104 +50,164 @@ namespace Code.Managers
 
         public void StartBattle()
         {
+            CurrentRound = 1;
+            
+            _roundTracker = new RoundTracker();
+            _roundTracker.NextRound = 2;
+            _roundTracker.TurnGauge = firstRoundInterval;
+
             RefreshUnits();
 
             foreach (var unit in _units)
+            {
+                if (unit is RoundTracker) continue;
                 unit.TurnGauge = CalculateBaseTurnGauge(unit);
+            }
 
             StartNextTurn();
         }
 
         private float CalculateBaseTurnGauge(ITurnable unit)
-            => baseTurnGauge / Mathf.Max(1, unit.TurnSpeed);
+        {
+            return baseTurnGauge / Mathf.Max(1f, unit.TurnSpeed);
+        }
 
         private void OnUnitTurnEnd(UnitTurnEndEvent evt)
         {
-            if (_currentTurnUnit == null)
-                return;
-            
-            // [수정됨] 무한 루프 원인 제거: 유닛이 이미 OnTurnEnd를 호출하고 이벤트를 보냈으므로,
-            // 여기서 다시 _currentTurnUnit.OnTurnEnd()를 호출하면 안 됩니다.
+            if (_currentTurnUnit == null) return;
             
             _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
             _currentTurnUnit = null;
 
-            StartNextTurn();
+            _turnFlag = true;
         }
 
         private void StartNextTurn()
         {
-            RefreshUnits();
+            int safeCount = 0;
+            while (safeCount < 100)
+            {
+                safeCount++;
+                RefreshUnits();
+
+                _currentTurnUnit = GetNextUnit();
+                AdvanceTime(_currentTurnUnit);
+
+                if (_currentTurnUnit is RoundTracker rt)
+                {
+                    CurrentRound = rt.NextRound;
+                    rt.NextRound = CurrentRound + 1;
+                    rt.TurnGauge = roundInterval;
+                    _currentTurnUnit = null;
+                    
+                    Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
+                    continue;
+                }
+
+                OnTurnStart?.Invoke();
+                _currentTurnUnit.OnTurnStart();
+
+                Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
+                return;
+            }
             
-            _currentTurnUnit = GetNextUnit();
-            AdvanceTime(_currentTurnUnit);
-            _currentTurnUnit.OnTurnStart();
-
-            UpdateCurrentTurnUI();
-
-            Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
+            UnityLogger.LogError("턴을 계산하는 과정에서 무한 루프가 발생했습니다.");
         }
 
         private void RefreshUnits()
         {
-            _units = unitManager
-                .GetAllUnits()
-                .OfType<ITurnable>()
-                .ToList();
+            _units = unitManager.GetAllUnits().OfType<ITurnable>().ToList();
+
+            if (_roundTracker != null)
+                _units.Add(_roundTracker);
         }
 
         private ITurnable GetNextUnit()
-            => _units.OrderBy(u => u.TurnGauge).First();
+        {
+            return _units.OrderBy(u => u.TurnGauge).First();
+        }
 
         private void AdvanceTime(ITurnable actingUnit)
         {
             float delta = actingUnit.TurnGauge;
 
             foreach (var unit in _units)
+            {
                 unit.TurnGauge -= delta;
+            }
 
             ClampAllTurnGauge();
         }
-        
+
         private void ClampAllTurnGauge()
         {
             foreach (var unit in _units)
+            {
                 unit.TurnGauge = Mathf.Max(0f, unit.TurnGauge);
+            }
         }
-        
-        /// <summary>
-        /// 턴 조작 스킬용 함수
-        /// 양수 : 지연, 음수 : 가속
-        /// </summary>
-        /// <param name="unit"></param>
-        /// <param name="delta"></param>
+
         public void ModifyTurnGauge(ITurnable unit, float delta)
         {
             unit.TurnGauge += delta;
             unit.TurnGauge = Mathf.Max(0f, unit.TurnGauge);
+            Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
         }
 
         public void ForceImmediateTurn(ITurnable unit)
         {
             unit.TurnGauge = 0f;
-        }
-
-        #region UI Function
-
-        private void UpdateCurrentTurnUI()
-        {
-            if (turnUnitText != null && _currentTurnUnit != null)
-                turnUnitText.text = _currentTurnUnit.UnitName;
+            Bus<TurnOrderUpdateEvent>.Raise(new TurnOrderUpdateEvent());
         }
 
         public List<ITurnable> GetTimelineUnits(int count)
         {
-            return _units
-                .OrderBy(u => u.TurnGauge)
-                .Take(count)
-                .ToList();
-        }
+            List<ITurnable> timeline = new List<ITurnable>();
+            if (_units == null || _units.Count == 0) return timeline;
 
-        #endregion
+            Dictionary<ITurnable, float> currentGauges = new Dictionary<ITurnable, float>();
+            foreach (var u in _units)
+            {
+                currentGauges[u] = u.TurnGauge;
+            }
+
+            for (int i = 0; i < count; i++)
+            {
+                if (currentGauges.Count == 0) break;
+
+                ITurnable nextUnit = null;
+                float minGauge = float.MaxValue;
+
+                foreach (var kvp in currentGauges)
+                {
+                    if (kvp.Value < minGauge)
+                    {
+                        minGauge = kvp.Value;
+                        nextUnit = kvp.Key;
+                    }
+                }
+
+                if (nextUnit == null) break;
+
+                timeline.Add(nextUnit);
+
+                var keys = currentGauges.Keys.ToList();
+                foreach (var k in keys)
+                {
+                    currentGauges[k] -= minGauge;
+                }
+
+                if (nextUnit is RoundTracker)
+                {
+                    currentGauges[nextUnit] += roundInterval;
+                }
+                else
+                {
+                    currentGauges[nextUnit] += CalculateBaseTurnGauge(nextUnit);
+                }
+            }
+
+            return timeline;
+        }
     }
 }

@@ -2,7 +2,7 @@ using System;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
 
-namespace Blade.Effects
+namespace Code.Effects
 {
     public class PoolingEffect : MonoBehaviour, IPoolable
     {
@@ -13,7 +13,7 @@ namespace Blade.Effects
         [SerializeField] private GameObject effectObject;
         private IPlayableVFX _playableVFX;
         
-        public void SetUpPool(Pool pool)
+        public void SetUpPool (Pool pool)
         {
             _myPool = pool;
             _playableVFX = effectObject.GetComponent<IPlayableVFX>();

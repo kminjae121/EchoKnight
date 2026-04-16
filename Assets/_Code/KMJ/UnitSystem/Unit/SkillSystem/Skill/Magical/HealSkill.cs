@@ -1,32 +1,32 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Code.Core.Events.Bus;
-using Code.EntityComponent;
-using Code.UnitSystem.SkillSystem;
-using UnitSystem;
+using Code.UnitSystem;
+using Code.UnitSystem.Combat;
+using Code.SkillSystem;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 
-    public class HealSkill : BasicUnitSkill
+public class HealSkill : BasicUnitSkill
     {
-        [SerializeField] private GameObject healPrefab;
-        
         private UnitAnimation animtionCompo;
 
-        protected override void Start()
+        protected  void Start()
         {
-            base.Start();
-            triggerCompo.OnHealTrigger += Heal;
-            triggerCompo.OnHealEndTrigger += SkillEnd;
-            skillEvent.AddListener(HealAction);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            SkillEvent.AddListener(HealAction);
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+        }
+
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += Heal;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
         }
 
         protected override void OnDestroy()
         { 
-            triggerCompo.OnHealTrigger-= Heal;
-            triggerCompo.OnHealEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(HealAction);
+            SkillEvent.RemoveListener(HealAction);
             base.OnDestroy();
             
         }
@@ -34,33 +34,31 @@ using UnityEngine;
         public void HealAction(GameObject target)
         {
             StartCoroutine(FireBall());
-            skillStartEvent?.Invoke();
         }
         
         private IEnumerator FireBall()
         {
             Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(false));
-            yield return new WaitForSeconds(0.3f);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.4f);
             animtionCompo.PlaySelectAnimation("HEAL");
+            
+            SkillFeedbackEvent?.Invoke();
         }
 
-        private void SkillEnd()
+        protected override void SkillEnd()
         {
-            skillEndEvent?.Invoke();
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            base.SkillEnd();
+            SkillEndEvent?.Invoke();
+            Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false)); 
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
+            triggerCompo.OnAttackTrigger-= Heal;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
         }
 
         public void Heal()
         {
-            EntityHealth health = _owner.GetUnitCompo<EntityHealth>();
-            
+            UnitHealth health = _characterUnit.GetUnitCompo<UnitHealth>();
+
             health.HealHp(20);
-            healPrefab.SetActive(true);
-            healPrefab.GetComponent<ParticleSystem>().Play();
         }
     }

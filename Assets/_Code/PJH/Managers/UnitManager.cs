@@ -2,11 +2,13 @@
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
+using GondrLib.Dependencies;
 using UnityEngine;
 
 namespace Code.Managers
 {
-    public class UnitManager : MonoBehaviour
+    [Provide]
+    public class UnitManager : MonoBehaviour, IDependencyProvider
     {
         private readonly HashSet<Unit> activeUnits = new();
 

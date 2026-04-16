@@ -1,8 +1,6 @@
-using System.Collections.Generic;
 using _Code.KMJ.UnitSystem.involveUnitSO;
 using Code.UnitSystem;
-using Code.UnitSystem.SkillSystem;
-using Skill;
+using Code.UnitSystem.ArtifactSystem;
 using UnityEngine;
 
 public enum EntityType
@@ -20,50 +18,70 @@ public enum UnitType
     Magician,
 }
 
-[CreateAssetMenu (fileName = "Unit", menuName = "UnitSO")]
+[CreateAssetMenu (fileName = "Unit", menuName = "SO/UnitSO/UnitSO")]
 public class UnitSO : ScriptableObject
 {
     [Header("UnitName")]
     public string UnitName;
     
+    [Header("UnitClass")]
+    public string UnitClass;
+    
     [Header("UnitImage")]
     public Sprite UnitImage;
 
-    [Header("WhatItIs")]        
+    [Header("UnitSpawn")]        
     public UnitSpawnSO UnitSpawn;
 
     [Header("SkillStorage")] public UnitSkillStorageSO SkillStorage;
     
     [Header("OwnSkillStorage")]
     public UnitOwnSkillStorageSO OwnSkillStorage;
+    
+    [Header("ArtifactStorage")]
+    public ArtifactStorageSO OwnArtifactStorage;
+    public ArtifactStorageSO EquippedArtifacts;
+
     [Space(4)]
-    [Header("CharacterOwnCost")]
-    public int Cost;
+    [Header("LoadOutCost")]
+    public int LoadOutCost;
     
     [Space(4)]
     [Header("UnitSettings")]
     public bool isLongRange;
 
-    public float turnSpeed = 3f;
-
+    public int turnSpeed = 3;
+    
     public bool isPlayerUnit = false;
     
-    public float MoveSpeed;
+    public int MoveRange;
 
-    public float Maxhealth;
-
-    public float AtkDamage;
-
-    [Range(1, 3f)]
-    public float SkillDamage;
-
-    public float DefensivePower;
+    public int Maxhealth;
     
-    [Header("UnitType")]
+    public int AttackDamage;
+
+    public int DefensivePower;
+
+    public int ShieldValue;
+
+    [Range(0,100)]
+    public float AvoidProbability;
+    
+    [Range(0,100)]
+    public float CriticalProbability;
+
+    public float CriticalDamageIncrease;
+
+    [Header("SkillSystem")] 
+    public int MaxSkillCost;
+
+    public int RecoverySkillCost;
+
+    [Header("UnitType")] 
+    public UnitInGameSO unitInGame;
     public EntityType EntityType = EntityType.MeleeAttacker;
 
     public UnitType UnitType = UnitType.None;
-
 
     private void OnValidate()
     {

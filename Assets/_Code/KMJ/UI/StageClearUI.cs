@@ -1,5 +1,4 @@
-﻿using Code.Core.Events.Bus;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -14,9 +13,14 @@ namespace Code.UI
             returnBtn.onClick.AddListener(ReturnHome);
         }
 
+        private void OnDisable()
+        {
+            returnBtn.onClick.RemoveListener(ReturnHome);
+        }
+
         public void ReturnHome()
         {
-            Bus<StageClearEvent>.Raise(new StageClearEvent(true));
+            Time.timeScale = 1;
             SceneManager.LoadScene("ExpeditionMapScene");
         }
     }

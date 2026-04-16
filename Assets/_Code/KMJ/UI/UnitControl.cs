@@ -1,6 +1,5 @@
 ﻿using System;
 using Code.Core.Events.Bus;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -18,7 +17,7 @@ namespace Code.UI
             Bus<UnitAttackControlEvent>.Subscribe(SetAttacking);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             atkBtn.onClick.RemoveListener(HandleAttack);
             
@@ -34,7 +33,7 @@ namespace Code.UI
 
         private void HandleAttack()
         {
-                Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(true));
+            Bus<UnitAttackEvent>.Raise(new UnitAttackEvent(true));  
         }
         
     }

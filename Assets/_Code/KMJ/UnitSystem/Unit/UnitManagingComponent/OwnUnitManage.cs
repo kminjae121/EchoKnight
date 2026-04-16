@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
-using _Code.Core.Managers;
+using Code.Core.Managers;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.Managers;
 using Code.Map;
+using Code.UI;
 using Code.UnitSystem;
 using GameEventChannel;
-using UnitSystem;
+using GondrLib.Dependencies;
+using GondrLib.ObjectPool.Runtime;
+using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Code.UnitManaging
 {
@@ -17,17 +22,18 @@ namespace Code.UnitManaging
         [Header("References")]
         [SerializeField] private GameEventChannelSO unitDeadEventChannel;
         [SerializeField] private UnitStorage storageCompo;
-        [SerializeField] private GridMap gridMap;
 
         [Header("Spawn Settings")]
         [SerializeField] public List<Vector2Int> startingCoords = new List<Vector2Int>();
-        
-        public float currentCost { get; set; }
 
-        public List<UnitSpawnSO> _selectedUnits { get; private set; } = new List<UnitSpawnSO>();
+        [SerializeField] private Button endTurnBtn;
+        
+        public List<PoolingItemSO> SelectedUnits { get; private set; } = new List<PoolingItemSO>();
 
         private readonly List<Unit> _myOwnUnitList = new List<Unit>();
 
+        [Inject] private PoolManagerMono _poolManager;
+        
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -41,35 +47,25 @@ namespace Code.UnitManaging
 
         private void Start()
         {
-            if (gridMap == null)
-                gridMap = FindObjectOfType<GridMap>();
-
-            currentCost = 100;
             SelectUnits();
             MakeGameUnit();
         }
 
         private void MakeGameUnit()
         {
-            if (_selectedUnits.Count == 0)
+            if (SelectedUnits.Count == 0)
                 return;
-            
-            if (gridMap == null)
-            {
-                Debug.LogError("GridMap이 할당되지 않았습니다.");
-                return;
-            }
 
             int count = -1;
 
-            int spawnCount = Mathf.Min(_selectedUnits.Count, startingCoords.Count);
+            int spawnCount = Mathf.Min(SelectedUnits.Count, startingCoords.Count);
 
             for (int i = 0; i < spawnCount; i++)
             {
                 if (i >= 3) return;
 
                 Vector2Int coord = startingCoords[i];
-                IMapTile tile = gridMap.GetTile(coord);
+                IMapTile tile = GridMap.Instance.GetTile(coord);
 
                 if (tile == null)
                 {
@@ -77,28 +73,25 @@ namespace Code.UnitManaging
                     continue;
                 }
 
-                Vector3 spawnPos = gridMap.GridToWorldPosition(coord.x, coord.y);
+                Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(coord.x, coord.y);
 
-                GameObject spawnUnit = Instantiate(
-                    _selectedUnits[i].UnitPrefab,
-                    spawnPos,
-                    Quaternion.identity
-                );
+                GameObject spawnUnit = _poolManager.Pop<Unit>(SelectedUnits[i]).gameObject;
 
-                tile.SetObstacle(true);
+                spawnUnit.transform.position = spawnPos;
+                spawnUnit.transform.rotation = Quaternion.identity;
+                
+                tile.SetState(TileState.Obstacle, true);
 
                 Unit unit = spawnUnit.GetComponent<Unit>();
 
                 Bus<UnitSpawnEvent>.Raise(new UnitSpawnEvent(unit));
                 _myOwnUnitList.Add(unit);
 
-                if (unit is BasicUnit basicUnit)
+                if (unit is CharacterUnit basicUnit)
                 {
                     if (tile is MonoBehaviour tileMono)
-                    {
                         basicUnit._startTile = tileMono.gameObject;
-                    }
-
+                    
                     count += 1;
                     basicUnit.PlayableUnitID = count;
 
@@ -107,6 +100,8 @@ namespace Code.UnitManaging
                         1, 1,
                         basicUnit.UnitImage
                     ));
+                    
+                    basicUnit.SetObject(endTurnBtn, null);
 
                     StageManager.Instance.AddPlayerCnt();
                 }
@@ -115,8 +110,8 @@ namespace Code.UnitManaging
         
         public void SelectUnits()
         {
-            _selectedUnits.Clear();
-            storageCompo.unitInfos.ForEach(unit => _selectedUnits.Add(unit));
+            SelectedUnits.Clear();
+            storageCompo.unitInfos.ForEach(unit => SelectedUnits.Add(unit));
         }
     }
 }

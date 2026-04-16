@@ -1,5 +1,4 @@
-﻿using System;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -23,6 +22,11 @@ namespace Code.UI
         private void Awake()
         {
             Bus<EnemyHpInfo>.Subscribe(SetHp);
+        }
+
+        private void OnDisable()
+        {
+            Bus<EnemyHpInfo>.Unsubscribe(SetHp);
         }
 
         public void SetHp(EnemyHpInfo evt)

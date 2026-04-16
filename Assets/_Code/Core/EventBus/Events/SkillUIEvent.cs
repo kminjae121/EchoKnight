@@ -1,24 +1,17 @@
-﻿using Code.UnitSystem.SkillSystem;
-using UnityEngine;
-using UnityEngine.UI;
+﻿using System.Collections.Generic;
+using Code.SkillSystem;
 
 namespace Code.Core.Events.Bus
 {
     public struct SkillUIEvent : IEvent
     {
-        public SkillComponent skillComponent;
-        public int skillIdx;
-        public string skillName;
-        public Sprite skillImage;
-        public float skillCost;
+        public List<SkillSO> Skills { get; private set; }
+        public SkillComponent SkillCompo { get; private set; }
 
-        public SkillUIEvent(int skillIdx, string skillName, float skillCost,Sprite skillImage, SkillComponent skillComponent)
+        public SkillUIEvent(List<SkillSO> skills, SkillComponent skillCompo)
         {
-            this.skillIdx = skillIdx;
-            this.skillComponent = skillComponent;
-            this.skillName = skillName;
-            this.skillImage = skillImage;
-            this.skillCost = skillCost;
+            Skills = skills;
+            SkillCompo = skillCompo;
         }
     }
 }

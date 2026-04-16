@@ -17,7 +17,7 @@ namespace Code.UI
             Bus<SetUpUnitHealthBar>.Subscribe(HandleUnitHealthBar);
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             Bus<SetUpUnitHealthBar>.Unsubscribe(HandleUnitHealthBar);
             

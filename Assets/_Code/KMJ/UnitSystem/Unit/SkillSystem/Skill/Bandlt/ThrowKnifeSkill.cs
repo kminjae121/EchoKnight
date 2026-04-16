@@ -1,34 +1,35 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
-using Code.UnitSystem.SkillSystem;
-using UnitSystem;
-using Unity.Cinemachine;
+using Code.UnitSystem;
+using Code.UnitSystem.Combat;
+using Code.SkillSystem;
 using UnityEngine;
 
     public class ThrowKnifeSkill : BasicUnitSkill
     {
-        [SerializeField] private GameObject _knifePrefab;
-        
         private UnitAnimation animtionCompo;
 
         private GameObject _target;
+
+        private ShootItemAttackManager _shootItemManager;
         
-        protected override void Start()
+        protected void Start()
         {
-            base.Start();
-            triggerCompo.OnThrowKnifeTrigger += MakeThrowKnife;
-            triggerCompo.OnThrowKnifeEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            SkillEvent.AddListener(AttackAction);
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+            _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+        }
+
+        protected override void StartEvent()
+        {
+            base.StartEvent();
+            triggerCompo.OnAttackTrigger += MakeThrowKnife;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
         }
 
         protected override void OnDestroy()
         {
-            triggerCompo.OnThrowKnifeTrigger -= MakeThrowKnife;
-            triggerCompo.OnThrowKnifeEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
         }
 
@@ -36,42 +37,27 @@ using UnityEngine;
         {
             StartCoroutine(SlashFlag());
             _target = target;
-            skillStartEvent?.Invoke();
         }
         
         private IEnumerator SlashFlag()
         {
-           
-            yield return new WaitForSeconds(0.3f);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.4f);
+            SkillFeedbackEvent?.Invoke();   
             animtionCompo.PlaySelectAnimation("THROW");
         }
         
         public void MakeThrowKnife()
         {
-            impulseSource.GenerateImpulse(0.5f);  
-            Vector3 pos = _unitBase.transform.position;
-
-            pos.y += 2f;
-        
-            GameObject shootItem = Instantiate(_knifePrefab, pos, Quaternion.identity);
-
-            ShootItem shootItemCompo = shootItem.GetComponent<ShootItem>();
-            shootItemCompo.SetTarget(_target);
-            shootItemCompo.SetDamageData(_damageData);
-            
-            Vector3 slashRot = transform.rotation.eulerAngles;
-        
-            shootItem.transform.rotation = Quaternion.Euler(slashRot);
-            _target = null;
+            _characterUnit.IsConfirmationSkill = true;    
         }
         
-        private void SkillEnd()
+        protected override void SkillEnd()
         {
-            skillEndEvent?.Invoke();
+            base.SkillEnd();
+            
+            triggerCompo.OnAttackTrigger -= MakeThrowKnife;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
     }

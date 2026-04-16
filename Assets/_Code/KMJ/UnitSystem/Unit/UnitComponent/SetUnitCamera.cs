@@ -1,34 +1,46 @@
-﻿using System;
-using Code.Core.Events.Bus;
+﻿using Code.Core.Events.Bus;
+using Input;
 using Unity.Cinemachine;
 using UnityEngine;
 
-namespace _01.Member.KMJ._02.Scripts.UnitSystem.Unit.UnitComponent
+namespace Code.UnitSystem
 {
     public class SetUnitCamera : MonoBehaviour
     {
         [SerializeField] private CinemachineCamera unitCam;
 
-        private GameObject ownCam;
-        private CinemachineCamera OwnCamCompo;
+        [SerializeField] private InputReader inputSO;
 
+        private GameObject _ownCam;
+        [SerializeField] private CharacterUnit _unit;
+        
         private void Start()
         {
-            ownCam = GameObject.Find("TopCam").gameObject;
-            OwnCamCompo = ownCam.GetComponent<CinemachineCamera>();
+            inputSO.OnInteractionEvent += HandleCam;
         }
 
-        public void SetThisUnit()
+        private void OnEnable()
         {
-           // Bus<CamMovingEvent>.Raise(new CamMovingEvent(unitCam.gameObject));
-           // unitCam.Priority = 2;
+            Bus<TopCamEvent>.Subscribe(HandleCamEvent);
         }
 
-        public void EndThisUnit()
+        private void HandleCamEvent(TopCamEvent obj)
         {
-//            Bus<CamMovingEvent>.Raise(new CamMovingEvent(ownCam.gameObject));
-            //unitCam.Priority = -1;
-        //   OwnCamCompo.Priority = 1;
+            _ownCam = obj.cam;
         }
+
+        private void OnDisable()
+        {
+            inputSO.OnInteractionEvent -= HandleCam;
+        }
+        
+        private void HandleCam()
+        {
+            if (_unit.isMyTurn)
+            {
+                Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(_unit.gameObject, false,new Vector3(1.5f,1.5f,1.5f)));
+            }
+        }
+
     }
 }

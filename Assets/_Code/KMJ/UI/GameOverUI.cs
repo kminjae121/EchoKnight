@@ -1,5 +1,4 @@
-﻿using System;
-using Code.Core.Events.Bus;
+﻿using _Code.UnitSystem;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -17,13 +16,20 @@ namespace Code.UI
             returnBtn.onClick.AddListener(ReturnHome);
         }
 
+        private void OnDisable()
+        {
+            restartBtn.onClick.RemoveListener(RestartBtn);
+            returnBtn.onClick.RemoveListener(ReturnHome);
+        }
+
         public void ReturnHome()
         {
             SceneManager.LoadScene("Lobby");
-            Bus<StageClearEvent>.Raise(new StageClearEvent(false));
+            InGameStatCompo.Instance.ReStartGame();
         }
         public void RestartBtn()
         {
+            Time.timeScale = 1;
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
     }

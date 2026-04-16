@@ -8,7 +8,6 @@ namespace Code.Expedition.Components
     {
         [SerializeField] private ExpeditionNode targetNode;
         [SerializeField] private Transform[] waypoints;
-        [SerializeField] private int resolution = 20;
 
         public ExpeditionNode TargetNode => targetNode;
 

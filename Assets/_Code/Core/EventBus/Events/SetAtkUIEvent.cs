@@ -1,14 +1,12 @@
-﻿using UnityEngine;
-
-namespace Code.Core.Events.Bus
+﻿namespace Code.Core.Events.Bus
 {
     public struct SetAtkUIEvent : IEvent
     {
-        public bool isLock;
+        public bool IsActive { get; private set; }
         
-        public SetAtkUIEvent(bool isLock)
+        public SetAtkUIEvent(bool isActive)
         {
-            this.isLock = isLock;
+            IsActive = isActive;
         }
     }
 }

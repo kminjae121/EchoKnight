@@ -1,18 +1,20 @@
-﻿using UnityEngine;
+﻿using Code.Map;
+using UnityEngine;
 
 namespace Code.Core.Interfaces
 {
     public interface IMapTile
     {
-        Vector2Int GridPosition { get; }
-        bool IsWalkable { get;  } 
-        bool HasEnemy { get; }
-        bool HasObstacle { get;  }
-        bool CanUnitPass { get;  }
-    
-        void SetWalkable(bool walkable);
-        void SetEnemy(bool hasEnemy);
-        void SetObstacle(bool hasObstacle);
+        Vector2Int GridPos { get; }
+        Vector3 WorldPos { get; }
+        
+        bool HasState(TileState state);
+        bool HasAnyState(TileState state);
+
+        void SetState(TileState state, bool value);
+
+        void SetDecalActive(bool isActive);
+        void SetOverlay(TileOverlayType overlayType);
+        void ClearOverlay();
     }
 }
-

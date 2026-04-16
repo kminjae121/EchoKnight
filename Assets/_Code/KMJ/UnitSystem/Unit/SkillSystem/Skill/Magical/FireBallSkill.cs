@@ -1,40 +1,43 @@
 ﻿using System.Collections;
-using _Code.KMJ.UnitSystem.Unit.UnitComponent;
 using Code.Core.Events.Bus;
-using Code.UnitSystem.SkillSystem;
-using UnitSystem;
+using Code.UnitSystem;
+using Code.UnitSystem.Combat;
+using Code.SkillSystem;
 using UnityEngine;
 
     public class FireBallSkill : BasicUnitSkill
-    {
-        [SerializeField] private GameObject fireBallPrefab;
+    { 
         private UnitAnimation animtionCompo;
 
         private GameObject _target = null;
 
-        protected override void Start()
+        private ShootItemAttackManager _shootItemManager;
+
+        protected void Start()
         {
-            base.Start();
-            triggerCompo.OnFireBallTrigger += MakeArrow;
-            triggerCompo.OnFireBallEndTrigger += SkillEnd;
-            skillEvent.AddListener(AttackAction);
-            animtionCompo = _owner.GetUnitCompo<UnitAnimation>();
+            SkillEvent.AddListener(AttackAction);
+            animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
+            
+            _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+        }
+
+        protected override void StartEvent()
+        {
+            triggerCompo.OnAttackTrigger += MakeArrow;
+            triggerCompo.OnAnimationEndTrigger += SkillEnd;
+            base.StartEvent();
         }
 
         protected override void OnDestroy()
         { 
-            triggerCompo.OnFireBallTrigger -= MakeArrow;
-            triggerCompo.OnFireBallEndTrigger -= SkillEnd;
-            skillEvent.RemoveListener(AttackAction);
+            SkillEvent.RemoveListener(AttackAction);
             base.OnDestroy();
-            
         }
         
         public void AttackAction(GameObject target)
         {
             StartCoroutine(FireBall());
             _target = target;
-            skillStartEvent?.Invoke();
         }
         
         private IEnumerator FireBall()
@@ -45,33 +48,25 @@ using UnityEngine;
             animtionCompo.PlaySelectAnimation("FIREBALL");
         }
         
-        private void SkillEnd()
+        protected override void SkillEnd()
         {
-            skillEndEvent?.Invoke();
+            base.SkillEnd();
+            triggerCompo.OnAttackTrigger -= MakeArrow;
+            triggerCompo.OnAnimationEndTrigger -= SkillEnd;
+            SkillEndEvent?.Invoke();
             animtionCompo.PlaySelectAnimation("IDLE");
-            Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(false));
-            Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            Bus<UnitSetMoveEvent>.Raise(new UnitSetMoveEvent(true));
         }
         
         public void MakeArrow()
         {
-            impulseSource.GenerateImpulse(0.5f);  
+            Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.25f));
             Vector3 pos = transform.position;
 
-            pos.y += 3f;
-        
-            fireBallPrefab.transform.position = pos;
-            fireBallPrefab.SetActive(true);
-            
-            ShootItem shootItemCompo = fireBallPrefab.GetComponent<ShootItem>();
-            shootItemCompo.SetTarget(_target);
-            shootItemCompo.SetDamageData(_damageData);
-
-
             Vector3 slashRot = transform.rotation.eulerAngles;
-        
-            fireBallPrefab.transform.rotation = Quaternion.Euler(slashRot);
+            
+            _shootItemManager.SetTarget(_target);
+            _shootItemManager.SetDamageData(DamageData,AddDamage);
+            _shootItemManager.CreateShootItem("FireBall",pos, slashRot);
             
             _target = null;
         }

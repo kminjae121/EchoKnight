@@ -4,7 +4,7 @@ namespace PixeLadder.EasyTransition.Effects
     using UnityEngine;
     using UnityEngine.UI;
 
-    [CreateAssetMenu(fileName = "NewCircleEffect", menuName = "Easy Transition/Circle Effect")]
+    [CreateAssetMenu(fileName = "NewCircleEffect", menuName = "SO/Easy Transition/Circle Effect")]
     public class CircleEffect : TransitionEffect
     {
         public enum AnimationDirection { CenterToEdge, EdgeToCenter }

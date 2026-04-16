@@ -1,7 +1,6 @@
-﻿using Code.UnitSystem;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace UnitSystem
+namespace Code.UnitSystem
 {
     public class UnitAnimation : MonoBehaviour, IUnitComponent
     {
@@ -14,10 +13,13 @@ namespace UnitSystem
 
         public void PlaySelectAnimation(string animationName)
         {
-            if (_animator == null) return;
+            if (_animator == null)
+                return;
             
             AnimationAllStop();
-            _animator.SetBool(animationName, true);
+            
+            int animHash = Animator.StringToHash(animationName);
+            _animator.SetBool(animHash, true);
         }
 
         public void ReturnIdleAnimation()
@@ -30,12 +32,8 @@ namespace UnitSystem
             if (_animator == null) return;
 
             foreach (var param in _animator.parameters)
-            {
                 if (param.type == AnimatorControllerParameterType.Bool)
-                {
-                    _animator.SetBool(param.name, false);
-                }
-            }
+                    _animator.SetBool(param.nameHash, false);
         }
         
         public void RestartFromEntry()
@@ -54,12 +52,8 @@ namespace UnitSystem
             if (_animator == null) return;
 
             foreach (var param in _animator.parameters)
-            {
                 if (param.type == AnimatorControllerParameterType.Trigger)
-                {
-                    _animator.ResetTrigger(param.name);
-                }
-            }
+                    _animator.ResetTrigger(param.nameHash);
         }
     }
 }

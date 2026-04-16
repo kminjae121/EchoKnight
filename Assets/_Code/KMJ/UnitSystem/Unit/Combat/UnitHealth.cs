@@ -105,13 +105,8 @@ namespace Code.UnitSystem.Combat
             Unit dealer,bool isCritical, bool isPenetrate)
         {
             if (IsDead)
-            {
-                if(_entity as CharacterUnit)
-                    StorageSO.unitStates.Remove(_unitStateCompo);
-               
-                _entity.OnDeathEvent?.Invoke();
                 return;
-            }
+            
             _actionData.HitNormal = hitNormal;      
             _actionData.HitPoint = hitPoint;
             _actionData.LastDamageData = damageData;

@@ -31,8 +31,8 @@ namespace Code.UnitSystem.Combat
         
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
-        
-        public bool IsDead => currentHealth <= 0;
+
+        public bool IsDead = false;
 
 
         public UnityEvent<Unit,int> OnInteractionEvent;
@@ -158,6 +158,7 @@ namespace Code.UnitSystem.Combat
                     StorageSO.unitStates.Remove(_unitStateCompo);
                
                _entity.OnDeathEvent?.Invoke();
+               IsDead = true;
            }
         }
     }

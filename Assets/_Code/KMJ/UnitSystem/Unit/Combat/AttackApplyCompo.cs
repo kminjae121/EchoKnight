@@ -70,7 +70,7 @@ namespace Code.UnitSystem.Combat
             if (evt.Owner != null && criticalProbilityValue <= evt.Owner.unitSO.CriticalProbability)
             {
                 isCritical = true;
-                damage *= evt.Owner.unitSO.CriticalDamageIncrease;
+                damage *= (evt.Owner.unitSO.CriticalDamageIncrease / 100);
                 evt.DamageData.damage = (int)damage;
             }
         }

@@ -65,12 +65,12 @@ public class UnitSO : ScriptableObject
     public int ShieldValue;
 
     [Range(0,100)]
-    public float AvoidProbability;
+    public int AvoidProbability;
     
     [Range(0,100)]
-    public float CriticalProbability;
+    public int CriticalProbability;
 
-    public float CriticalDamageIncrease;
+    public int CriticalDamageIncrease;
 
     [Header("SkillSystem")] 
     public int MaxSkillCost;

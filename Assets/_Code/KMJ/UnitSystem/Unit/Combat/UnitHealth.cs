@@ -32,7 +32,7 @@ namespace Code.UnitSystem.Combat
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
 
-        public bool IsDead = false;
+        public bool IsDead { get; private set; }= false;
 
 
         public UnityEvent<Unit,int> OnInteractionEvent;

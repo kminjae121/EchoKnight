@@ -2,7 +2,7 @@
 
 namespace Code.Core
 {
-    public class SoundManager : MonoBehaviour
+    public class SoundManager : MonoSingleton<SoundManager>
     {
         
     }

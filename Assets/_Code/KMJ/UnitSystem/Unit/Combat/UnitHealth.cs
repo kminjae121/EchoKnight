@@ -32,6 +32,8 @@ namespace Code.UnitSystem.Combat
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
 
+        public bool IsDead { get; private set; }= false;
+
 
         public UnityEvent<Unit,int> OnInteractionEvent;
         public delegate void OnHealthChanged(float current, float max);
@@ -102,6 +104,9 @@ namespace Code.UnitSystem.Combat
         public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData,
             Unit dealer,bool isCritical, bool isPenetrate)
         {
+            if (IsDead)
+                return;
+            
             _actionData.HitNormal = hitNormal;      
             _actionData.HitPoint = hitPoint;
             _actionData.LastDamageData = damageData;
@@ -153,6 +158,7 @@ namespace Code.UnitSystem.Combat
                     StorageSO.unitStates.Remove(_unitStateCompo);
                
                _entity.OnDeathEvent?.Invoke();
+               IsDead = true;
            }
         }
     }

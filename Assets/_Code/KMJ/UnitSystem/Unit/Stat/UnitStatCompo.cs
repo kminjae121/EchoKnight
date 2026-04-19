@@ -17,19 +17,19 @@ namespace Code.UnitSystem
     {
         [SerializeField] private UnitSO unitSO;
 
-        private float MoveRange => unitSO.MoveRange;
+        private int MoveRange => unitSO.MoveRange;
 
-        private float MaxHealth => unitSO.Maxhealth;
+        private int MaxHealth => unitSO.Maxhealth;
         
-        private float AttackDamage => unitSO.AttackDamage;
+        private int AttackDamage => unitSO.AttackDamage;
         
-        private float DefensivePower => unitSO.DefensivePower;
+        private int DefensivePower => unitSO.DefensivePower;
         
-        private float AvoidProbability => unitSO.AvoidProbability;
+        private int AvoidProbability => unitSO.AvoidProbability;
 
-        private float CriticalProbability => unitSO.CriticalProbability;
+        private int CriticalProbability => unitSO.CriticalProbability;
 
-        private float CriticalIncreaseValue => unitSO.CriticalDamageIncrease;
+        private int CriticalIncreaseValue => unitSO.CriticalDamageIncrease;
 
         public void Initialize(Unit owner)
         {
@@ -37,9 +37,9 @@ namespace Code.UnitSystem
                 unitSO = owner.unitSO;
         }
 
-        public float GetStat(StatInfo statInfo)
+        public int GetStat(StatInfo statInfo)
         {
-            float value = 0f;
+            int value = 0;
             
             switch (statInfo)
             {
@@ -66,7 +66,7 @@ namespace Code.UnitSystem
                     break;
             }
             
-            value += InGameStatCompo.Instance.GetStat(statInfo, unitSO.UnitType);
+            value += InGameStatCompo.Instance.GetStatToInt(statInfo, unitSO.UnitType);
             
             return value;
         }

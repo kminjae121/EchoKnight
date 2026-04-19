@@ -188,14 +188,14 @@ namespace Code.UI
             if (nameText != null) nameText.text = data.UnitName;
             if (classText != null) classText.text = data.UnitClass;
             
-            if (maxHealthText != null) maxHealthText.text = data.Maxhealth + InGameStatCompo.Instance.GetStatToInt(StatInfo.MaxHealth, data.UnitType).ToString();
-            if (atkText != null) atkText.text = data.AttackDamage + InGameStatCompo.Instance.GetStatToInt(StatInfo.AtkDamage, data.UnitType).ToString();
-            if (defText != null) defText.text = data.DefensivePower + InGameStatCompo.Instance.GetStatToInt(StatInfo.DefensivePower, data.UnitType).ToString();
-            if (moveSpeedText != null) moveSpeedText.text = data.MoveRange + InGameStatCompo.Instance.GetStatToInt(StatInfo.MoveRange, data.UnitType).ToString();
+            if (maxHealthText != null) maxHealthText.text = (data.Maxhealth + InGameStatCompo.Instance.GetStatToInt(StatInfo.MaxHealth, data.UnitType)).ToString();
+            if (atkText != null) atkText.text = (data.AttackDamage + InGameStatCompo.Instance.GetStatToInt(StatInfo.AtkDamage, data.UnitType)).ToString();
+            if (defText != null) defText.text = (data.DefensivePower + InGameStatCompo.Instance.GetStatToInt(StatInfo.DefensivePower, data.UnitType)).ToString();
+            if (moveSpeedText != null) moveSpeedText.text = (data.MoveRange + InGameStatCompo.Instance.GetStatToInt(StatInfo.MoveRange, data.UnitType)).ToString();
             if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString();
             
-            if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability + InGameStatCompo.Instance.GetStat(StatInfo.CriticalProbability, data.UnitType):F1}%";
-            if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease + InGameStatCompo.Instance.GetStat(StatInfo.CriticalIncreaseValue, data.UnitType).ToString("F1");
+            if (criticalProbabilityText != null) criticalProbabilityText.text = $"{(data.CriticalProbability + InGameStatCompo.Instance.GetStatToInt(StatInfo.CriticalProbability, data.UnitType)):F1}%";
+            if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = (data.CriticalDamageIncrease + InGameStatCompo.Instance.GetStatToInt(StatInfo.CriticalIncreaseValue, data.UnitType)).ToString("F1");
             
             if (maxSkillCostText != null) maxSkillCostText.text = data.MaxSkillCost.ToString();
             if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoverySkillCost.ToString();

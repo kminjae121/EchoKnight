@@ -25,7 +25,6 @@ namespace Code.UnitSystem
 
         private CharacterUnit _unit;
         private bool _isMoving;
-        private float _moveSpeed;
 
         public float MoveCount { get; set; }
         
@@ -43,8 +42,6 @@ namespace Code.UnitSystem
             
             _unit.InputSO.OnClickMoveEvent += Move;
             _pathMoverCompo.OnMoveEnd += HandleMoveEnd;
-            
-            _moveSpeed = 9;
             _isMoving = false;
         }
 
@@ -171,6 +168,8 @@ namespace Code.UnitSystem
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,
                 false, new Vector3(0.1f, 0.1f, 0.1f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
+            
+            _unit.TurnEnd();
             animationCompo.PlaySelectAnimation("IDLE");
 
             UnitRangeCompo.RemoveAllRange();

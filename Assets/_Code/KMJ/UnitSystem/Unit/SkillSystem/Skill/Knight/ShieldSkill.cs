@@ -9,11 +9,8 @@ using UnityEngine;
 
 public class ShieldSkill : BasicUnitSkill
 {
-
     private KnightShieldCompo _shieldCompo;
     private UnitAnimation animtionCompo;
-
-    private int turnCnt = 0;
 
     private int _inGameDefensePower = 0;
 

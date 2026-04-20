@@ -12,8 +12,6 @@ public class AimArrow : BasicUnitSkill
 
     private GameObject _target;
 
-    private bool isHorizontal = false;
-
     private ShootItemAttackManager _shootItemManager;
     
     protected void Start()
@@ -62,8 +60,9 @@ public class AimArrow : BasicUnitSkill
     public void MakeArrow()
     {
         Bus<CamShakeEvent>.Raise(new CamShakeEvent(0.4f));
-        Vector3 pos = _characterUnit.transform.position;
-            
+        Vector3 pos = _characterUnit.GetComponentInChildren<UnitAnimation>().transform.position;
+        pos.y += 0.3f;
+        
         Vector3 slashRot = transform.rotation.eulerAngles;
         
         _shootItemManager.SetTarget(_target);

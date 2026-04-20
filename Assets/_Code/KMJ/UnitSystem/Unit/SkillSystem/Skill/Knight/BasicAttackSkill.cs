@@ -10,8 +10,6 @@ public class BasicAttackSkill : BasicUnitSkill
     private UnitAnimation animtionCompo;
 
     [SerializeField] private float atkMoveSpeed;
-    
-    [SerializeField] private float attackMoveDistance = 1.5f;
 
     private GameObject _target;
         

@@ -12,8 +12,8 @@ namespace Code.UnitSystem
 
         private int _currentCost;
         
-        private int AddGaugeValue => _owenr.unitSO.RecoverySkillCost;
-        private int MaxGaugeValue => _owenr.unitSO.MaxSkillCost;
+        private int AddGaugeValue => _owenr.unitSO.RecoveryManaCost;
+        private int MaxGaugeValue => _owenr.unitSO.MaxManaCost;
         
         public UnityEvent<int> skillCostChanged;
         

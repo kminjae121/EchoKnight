@@ -12,8 +12,6 @@ public class AimArrow : BasicUnitSkill
 
     private GameObject _target;
 
-    private bool isHorizontal = false;
-
     private ShootItemAttackManager _shootItemManager;
     
     protected void Start()

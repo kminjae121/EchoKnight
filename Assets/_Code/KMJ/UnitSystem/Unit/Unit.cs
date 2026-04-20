@@ -72,7 +72,7 @@ namespace Code.UnitSystem
         {
             if (unitSO != null)
             {
-                TurnSpeed = unitSO.turnSpeed;
+                TurnSpeed = unitSO.Speed;
                 IsPlayerUnit = unitSO.isPlayerUnit;
                 UnitImage = unitSO.UnitImage;
             }

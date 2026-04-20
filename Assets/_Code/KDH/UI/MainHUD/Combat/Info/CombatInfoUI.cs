@@ -248,15 +248,15 @@ namespace Code.UI
             
             RefreshHealthUI();
 
-            if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString("F1");
+            if (turnSpeedText != null) turnSpeedText.text = data.Speed.ToString("F1");
             if (moveSpeedText != null) moveSpeedText.text = data.MoveRange.ToString("F1");
             if (maxHealthText != null) maxHealthText.text = data.Maxhealth.ToString("F1");
             if (attackDamageText != null) attackDamageText.text = data.AttackDamage.ToString("F1");
             if (defensivePowerText != null) defensivePowerText.text = data.DefensivePower.ToString("F1");
             if (criticalProbabilityText != null) criticalProbabilityText.text = $"{data.CriticalProbability:F1}%";
             if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = data.CriticalDamageIncrease.ToString("F1");
-            if (maxSkillCostText != null) maxSkillCostText.text = data.MaxSkillCost.ToString();
-            if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoverySkillCost.ToString();
+            if (maxSkillCostText != null) maxSkillCostText.text = data.MaxManaCost.ToString();
+            if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoveryManaCost.ToString();
 
             RefreshSkills();
             RefreshArtifacts();

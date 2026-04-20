@@ -149,17 +149,19 @@ namespace Code.UnitSystem.Combat
                _unitStateCompo.TakeDamage(damage);
            }
            
-           _entity.OnHitEvent?.Invoke();
-           OnInteractionEvent?.Invoke(dealer, damage);
-
            if (currentHealth <= 0)
            {
+               IsDead = true;
+               
                if(_entity as CharacterUnit)
-                    StorageSO.unitStates.Remove(_unitStateCompo);
+                   StorageSO.unitStates.Remove(_unitStateCompo);
                
                _entity.OnDeathEvent?.Invoke();
-               IsDead = true;
+               return;
            }
+           
+           _entity.OnHitEvent?.Invoke();
+           OnInteractionEvent?.Invoke(dealer, damage);
         }
     }
 }

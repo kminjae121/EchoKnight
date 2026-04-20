@@ -192,13 +192,13 @@ namespace Code.UI
             if (atkText != null) atkText.text = (data.AttackDamage + InGameStatCompo.Instance.GetStatToInt(StatInfo.AtkDamage, data.UnitType)).ToString();
             if (defText != null) defText.text = (data.DefensivePower + InGameStatCompo.Instance.GetStatToInt(StatInfo.DefensivePower, data.UnitType)).ToString();
             if (moveSpeedText != null) moveSpeedText.text = (data.MoveRange + InGameStatCompo.Instance.GetStatToInt(StatInfo.MoveRange, data.UnitType)).ToString();
-            if (turnSpeedText != null) turnSpeedText.text = data.turnSpeed.ToString();
+            if (turnSpeedText != null) turnSpeedText.text = data.Speed.ToString();
             
             if (criticalProbabilityText != null) criticalProbabilityText.text = $"{(data.CriticalProbability + InGameStatCompo.Instance.GetStatToInt(StatInfo.CriticalProbability, data.UnitType)):F1}%";
             if (criticalDamageIncreaseText != null) criticalDamageIncreaseText.text = (data.CriticalDamageIncrease + InGameStatCompo.Instance.GetStatToInt(StatInfo.CriticalIncreaseValue, data.UnitType)).ToString("F1");
             
-            if (maxSkillCostText != null) maxSkillCostText.text = data.MaxSkillCost.ToString();
-            if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoverySkillCost.ToString();
+            if (maxSkillCostText != null) maxSkillCostText.text = data.MaxManaCost.ToString();
+            if (recoverySkillCostText != null) recoverySkillCostText.text = data.RecoveryManaCost.ToString();
         }
 
         private void RefreshHpBar(float prevValue, float nextValue)

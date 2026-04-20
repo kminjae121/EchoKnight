@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using _Code.KMJ.UnitSystem.involveUnitSO;
+using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.Core.Managers;
 using Code.UnitSystem;
@@ -82,8 +83,8 @@ namespace Code.SkillSystem
                 {
                     if (_statCompo != null)
                     {
-                        int skillDamageValue = _statCompo.GetStat(StatInfo.AtkDamage);
-                        int finallyDamage = skill.BasicSkillDamage * (skillDamageValue / 100);  
+                        int skillDamageValue = _statCompo.GetStat(StatInfo.AtkDamage);  
+                        int finallyDamage = skillDamageValue * (skill.BasicSkillDamage/ 100);  
                         basicDamage = finallyDamage;
                     }
                     else

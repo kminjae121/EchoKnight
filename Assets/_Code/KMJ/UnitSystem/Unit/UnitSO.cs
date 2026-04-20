@@ -50,7 +50,7 @@ public class UnitSO : ScriptableObject
     [Header("UnitSettings")]
     public bool isLongRange;
 
-    public int turnSpeed = 3;
+    public int Speed = 3;
     
     public bool isPlayerUnit = false;
     
@@ -73,9 +73,9 @@ public class UnitSO : ScriptableObject
     public int CriticalDamageIncrease;
 
     [Header("SkillSystem")] 
-    public int MaxSkillCost;
+    public int MaxManaCost;
 
-    public int RecoverySkillCost;
+    public int RecoveryManaCost;
 
     [Header("UnitType")] 
     public UnitInGameSO unitInGame;

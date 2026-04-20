@@ -13,7 +13,6 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private SkillManageComponent skillManager;
 
         private GameObject _targetEnemy;
-        private Unit _targetUnit;
         private UnitOutLineCompo _targetOutLineCompo;
         private EnemyTargeting _targetingCompo;
         [SerializeField] private CharacterUnit unit;
@@ -91,8 +90,7 @@ namespace Code.UnitSystem.Combat
 
                     Bus<EnemyHpInfo>.Raise(new EnemyHpInfo(0, 0, 0, 0, false,
                         _targetEnemy.GetComponent<Unit>().unitSO.UnitImage, true));
-
-                    _targetUnit = null;
+                    
                     skillManager.GetSkillInfo().SetEnemyTargeting(null);
                     skillManager.GetSkillInfo().SetEnemy(null);
                 }

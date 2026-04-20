@@ -7,9 +7,6 @@ namespace Code.UnitSystem
     {
         private Vector3 _targetDirection;
         private Tween _rotationTween;
-        
-        [Header("Settings")]
-        [SerializeField] private float _rotationSpeed = 30f;
 
         private Unit _owner;
         

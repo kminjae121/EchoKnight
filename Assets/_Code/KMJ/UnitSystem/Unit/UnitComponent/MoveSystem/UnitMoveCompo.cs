@@ -25,7 +25,6 @@ namespace Code.UnitSystem
 
         private CharacterUnit _unit;
         private bool _isMoving;
-        private float _moveSpeed;
 
         public float MoveCount { get; set; }
         
@@ -43,8 +42,6 @@ namespace Code.UnitSystem
             
             _unit.InputSO.OnClickMoveEvent += Move;
             _pathMoverCompo.OnMoveEnd += HandleMoveEnd;
-            
-            _moveSpeed = 9;
             _isMoving = false;
         }
 

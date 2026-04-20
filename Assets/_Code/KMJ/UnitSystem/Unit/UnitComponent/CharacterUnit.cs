@@ -42,7 +42,6 @@ namespace Code.UnitSystem
         
         
         public GameObject _startTile;
-        private Button endTurnBtn;
         
         private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
 
@@ -84,11 +83,6 @@ namespace Code.UnitSystem
                 TriggerCompo.OnDeadEvent -= HandleDieAnimationEnd;
         }
 
-        public void SetObject(Button btn,SkillCostUI skillCostUI)
-        {
-            endTurnBtn = btn;
-        }
-
         public override void OnTurnStart()
         {
             base.OnTurnStart();
@@ -100,9 +94,6 @@ namespace Code.UnitSystem
             SkillCostCompo.AddSkillCost();
             SkillCompo.UpdateSkillUI();
             PassiveCompo.StartAllTurnPassives();
-            
-            if (endTurnBtn != null)
-                endTurnBtn.onClick.AddListener(TurnEnd);
 
             if (MoveCompo != null)
             {
@@ -153,8 +144,6 @@ namespace Code.UnitSystem
             if (isMyTurn)
             {
                 UnitRangeCompo.RemoveAllRange();
-                if (endTurnBtn != null)
-                    endTurnBtn.onClick.RemoveListener(TurnEnd);
                 
                 OnTurnEnd();
             }

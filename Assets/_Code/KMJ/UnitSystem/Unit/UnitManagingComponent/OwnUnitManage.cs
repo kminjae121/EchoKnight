@@ -25,8 +25,6 @@ namespace Code.UnitManaging
 
         [Header("Spawn Settings")]
         [SerializeField] public List<Vector2Int> startingCoords = new List<Vector2Int>();
-
-        [SerializeField] private Button endTurnBtn;
         
         public List<PoolingItemSO> SelectedUnits { get; private set; } = new List<PoolingItemSO>();
 
@@ -100,8 +98,6 @@ namespace Code.UnitManaging
                         1, 1,
                         basicUnit.UnitImage
                     ));
-                    
-                    basicUnit.SetObject(endTurnBtn, null);
 
                     StageManager.Instance.AddPlayerCnt();
                 }

@@ -23,7 +23,7 @@ namespace Code.UnitSystem.Combat
             unit = owner as CharacterUnit;
         }
 
-        private void Update()
+        private void Update() 
         {
             HandleTargeting();
         }

@@ -143,8 +143,7 @@ namespace Code.UnitSystem
         {
             if (isMyTurn)
             {
-                UnitRangeCompo.RemoveAllRange();
-                
+                UnitRangeCompo.RemoveAllRange(); 
                 OnTurnEnd();
             }
         }

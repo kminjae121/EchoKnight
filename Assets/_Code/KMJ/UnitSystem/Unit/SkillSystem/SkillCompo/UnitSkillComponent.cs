@@ -25,6 +25,10 @@ namespace Code.SkillSystem
         protected override void StartSkill(BaseSkill skill, SkillSO skillso)
         {
             skill.ConfigureSkillRange(skillso);
+            
+            if(skillManageCompo.GetSkillInfo() != null)
+                skillManageCompo.GetSkillInfo().SkillFinished(true);
+            
             skill.ShowSkillRange();
             Bus<UsingSkillEvent>.Raise(new UsingSkillEvent(false));
         }

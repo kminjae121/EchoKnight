@@ -2,7 +2,7 @@
 using UnityEngine;
 
 
-public enum EventType
+public enum EventTextType
 {
     Health,
     Item
@@ -20,7 +20,7 @@ namespace Code.UI
         public string FailTxt;
         public string SkipTxt;
 
-        public EventType EventType;
+        public EventTextType eventTextType;
 
         public Sprite EventImg;
         

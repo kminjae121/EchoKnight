@@ -1,76 +1,50 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Code.Expedition.Components
 {
+    [RequireComponent(typeof(RectTransform))]
     public class ExpeditionPlayer : MonoBehaviour
     {
-        [Header("Movement Settings")]
-        [SerializeField] private float moveSpeed = 5f;
-        [SerializeField] private float rotationSpeed = 10f;
-        [SerializeField] private Animator animator;
+        [Header("UI Movement Settings")]
+        [SerializeField] private float moveSpeed = 500f;
+        private RectTransform _rectTransform;
 
-        private static readonly int MoveHash = Animator.StringToHash("MOVE");
-        private static readonly int IdleHash = Animator.StringToHash("IDLE");
-
-        public void Initialize(Vector3 startPosition)
+        private void Awake()
         {
-            transform.position = startPosition;
-            SetIdleState();
+            _rectTransform = GetComponent<RectTransform>();
         }
 
-        public void MoveAlongPath(List<Vector3> pathPoints, Action onComplete)
+        public void Initialize(Vector2 startPosition)
+        {
+            if (_rectTransform == null)
+                _rectTransform = GetComponent<RectTransform>();
+
+            _rectTransform.anchoredPosition = startPosition;
+        }
+
+        public void MoveTo(Vector2 targetPos, Action onComplete)
         {
             StopAllCoroutines();
-            StartCoroutine(MoveRoutine(pathPoints, onComplete));
+            StartCoroutine(MoveRoutine(targetPos, onComplete));
         }
 
-        private IEnumerator MoveRoutine(List<Vector3> pathPoints, Action onComplete)
+        private IEnumerator MoveRoutine(Vector2 targetPos, Action onComplete)
         {
-            SetMoveState(true);
-
-            for (int i = 0; i < pathPoints.Count; i++)
+            while (Vector2.Distance(_rectTransform.anchoredPosition, targetPos) > 1f)
             {
-                Vector3 targetPos = pathPoints[i];
-                while (Vector3.Distance(transform.position, targetPos) > 0.1f)
-                {
-                    Vector3 direction = (targetPos - transform.position).normalized;
-                    
-                    if (direction != Vector3.zero)
-                    {
-                        Quaternion targetRotation = Quaternion.LookRotation(direction);
-                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-                    }
-
-                    transform.position += direction * moveSpeed * Time.deltaTime;
-                    yield return null;
-                }
+                _rectTransform.anchoredPosition = Vector2.MoveTowards(
+                    _rectTransform.anchoredPosition, 
+                    targetPos, 
+                    moveSpeed * Time.deltaTime
+                );
+                yield return null;
             }
 
-            transform.position = pathPoints[pathPoints.Count - 1];
-            SetMoveState(false);
+            _rectTransform.anchoredPosition = targetPos;
             
             onComplete?.Invoke();
-        }
-
-        private void SetMoveState(bool isMoving)
-        {
-            if (animator != null)
-            {
-                animator.SetBool(MoveHash, isMoving);
-                animator.SetBool(IdleHash, !isMoving);
-            }
-        }
-
-        private void SetIdleState()
-        {
-            if (animator != null)
-            {
-                animator.SetBool(MoveHash, false);
-                animator.SetBool(IdleHash, true);
-            }
         }
     }
 }

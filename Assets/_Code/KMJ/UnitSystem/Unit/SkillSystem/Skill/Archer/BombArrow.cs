@@ -5,9 +5,8 @@ using Code.UnitSystem.Combat;
 using Code.SkillSystem;
 using UnityEngine;
 
-public class AimArrow : BasicUnitSkill
+public class BombArrow : BasicUnitSkill
 {
-    
     private UnitAnimation animtionCompo;
 
     private GameObject _target;

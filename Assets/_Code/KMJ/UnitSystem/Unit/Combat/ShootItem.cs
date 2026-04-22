@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace Code.UnitSystem.Combat
 {
@@ -7,11 +9,20 @@ namespace Code.UnitSystem.Combat
         [field : SerializeField] public string itemName { get; private set; }
 
         [SerializeField] private float _moveSpeed = 5f;
-        
+
+
+        public UnityEvent AtkEvent;
 
         private GameObject _target = null;
         private ShootItemAttackManager _shootItemManager;
-        
+
+        [SerializeField] private bool isDirectDie = true;
+
+
+        private void Awake()
+        {
+            AtkEvent.AddListener(SetDie);
+        }
 
         private void FixedUpdate()
         {
@@ -24,8 +35,14 @@ namespace Code.UnitSystem.Combat
             if (distance <= 0.2f)
             {
                 _shootItemManager.hitEvent?.Invoke();
-                gameObject.SetActive(false);
+                AtkEvent?.Invoke();
             }
+        }
+
+
+        public void SetDie()
+        {
+            gameObject.SetActive(false);
         }
 
         public void SetTarget(GameObject target)

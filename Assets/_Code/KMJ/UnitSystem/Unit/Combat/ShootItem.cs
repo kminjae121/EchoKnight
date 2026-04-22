@@ -42,8 +42,8 @@ namespace Code.UnitSystem.Combat
 
         public void SetDie()
         {
-            if(isDirectDie) 
-                    gameObject.SetActive(false);
+            if(isDirectDie)
+                gameObject.SetActive(false);
         }
 
         public void SetTarget(GameObject target)

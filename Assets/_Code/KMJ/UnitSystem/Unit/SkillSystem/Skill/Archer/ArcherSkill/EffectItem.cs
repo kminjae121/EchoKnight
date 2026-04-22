@@ -5,12 +5,13 @@ using UnityEngine;
 
 namespace Code.SkillSystem.Skill.Archer.ArcherSkill
 {
-    public class BombArrow : MonoBehaviour
+    public class EffectItem : MonoBehaviour
     {
         [Header("BombParticle")]
         [SerializeField] private ParticleSystem bombEffect;
 
-        [Header("CastSetting")]
+        [Header("CastSetting")] 
+        [SerializeField] private GameObject arrowPrfab;
         [SerializeField] private LayerMask whatIsEnemy;
         [SerializeField] private Transform bombTrm;
         [SerializeField] private Vector3 castSize;
@@ -34,6 +35,8 @@ namespace Code.SkillSystem.Skill.Archer.ArcherSkill
             {
                 Bus<DamageEvent>.Raise(new DamageEvent(_damageData, null, col.gameObject,0 ,null, false,false,0.2f));
             }
+            
+            arrowPrfab.SetActive(false);
         }
 
         private void OnDrawGizmos()

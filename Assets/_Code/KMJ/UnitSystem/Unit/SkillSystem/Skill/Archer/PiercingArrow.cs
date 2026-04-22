@@ -65,7 +65,7 @@ namespace Code.SkillSystem
             Vector3 slashRot = transform.rotation.eulerAngles;
         
             _shootItemManager.SetTarget(_target);
-            _shootItemManager.SetDamageData(DamageData,AddDamage);
+            _shootItemManager.SetDamageData(DamageData,AddDamage);  
             _shootItemManager.CreateShootItem("PiercingArrow",pos, slashRot);
     
             _target = null;

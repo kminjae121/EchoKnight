@@ -5,9 +5,8 @@ using Code.UnitSystem.Combat;
 using Code.SkillSystem;
 using UnityEngine;
 
-public class AimArrow : BasicUnitSkill
+public class BombArrow : BasicUnitSkill
 {
-    
     private UnitAnimation animtionCompo;
 
     private GameObject _target;
@@ -67,7 +66,7 @@ public class AimArrow : BasicUnitSkill
         
         _shootItemManager.SetTarget(_target);
         _shootItemManager.SetDamageData(DamageData,AddDamage);
-        _shootItemManager.CreateShootItem("AimArrow",pos, slashRot);
+        _shootItemManager.CreateShootItem("BombArrow",pos, slashRot);
     
         _target = null;
     }

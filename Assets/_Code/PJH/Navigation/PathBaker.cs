@@ -1,6 +1,7 @@
 using Code.Core.Debugs;
 using Code.Core.Interfaces;
 using Code.Map;
+using Code.Utils;
 using GondrLib.Dependencies;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -62,7 +63,7 @@ namespace Code.Navigation
             if (tile == null)
                 return;
             
-            bakedData.AddPoint(tile.WorldPos, GridToCell(gridPos));
+            bakedData.AddPoint(tile.WorldPos, GridCoordUtils.GridToCell(gridPos));
         }
 
         private void RecordNeighbors()
@@ -77,13 +78,13 @@ namespace Code.Navigation
             {
                 nodeData.neighbors.Clear();
 
-                Vector2Int currentPoint = CellToGrid(nodeData.cellPos);
+                Vector2Int currentPoint = GridCoordUtils.CellToGrid(nodeData.cellPos);
 
                 foreach (var dir in directions)
                 {
                     Vector2Int nextPoint = currentPoint + dir;
 
-                    if (!bakedData.GetNodeIfExist(GridToCell(nextPoint), out NodeData adjacentNode))
+                    if (!bakedData.GetNodeIfExist(GridCoordUtils.GridToCell(nextPoint), out NodeData adjacentNode))
                         continue;
 
                     if (CheckCorner(nextPoint, currentPoint))
@@ -115,12 +116,6 @@ namespace Code.Navigation
             
             return tile != null && !tile.HasState(TileState.Obstacle);
         }
-
-        private static Vector3Int GridToCell(Vector2Int gridPos)
-            => new(gridPos.x, gridPos.y, 0);
-
-        private static Vector2Int CellToGrid(Vector3Int cellPos)
-            => new(cellPos.x, cellPos.y);
 
         private void WriteIfInUnityEditor()
         {

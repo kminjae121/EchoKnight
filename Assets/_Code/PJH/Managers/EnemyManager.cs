@@ -48,7 +48,7 @@ namespace Code.Managers
             if (enemy == null || unitManager == null || GridMap.Instance == null)
                 return false;
 
-            Vector2Int myPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
+            Vector2Int myPos = GridMap.Instance.WorldToGridPos(enemy.transform.position);
             SkillSO bestSkill = null;
             Unit bestTarget = null;
             float bestScore = float.MinValue;
@@ -60,7 +60,7 @@ namespace Code.Managers
                     continue;
 
                 float candidateDistance = DistanceUtils.GetEuclideanDistance(myPos,
-                    GridMap.Instance.WorldToGridPosition(target.transform.position));
+                    GridMap.Instance.WorldToGridPos(target.transform.position));
 
                 if (bestTarget != null && candidateScore < bestScore)
                     continue;
@@ -197,11 +197,11 @@ namespace Code.Managers
             if (enemy == null || unitManager == null || GridMap.Instance == null)
                 return null;
 
-            Vector2Int myPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
+            Vector2Int myPos = GridMap.Instance.WorldToGridPos(enemy.transform.position);
 
             return GetCandidateTargets()
                 .OrderBy(unit => DistanceUtils.GetEuclideanDistance(myPos,
-                    GridMap.Instance.WorldToGridPosition(unit.transform.position)))
+                    GridMap.Instance.WorldToGridPos(unit.transform.position)))
                 .FirstOrDefault();
         }
 

@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 6900052037099315664}
   - component: {fileID: 3328839309293825585}
   m_Layer: 0
-  m_Name: AimArrow
+  m_Name: PiercingArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -157,5 +157,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96a76726bc6340c9b99f16633b80f9ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <itemName>k__BackingField: AimArrow
-  _moveSpeed: 6
+  <itemName>k__BackingField: BombArrow
+  _moveSpeed: 12
+  AtkEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  isDirectDie: 1

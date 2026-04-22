@@ -48,8 +48,8 @@ namespace Code.UnitSystem.Enemies.AI
                 return Status.Failure;
             }
 
-            Vector2Int startPos = _gridMap.WorldToGridPosition(Enemy.Value.transform.position);
-            Vector2Int targetPos = _gridMap.WorldToGridPosition(Target.Value.transform.position);
+            Vector2Int startPos = _gridMap.WorldToGridPos(Enemy.Value.transform.position);
+            Vector2Int targetPos = _gridMap.WorldToGridPos(Target.Value.transform.position);
 
             if (!TryGetMoveDestination(startPos, targetPos, out Vector2Int destination))
                 return Status.Success;

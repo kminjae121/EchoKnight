@@ -65,7 +65,7 @@ namespace Code.Navigation
             if (GridMap.Instance == null)
                 return node.cellPos;
             
-            Vector2Int gridPos = GridMap.Instance.WorldToGridPosition(node.worldPos);
+            Vector2Int gridPos = GridMap.Instance.WorldToGridPos(node.worldPos);
             return new Vector3Int(gridPos.x, gridPos.y, 0);
         }
     }

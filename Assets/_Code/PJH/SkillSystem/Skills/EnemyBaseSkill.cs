@@ -16,8 +16,8 @@ namespace Code.SkillSystem
             if (gridMap == null)
                 return false;
 
-            Vector2Int myPos = gridMap.WorldToGridPosition(transform.position);
-            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
+            Vector2Int myPos = gridMap.WorldToGridPos(transform.position);
+            Vector2Int targetPos = gridMap.WorldToGridPos(target.transform.position);
 
             float distance = DistanceUtils.GetEuclideanDistance(myPos, targetPos);
             float range = Mathf.Max(0f, SkillSO.SkillRange);

@@ -74,7 +74,7 @@ namespace Code.Map
 
         private void CreateTile(int x, int y)
         {
-            Vector3 worldPosition = GridToWorldPosition(x, y);
+            Vector3 worldPosition = GridToWorldPos(x, y);
 
             GameObject tileObject;
 
@@ -164,14 +164,14 @@ namespace Code.Map
                     tiles[x, y]?.SetDecalActive(visible);
         }
 
-        public Vector3 GridToWorldPosition(int x, int y)
+        public Vector3 GridToWorldPos(int x, int y)
         {
             return new Vector3(x * tileSize, 0f, y * tileSize) + transform.position;
         }
 
-        public Vector2Int WorldToGridPosition(Vector3 worldPosition)
+        public Vector2Int WorldToGridPos(Vector3 worldPos)
         {
-            Vector3 localPos = worldPosition - transform.position;
+            Vector3 localPos = worldPos - transform.position;
 
             int x = Mathf.RoundToInt(localPos.x / tileSize);
             int y = Mathf.RoundToInt(localPos.z / tileSize);

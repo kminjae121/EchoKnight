@@ -1,11 +1,9 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using Code.UnitSystem.Combat;
+﻿using Code.Core.Events.Bus;
 using UnityEngine;
 
-namespace Code.SkillSystem.Skill.Archer.ArcherSkill
+namespace Code.UnitSystem.Combat
 {
-    public class EffectItem : MonoBehaviour
+    public class EffectItem : ShootItem
     {
         [Header("BombParticle")]
         [SerializeField] private ParticleSystem bombEffect;
@@ -24,7 +22,14 @@ namespace Code.SkillSystem.Skill.Archer.ArcherSkill
             _damageData.damage = damage;
         }
 
-        public void Bomb()
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawWireCube(bombTrm.position, castSize);
+            Gizmos.color = Color.red;
+        }
+
+        public override void GiveDamage()
         {
             ParticleSystem particle = Instantiate(bombEffect, transform.position, Quaternion.identity);
             particle.Play();
@@ -33,17 +38,10 @@ namespace Code.SkillSystem.Skill.Archer.ArcherSkill
 
             foreach (var col in cols)
             {
-                Bus<DamageEvent>.Raise(new DamageEvent(_damageData, null, col.gameObject,0 ,null, false,false,0.2f));
+                Bus<DamageEvent>.Raise(new DamageEvent(_damageData, col.gameObject,0 ,null, false,false,0.2f));
             }
             
-            arrowPrfab.SetActive(false);
-        }
-
-        private void OnDrawGizmos()
-        {
-            Gizmos.color = Color.white;
-            Gizmos.DrawWireCube(bombTrm.position, castSize);
-            Gizmos.color = Color.red;
+            gameObject.SetActive(false); 
         }
     }
 }

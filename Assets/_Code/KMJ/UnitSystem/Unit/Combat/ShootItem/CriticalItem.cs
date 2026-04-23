@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Code.UnitSystem.Combat
 {
-    public class CriticalArrow : ShootItem
+    public class CriticalItem : ShootItem
     {
         public override void AttackEnd()
         {

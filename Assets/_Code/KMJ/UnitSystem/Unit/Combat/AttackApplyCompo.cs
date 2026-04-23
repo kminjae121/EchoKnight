@@ -39,11 +39,10 @@ namespace Code.UnitSystem.Combat
 
             if (evt.target != null && evt.target.TryGetComponent(out IDamageable damageable))
             {
-                bool isCritical = false;
-                bool isPenetrate = false;
+                bool isCritical = evt.IsCritical;
+                bool isPenetrate = evt.IsPenetrate;
                 
                 AttackStartEvent?.Invoke(ref evt, ref isCritical, ref isPenetrate);
-                
                 
                 Bus<CamShakeEvent>.Raise(new CamShakeEvent(evt.ShakeValue));
                 
@@ -62,8 +61,6 @@ namespace Code.UnitSystem.Combat
         
         private void CalculateCritical(ref DamageEvent evt, ref bool isCritical, ref bool isPenetrate)
         {
-            isCritical = false;
-
             float damage = evt.DamageData.damage;
             float criticalProbilityValue = Random.Range(0f, 100f);
 

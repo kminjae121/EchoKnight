@@ -1,4 +1,6 @@
-﻿using Code.Core.Events.Bus;
+﻿using System;
+using Code.Core.Events.Bus;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -8,24 +10,17 @@ namespace Code.UnitSystem.Combat
     {
         [field : SerializeField] public string itemName { get; private set; }
         [SerializeField] private float _moveSpeed = 5f;
-        [SerializeField] protected bool isDirectDie = true;
+        [SerializeField] protected bool isOwnTarget = true;
         
         public UnityEvent AtkEvent;
 
-        private ShootItemAttackManager _shootItemManager;
-        private Rigidbody _rbCompo = null;
-        private GameObject _target = null;
+        protected ShootItemAttackManager _shootItemManager;
+        protected Rigidbody _rbCompo = null;
+        protected GameObject _target = null;
         
         private void Awake()
         {
-            AtkEvent.AddListener(SetDie);
             _rbCompo = GetComponent<Rigidbody>();
-        }
-
-        public virtual void SetDie()
-        {
-            if(isDirectDie)
-                gameObject.SetActive(false);
         }
 
         public void SetTarget(GameObject target)
@@ -46,17 +41,35 @@ namespace Code.UnitSystem.Combat
             _shootItemManager = shootItemManaer;
         }
 
-        public abstract void GiveDamage();
+        public abstract void AttackEnd();
 
         private void OnTriggerEnter(Collider other)
-        {
-            Bus<DamageEvent>.Raise(new DamageEvent(_shootItemManager.DamageData,_target.gameObject,0,_shootItemManager.Unit
-                , false,false,0.2f));
+        {;
+            if (isOwnTarget)
+            {
+                if (other.GetComponentInChildren<UnitAnimation>())
+                {
+                    UnitAnimation animation = other.GetComponentInChildren<UnitAnimation>();
+                    
+                    if (_target == animation.gameObject)
+                    {
+                        _target = animation.gameObject;
+                        
+                        _shootItemManager.hitEvent?.Invoke();
+                        AtkEvent?.Invoke();
             
-            _shootItemManager.hitEvent?.Invoke();
-            AtkEvent?.Invoke();
+                        AttackEnd();     
+                    }   
+                }
+            }
+            else if (isOwnTarget == false)
+            {
+                _shootItemManager.hitEvent?.Invoke();
+                AtkEvent?.Invoke();
             
-            GiveDamage();
+                AttackEnd();
+            }
         }
+        
     }
 }

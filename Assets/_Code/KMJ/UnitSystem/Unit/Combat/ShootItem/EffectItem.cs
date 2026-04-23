@@ -29,8 +29,11 @@ namespace Code.UnitSystem.Combat
             Gizmos.color = Color.red;
         }
 
-        public override void GiveDamage()
+        public override void AttackEnd()
         {
+            Bus<DamageEvent>.Raise(new DamageEvent(_shootItemManager.DamageData,_target,0,_shootItemManager.Unit
+                , false,false,0.2f));
+            
             ParticleSystem particle = Instantiate(bombEffect, transform.position, Quaternion.identity);
             particle.Play();
             

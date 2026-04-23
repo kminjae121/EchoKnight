@@ -1,4 +1,4 @@
-﻿    using System.Collections;
+﻿using System.Collections;
 using Code.Core.Events.Bus;
 using Code.UnitSystem;
 using Code.UnitSystem.Combat;
@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Code.SkillSystem
 {
-    public class PiercingArrow : BasicUnitSkill
+    public class CriticalArrow : BasicUnitSkill
     {
         private UnitAnimation animtionCompo;
 
@@ -66,7 +66,7 @@ namespace Code.SkillSystem
         
             _shootItemManager.SetTarget(_target);
             _shootItemManager.SetDamageData(DamageData,AddDamage);  
-            _shootItemManager.CreateShootItem("PiercingArrow",pos, slashRot);
+            _shootItemManager.CreateShootItem("CriticalArrow",pos, slashRot);
     
             _target = null;
         }

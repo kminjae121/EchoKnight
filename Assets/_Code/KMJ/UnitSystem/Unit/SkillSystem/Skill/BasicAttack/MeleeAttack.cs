@@ -12,7 +12,6 @@ public class MeleeAttack : BasicUnitSkill
     [SerializeField] private Animator animator;
     [SerializeField] private float atkMoveSpeed;
     [SerializeField] private AttackDataSO atkData;
-    [SerializeField] private NavMeshAgent agent;
     
     private UnitAnimation _animationCompo;
     

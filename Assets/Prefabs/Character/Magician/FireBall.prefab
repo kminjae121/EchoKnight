@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3909910654522587439}
   - component: {fileID: 190218602848464951}
-  - component: {fileID: 2039785678302824675}
+  - component: {fileID: 3264137535007069706}
   m_Layer: 0
   m_Name: FireBall
   m_TagString: Untagged
@@ -56,7 +56,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.17301261, y: 0.19090463, z: 0.5965034}
   m_Center: {x: -0.0010914803, y: 0.021938555, z: 0.039788425}
---- !u!114 &2039785678302824675
+--- !u!114 &3264137535007069706
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -65,15 +65,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 944550535907797823}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96a76726bc6340c9b99f16633b80f9ab, type: 3}
+  m_Script: {fileID: 11500000, guid: dbcbe1873b0148f49086904d0dee1b5b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  <itemName>k__BackingField: FireBall
-  _moveSpeed: 8
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Combat.NormalShootItem
+  <itemName>k__BackingField: Fireball
+  _moveSpeed: 5
+  isOwnTarget: 1
   AtkEvent:
     m_PersistentCalls:
       m_Calls: []
-  isDirectDie: 1
 --- !u!1 &7785649803106472776
 GameObject:
   m_ObjectHideFlags: 0

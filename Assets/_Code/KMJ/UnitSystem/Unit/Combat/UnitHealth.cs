@@ -101,7 +101,7 @@ namespace Code.UnitSystem.Combat
         }
         
 
-        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData,
+        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal,
             Unit dealer,bool isCritical, bool isPenetrate)
         {
             if (IsDead)

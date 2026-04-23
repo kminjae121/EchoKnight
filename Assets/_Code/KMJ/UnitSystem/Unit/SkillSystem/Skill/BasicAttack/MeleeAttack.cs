@@ -12,7 +12,6 @@ public class MeleeAttack : BasicUnitSkill
     [SerializeField] private Animator animator;
     [SerializeField] private float atkMoveSpeed;
     [SerializeField] private AttackDataSO atkData;
-    [SerializeField] private NavMeshAgent agent;
     
     private UnitAnimation _animationCompo;
     
@@ -77,6 +76,6 @@ public class MeleeAttack : BasicUnitSkill
     
     public void TakeDamage()
     {
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,atkData,_target,AddDamage, _characterUnit,false,false,0.3f));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,_target,AddDamage, _characterUnit,false,false,0.3f));
     }
 }

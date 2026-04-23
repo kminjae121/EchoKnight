@@ -772,9 +772,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootItems:
-  - {fileID: 3328839309293825585, guid: f68319a6f4d5bbc4dbd0566e69d3ab26, type: 3}
-  - {fileID: 3328839309293825585, guid: 40681ef34cf38bc43bb30e622f0a31cb, type: 3}
-  - {fileID: 3328839309293825585, guid: 37d6cf34f81c9ff4ba0c95a43dd6708f, type: 3}
+  - {fileID: 452093210579103965, guid: 37d6cf34f81c9ff4ba0c95a43dd6708f, type: 3}
+  - {fileID: 4692086598674481567, guid: f68319a6f4d5bbc4dbd0566e69d3ab26, type: 3}
+  - {fileID: 1268068733913830513, guid: 40681ef34cf38bc43bb30e622f0a31cb, type: 3}
+  - {fileID: 3987707671734161806, guid: f5d104d4b6b134c4eb52df5fed1c431c, type: 3}
   atkData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
 --- !u!114 &647129778875576278
 MonoBehaviour:
@@ -23427,6 +23428,7 @@ GameObject:
   - component: {fileID: 2634193257307267230}
   - component: {fileID: 7333213160164719334}
   - component: {fileID: 7892059421470948934}
+  - component: {fileID: 3464784944789967168}
   - component: {fileID: 2442742964246998859}
   - component: {fileID: 3955095407124982196}
   m_Layer: 7
@@ -23524,7 +23526,6 @@ MonoBehaviour:
   _characterUnit: {fileID: 3173451793327125779}
   atkMoveSpeed: 0
   animator: {fileID: 8657052352698793276}
-  agent: {fileID: 0}
 --- !u!114 &7892059421470948934
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23558,6 +23559,48 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: HardChargeEffect
+          m_BoolArgument: 0
+        m_CallState: 2
+  SkillEndEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  isCanUseSkill: 0
+  IsActive: 0
+  <CriticalSpot>k__BackingField: {fileID: 7918537313758781247}
+  _characterUnit: {fileID: 3173451793327125779}
+--- !u!114 &3464784944789967168
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6677092735934490779}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 290ab54c3207412e8bdde07f50c8bcb3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.SkillSystem.PiercingArrow
+  <SkillSO>k__BackingField: {fileID: 11400000, guid: ff62dcacdbbb71848bacb625cd1be429, type: 2}
+  attackData: {fileID: 11400000, guid: a3c8bc6bf3ae17b47b2e6b491ef64b9d, type: 2}
+  triggerCompo: {fileID: 2965218449955992475}
+  statCompo: {fileID: 1501015307250350184}
+  rangeCompo: {fileID: 647129778875576278}
+  SkillEvent:
+    m_PersistentCalls:
+      m_Calls: []
+  SkillFeedbackEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 84901222180032863}
+        m_TargetAssemblyTypeName: _Code.UnitSystem.UnitEffectCompo, Assembly-CSharp
+        m_MethodName: PlayTargetEffect
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: ChargeEffect
           m_BoolArgument: 0
         m_CallState: 2
   SkillEndEvent:

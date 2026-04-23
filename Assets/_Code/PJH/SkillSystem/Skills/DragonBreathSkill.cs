@@ -83,7 +83,7 @@ namespace Code.SkillSystem
 
             foreach (var hitTarget in GetHitTargets(_target))
             {
-                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, hitTarget, AddDamage,
+                Bus<DamageEvent>.Raise(new DamageEvent(DamageData, hitTarget, AddDamage,
                     null, false,false,0.1f));
 
                 if (burnDuration <= 0 || burnDamage <= 0)

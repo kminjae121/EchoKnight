@@ -26660,7 +26660,6 @@ MonoBehaviour:
   atkMoveSpeed: 0
   animator: {fileID: 7615231855437860106}
   effectPrefab: {fileID: 2110302460800175768}
-  agent: {fileID: 0}
   isRunningAttack: 0
 --- !u!114 &7899156878848632344
 MonoBehaviour:
@@ -47463,7 +47462,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shootItems:
-  - {fileID: 2039785678302824675, guid: 301810faaa5dfd742ba3bf309b1360be, type: 3}
+  - {fileID: 7808105487667918109}
   atkData: {fileID: 11400000, guid: d67440d00c338d3458b27b3528592cfe, type: 2}
 --- !u!114 &6766155429207633582
 MonoBehaviour:
@@ -47739,7 +47738,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6958902814287963233}
   - component: {fileID: 6085485648795987321}
-  - component: {fileID: 5376999434844870061}
+  - component: {fileID: 7808105487667918109}
   m_Layer: 0
   m_Name: FireBall
   m_TagString: Untagged
@@ -47784,7 +47783,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.17301261, y: 0.19090463, z: 0.5965034}
   m_Center: {x: -0.0010914803, y: 0.021938555, z: 0.039788425}
---- !u!114 &5376999434844870061
+--- !u!114 &7808105487667918109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -47793,15 +47792,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 6614522924868875889}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96a76726bc6340c9b99f16633b80f9ab, type: 3}
+  m_Script: {fileID: 11500000, guid: dbcbe1873b0148f49086904d0dee1b5b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Combat.NormalShootItem
   <itemName>k__BackingField: FireBall
-  _moveSpeed: 15
+  _moveSpeed: 5
+  isOwnTarget: 1
   AtkEvent:
     m_PersistentCalls:
       m_Calls: []
-  isDirectDie: 0
 --- !u!1 &6629061283153615086
 GameObject:
   m_ObjectHideFlags: 0

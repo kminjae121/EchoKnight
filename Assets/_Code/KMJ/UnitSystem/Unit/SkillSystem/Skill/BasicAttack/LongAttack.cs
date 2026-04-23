@@ -10,7 +10,6 @@ public class LongAttack : BasicUnitSkill
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private Animator animator;
         [SerializeField] private BoomingEffect effectPrefab;
-        [SerializeField] private NavMeshAgent agent;
         
         private UnitAnimation _animationCompo;
 

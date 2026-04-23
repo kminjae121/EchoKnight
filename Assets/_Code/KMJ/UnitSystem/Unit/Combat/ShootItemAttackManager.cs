@@ -10,41 +10,24 @@ namespace Code.UnitSystem.Combat
         [SerializeField] private List<ShootItem> shootItems;
         [SerializeField] private AttackDataSO atkData;
         
-        private Unit _unit;
+        public Unit Unit { get; private set; }
         
         private GameObject _target = null;
 
         private Dictionary<string, ShootItem> _shootItemDict = new Dictionary<string, ShootItem>();
-        private DamageData _damageData;
+        public DamageData DamageData { get; set; }  
 
         public Action hitEvent;
-
-        private float _addDamage;
 
         
         public void Initialize(Unit owner)
         {
-            _unit = owner;
-            
-            hitEvent += GiveDamage;
+            Unit = owner;
             
             shootItems.ForEach(item =>
             {
                 _shootItemDict.Add(item.itemName, item);
             });
-        }
-
-        private void Start()
-        {
-            if (_unit as CharacterUnit)
-            {
-                CharacterUnit characterUnit = _unit as CharacterUnit;
-            }
-        }
-
-        private void OnDestroy()
-        {
-            hitEvent -= GiveDamage;
         }
 
         public void SetTarget(GameObject target)
@@ -54,8 +37,7 @@ namespace Code.UnitSystem.Combat
 
         public void SetDamageData(DamageData damageData, float addDamage)
         {
-            _damageData = damageData;
-            _addDamage = addDamage;
+            DamageData = damageData;
         }
 
         public void CreateShootItem(string itemName, Vector3 pos, Vector3 rotation)
@@ -75,11 +57,6 @@ namespace Code.UnitSystem.Combat
             shootItemCompo.SetShootItemCompo(this);
             shootItemCompo.SetTarget(_target.GetComponentInChildren<UnitAnimation>().gameObject);
             shootItem.transform.rotation = Quaternion.Euler(rotation);
-        }
-
-        private void GiveDamage()
-        {
-            Bus<DamageEvent>.Raise(new DamageEvent(_damageData,atkData,_target.gameObject,_addDamage,_unit, false,false,0.2f));
         }
     }
 }

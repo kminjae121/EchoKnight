@@ -47,8 +47,8 @@ namespace Code.UnitSystem.Combat
                 
                 Bus<CamShakeEvent>.Raise(new CamShakeEvent(evt.ShakeValue));
                 
-                damageable.ApplyDamage(evt.DamageData, evt.target.transform.position, evt.target.transform.position,
-                    evt.atkData, evt.Owner, isCritical, isPenetrate);
+                damageable.ApplyDamage(evt.DamageData, evt.target.transform.position, evt.target.transform.position
+                    , evt.Owner, isCritical, isPenetrate);
 
                 var anim = evt.target.GetComponentInChildren<UnitAnimation>();
                 if (anim != null)

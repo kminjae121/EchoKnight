@@ -100,7 +100,8 @@ GameObject:
   m_Component:
   - component: {fileID: 7455794510644018766}
   - component: {fileID: 6900052037099315664}
-  - component: {fileID: 3328839309293825585}
+  - component: {fileID: 1268068733913830513}
+  - component: {fileID: 7156459242794072204}
   m_Layer: 0
   m_Name: FireArrow
   m_TagString: Untagged
@@ -140,13 +141,13 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 0.17301261, y: 0.19090463, z: 0.5965034}
   m_Center: {x: -0.0010914803, y: 0.021938555, z: 0.039788425}
---- !u!114 &3328839309293825585
+--- !u!114 &1268068733913830513
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -155,11 +156,42 @@ MonoBehaviour:
   m_GameObject: {fileID: 9115162897217047785}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96a76726bc6340c9b99f16633b80f9ab, type: 3}
+  m_Script: {fileID: 11500000, guid: dbcbe1873b0148f49086904d0dee1b5b, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.Combat.NormalShootItem
   <itemName>k__BackingField: FireArrow
-  _moveSpeed: 6
+  _moveSpeed: 5
+  isOwnTarget: 1
+  AtkEvent:
+    m_PersistentCalls:
+      m_Calls: []
+--- !u!54 &7156459242794072204
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9115162897217047785}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &3074918456687083558
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -23,8 +23,8 @@ namespace Code.Combat.StatusEffect
             };
 
             healthCompo.ApplyDamage(damageData, _target.transform.position,
-                Vector3.zero, null, null,
-                false, false);
+                Vector3.zero, null, false,
+                false);
         }
 
         public override void EndUpdateEffect()

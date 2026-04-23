@@ -57,7 +57,7 @@ namespace Code.SkillSystem
         private void TakeDamage()
         {
             UnityLogger.Log("근접 공격으로 데미지");
-            Bus<DamageEvent>.Raise(new DamageEvent(DamageData, attackData, _target, AddDamage, null, false,false,0.1f));
+            Bus<DamageEvent>.Raise(new DamageEvent(DamageData, _target, AddDamage, null, false,false,0.1f));
         }
 
         private void SkillEnd()

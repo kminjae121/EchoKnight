@@ -10,7 +10,6 @@ public class ShooterAttack : BasicUnitSkill
     {
         [SerializeField] private float atkMoveSpeed;
         [SerializeField] private Animator animator;
-        [SerializeField] private NavMeshAgent agent;
         
          private UnitAnimation _animationCompo;
 

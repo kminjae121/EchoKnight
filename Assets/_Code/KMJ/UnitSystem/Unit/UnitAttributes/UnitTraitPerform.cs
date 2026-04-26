@@ -11,9 +11,6 @@ namespace Code.UnitSystem.UnitAttributes
             _unit = unit;
         }
 
-        public virtual void PerformTrait()
-        {
-            
-        }
+        public abstract void PerformTrait();
     }
 }

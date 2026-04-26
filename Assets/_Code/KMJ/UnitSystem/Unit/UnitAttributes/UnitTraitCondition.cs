@@ -11,9 +11,6 @@ namespace Code.UnitSystem.UnitAttributes
             _unit = unit;
         }
 
-        public virtual bool CheckCondition()
-        {
-            return false;
-        }
+        public abstract bool CheckCondition();
     }
 }

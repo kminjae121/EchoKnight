@@ -1,12 +1,16 @@
 ﻿using UnityEngine;
 
-namespace Code.UnitSystem.UnitAttributes.Archer
+namespace Code.UnitSystem.UnitAttributes
 {
-    public class ArcherPerform : UnitTraitPerform
+    public class ArcherPerform : MonoBehaviour , IUnitPerform
     {
-        public override void PerformTrait()
+        public void Initialize(Unit unit)
         {
             
+        }
+
+        public void Perform()
+        {
         }
     }
 }

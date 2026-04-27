@@ -2586,7 +2586,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 15
   rotationSpeed: 10
-  animator: {fileID: 128409652}
+  animator: {fileID: 0}
 --- !u!95 &128409652
 Animator:
   serializedVersion: 7
@@ -2609,18 +2609,17 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!4 &128409653
-Transform:
+--- !u!224 &128409653
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 128409650}
-  serializedVersion: 2
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: -242.33, y: 149.52, z: 82.12}
+  m_LocalPosition: {x: 0, y: 0, z: 82.12}
   m_LocalScale: {x: 3, y: 3, z: 3}
-  m_ConstrainProportionsScale: 1
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1706540860}
   - {fileID: 1203331503}
@@ -2629,6 +2628,11 @@ Transform:
   - {fileID: 1735961225}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: -242.33, y: 149.52}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!136 &128409654
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -5391,10 +5395,10 @@ MonoBehaviour:
   targetSceneName: Stage6
   isUnlocked: 1
   isCleared: 0
-  outlinable: {fileID: 295801290}
-  nodeRenderer: {fileID: 295801289}
-  clearedMaterial: {fileID: 2100000, guid: 724561a350a661b4e9da6ac7f6c728af, type: 2}
-  unclearedMaterial: {fileID: 2100000, guid: 818d610aa2c511d4a830a477af277ed2, type: 2}
+  outlinable: {fileID: 0}
+  nodeRenderer: {fileID: 0}
+  clearedMaterial: {fileID: 0}
+  unclearedMaterial: {fileID: 0}
   connectedPaths:
   - {fileID: 2004197838}
 --- !u!4 &295801288
@@ -9817,10 +9821,10 @@ MonoBehaviour:
   targetSceneName: Stage1
   isUnlocked: 1
   isCleared: 0
-  outlinable: {fileID: 521118432}
-  nodeRenderer: {fileID: 521118434}
-  clearedMaterial: {fileID: 2100000, guid: 724561a350a661b4e9da6ac7f6c728af, type: 2}
-  unclearedMaterial: {fileID: 2100000, guid: 818d610aa2c511d4a830a477af277ed2, type: 2}
+  outlinable: {fileID: 0}
+  nodeRenderer: {fileID: 0}
+  clearedMaterial: {fileID: 0}
+  unclearedMaterial: {fileID: 0}
   connectedPaths:
   - {fileID: 284288642}
 --- !u!1 &522263525
@@ -11676,7 +11680,7 @@ Transform:
   m_GameObject: {fileID: 607328972}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.11999512, y: 0.08000183, z: -17.970001}
+  m_LocalPosition: {x: -0.11999512, y: 0.08000183, z: -1.17}
   m_LocalScale: {x: 4.79, y: 0.44968, z: 4.79}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11744,7 +11748,7 @@ LineRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Positions:
-  - {x: -242.45, y: 149.6, z: 64.15}
+  - {x: -242.45, y: 149.6, z: 80.950005}
   - {x: -242.45, y: 149.6, z: 64.15}
   m_Parameters:
     serializedVersion: 3
@@ -29386,10 +29390,10 @@ MonoBehaviour:
   targetSceneName: Stage1
   isUnlocked: 1
   isCleared: 0
-  outlinable: {fileID: 1355689141}
-  nodeRenderer: {fileID: 1355689140}
-  clearedMaterial: {fileID: 2100000, guid: 724561a350a661b4e9da6ac7f6c728af, type: 2}
-  unclearedMaterial: {fileID: 2100000, guid: 818d610aa2c511d4a830a477af277ed2, type: 2}
+  outlinable: {fileID: 0}
+  nodeRenderer: {fileID: 0}
+  clearedMaterial: {fileID: 0}
+  unclearedMaterial: {fileID: 0}
   connectedPaths:
   - {fileID: 137895003}
 --- !u!23 &1355689140
@@ -40244,10 +40248,10 @@ MonoBehaviour:
   targetSceneName: Stage1
   isUnlocked: 1
   isCleared: 0
-  outlinable: {fileID: 1888814967}
-  nodeRenderer: {fileID: 1888814966}
-  clearedMaterial: {fileID: 2100000, guid: 724561a350a661b4e9da6ac7f6c728af, type: 2}
-  unclearedMaterial: {fileID: 2100000, guid: 818d610aa2c511d4a830a477af277ed2, type: 2}
+  outlinable: {fileID: 0}
+  nodeRenderer: {fileID: 0}
+  clearedMaterial: {fileID: 0}
+  unclearedMaterial: {fileID: 0}
   connectedPaths:
   - {fileID: 1492307850}
 --- !u!23 &1888814966
@@ -42261,7 +42265,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8506add8e984302bbe0d2fa0d2061a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 128409653}
+  target: {fileID: 0}
   smoothSpeed: 10
   maintainInitialOffset: 1
   manualOffset: {x: 0, y: 0, z: 0}
@@ -46454,12 +46458,12 @@ MonoBehaviour:
   targetSceneName: Stage1
   isUnlocked: 0
   isCleared: 0
-  outlinable: {fileID: 2123540254}
-  nodeRenderer: {fileID: 2123540253}
-  clearedMaterial: {fileID: 2100000, guid: 724561a350a661b4e9da6ac7f6c728af, type: 2}
-  unclearedMaterial: {fileID: 2100000, guid: 818d610aa2c511d4a830a477af277ed2, type: 2}
+  outlinable: {fileID: 0}
+  nodeRenderer: {fileID: 0}
+  clearedMaterial: {fileID: 0}
+  unclearedMaterial: {fileID: 0}
   connectedPaths:
-  - {fileID: 1332143345}
+  - {fileID: 607328973}
 --- !u!4 &2123540252
 Transform:
   m_ObjectHideFlags: 0
@@ -47371,7 +47375,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3012493363737043986, guid: c5c3801f2621fbc46b67a5d7fe2af77d, type: 3}
       propertyPath: skills.Array.size
-      value: 10
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 3012493363737043986, guid: c5c3801f2621fbc46b67a5d7fe2af77d, type: 3}
       propertyPath: 'skills.Array.data[0]'
@@ -47413,6 +47417,14 @@ PrefabInstance:
       propertyPath: 'skills.Array.data[9]'
       value: 
       objectReference: {fileID: 11400000, guid: ff62dcacdbbb71848bacb625cd1be429, type: 2}
+    - target: {fileID: 3012493363737043986, guid: c5c3801f2621fbc46b67a5d7fe2af77d, type: 3}
+      propertyPath: 'skills.Array.data[10]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ec7386cc717fd65478445094a1ee932c, type: 2}
+    - target: {fileID: 3012493363737043986, guid: c5c3801f2621fbc46b67a5d7fe2af77d, type: 3}
+      propertyPath: 'skills.Array.data[11]'
+      value: 
+      objectReference: {fileID: 11400000, guid: ec7386cc717fd65478445094a1ee932c, type: 2}
     - target: {fileID: 5824053470437028148, guid: c5c3801f2621fbc46b67a5d7fe2af77d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -47466,13 +47478,13 @@ PrefabInstance:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 128409653}
   - {fileID: 1245110071}
   - {fileID: 911191869}
   - {fileID: 1965051426}
   - {fileID: 502440583}
   - {fileID: 1896286857}
   - {fileID: 1094230669}
-  - {fileID: 128409653}
   - {fileID: 864855206}
   - {fileID: 837853586}
   - {fileID: 2051813256}

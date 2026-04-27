@@ -2,17 +2,18 @@
 
 namespace Code.UnitSystem.UnitAttributes
 {
-    public class ArcherCondition : MonoBehaviour, IUnitCondition
+    public class RoguePerform : MonoBehaviour, IUnitPerform
     {
         private Unit _unit;
+        
         public void Initialize(Unit unit)
         {
             _unit = unit;
         }
 
-        public bool CheckCondition()
+        public void Perform()
         {
-            return false;
+            
         }
     }
 }

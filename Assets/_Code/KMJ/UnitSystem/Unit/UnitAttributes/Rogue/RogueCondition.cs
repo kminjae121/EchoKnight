@@ -2,15 +2,18 @@
 
 namespace Code.UnitSystem.UnitAttributes
 {
-    public abstract class UnitTraitPerform : MonoBehaviour
+    public class RogueCondition : MonoBehaviour, IUnitCondition
     {
         private Unit _unit;
-
+        
         public void Initialize(Unit unit)
         {
             _unit = unit;
         }
 
-        public abstract void PerformTrait();
+        public bool CheckCondition()
+        {
+            return false;
+        }
     }
 }

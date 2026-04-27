@@ -1,9 +1,11 @@
 ﻿using Code.Expedition.Components;
 using UnityEngine;
+using Input; 
 using _00.Core._02.Scripts._01.Manager;
+using Code.Core;
 using Code.Core.Events.Bus;
 using System.Collections.Generic;
-using Code.Core;
+using System.Linq;
 using UnityEngine.SceneManagement; 
 using Code.Expedition.Data;
 
@@ -21,12 +23,17 @@ namespace Code.Expedition.Managers
         [Header("References")]
         [SerializeField] private ExpeditionPlayer player;
         [SerializeField] private ExpeditionNode startNode;
-        // inputReader 및 nodeLayer(3D 레이캐스트용) 제거됨
+        [SerializeField] private InputReader inputReader;
+        [SerializeField] private LayerMask nodeLayer;
+        
+        [Header("Camera")]
+        [SerializeField] private Camera mainCamera;
 
         [Header("Event UIs")]
         [SerializeField] private List<EventUIMapping> eventUIMappings; 
 
         private ExpeditionNode _currentNode;
+        private ExpeditionNode _hoveredNode;
         private ExpeditionNode _selectedNodeForMove; 
         private bool _isMoving;
 
@@ -46,16 +53,25 @@ namespace Code.Expedition.Managers
             InitializeExpeditionScene();
         }
 
-        // 마우스 호버 등 매 프레임 검사하던 Update() 제거
+        private void Update()
+        {
+            HandleHover();
+        }
 
         private void OnEnable()
         {
+            if (inputReader != null)
+                inputReader.OnClickEvent += HandleClick;
+            
             Bus<StageClearEvent>.Subscribe(OnStageCleared);
             SceneManager.sceneLoaded += OnSceneLoaded; 
         }
 
         private void OnDisable()
         {
+            if (inputReader != null)
+                inputReader.OnClickEvent -= HandleClick;
+            
             Bus<StageClearEvent>.Unsubscribe(OnStageCleared);
             SceneManager.sceneLoaded -= OnSceneLoaded; 
         }
@@ -71,6 +87,9 @@ namespace Code.Expedition.Managers
             
             if (allNodes.Length == 0)
                 return;
+
+            if (mainCamera == null)
+                mainCamera = Camera.main;
             
             if (player == null)
                 player = FindAnyObjectByType<ExpeditionPlayer>();
@@ -98,18 +117,12 @@ namespace Code.Expedition.Managers
                 if (_savedClearedNodes.Contains(node.name))
                     node.SetCleared(true);
 
-            // 3D 위치(Transform) 대신 2D UI 위치(RectTransform)로 초기화
             if (_currentNode != null && player != null)
-            {
-                RectTransform nodeRect = _currentNode.GetComponent<RectTransform>();
-                if (nodeRect != null)
-                {
-                    player.Initialize(nodeRect.anchoredPosition);
-                }
-            }
+                player.Initialize(_currentNode.transform.position);
             
             UpdateAllNodesVisuals(allNodes);
 
+            _hoveredNode = null;
             _selectedNodeForMove = null;
             _isMoving = false;
         }
@@ -138,72 +151,128 @@ namespace Code.Expedition.Managers
                 return;
             
             foreach (var node in allNodes)
-                node.UpdateVisual(node == _currentNode);
+                node.UpdateMaterial(node == _currentNode);
         }
 
-        // 노드 UI 버튼 클릭 시 호출되는 핵심 로직 (HandleClick 대체)
-        public void OnNodeClicked(ExpeditionNode clickedNode)
+        private void HandleHover()
         {
-            if (_isMoving) return;
-
-            // 이미 있는 노드를 다시 클릭하면 바로 씬/이벤트 진입
-            if (clickedNode == _currentNode) 
-            {
-                EnterStage(_currentNode);
+            if (mainCamera == null || inputReader == null)
                 return;
-            }
 
-            // Slay the Spire 규칙: 현재 노드와 연결된 노드로만 이동 가능
-            if (_currentNode != null && !_currentNode.ConnectedNodes.Contains(clickedNode))
-            {
-                Debug.LogWarning("현재 노드에서 갈 수 없는 위치입니다.");
-                return;
-            }
+            Ray ray = mainCamera.ScreenPointToRay(inputReader.MousePosition);
 
-            if (_selectedNodeForMove == clickedNode)
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, nodeLayer))
             {
-                // 두 번째 클릭: 이동 실행
-                clickedNode.SetOutline(false);
-                TryMoveToNode(clickedNode);
-                _selectedNodeForMove = null; 
+                ExpeditionNode hitNode = hit.collider.GetComponent<ExpeditionNode>();
+                
+                if (hitNode != _hoveredNode)
+                {
+                    if (_hoveredNode != null && _hoveredNode != _selectedNodeForMove) 
+                        _hoveredNode.SetOutline(false);
+
+                    _hoveredNode = hitNode;
+                    if (_hoveredNode != null) _hoveredNode.SetOutline(true);
+                }
             }
             else
             {
-                // 첫 번째 클릭: 선택 및 하이라이트
+                if (_hoveredNode != null)
+                {
+                    if (_hoveredNode != _selectedNodeForMove)
+                        _hoveredNode.SetOutline(false);
+                    
+                    _hoveredNode = null;
+                }
+            }
+        }
+
+        private void HandleClick()
+        {
+            if (_isMoving) return;
+            if (mainCamera == null) return;
+            if (inputReader == null) return;
+
+            Vector2 mousePos = inputReader.MousePosition;
+            Ray ray = mainCamera.ScreenPointToRay(mousePos);
+            
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, nodeLayer))
+            {
+                ExpeditionNode hitNode = hit.collider.GetComponent<ExpeditionNode>();
+                
+                if (hitNode != null)
+                {
+                    if (_selectedNodeForMove == hitNode)
+                    {
+                        hitNode.SetOutline(false);
+                        hitNode.SetReadyToMoveColor(false);
+                        TryMoveToNode(hitNode);
+                        _selectedNodeForMove = null; 
+                    }
+                    else
+                    {
+                        if (_selectedNodeForMove != null)
+                        {
+                            if (_selectedNodeForMove != _hoveredNode)
+                                _selectedNodeForMove.SetOutline(false);
+                            
+                            _selectedNodeForMove.SetReadyToMoveColor(false);
+                        }
+
+                        _selectedNodeForMove = hitNode;
+                        _selectedNodeForMove.SetOutline(true); 
+                        _selectedNodeForMove.SetReadyToMoveColor(true);
+                        Debug.Log($"[{hitNode.name}] 노드가 선택되었습니다. 한 번 더 클릭하면 이동합니다.");
+                    }
+                }
+            }
+            else
+            {
                 if (_selectedNodeForMove != null)
                 {
-                    _selectedNodeForMove.SetOutline(false);
+                    if (_selectedNodeForMove != _hoveredNode)
+                        _selectedNodeForMove.SetOutline(false);
+                    
+                    _selectedNodeForMove.SetReadyToMoveColor(false);
+                    _selectedNodeForMove = null;
+                    Debug.Log("노드 선택이 취소되었습니다.");
                 }
-
-                _selectedNodeForMove = clickedNode;
-                _selectedNodeForMove.SetOutline(true); 
-                Debug.Log($"[{clickedNode.name}] 노드가 선택되었습니다. 한 번 더 클릭하면 이동합니다.");
             }
         }
 
         private void TryMoveToNode(ExpeditionNode targetNode)
         {
+            if (targetNode == _currentNode) 
+            {
+                EnterStage(_currentNode);
+                return;
+            }
+
             if (_currentNode != null && !_currentNode.IsCleared)
             {
                 Debug.LogWarning("현재 노드를 클리어해야 다음 노드로 이동할 수 있습니다!");
                 return;
             }
 
-            _isMoving = true;
-            RectTransform targetRect = targetNode.GetComponent<RectTransform>();
-
-            // UI 2D 공간(anchoredPosition) 기반으로 플레이어 이동
-            player.MoveTo(targetRect.anchoredPosition, () =>
+            ExpeditionPath path = _currentNode.GetPathTo(targetNode);
+            if (path != null)
             {
-                _isMoving = false;
-                _currentNode = targetNode;
-                
-                _savedCurrentNodeName = _currentNode.name; 
-                
-                UpdateAllNodesVisuals(FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None)); 
-                
-                EnterStage(_currentNode);
-            });
+                _isMoving = true;
+                player.MoveAlongPath(path.GetCurvePoints(_currentNode.transform.position), () =>
+                {
+                    _isMoving = false;
+                    _currentNode = targetNode;
+                    
+                    _savedCurrentNodeName = _currentNode.name; 
+                    
+                    UpdateAllNodesVisuals(FindObjectsByType<ExpeditionNode>(FindObjectsSortMode.None)); 
+                    
+                    EnterStage(_currentNode);
+                });
+            }
+            else
+            {
+                Debug.Log($"이동 불가: [{_currentNode.name}]에서 [{targetNode.name}]로 연결된 경로가 없습니다.");
+            }
         }
 
         private void EnterStage(ExpeditionNode node)
@@ -244,8 +313,7 @@ namespace Code.Expedition.Managers
                 if (targetUIPrefab != null && _canvas != null)
                 {
                     GameObject uiInstance = Instantiate(targetUIPrefab, _canvas.transform);
-                    // UI 환경이므로 로컬 포지션은 Canvas 설정에 맞게 조정이 필요할 수 있습니다.
-                    uiInstance.transform.localPosition = new Vector3(0, 0, 0); 
+                    uiInstance.transform.localPosition = new Vector3(13, -82, -12f);
                     uiInstance.SetActive(true);
                 }
                 else

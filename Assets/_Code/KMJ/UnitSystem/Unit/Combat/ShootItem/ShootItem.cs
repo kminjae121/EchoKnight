@@ -1,7 +1,4 @@
-﻿using System;
-using Code.Core.Events.Bus;
-using UnityEditor.Experimental.GraphView;
-using UnityEngine;
+﻿ using UnityEngine;
 using UnityEngine.Events;
 
 namespace Code.UnitSystem.Combat
@@ -53,7 +50,7 @@ namespace Code.UnitSystem.Combat
                     
                     if (_target == animation.gameObject)
                     {
-                        _target = animation.gameObject;
+                        _target = other.gameObject;
                         
                         _shootItemManager.hitEvent?.Invoke();
                         AtkEvent?.Invoke();
@@ -62,12 +59,17 @@ namespace Code.UnitSystem.Combat
                     }   
                 }
             }
-            else if (isOwnTarget == false)
+            else
             {
-                _shootItemManager.hitEvent?.Invoke();
-                AtkEvent?.Invoke();
-            
-                AttackEnd();
+                if (other.GetComponentInChildren<UnitAnimation>())
+                {
+                    _target = other.gameObject;
+                    
+                    _shootItemManager.hitEvent?.Invoke();
+                    AtkEvent?.Invoke();
+                    
+                    AttackEnd();     
+                }
             }
         }
         

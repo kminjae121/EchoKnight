@@ -177,7 +177,7 @@ namespace Code.SkillSystem
             if (_targetEnemy != null && _targetEnemy != enemy)
                 _targetingCompo?.OffTargeting();
             
-            Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
+            Vector2Int enemyPos = GridMap.Instance.WorldToGridPos(enemy.transform.position);
             
             foreach (var tile in rangeCompo.TilesInRange)
             {

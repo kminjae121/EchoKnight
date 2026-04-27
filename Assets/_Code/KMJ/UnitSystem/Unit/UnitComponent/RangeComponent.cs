@@ -103,10 +103,10 @@ namespace Code.UnitSystem
                 if (moveCompo?.CurrentMapTile != null)
                     return moveCompo.CurrentMapTile.GridPos;
 
-                return GridMap.Instance.WorldToGridPosition(_owner.transform.position);
+                return GridMap.Instance.WorldToGridPos(_owner.transform.position);
             }
 
-            return GridMap.Instance.WorldToGridPosition(transform.position);
+            return GridMap.Instance.WorldToGridPos(transform.position);
         }
 
         public void ResetTile()

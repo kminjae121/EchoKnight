@@ -109,9 +109,9 @@ namespace Code.SkillSystem
             if (gridMap == null)
                 return false;
 
-            Vector2Int origin = gridMap.WorldToGridPosition(transform.position);
-            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
-            Vector2Int forwardDir = GetForwardDirection(origin, targetPos);
+            Vector2Int origin = gridMap.WorldToGridPos(transform.position);
+            Vector2Int targetPos = gridMap.WorldToGridPos(target.transform.position);
+            Vector2Int forwardDir = GetForwardDir(origin, targetPos);
 
             if (forwardDir == Vector2Int.zero)
                 return false;
@@ -166,9 +166,9 @@ namespace Code.SkillSystem
                 return hitTargets;
             }
 
-            Vector2Int origin = gridMap.WorldToGridPosition(transform.position);
-            Vector2Int targetPos = gridMap.WorldToGridPosition(target.transform.position);
-            Vector2Int forwardDir = GetForwardDirection(origin, targetPos);
+            Vector2Int origin = gridMap.WorldToGridPos(transform.position);
+            Vector2Int targetPos = gridMap.WorldToGridPos(target.transform.position);
+            Vector2Int forwardDir = GetForwardDir(origin, targetPos);
 
             if (forwardDir == Vector2Int.zero)
                 return hitTargets;
@@ -184,7 +184,7 @@ namespace Code.SkillSystem
                     if (unit == null)
                         continue;
 
-                    if (gridMap.WorldToGridPosition(unit.transform.position) != hitPos)
+                    if (gridMap.WorldToGridPos(unit.transform.position) != hitPos)
                         continue;
 
                     if (!hitTargetSet.Add(unit.gameObject))
@@ -227,7 +227,7 @@ namespace Code.SkillSystem
             SkillFeedbackEvent?.Invoke();
         }
 
-        private static Vector2Int GetForwardDirection(Vector2Int origin, Vector2Int target)
+        private static Vector2Int GetForwardDir(Vector2Int origin, Vector2Int target)
         {
             Vector2Int delta = target - origin;
 

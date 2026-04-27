@@ -4,6 +4,7 @@ using Code.Core.Debugs;
 using Code.Core.Interfaces;
 using Code.Map;
 using Code.Navigation;
+using Code.Utils;
 using UnityEngine;
 
 namespace Code.UnitSystem.UnitComponent
@@ -33,7 +34,7 @@ namespace Code.UnitSystem.UnitComponent
 
         public void SetPathAndMove(Vector2Int startPos, Vector2Int destination, bool allowPartialPath = false)
         {
-            SetPathAndMove(GridToCell(startPos), GridToCell(destination), allowPartialPath);
+            SetPathAndMove(GridCoordUtils.GridToCell(startPos), GridCoordUtils.GridToCell(destination), allowPartialPath);
         }
 
         private async void SetPathAndMove(Vector3Int startPos, Vector3Int destination, bool allowPartialPath)
@@ -74,9 +75,8 @@ namespace Code.UnitSystem.UnitComponent
 
                 for (int i = 1; i < _pathLength; ++i)
                 {
-                    Vector3Int nextCell = GridToCell(_gridMap.WorldToGridPosition(pointArray[i]));
-                    Vector3Int reachableCell =
-                        GetReachableCell(previousCell, nextCell, remainingMovePoint, out int movedCost);
+                    Vector3Int nextCell = GridCoordUtils.GridToCell(_gridMap.WorldToGridPos(pointArray[i]));
+                    Vector3Int reachableCell = GetReachableCell(previousCell, nextCell, remainingMovePoint, out int movedCost);
 
                     if (movedCost <= 0)
                         break;
@@ -156,15 +156,12 @@ namespace Code.UnitSystem.UnitComponent
 
         private Vector3 GetWorldPosition(Vector3Int cellPosition)
         {
-            Vector3 worldPosition = _gridMap.GridToWorldPosition(cellPosition.x, cellPosition.y);
+            Vector3 worldPosition = _gridMap.GridToWorldPos(cellPosition.x, cellPosition.y);
             return ToMovePoint(worldPosition);
         }
 
         private Vector3 ToMovePoint(Vector3 worldPosition)
             => new(worldPosition.x, _owner.transform.position.y, worldPosition.z);
-
-        private static Vector3Int GridToCell(Vector2Int gridPosition)
-            => new(gridPosition.x, gridPosition.y, 0);
 
         private int GetMoveRange()
         {

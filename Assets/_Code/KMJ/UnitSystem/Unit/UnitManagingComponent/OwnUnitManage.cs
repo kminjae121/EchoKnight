@@ -71,7 +71,7 @@ namespace Code.UnitManaging
                     continue;
                 }
 
-                Vector3 spawnPos = GridMap.Instance.GridToWorldPosition(coord.x, coord.y);
+                Vector3 spawnPos = GridMap.Instance.GridToWorldPos(coord.x, coord.y);
 
                 GameObject spawnUnit = _poolManager.Pop<Unit>(SelectedUnits[i]).gameObject;
 

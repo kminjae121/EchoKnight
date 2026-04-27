@@ -2,15 +2,18 @@
 
 namespace Code.UnitSystem.UnitAttributes
 {
-    public abstract class UnitTraitCondition : MonoBehaviour
+    public class MagicianPerform : MonoBehaviour, IUnitPerform
     {
         private Unit _unit;
-
+        
         public void Initialize(Unit unit)
         {
             _unit = unit;
         }
 
-        public abstract bool CheckCondition();
+        public void Perform()
+        {
+            
+        }
     }
 }

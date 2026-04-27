@@ -2,9 +2,10 @@
 
 namespace Code.UnitSystem.UnitAttributes
 {
-    public class ArcherCondition : MonoBehaviour, IUnitCondition
+    public class MagicianCondition: MonoBehaviour, IUnitCondition
     {
         private Unit _unit;
+        
         public void Initialize(Unit unit)
         {
             _unit = unit;

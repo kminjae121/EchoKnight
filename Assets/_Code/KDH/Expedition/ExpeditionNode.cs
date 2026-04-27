@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Code.Expedition.Data;
+using EPOOutline;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Code.Expedition.Components
 {
@@ -13,33 +13,28 @@ namespace Code.Expedition.Components
         [SerializeField] private bool isUnlocked = false;
         [SerializeField] private bool isCleared = false;
 
-        [Header("UI Visuals")]
-        [SerializeField] private Image nodeIcon;
-        [SerializeField] private Button nodeButton;
-        [SerializeField] private Image outlineImage;
-        
-        [Header("Colors")]
-        [SerializeField] private Color clearedColor = new Color(0.5f, 0.5f, 0.5f, 1f);
-        [SerializeField] private Color unclearedColor = Color.white;
+        [Header("Visual")]
+        [SerializeField] private Outlinable outlinable;
+        [SerializeField] private MeshRenderer nodeRenderer;
+        [SerializeField] private Material clearedMaterial;
+        [SerializeField] private Material unclearedMaterial;
 
         [Header("Connections")]
-        [SerializeField] private List<ExpeditionNode> connectedNodes = new List<ExpeditionNode>();
+        [SerializeField] private List<ExpeditionPath> connectedPaths = new List<ExpeditionPath>();
 
         public ExpeditionNodeSO NodeData => nodeData;
         public string TargetSceneName => targetSceneName;
         public bool IsUnlocked => isUnlocked;
         public bool IsCleared => isCleared;
-        public List<ExpeditionNode> ConnectedNodes => connectedNodes;
+        public List<ExpeditionPath> ConnectedPaths => connectedPaths;
 
         private void Awake()
         {
-            if (nodeButton == null)
-                nodeButton = GetComponent<Button>();
-
-            if (nodeButton != null)
-            {
-                nodeButton.onClick.AddListener(OnNodeClicked);
-            }
+            if (outlinable == null)
+                outlinable = GetComponent<Outlinable>();
+            
+            if (nodeRenderer == null)
+                nodeRenderer = GetComponent<MeshRenderer>();
 
             SetOutline(false);
         }
@@ -56,34 +51,47 @@ namespace Code.Expedition.Components
 
         public void SetOutline(bool isActive)
         {
-            if (outlineImage != null)
+            if (outlinable != null)
             {
-                outlineImage.enabled = isActive;
+                outlinable.enabled = isActive;
             }
         }
 
-        public void UpdateVisual(bool isCurrentNode)
+        public void SetReadyToMoveColor(bool isReady)
         {
-            if (nodeIcon == null) return;
-
-            if (nodeData != null && nodeData.icon != null)
+            var visual = GetComponentInChildren<ExpeditionNodeVisual>();
+            if (visual != null)
             {
-                nodeIcon.sprite = nodeData.icon;
+                visual.SetIconColor(isReady ? Color.cyan : Color.white);
             }
+        }
+        
+        public void UpdateMaterial(bool isCurrentNode)
+        {
+            if (nodeRenderer == null) return;
 
             if (isCleared || isCurrentNode)
             {
-                nodeIcon.color = clearedColor;
+                if (clearedMaterial != null)
+                    nodeRenderer.material = clearedMaterial;
             }
             else
             {
-                nodeIcon.color = unclearedColor;
+                if (unclearedMaterial != null)
+                    nodeRenderer.material = unclearedMaterial;
             }
         }
 
-        private void OnNodeClicked()
+        public ExpeditionPath GetPathTo(ExpeditionNode targetNode)
         {
-            Managers.ExpeditionManager.Instance.OnNodeClicked(this);
+            foreach (var path in connectedPaths)
+            {
+                if (path.TargetNode == targetNode)
+                {
+                    return path;
+                }
+            }
+            return null;
         }
     }
 }

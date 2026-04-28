@@ -107,7 +107,7 @@ namespace Code.UnitSystem.Enemies.AI
                 if (distance >= minDistance)
                     continue;
 
-                UnityLogger.Log($"distance set : {distance}");
+//                UnityLogger.Log($"distance set : {distance}");
                 minDistance = distance;
                 nearTile = nextTile;
                 found = true;

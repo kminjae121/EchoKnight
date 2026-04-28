@@ -83,7 +83,7 @@ namespace Code.Navigation
 
         private (List<AstarNode>, bool) CalculatePath(Vector3Int startPoint, Vector3Int destination, HashSet<Vector3Int> blockedCells, bool allowPartialPath)
         {
-            UnityLogger.Log("Calculate 진입");
+            //UnityLogger.Log("Calculate 진입");
             
             PriorityQueue<AstarNode> openList = new();
             HashSet<Vector3Int> closedSet = new();
@@ -99,7 +99,7 @@ namespace Code.Navigation
             bool startSuccess = _pathBaker.bakedData.GetNodeIfExist(startPoint, out var startNode);
             bool endSuccess = _pathBaker.bakedData.GetNodeIfExist(destination, out var endNode);
             Vector3Int destinationCell = endSuccess ? endNode.cellPos : destination;
-            UnityLogger.Log($"st : {startPoint}, {startSuccess}, ed : {destination}, {endSuccess}");
+            //UnityLogger.Log($"st : {startPoint}, {startSuccess}, ed : {destination}, {endSuccess}");
             
             if (!startSuccess || (!endSuccess && !allowPartialPath))
                 return (path, false);

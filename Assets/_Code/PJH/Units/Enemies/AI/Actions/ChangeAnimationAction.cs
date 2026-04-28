@@ -17,7 +17,7 @@ namespace Code.UnitSystem.Enemies.AI
         protected override Status OnStart()
         {
             UnitAnimator.Value.PlaySelectAnimation(AnimName.Value);
-            UnityLogger.Log($"애니메이션 체인지 : {AnimName.Value}");
+            //UnityLogger.Log($"애니메이션 체인지 : {AnimName.Value}");
             return Status.Success;
         }
     }

@@ -4,6 +4,7 @@ using Code.Core.Interfaces;
 using Code.Map;
 using Code.UnitSystem.UnitComponent;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace Code.UnitSystem
 {
@@ -163,6 +164,7 @@ namespace Code.UnitSystem
             IsActive = true;
             
             CurrentMapTile = _targetMapTile;
+            CurrentMapTile.SetTileUnit(_unit);
 
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null,

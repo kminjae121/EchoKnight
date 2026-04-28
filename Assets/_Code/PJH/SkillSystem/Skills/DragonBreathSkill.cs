@@ -96,7 +96,7 @@ namespace Code.SkillSystem
                     new StatusEffectApplyData(burnDuration, burnDamage)));
             }
 
-            UnityLogger.Log("범위 공격으로 데미지");
+            //UnityLogger.Log("범위 공격으로 데미지");
         }
 
         private bool CanHitTarget(GameObject target)

@@ -59,7 +59,7 @@ namespace Code.UnitSystem.UnitComponent
 
                 _rotatorCompo ??= _owner.GetUnitCompo<UnitRotator>();
 
-                UnityLogger.Log($"Start : {startPos}, Destination : {destination}");
+                //UnityLogger.Log($"Start : {startPos}, Destination : {destination}");
                 _pathLength = await _pathAgent.GetPath(startPos, destination, pointArray, allowPartialPath);
 
                 if (_pathLength <= 0)

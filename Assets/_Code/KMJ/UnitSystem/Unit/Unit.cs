@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.UnitSystem.Combat;
 using Code.UnitSystem.UnitComponent;
 using GondrLib.ObjectPool.Runtime;
 using UnityEngine;
@@ -28,6 +29,8 @@ namespace Code.UnitSystem
         protected Dictionary<Type, IUnitComponent> _components = new();
         public UnitManageRangeCompo RangeCompo { get; private set; }
         public UnitAnimation AnimationCompo { get; private set; }
+        
+        public UnitHealth HealthCompo { get; private set; }
         public StatusEffectCompo StatusEffectCompo { get; private set; }
         
         [Header("Events")]
@@ -151,6 +154,7 @@ namespace Code.UnitSystem
             RangeCompo = GetUnitCompo<UnitManageRangeCompo>();
             AnimationCompo = GetUnitCompo<UnitAnimation>();
             StatusEffectCompo = GetUnitCompo<StatusEffectCompo>();
+            HealthCompo = GetUnitCompo<UnitHealth>();   
         }
         
         protected virtual void InitComponents()

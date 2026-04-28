@@ -61,6 +61,9 @@ namespace Code.UnitSystem.Combat
         
         private void CalculateCritical(ref DamageEvent evt, ref bool isCritical, ref bool isPenetrate)
         {
+            if (isCritical)
+                return;
+            
             float damage = evt.DamageData.damage;
             float criticalProbilityValue = Random.Range(0f, 100f);
 

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Code.Core.Debugs;
 using Code.Core.Interfaces;
 using Code.Managers;
@@ -86,24 +87,26 @@ namespace Code.UnitSystem.UnitAttributes
         /// </summary>
         private void CalculateRange()
         {
-            Debug.Log(_unit.MoveCompo.CurrentMapTile.GridPos);
-            
             Vector2Int center = _unit.MoveCompo.CurrentMapTile.GridPos;
-            int half = Mathf.Max(0, rangeSize - 1);
+            
+            int result = -(rangeSize - 1) / 2;
 
-            for (int y = -half; y <= half; y++)
+            for (int x = result; x <= -result; x++)
             {
-                for (int x = -half; x <= half; x++)
-                {
-                    var tile = GridMap.Instance.GetTile(center + new Vector2Int(x, y));
+                for (int y = result; y <= -result; y++)
+                {   
+                    IMapTile tile = GridMap.Instance.GetTile(center + new Vector2Int(x, y));
                     if (tile == null) continue;
 
-                    var characterUnit = tile.GetTileUnit() as CharacterUnit;
+                    CharacterUnit characterUnit = tile.GetTileUnit() as CharacterUnit;
+                    
+                    if(characterUnit != null)
+                        Debug.Log(characterUnit.unitSO.UnitName);
                     
                     if (characterUnit == null) continue;
                     if (characterUnit == _unit) continue;
                     if (characterUnit.HealthCompo == null) continue;
-
+    
                     if (_targets.Add(characterUnit))
                     {
                         characterUnit.HealthCompo.OnDefenseEvent += ReduceDamage;
@@ -119,6 +122,15 @@ namespace Code.UnitSystem.UnitAttributes
         private void ReduceDamage(ref int damage)
         {
             damage = Mathf.RoundToInt(damage * 0.5f);
+        }
+
+        private void OnValidate()
+        {
+            if (rangeSize % 2 == 0)
+            {
+                rangeSize += 1;
+                Debug.LogWarning("홀수만 입력 가능합니다.");
+            }
         }
     }
 }

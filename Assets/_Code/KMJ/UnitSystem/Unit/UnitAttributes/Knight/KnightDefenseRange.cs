@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Core.Debugs;
+using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
 using Code.Managers;
 using Code.Map;
@@ -122,6 +123,9 @@ namespace Code.UnitSystem.UnitAttributes
         private void ReduceDamage(ref int damage)
         {
             damage = Mathf.RoundToInt(damage * 0.5f);
+
+            DamageData damageData;
+            Bus<DamageEvent>.Raise(new DamageEvent(damageData,null,0, _unit,false,false,0.3f));
         }
 
         private void OnValidate()

@@ -124,7 +124,8 @@ namespace Code.UnitSystem.UnitAttributes
         {
             damage = Mathf.RoundToInt(damage * 0.5f);
 
-            DamageData damageData;
+            DamageData damageData = new DamageData();
+            damageData.damage = damage;
             Bus<DamageEvent>.Raise(new DamageEvent(damageData,null,0, _unit,false,false,0.3f));
         }
 

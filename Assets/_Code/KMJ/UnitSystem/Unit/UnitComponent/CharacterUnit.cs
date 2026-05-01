@@ -120,7 +120,6 @@ namespace Code.UnitSystem
         public override void OnTurnEnd()
         {
             base.OnTurnEnd();
-            MoveCompo.ResetTile();
             OnTurnEndEvent?.Invoke();
             PassiveCompo.StopAllTurnPassives();
             Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));

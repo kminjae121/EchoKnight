@@ -21,6 +21,9 @@ namespace Code.UnitSystem.Combat
         [field : SerializeField] public UnitStorageSO StorageSO;
         private UnitAnimation _unitAnimation;
 
+        public delegate void DefenseHandler(ref int Damage);
+        public event DefenseHandler OnDefenseEvent;
+        
         private Unit _entity;
         private ActionData _actionData;
         private UnitStatCompo _statCompo;
@@ -38,7 +41,6 @@ namespace Code.UnitSystem.Combat
         public UnityEvent<Unit,int> OnInteractionEvent;
         public delegate void OnHealthChanged(float current, float max);
         public event OnHealthChanged OnHealthChangedEvent;
-        
         public void Initialize(Unit owner)
         {
             _entity = owner;
@@ -101,7 +103,7 @@ namespace Code.UnitSystem.Combat
         }
         
 
-        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal, AttackDataSO attackData,
+        public void ApplyDamage(DamageData damageData, Vector3 hitPoint, Vector3 hitNormal,
             Unit dealer,bool isCritical, bool isPenetrate)
         {
             if (IsDead)
@@ -112,6 +114,8 @@ namespace Code.UnitSystem.Combat
             _actionData.LastDamageData = damageData;
 
             int damage = damageData.damage;
+            
+            OnDefenseEvent?.Invoke(ref damage);
             
             if (isPenetrate != true)
             {
@@ -149,17 +153,19 @@ namespace Code.UnitSystem.Combat
                _unitStateCompo.TakeDamage(damage);
            }
            
-           _entity.OnHitEvent?.Invoke();
-           OnInteractionEvent?.Invoke(dealer, damage);
-
            if (currentHealth <= 0)
            {
+               IsDead = true;
+               
                if(_entity as CharacterUnit)
-                    StorageSO.unitStates.Remove(_unitStateCompo);
+                   StorageSO.unitStates.Remove(_unitStateCompo);
                
                _entity.OnDeathEvent?.Invoke();
-               IsDead = true;
+               return;
            }
+           
+           _entity.OnHitEvent?.Invoke();
+           OnInteractionEvent?.Invoke(dealer, damage);
         }
     }
 }

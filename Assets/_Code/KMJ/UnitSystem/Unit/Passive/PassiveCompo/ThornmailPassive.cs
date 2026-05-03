@@ -36,7 +36,7 @@ namespace _Code.Passive
                 if (target.TryGetComponent<IDamageable>(out var damageable))
                 {
                     damageable.ApplyDamage(damageData, target.transform.position,
-                        transform.transform.position, null, _character, false, false);
+                        transform.transform.position, null, _character, false);
                 }   
             }
         }

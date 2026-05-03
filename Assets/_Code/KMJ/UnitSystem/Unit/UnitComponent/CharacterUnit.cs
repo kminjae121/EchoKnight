@@ -8,6 +8,7 @@ using Code.Map;
 using Code.SkillSystem;
 using Code.UI;
 using Code.UnitSystem.Combat;
+using GondrLib.Dependencies;
 using Input;
 using UnityEngine;
 using UnityEngine.Events;
@@ -24,8 +25,6 @@ namespace Code.UnitSystem
         [SerializeField] private UnitSpawnSO unitSpawnSO;
 
         #region UnitCompo
-        
-        public UnitHealth HealthCompo { get; private set; }
         public UnitMoveCompo MoveCompo { get; private set; }
         [field:SerializeField] public SkillComponent SkillCompo { get; private set; }
         public UnitAnimationTrigger TriggerCompo { get; private set; }
@@ -40,9 +39,7 @@ namespace Code.UnitSystem
         public int PlayableUnitID { get; set; } = -1;
         public bool IsConfirmationSkill { get; set; }
         
-        
         public GameObject _startTile;
-        private Button endTurnBtn;
         
         private readonly Vector3 _dampingSpeed = new(1.5f,1.5f,1.5f);
 
@@ -58,7 +55,6 @@ namespace Code.UnitSystem
             SkillCostCompo =  GetUnitCompo<UnitSkillCost>();
             OutLineCompo =  GetUnitCompo<UnitOutLineCompo>();
             PassiveCompo = GetUnitCompo<PassiveComponent>();
-            HealthCompo = GetUnitCompo<UnitHealth>();   
             
             if (unitSO != null && SkillSendManager.Instance != null)
             {
@@ -71,7 +67,7 @@ namespace Code.UnitSystem
                 TriggerCompo.OnDeadEvent += HandleDieAnimationEnd;
 
             MoveCompo.CurrentMapTile = _startTile.GetComponent<IMapTile>();
-           
+            MoveCompo.CurrentMapTile.SetTileUnit(this);
             
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
         }
@@ -84,25 +80,18 @@ namespace Code.UnitSystem
                 TriggerCompo.OnDeadEvent -= HandleDieAnimationEnd;
         }
 
-        public void SetObject(Button btn,SkillCostUI skillCostUI)
-        {
-            endTurnBtn = btn;
-        }
-
         public override void OnTurnStart()
         {
             base.OnTurnStart();
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
+            
 
             SkillCompo.ResetSkillsCount();
             SkillCostCompo.AddSkillCost();
             SkillCompo.UpdateSkillUI();
             PassiveCompo.StartAllTurnPassives();
-            
-            if (endTurnBtn != null)
-                endTurnBtn.onClick.AddListener(TurnEnd);
 
             if (MoveCompo != null)
             {
@@ -152,10 +141,7 @@ namespace Code.UnitSystem
         {
             if (isMyTurn)
             {
-                UnitRangeCompo.RemoveAllRange();
-                if (endTurnBtn != null)
-                    endTurnBtn.onClick.RemoveListener(TurnEnd);
-                
+                UnitRangeCompo.RemoveAllRange(); 
                 OnTurnEnd();
             }
         }

@@ -1,0 +1,30 @@
+﻿using UnityEngine;
+
+namespace Code.UnitSystem.UnitAttributes
+{
+    public class KnightCondition : MonoBehaviour, IUnitCondition
+    {
+        private Unit _unit;
+        private int _stack = 0;
+
+        public void Initialize(Unit unit)
+        {
+            _unit = unit;
+        }
+        
+        private void SetStack()
+        {
+            _stack += 1;
+        }
+
+        public bool CheckCondition()
+        {
+            SetStack();
+            
+            if (_stack >= 10)
+                return true;
+            
+            return false;
+        }
+    }
+}

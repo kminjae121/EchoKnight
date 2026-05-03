@@ -10,8 +10,6 @@ public class BasicAttackSkill : BasicUnitSkill
     private UnitAnimation animtionCompo;
 
     [SerializeField] private float atkMoveSpeed;
-    
-    [SerializeField] private float attackMoveDistance = 1.5f;
 
     private GameObject _target;
         
@@ -58,7 +56,7 @@ public class BasicAttackSkill : BasicUnitSkill
     
     public void TakeDamage()
     {
-        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,attackData,_target,AddDamage,_characterUnit,false,false,0.15f));
+        Bus<DamageEvent>.Raise(new DamageEvent(DamageData,_target,AddDamage,_characterUnit,false,false,0.15f));
     }
 
     public void AttackEnd()

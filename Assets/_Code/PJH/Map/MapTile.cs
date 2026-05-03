@@ -1,4 +1,5 @@
 ﻿using Code.Core.Interfaces;
+using Code.UnitSystem;
 using UnityEngine;
 
 namespace Code.Map
@@ -12,6 +13,8 @@ namespace Code.Map
         public Vector3 WorldPos => transform.position;
 
         private MapTileVisual _visual;
+
+        public Unit _unit;
 
         private void Awake()
         {
@@ -32,6 +35,16 @@ namespace Code.Map
                 tileState = TileState.Walkable;
 
             RefreshVisual();
+        }
+
+        public Unit GetTileUnit()
+        {
+            return _unit;
+        }
+
+        public void SetTileUnit(Unit unit)
+        {
+            _unit = unit;
         }
 
         public bool HasState(TileState state)

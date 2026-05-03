@@ -187,7 +187,7 @@ namespace Code.UnitSystem.Enemies
 
         private void ClearCurrentTile()
         {
-            Vector2Int gridPos = GridMapInstance.WorldToGridPosition(transform.position);
+            Vector2Int gridPos = GridMapInstance.WorldToGridPos(transform.position);
             IMapTile currentTile = GridMapInstance.GetTile(gridPos);
 
             if (currentTile == null)
@@ -317,12 +317,12 @@ namespace Code.UnitSystem.Enemies
             if (GridMapInstance == null || UnitManager == null)
                 return null;
 
-            Vector2Int myPos = GridMapInstance.WorldToGridPosition(transform.position);
+            Vector2Int myPos = GridMapInstance.WorldToGridPos(transform.position);
 
             return UnitManager.GetPlayerUnits()
                 .Where(unit => unit != null && unit.gameObject.activeInHierarchy)
                 .OrderBy(unit => DistanceUtils.GetEuclideanDistance(myPos,
-                    GridMapInstance.WorldToGridPosition(unit.transform.position)))
+                    GridMapInstance.WorldToGridPos(unit.transform.position)))
                 .FirstOrDefault();
         }
 

@@ -67,24 +67,17 @@ namespace Code.SkillSystem
             IsActive = false;
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-
-            StartCoroutine(MoveTile());
+            _characterUnit.TurnEnd();
         }
 
-        private IEnumerator MoveTile()
-        {
-            yield return new WaitForSeconds(0.3f);
-            
-            _characterUnit.SetMoveTile();
-            _characterUnit.MoveCompo.IsActive = true;
-        }
-
-        public override void SkillFinished(bool isCancel)
+        public override void SkillFinished(bool isCancel) 
         {
             base.SkillFinished(isCancel);
+            
             if (isCancel)
             {
-                StartCoroutine(MoveTile());
+                _characterUnit.SetMoveTile();
+                _characterUnit.MoveCompo.IsActive = true;
             }
             Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
@@ -113,7 +106,7 @@ namespace Code.SkillSystem
                 null,true));
             Bus<SendSkillEvent>.Raise(new SendSkillEvent(null));
             
-            UnitOutLineCompo _targetOutLineCompo = _targetEnemy.GetComponent<UnitOutLineCompo>();
+            UnitOutLineCompo _targetOutLineCompo = _targetEnemy.GetComponent<UnitOutLineCompo>();   
                 
             if(_targetOutLineCompo != null)
                 _targetOutLineCompo.ResetOutLine();
@@ -184,7 +177,7 @@ namespace Code.SkillSystem
             if (_targetEnemy != null && _targetEnemy != enemy)
                 _targetingCompo?.OffTargeting();
             
-            Vector2Int enemyPos = GridMap.Instance.WorldToGridPosition(enemy.transform.position);
+            Vector2Int enemyPos = GridMap.Instance.WorldToGridPos(enemy.transform.position);
             
             foreach (var tile in rangeCompo.TilesInRange)
             {

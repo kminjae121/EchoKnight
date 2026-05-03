@@ -39,16 +39,15 @@ namespace Code.UnitSystem.Combat
 
             if (evt.target != null && evt.target.TryGetComponent(out IDamageable damageable))
             {
-                bool isCritical = false;
-                bool isPenetrate = false;
+                bool isCritical = evt.IsCritical;
+                bool isPenetrate = evt.IsPenetrate;
                 
                 AttackStartEvent?.Invoke(ref evt, ref isCritical, ref isPenetrate);
                 
-                
                 Bus<CamShakeEvent>.Raise(new CamShakeEvent(evt.ShakeValue));
                 
-                damageable.ApplyDamage(evt.DamageData, evt.target.transform.position, evt.target.transform.position,
-                    evt.atkData, evt.Owner, isCritical, isPenetrate);
+                damageable.ApplyDamage(evt.DamageData, evt.target.transform.position, evt.target.transform.position
+                    , evt.Owner, isCritical, isPenetrate);
 
                 var anim = evt.target.GetComponentInChildren<UnitAnimation>();
                 if (anim != null)
@@ -62,8 +61,9 @@ namespace Code.UnitSystem.Combat
         
         private void CalculateCritical(ref DamageEvent evt, ref bool isCritical, ref bool isPenetrate)
         {
-            isCritical = false;
-
+            if (isCritical)
+                return;
+            
             float damage = evt.DamageData.damage;
             float criticalProbilityValue = Random.Range(0f, 100f);
 

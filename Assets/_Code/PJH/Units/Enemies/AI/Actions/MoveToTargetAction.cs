@@ -1,9 +1,7 @@
 using System;
-using System.Collections;
 using Code.Core.Debugs;
 using Code.Map;
 using Code.UnitSystem.UnitComponent;
-using Code.Utils;
 using Unity.Behavior;
 using Unity.Properties;
 using UnityEngine;
@@ -18,19 +16,13 @@ namespace Code.UnitSystem.Enemies.AI
         [SerializeReference] public BlackboardVariable<AbstractEnemyUnit> Enemy;
         [SerializeReference] public BlackboardVariable<GameObject> Target;
 
-        private static readonly Vector2Int[] Offsets =
-        {
-            Vector2Int.up, Vector2Int.down,
-            Vector2Int.left, Vector2Int.right
-        };
-
         private PathMover _mover;
         private GridMap _gridMap;
         private bool _isMoving;
 
         protected override Status OnStart()
         {
-            if (Enemy.Value == null || Target.Value == null)
+            if (Enemy.Value == null)
                 return Status.Failure;
             
             _gridMap = GridMap.Instance;
@@ -48,11 +40,21 @@ namespace Code.UnitSystem.Enemies.AI
                 return Status.Failure;
             }
 
-            Vector2Int startPos = _gridMap.WorldToGridPosition(Enemy.Value.transform.position);
-            Vector2Int targetPos = _gridMap.WorldToGridPosition(Target.Value.transform.position);
+            if (Enemy.Value.EnemyManager == null)
+                return Status.Failure;
 
-            if (!TryGetMoveDestination(startPos, targetPos, out Vector2Int destination))
+            Enemy.Value.EnemyManager.RefreshPlan(Enemy.Value);
+            
+            if (!Enemy.Value.EnemyManager.TryGetPlan(Enemy.Value, out EnemyPlan plan) || plan.Target == null)
+                return Status.Failure;
+
+            Target.Value = plan.Target.gameObject;
+
+            if (!plan.HasMoveTile)
                 return Status.Success;
+
+            Vector2Int startPos = _gridMap.WorldToGridPos(Enemy.Value.transform.position);
+            Vector2Int destination = plan.MoveTile;
 
             if (destination == startPos)
                 return Status.Success;
@@ -78,51 +80,6 @@ namespace Code.UnitSystem.Enemies.AI
         private void HandleMovementEnd()
         {
             _isMoving = false;
-        }
-
-        private bool TryGetNearestTile(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int nearTile)
-        {
-            float minDistance = Mathf.Infinity;
-            nearTile = default;
-            bool found = false;
-
-            if (DistanceUtils.GetEuclideanDistance(sourceTile, targetTile) <= 1f)
-            {
-                nearTile = sourceTile;
-                return true;
-            }
-
-            foreach (Vector2Int offset in Offsets)
-            {
-                Vector2Int nextTile = targetTile + offset;
-
-                if (!_gridMap.IsValidPosition(nextTile))
-                    continue;
-
-                if (!_gridMap.CanMoveTo(nextTile))
-                    continue;
-
-                float distance = DistanceUtils.GetEuclideanDistance(sourceTile, nextTile);
-
-                if (distance >= minDistance)
-                    continue;
-
-                UnityLogger.Log($"distance set : {distance}");
-                minDistance = distance;
-                nearTile = nextTile;
-                found = true;
-            }
-
-            return found;
-        }
-
-        private bool TryGetMoveDestination(Vector2Int sourceTile, Vector2Int targetTile, out Vector2Int destination)
-        {
-            if (TryGetNearestTile(sourceTile, targetTile, out destination))
-                return true;
-
-            destination = targetTile;
-            return true;
         }
     }
 }

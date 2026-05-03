@@ -126,7 +126,7 @@ namespace Code.UnitSystem.UnitAttributes
 
             DamageData damageData = new DamageData();
             damageData.damage = damage;
-            Bus<DamageEvent>.Raise(new DamageEvent(damageData,null,0, _unit,false,false,0.3f));
+            Bus<DamageEvent>.Raise(new DamageEvent(damageData,_unit.gameObject,0, _unit,false,false,0.3f));
         }
 
         private void OnValidate()
@@ -134,7 +134,7 @@ namespace Code.UnitSystem.UnitAttributes
             if (rangeSize % 2 == 0)
             {
                 rangeSize += 1;
-                Debug.LogWarning("홀수만 입력 가능합니다.");
+                Debug.LogError("홀수만 입력 가능합니다.");
             }
         }
     }

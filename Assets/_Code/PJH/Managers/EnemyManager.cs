@@ -54,9 +54,7 @@ namespace Code.Managers
 
             if (TryGetBestApproachTile(enemy, currentPos,
                     GridMap.Instance.WorldToGridPos(fallbackTarget.transform.position), out Vector2Int approachTile))
-            {
                 plan.SetMoveTile(approachTile);
-            }
         }
 
         private bool TrySelectBestCombatOption(AbstractEnemyUnit enemy, Vector2Int sourcePos, out Unit selectedTarget, out SkillSO selectedSkillSO)
@@ -72,9 +70,10 @@ namespace Code.Managers
             float bestScore = float.MinValue;
             float bestDistance = float.MaxValue;
 
-            foreach (Unit target in GetCandidateTargets())
+            foreach (var target in GetCandidateTargets())
             {
-                if (!TrySelectBestSkillForTarget(enemy, sourcePos, target.gameObject, out SkillSO candidateSkill, out float candidateScore))
+                if (!TrySelectBestSkillForTarget(enemy, sourcePos, target.gameObject,
+                        out SkillSO candidateSkill, out float candidateScore))
                     continue;
 
                 float candidateDistance = DistanceUtils.GetEuclideanDistance(sourcePos,
@@ -342,7 +341,6 @@ namespace Code.Managers
                 yield break;
 
             for (int y = currentPos.y - moveRange; y <= currentPos.y + moveRange; ++y)
-            {
                 for (int x = currentPos.x - moveRange; x <= currentPos.x + moveRange; ++x)
                 {
                     Vector2Int candidateTile = new Vector2Int(x, y);
@@ -358,7 +356,6 @@ namespace Code.Managers
 
                     yield return candidateTile;
                 }
-            }
         }
 
         private static int GetMoveRange(AbstractEnemyUnit enemy)

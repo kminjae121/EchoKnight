@@ -44,6 +44,7 @@ namespace Code.UnitSystem.Enemies.AI
                 return Status.Failure;
 
             Enemy.Value.EnemyManager.RefreshPlan(Enemy.Value);
+            
             if (!Enemy.Value.EnemyManager.TryGetPlan(Enemy.Value, out EnemyPlan plan) || plan.Target == null)
                 return Status.Failure;
 

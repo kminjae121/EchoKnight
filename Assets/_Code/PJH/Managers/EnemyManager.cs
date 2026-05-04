@@ -32,7 +32,14 @@ namespace Code.Managers
 
             Vector2Int currentPos = GridMap.Instance.WorldToGridPos(enemy.transform.position);
 
-            if (TrySelectBestCombatOption(enemy, currentPos, out Unit selectedTarget, out SkillSO selectedSkill))
+            bool hasCombatOption = TrySelectBestCombatOption(enemy, currentPos, out Unit selectedTarget,
+                out SkillSO selectedSkill, out EnemyBaseSkill selectedEnemySkill);
+            bool shouldReposition = hasCombatOption &&
+                                    selectedEnemySkill != null &&
+                                    selectedEnemySkill.ShouldPreferRepositionFromPosition(currentPos,
+                                        selectedTarget.gameObject);
+
+            if (hasCombatOption && !shouldReposition)
             {
                 plan.SetCombatDecision(selectedTarget, selectedSkill);
                 return;
@@ -42,6 +49,12 @@ namespace Code.Managers
             {
                 plan.SetTarget(moveTarget);
                 plan.SetMoveTile(moveTile);
+                return;
+            }
+
+            if (hasCombatOption)
+            {
+                plan.SetCombatDecision(selectedTarget, selectedSkill);
                 return;
             }
 
@@ -57,15 +70,18 @@ namespace Code.Managers
                 plan.SetMoveTile(approachTile);
         }
 
-        private bool TrySelectBestCombatOption(AbstractEnemyUnit enemy, Vector2Int sourcePos, out Unit selectedTarget, out SkillSO selectedSkillSO)
+        private bool TrySelectBestCombatOption(AbstractEnemyUnit enemy, Vector2Int sourcePos, out Unit selectedTarget,
+            out SkillSO selectedSkillSO, out EnemyBaseSkill selectedEnemySkill)
         {
             selectedTarget = null;
             selectedSkillSO = null;
+            selectedEnemySkill = null;
 
             if (enemy == null || unitManager == null || GridMap.Instance == null)
                 return false;
 
             SkillSO bestSkill = null;
+            EnemyBaseSkill bestEnemySkill = null;
             Unit bestTarget = null;
             float bestScore = float.MinValue;
             float bestDistance = float.MaxValue;
@@ -73,7 +89,7 @@ namespace Code.Managers
             foreach (var target in GetCandidateTargets())
             {
                 if (!TrySelectBestSkillForTarget(enemy, sourcePos, target.gameObject,
-                        out SkillSO candidateSkill, out float candidateScore))
+                        out SkillSO candidateSkill, out EnemyBaseSkill candidateEnemySkill, out float candidateScore))
                     continue;
 
                 float candidateDistance = DistanceUtils.GetEuclideanDistance(sourcePos,
@@ -94,18 +110,22 @@ namespace Code.Managers
 
                 bestTarget = target;
                 bestSkill = candidateSkill;
+                bestEnemySkill = candidateEnemySkill;
                 bestScore = candidateScore;
                 bestDistance = candidateDistance;
             }
 
             selectedTarget = bestTarget;
             selectedSkillSO = bestSkill;
+            selectedEnemySkill = bestEnemySkill;
             return selectedTarget != null && selectedSkillSO != null;
         }
 
-        private bool TrySelectBestSkillForTarget(AbstractEnemyUnit enemy, Vector2Int sourcePos, GameObject target, out SkillSO selectedSkillSO, out float selectedScore)
+        private bool TrySelectBestSkillForTarget(AbstractEnemyUnit enemy, Vector2Int sourcePos, GameObject target,
+            out SkillSO selectedSkillSO, out EnemyBaseSkill selectedEnemySkill, out float selectedScore)
         {
             selectedSkillSO = null;
+            selectedEnemySkill = null;
             selectedScore = float.MinValue;
 
             if (enemy == null || target == null || enemy.SkillCompo?.Skills == null || enemy.SkillCompo.Skills.Count == 0)
@@ -135,6 +155,7 @@ namespace Code.Managers
                     continue;
 
                 selectedSkillSO = skillSO;
+                selectedEnemySkill = enemySkill;
                 selectedScore = score;
             }
 
@@ -157,6 +178,7 @@ namespace Code.Managers
             Unit bestTarget = null;
             Vector2Int bestMoveTile = default;
             float bestScore = float.MinValue;
+            float bestPositionScore = float.MinValue;
             int bestMoveCost = int.MaxValue;
             float bestTargetDistance = float.MaxValue;
 
@@ -172,27 +194,36 @@ namespace Code.Managers
                     if (candidateTile == currentPos)
                         continue;
 
-                    if (!TrySelectBestSkillForTarget(enemy, candidateTile, target.gameObject, out _, out float score))
+                    if (!TrySelectBestSkillForTarget(enemy, candidateTile, target.gameObject,
+                            out _, out EnemyBaseSkill selectedEnemySkill, out float score))
                         continue;
 
                     int moveCost = GetMoveCost(currentPos, candidateTile);
                     float targetDistance = DistanceUtils.GetEuclideanDistance(candidateTile, targetPos);
+                    float positionScore = selectedEnemySkill?.EvaluatePositionPreferenceScoreFromPosition(candidateTile, target.gameObject) ?? 0f;
 
                     if (bestTarget != null && score < bestScore)
                         continue;
 
                     if (bestTarget != null && Mathf.Approximately(score, bestScore))
                     {
-                        if (moveCost > bestMoveCost)
+                        if (positionScore < bestPositionScore)
                             continue;
 
-                        if (moveCost == bestMoveCost && targetDistance >= bestTargetDistance)
-                            continue;
+                        if (Mathf.Approximately(positionScore, bestPositionScore))
+                        {
+                            if (moveCost > bestMoveCost)
+                                continue;
+
+                            if (moveCost == bestMoveCost && targetDistance >= bestTargetDistance)
+                                continue;
+                        }
                     }
 
                     bestTarget = target;
                     bestMoveTile = candidateTile;
                     bestScore = score;
+                    bestPositionScore = positionScore;
                     bestMoveCost = moveCost;
                     bestTargetDistance = targetDistance;
                 }

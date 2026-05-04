@@ -3,6 +3,6 @@
     public interface IUnitCondition
     {
         public void Initialize(Unit unit);
-        public bool CheckCondition();
+        public bool CheckCondition(Unit unit);
     }
 }

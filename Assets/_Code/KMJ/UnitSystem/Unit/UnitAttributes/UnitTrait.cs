@@ -45,21 +45,21 @@ namespace Code.UnitSystem.UnitAttributes
                 Debug.LogWarning("유닛이 할당되어있지 않습니다.");
         }
 
-        public void CheckCondition()
+        public void CheckCondition(Unit target)
         {
             foreach (var condition in _conditions)
             {
-                if (condition.CheckCondition())
+                if (condition.CheckCondition(target))
                 {
-                    Perform();
+                    Perform(target);
                     break;
                 }
             }
         }
 
-        private void Perform()
+        private void Perform(Unit target)
         {
-            _perform.Perform();
+            _perform.Perform(target);
         }
     }
 }

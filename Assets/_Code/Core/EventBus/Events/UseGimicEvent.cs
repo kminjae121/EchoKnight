@@ -8,7 +8,7 @@ namespace Code.Core.Events.Bus
 
         public GameObject target;
         
-        public UseGimicEvent(UnitType unitType, GameObject target = null)
+        public UseGimicEvent(UnitType unitType, GameObject target)
         {
             this.unitType = unitType;
             this.target = target;

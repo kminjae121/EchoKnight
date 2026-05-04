@@ -3,6 +3,6 @@
     public interface IUnitPerform
     {
         public void Initialize(Unit unit);
-        public void Perform();
+        public void Perform(Unit target);
     }
 }

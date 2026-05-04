@@ -10,7 +10,7 @@ namespace Code.UnitSystem.UnitAttributes
             _unit = unit;
         }
 
-        public bool CheckCondition()
+        public bool CheckCondition(GameObject unit)
         {
             return false;
         }

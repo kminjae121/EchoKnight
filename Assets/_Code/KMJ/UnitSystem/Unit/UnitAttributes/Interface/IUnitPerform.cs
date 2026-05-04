@@ -1,8 +1,10 @@
-﻿namespace Code.UnitSystem.UnitAttributes
+﻿using UnityEngine;
+
+namespace Code.UnitSystem.UnitAttributes
 {
     public interface IUnitPerform
     {
         public void Initialize(Unit unit);
-        public void Perform();
+        public void Perform(GameObject target);
     }
 }

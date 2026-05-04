@@ -19,7 +19,7 @@ namespace Code.UnitSystem.UnitAttributes
         private UnitHealth _unitHealthCompo;
         [Inject] protected TurnManager _turnManager;
         
-        private readonly HashSet<CharacterUnit> _targets = new();
+        public HashSet<CharacterUnit> Targets { get; private set; } = new();
 
         public void Initialize(Unit owner)
         {
@@ -51,12 +51,12 @@ namespace Code.UnitSystem.UnitAttributes
 
         private void OnDestroy()
         {
-            foreach (var target in _targets)
+            foreach (var target in Targets)
             {
                 if (target != null && target.HealthCompo != null)
                     target.HealthCompo.OnDefenseEvent -= ReduceDamage;
             }
-            _targets.Clear();
+            Targets.Clear();
 
             if (_unitHealthCompo != null)
                 _unitHealthCompo.OnDefenseEvent -= ReduceDamage;
@@ -70,13 +70,13 @@ namespace Code.UnitSystem.UnitAttributes
         /// </summary>
         public void FindUnitInDefenseRange()
         {
-            foreach (var target in _targets)
+            foreach (var target in Targets)
             {
                 if (target != null && target.HealthCompo != null)
                     target.HealthCompo.OnDefenseEvent -= ReduceDamage;
             }
 
-            _targets.Clear();
+            Targets.Clear();
 
             if (_unit?.MoveCompo?.CurrentMapTile == null) return;
 
@@ -108,7 +108,7 @@ namespace Code.UnitSystem.UnitAttributes
                     if (characterUnit == _unit) continue;
                     if (characterUnit.HealthCompo == null) continue;
     
-                    if (_targets.Add(characterUnit))
+                    if (Targets.Add(characterUnit))
                     {
                         characterUnit.HealthCompo.OnDefenseEvent += ReduceDamage;
                     }

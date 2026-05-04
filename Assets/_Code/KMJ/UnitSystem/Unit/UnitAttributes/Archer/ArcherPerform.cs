@@ -9,7 +9,7 @@ namespace Code.UnitSystem.UnitAttributes
             
         }
 
-        public void Perform(Unit target)
+        public void Perform(GameObject target)
         {
             
         }

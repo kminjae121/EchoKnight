@@ -8,13 +8,13 @@ namespace Code.UnitSystem.UnitAttributes
         [SerializeField] private int startValue = 1;
         [SerializeField] private int endValue = 4;
 
-        private readonly Dictionary<Unit, int> targetCounts = new();
+        private readonly Dictionary<GameObject, int> targetCounts = new();
 
         public void Initialize(Unit unit)
         {
         }
 
-        public bool CheckCondition(Unit target)
+        public bool CheckCondition(GameObject target)
         {
             if (target == null) return false;
 

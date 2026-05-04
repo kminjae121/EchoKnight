@@ -17,7 +17,7 @@ namespace Code.UnitSystem.UnitAttributes
             _stack += 1;
         }
 
-        public bool CheckCondition(Unit unit)
+        public bool CheckCondition(GameObject unit)
         {
             SetStack();
             

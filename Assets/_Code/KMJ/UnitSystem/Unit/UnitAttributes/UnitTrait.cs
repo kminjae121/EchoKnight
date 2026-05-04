@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using Code.Core.Events.Bus;
 using JetBrains.Annotations;
 using UnityEngine;
 
@@ -10,6 +12,8 @@ namespace Code.UnitSystem.UnitAttributes
         private Unit _unit;
         private IUnitPerform _perform;
         private List<IUnitCondition> _conditions;
+        
+        private UnitType _unitType = UnitType.None;
         
         public void Initialize(Unit owner)
         {
@@ -43,21 +47,33 @@ namespace Code.UnitSystem.UnitAttributes
             }
             else
                 Debug.LogWarning("유닛이 할당되어있지 않습니다.");
+
+            _unitType = _unit.unitSO.UnitType;
+            
+            Bus<UseGimicEvent>.Subscribe(CheckCondition);
         }
 
-        public void CheckCondition(Unit target)
+        private void OnDestroy()
         {
+            Bus<UseGimicEvent>.Unsubscribe(CheckCondition);
+        }
+
+        public void CheckCondition(UseGimicEvent evt)
+        {
+            if (evt.unitType != _unitType)
+                return;
+            
             foreach (var condition in _conditions)
             {
-                if (condition.CheckCondition(target))
+                if (condition.CheckCondition(evt.target))
                 {
-                    Perform(target);
+                    Perform(evt.target);
                     break;
                 }
             }
         }
 
-        private void Perform(Unit target)
+        private void Perform(GameObject target)
         {
             _perform.Perform(target);
         }

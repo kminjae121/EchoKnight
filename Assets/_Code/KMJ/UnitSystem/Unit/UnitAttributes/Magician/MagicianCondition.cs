@@ -18,9 +18,9 @@ namespace Code.UnitSystem.UnitAttributes
             _healGauge = 0;
         }
 
-        public bool CheckCondition(Unit unit)
+        public bool CheckCondition(GameObject unit)
         {
-            if (unit as CharacterUnit)
+            if (unit != null)
             {
                 _healGauge += 1;
                 if (_healGauge >= _maxGauge)

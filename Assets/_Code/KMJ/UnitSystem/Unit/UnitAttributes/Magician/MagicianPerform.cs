@@ -11,7 +11,7 @@ namespace Code.UnitSystem.UnitAttributes
             _unit = unit;
         }
 
-        public void Perform(Unit target)
+        public void Perform(GameObject target)
         {
             
         }

@@ -13,7 +13,7 @@ namespace Code.UnitSystem.UnitAttributes
             _unit = unit;
         }
 
-        public void Perform(Unit target)
+        public void Perform(GameObject target)
         {
             foreach (var unit in defenseCompo.Targets)
             {

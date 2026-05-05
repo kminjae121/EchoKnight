@@ -17,7 +17,7 @@ namespace Code.UnitSystem.UnitAttributes
         {
             foreach (var unit in defenseCompo.Targets)
             {
-                unit.GetUnitCompo<UnitHealth>().IsInvincibility = true;
+                unit.GetUnitCompo<InvincibilityCompo>().SetUnitInvincibility(3);
             }
         }
     }

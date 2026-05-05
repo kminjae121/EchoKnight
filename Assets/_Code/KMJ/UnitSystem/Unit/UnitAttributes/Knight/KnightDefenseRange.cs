@@ -123,6 +123,8 @@ namespace Code.UnitSystem.UnitAttributes
         private void ReduceDamage(ref int damage)
         {
             damage = Mathf.RoundToInt(damage * 0.5f);
+            
+            Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Knight, null));
 
             DamageData damageData = new DamageData();
             damageData.damage = damage;

@@ -17,9 +17,9 @@ namespace Code.UnitSystem.UnitAttributes
         {
             DamageData data = new DamageData();
 
-            data.damage = 999999999;
+            data.damage = 44444444;
             
-            Bus<DamageEvent>.Raise(new DamageEvent(data,target.gameObject,0, _unit,false,false,0.3f));
+            Bus<DamageEvent>.Raise(new DamageEvent(data,target,0, _unit,false,false,0.3f));
         }
     }
 }

@@ -76,6 +76,9 @@ public class MeleeAttack : BasicUnitSkill
     
     public void TakeDamage()
     {
+        if (_characterUnit.unitSO.UnitType == UnitType.Bandlt)
+            Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Bandlt, _target));
+        
         Bus<DamageEvent>.Raise(new DamageEvent(DamageData,_target,AddDamage, _characterUnit,false,false,0.3f));
     }
 }

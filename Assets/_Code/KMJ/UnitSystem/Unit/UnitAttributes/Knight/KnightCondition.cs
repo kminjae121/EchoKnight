@@ -6,6 +6,7 @@ namespace Code.UnitSystem.UnitAttributes
     {
         private Unit _unit;
         private int _stack = 0;
+        [SerializeField] private int _maxStack;
 
         public void Initialize(Unit unit)
         {
@@ -20,9 +21,12 @@ namespace Code.UnitSystem.UnitAttributes
         public bool CheckCondition(GameObject unit)
         {
             SetStack();
-            
-            if (_stack >= 10)
+
+            if (_stack >= _maxStack)
+            {
+                _stack = 0;
                 return true;
+            }
             
             return false;
         }

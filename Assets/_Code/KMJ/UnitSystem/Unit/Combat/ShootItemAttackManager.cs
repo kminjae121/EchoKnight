@@ -26,7 +26,7 @@ namespace Code.UnitSystem.Combat
             
             shootItems.ForEach(item =>
             {
-                _shootItemDict.Add(item.itemName, item);
+                _shootItemDict.Add(item.itemName, item); ;
             });
         }
 

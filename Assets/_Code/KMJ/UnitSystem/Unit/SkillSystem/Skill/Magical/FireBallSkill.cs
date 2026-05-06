@@ -42,9 +42,8 @@ using UnityEngine;
         
         private IEnumerator FireBall()
         {
-           
-            yield return new WaitForSeconds(0.3f);
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.4f);
+            
             animtionCompo.PlaySelectAnimation("FIREBALL");
         }
         
@@ -63,6 +62,8 @@ using UnityEngine;
             Vector3 pos = transform.position;
 
             Vector3 slashRot = transform.rotation.eulerAngles;
+            
+            Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Magician, _target));
             
             _shootItemManager.SetTarget(_target);
             _shootItemManager.SetDamageData(DamageData,AddDamage);

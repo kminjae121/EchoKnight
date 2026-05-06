@@ -18,7 +18,7 @@ namespace Code.UnitSystem.UnitAttributes
 
         private int _maxGauge = 5;
 
-        public MagicianType _magicianType { get; private set; }
+        public MagicianType MagicianType { get; private set; }
         
         public void Initialize(Unit unit)
         {
@@ -29,13 +29,15 @@ namespace Code.UnitSystem.UnitAttributes
 
         public bool CheckCondition(GameObject unit)
         {
-            if (unit != null)
+            Unit unitType = unit.GetComponentInParent<Unit>();
+            
+            if (unitType as CharacterUnit)
             {
                 _healGauge += 1;
                 if (_healGauge >= _maxGauge)
                 {
                     _healGauge = 0;
-                    _magicianType = MagicianType.Heal;
+                    MagicianType = MagicianType.Heal;
                     return true;
                 }
             }
@@ -45,7 +47,7 @@ namespace Code.UnitSystem.UnitAttributes
                 if (_atkGauge >= _maxGauge)
                 {
                     _atkGauge = 0;
-                    _magicianType = MagicianType.Attack;
+                    MagicianType = MagicianType.Attack;    
                     return true;
                 }
             }

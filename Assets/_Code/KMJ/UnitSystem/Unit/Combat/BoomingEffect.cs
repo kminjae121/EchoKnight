@@ -39,7 +39,7 @@ namespace Code.UnitSystem
         {            
             _particleSystem.Play();
             yield return new WaitForSeconds(1.3f);
-
+            
             Bus<DamageEvent>.Raise(new DamageEvent(_damageData,_target,_addDamage, null,false,false,0.3f));
         }
     }

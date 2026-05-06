@@ -12,7 +12,7 @@ namespace Code.UnitSystem.Combat
         public UnityEvent AtkEvent;
 
         protected ShootItemAttackManager _shootItemManager;
-        protected Rigidbody _rbCompo = null;
+        [SerializeField] protected Rigidbody _rbCompo = null;
         protected GameObject _target = null;
         
         private void Awake()

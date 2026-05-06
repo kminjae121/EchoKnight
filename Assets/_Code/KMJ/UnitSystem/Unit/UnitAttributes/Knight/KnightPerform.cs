@@ -5,6 +5,7 @@ namespace Code.UnitSystem.UnitAttributes
 {
     public class KnightPerform : MonoBehaviour , IUnitPerform
     {
+        [SerializeField] private ParticleSystem circleParticle;
         [SerializeField] private KnightDefenseRange defenseCompo;
         private Unit _unit;
         
@@ -17,8 +18,12 @@ namespace Code.UnitSystem.UnitAttributes
         {
             foreach (var unit in defenseCompo.Targets)
             {
-                unit.GetUnitCompo<InvincibilityCompo>().SetUnitInvincibility(3);
+                unit.GetUnitCompo<InvincibilityCompo>().SetUnitInvincibility(2);
             }
+            
+            _unit.GetUnitCompo<InvincibilityCompo>().SetUnitInvincibility(3);
+            
+            circleParticle.Play();
         }
     }
 }

@@ -24,7 +24,8 @@ namespace Code.UnitSystem.UnitAttributes
 
         private void OnDestroy()
         {
-            _turnManager.OnTurnStart -= CheckInvincibility;
+            if(_turnManager != null)
+                _turnManager.OnTurnStart -= CheckInvincibility;
         }
 
         public void SetUnitInvincibility(int maxTurn)

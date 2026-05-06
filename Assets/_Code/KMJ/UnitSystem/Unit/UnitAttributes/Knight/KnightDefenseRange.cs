@@ -101,9 +101,6 @@ namespace Code.UnitSystem.UnitAttributes
 
                     CharacterUnit characterUnit = tile.GetTileUnit() as CharacterUnit;
                     
-                    if(characterUnit != null)
-                        Debug.Log(characterUnit.unitSO.UnitName);
-                    
                     if (characterUnit == null) continue;
                     if (characterUnit == _unit) continue;
                     if (characterUnit.HealthCompo == null) continue;
@@ -125,10 +122,6 @@ namespace Code.UnitSystem.UnitAttributes
             damage = Mathf.RoundToInt(damage * 0.5f);
             
             Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Knight, null));
-
-            DamageData damageData = new DamageData();
-            damageData.damage = damage;
-            Bus<DamageEvent>.Raise(new DamageEvent(damageData,_unit.gameObject,0, _unit,false,false,0.3f));
         }
 
         private void OnValidate()

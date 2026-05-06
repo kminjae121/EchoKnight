@@ -10,6 +10,7 @@ using UnityEngine.UIElements;
 public class HealSkill : BasicUnitSkill
     {
         private UnitAnimation animtionCompo;
+        private GameObject _target;
 
         protected  void Start()
         {
@@ -34,6 +35,7 @@ public class HealSkill : BasicUnitSkill
         public void HealAction(GameObject target)
         {
             StartCoroutine(FireBall());
+            _target = target;
         }
         
         private IEnumerator FireBall()
@@ -57,6 +59,7 @@ public class HealSkill : BasicUnitSkill
 
         public void Heal()
         {
+            Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Magician, _target));
             UnitHealth health = _characterUnit.GetUnitCompo<UnitHealth>();
 
             health.HealHp(20);

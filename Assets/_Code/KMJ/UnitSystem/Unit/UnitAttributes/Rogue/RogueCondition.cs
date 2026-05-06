@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Code.UI;
 using UnityEngine;
 
 namespace Code.UnitSystem.UnitAttributes
@@ -21,7 +22,9 @@ namespace Code.UnitSystem.UnitAttributes
             if (!targetCounts.TryGetValue(target, out int value))
                 value = startValue;
             else
-                value += 1;
+                value += 1; 
+            
+            target.GetComponentInChildren<MarkUI>().SetMarkUI(value);
 
             if (value >= endValue)
             {

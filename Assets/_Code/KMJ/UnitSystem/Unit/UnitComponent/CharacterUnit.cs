@@ -95,6 +95,7 @@ namespace Code.UnitSystem
 
             if (MoveCompo != null)
             {
+                UnitRangeCompo.RemoveAllRange(); 
                 MoveCompo.FindObjectInRange(unitSO.MoveRange);
                 MoveCompo.MoveCount = 0;
             }
@@ -110,6 +111,7 @@ namespace Code.UnitSystem
             {
                 if (MoveCompo.MoveCount < 1)
                 {
+                    UnitRangeCompo.RemoveAllRange(); 
                     MoveCompo.FindObjectInRange(unitSO.MoveRange);
                 }
                 else

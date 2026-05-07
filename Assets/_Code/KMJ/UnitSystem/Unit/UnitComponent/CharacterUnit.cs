@@ -37,7 +37,6 @@ namespace Code.UnitSystem
         #endregion
         
         public int PlayableUnitID { get; set; } = -1;
-        public bool IsConfirmationSkill { get; set; }
         
         public GameObject _startTile;
         
@@ -83,6 +82,7 @@ namespace Code.UnitSystem
         public override void OnTurnStart()
         {
             base.OnTurnStart();
+            
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));

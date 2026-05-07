@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Code.Core.Debugs;
+using Code.UnitSystem;
 using UnityEngine;
 
 namespace _Code.UnitSystem
@@ -9,11 +10,11 @@ namespace _Code.UnitSystem
     {
         
     }
-    public class UnitEffectCompo : MonoBehaviour
+    public class UnitEffectCompo : MonoBehaviour, IUnitComponent
     {
         private Dictionary<string, UnitEffect> _effectDict = new Dictionary<string, UnitEffect>();
 
-        private void Awake()
+        public void Initialize(Unit owner)
         {
             UnitEffect[] atkEffect = GetComponentsInChildren<UnitEffect>(true);
 
@@ -32,16 +33,21 @@ namespace _Code.UnitSystem
                 }
 
                 _effectDict.Add(effect.EffectName, effect);
-            }
+            }   
         }
 
-        public void PlayTargetEffect(string effectName)
+        public void PlayTargetEffect(string effectName, Vector3 position = default(Vector3))
         {
             if (string.IsNullOrWhiteSpace(effectName)) 
                     return;
             
             if (_effectDict.TryGetValue(effectName, out var effect)) 
                 effect.PlayEffect();
+
+            if (position != default(Vector3))
+            {
+                effect.transform.position = position;
+            }
         }
 
         public void StopTargetEffect(string effectName)
@@ -52,5 +58,6 @@ namespace _Code.UnitSystem
             if (_effectDict.TryGetValue(effectName, out var effect)) 
                 effect.StopEffect();
         }
+
     }
 }

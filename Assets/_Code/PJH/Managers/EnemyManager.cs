@@ -45,7 +45,7 @@ namespace Code.Managers
                 return;
             }
 
-            if (TrySelectBestMoveOption(enemy, currentPos, out Unit moveTarget, out Vector2Int moveTile))
+            if (TrySelectBestMoveOption(enemy, currentPos, shouldReposition, out Unit moveTarget, out Vector2Int moveTile))
             {
                 plan.SetTarget(moveTarget);
                 plan.SetMoveTile(moveTile);
@@ -162,7 +162,8 @@ namespace Code.Managers
             return selectedSkillSO != null;
         }
 
-        private bool TrySelectBestMoveOption(AbstractEnemyUnit enemy, Vector2Int currentPos, out Unit selectedTarget, out Vector2Int selectedMoveTile)
+        private bool TrySelectBestMoveOption(AbstractEnemyUnit enemy, Vector2Int currentPos,
+            bool requireSafeReposition, out Unit selectedTarget, out Vector2Int selectedMoveTile)
         {
             selectedTarget = null;
             selectedMoveTile = default;
@@ -196,6 +197,11 @@ namespace Code.Managers
 
                     if (!TrySelectBestSkillForTarget(enemy, candidateTile, target.gameObject,
                             out _, out EnemyBaseSkill selectedEnemySkill, out float score))
+                        continue;
+
+                    if (requireSafeReposition &&
+                        selectedEnemySkill != null &&
+                        selectedEnemySkill.ShouldPreferRepositionFromPosition(candidateTile, target.gameObject))
                         continue;
 
                     int moveCost = GetMoveCost(currentPos, candidateTile);

@@ -24,6 +24,12 @@ namespace Code.UnitSystem.Enemies.AI
             SelectedSkill = null;
         }
 
+        public void SetCombatDecision(Unit target, SkillSO skillSO)
+        {
+            Target = target;
+            SelectedSkill = skillSO;
+        }
+
         public void SetMoveTile(Vector2Int moveTile)
         {
             MoveTile = moveTile;

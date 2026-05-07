@@ -100,6 +100,9 @@ namespace Code.SkillSystem
         }
 
         private bool CanHitTarget(GameObject target)
+            => CanHitTargetFromPosition(GetCasterGridPosition(), target);
+
+        private bool CanHitTargetFromPosition(Vector2Int origin, GameObject target)
         {
             if (target == null)
                 return false;
@@ -109,7 +112,6 @@ namespace Code.SkillSystem
             if (gridMap == null)
                 return false;
 
-            Vector2Int origin = gridMap.WorldToGridPos(transform.position);
             Vector2Int targetPos = gridMap.WorldToGridPos(target.transform.position);
             Vector2Int forwardDir = GetForwardDir(origin, targetPos);
 
@@ -125,16 +127,25 @@ namespace Code.SkillSystem
 
         public override bool CanUseOnTarget(GameObject target)
             => CanHitTarget(target);
+        
+        public override bool CanUseOnTargetFromPosition(Vector2Int sourcePos, GameObject target)
+            => CanHitTargetFromPosition(sourcePos, target);
 
         public int GetPredictedHitCount(GameObject target)
-            => GetHitTargets(target).Count;
+            => GetHitTargetsFromPosition(GetCasterGridPosition(), target).Count;
+
+        private int GetPredictedHitCountFromPosition(Vector2Int sourcePos, GameObject target)
+            => GetHitTargetsFromPosition(sourcePos, target).Count;
 
         public override float EvaluateEnemyUseScore(GameObject target)
+            => EvaluateEnemyUseScoreFromPosition(GetCasterGridPosition(), target);
+
+        public override float EvaluateEnemyUseScoreFromPosition(Vector2Int sourcePos, GameObject target)
         {
             if (target == null || SkillSO == null)
                 return float.MinValue;
 
-            int predictedHitCount = GetPredictedHitCount(target);
+            int predictedHitCount = GetPredictedHitCountFromPosition(sourcePos, target);
             
             if (predictedHitCount <= 0)
                 return float.MinValue;
@@ -143,6 +154,9 @@ namespace Code.SkillSystem
         }
 
         private List<GameObject> GetHitTargets(GameObject target)
+            => GetHitTargetsFromPosition(GetCasterGridPosition(), target);
+
+        private List<GameObject> GetHitTargetsFromPosition(Vector2Int origin, GameObject target)
         {
             var hitTargets = new List<GameObject>();
 
@@ -166,7 +180,6 @@ namespace Code.SkillSystem
                 return hitTargets;
             }
 
-            Vector2Int origin = gridMap.WorldToGridPos(transform.position);
             Vector2Int targetPos = gridMap.WorldToGridPos(target.transform.position);
             Vector2Int forwardDir = GetForwardDir(origin, targetPos);
 
@@ -195,6 +208,16 @@ namespace Code.SkillSystem
             }
 
             return hitTargets;
+        }
+
+        private Vector2Int GetCasterGridPosition()
+        {
+            GridMap gridMap = GridMap.Instance;
+
+            if (gridMap == null)
+                return Vector2Int.zero;
+
+            return gridMap.WorldToGridPos(GetCasterWorldPosition());
         }
 
         private void SkillEnd()

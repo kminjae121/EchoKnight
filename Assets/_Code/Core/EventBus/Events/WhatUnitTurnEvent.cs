@@ -2,11 +2,11 @@
 {
     public struct WhatUnitTurnEvent : IEvent
     {
-        public UnitType unitType;
+        public UnitType UnitType;
         
         public WhatUnitTurnEvent(UnitType unitType)
         {
-            this.unitType = unitType;
+            this.UnitType = unitType;
         }
     }
 }

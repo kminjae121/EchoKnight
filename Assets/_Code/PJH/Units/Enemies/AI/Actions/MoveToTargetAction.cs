@@ -19,6 +19,7 @@ namespace Code.UnitSystem.Enemies.AI
         private PathMover _mover;
         private GridMap _gridMap;
         private bool _isMoving;
+        private bool _reservedTile;
 
         protected override Status OnStart()
         {
@@ -59,6 +60,10 @@ namespace Code.UnitSystem.Enemies.AI
             if (destination == startPos)
                 return Status.Success;
 
+            if (!Enemy.Value.EnemyManager.TryReserveTile(Enemy.Value, destination))
+                return Status.Success;
+
+            _reservedTile = true;
             _isMoving = true;
             _mover.OnMoveEnd += HandleMovementEnd;
             _mover.SetPathAndMove(startPos, destination, true);
@@ -75,11 +80,14 @@ namespace Code.UnitSystem.Enemies.AI
         {
             if (_mover != null)
                 _mover.OnMoveEnd -= HandleMovementEnd;
+
+            if (_reservedTile && Enemy.Value?.EnemyManager != null)
+            {
+                Enemy.Value.EnemyManager.ReleaseReservation(Enemy.Value);
+                _reservedTile = false;
+            }
         }
 
-        private void HandleMovementEnd()
-        {
-            _isMoving = false;
-        }
+        private void HandleMovementEnd() => _isMoving = false;
     }
 }

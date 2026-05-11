@@ -260,9 +260,11 @@ MonoBehaviour:
       m_Calls: []
   isCanUseSkill: 0
   IsActive: 0
-  usePreferredRange: 0
-  preferredRange: 1
-  minSafeRange: 0
+  useRange: 0
+  prefRange: 1
+  safeRange: 0
+  aiPriority: 0
+  needSight: 0
   pierceLength: 3
   burnDuration: 2
   burnDamage: 5
@@ -2205,9 +2207,11 @@ MonoBehaviour:
       m_Calls: []
   isCanUseSkill: 0
   IsActive: 0
-  usePreferredRange: 0
-  preferredRange: 1
-  minSafeRange: 0
+  useRange: 0
+  prefRange: 1
+  safeRange: 0
+  aiPriority: 0
+  needSight: 0
 --- !u!1 &4997435329129884886
 GameObject:
   m_ObjectHideFlags: 0
@@ -2426,9 +2430,11 @@ MonoBehaviour:
       m_Calls: []
   isCanUseSkill: 0
   IsActive: 0
-  usePreferredRange: 1
-  preferredRange: 4
-  minSafeRange: 2
+  useRange: 1
+  prefRange: 2
+  safeRange: 2
+  aiPriority: 1
+  needSight: 1
   finishDelay: 0.35
 --- !u!1 &5310390318968203875
 GameObject:
@@ -3306,6 +3312,7 @@ MonoBehaviour:
   <unitSO>k__BackingField: {fileID: 11400000, guid: 32ce4e1858963fe44b740451ca0d6f12, type: 2}
   <TurnGauge>k__BackingField: 0
   <PoolingType>k__BackingField: {fileID: 11400000, guid: 46482cf0fc8e21d4bba4fe75ba908dc6, type: 2}
+  aiProfile: {fileID: 0}
 --- !u!114 &5446457073614788353
 MonoBehaviour:
   m_ObjectHideFlags: 0

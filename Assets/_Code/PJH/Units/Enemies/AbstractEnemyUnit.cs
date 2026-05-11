@@ -25,11 +25,14 @@ namespace Code.UnitSystem.Enemies
         public UnitAnimation UnitAnimator { get; private set; }
         public UnitRotator UnitRotatorCompo { get; private set; }
         public UnitAnimationTrigger AnimationTrigger { get; private set; }
+        public EnemyAIProfileSO AIProfile => aiProfile;
         public EnemyManager EnemyManager => _enemyManager;
         public UnitManager UnitManager => _unitManager;
         
         protected GridMap GridMapInstance { get; private set; }
         protected Unit CurrentTarget { get; private set; }
+
+        [SerializeField] private EnemyAIProfileSO aiProfile;
 
         [Inject] protected EnemyManager _enemyManager;
         [Inject] protected UnitManager _unitManager;
@@ -276,7 +279,7 @@ namespace Code.UnitSystem.Enemies
                 return false;
             }
 
-            return enemySkill.CanUseOnTarget(target);
+            return enemySkill.CanUse(target);
         }
 
         public bool TrySelectAttackSkill(GameObject target, out SkillSO selectedSkillSO)

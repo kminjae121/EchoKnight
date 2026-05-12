@@ -10,13 +10,31 @@ namespace Code.UnitSystem.Enemies.AI
         private readonly EnemySkillSelector _skills = new();
         private readonly EnemyMoveSelector _moves = new();
 
-        public void Build(EnemyPlan plan, AbstractEnemyUnit enemy, Vector2Int from, IReadOnlyList<Unit> targets, IReadOnlyList<Vector2Int> tiles)
+        public void Build(EnemyPlan plan, AbstractEnemyUnit enemy, Vector2Int from, IReadOnlyList<Unit> targets,
+            IReadOnlyList<EnemyMoveTile> tiles, EnemyRouteMap routes)
         {
             if (plan == null || enemy == null || targets == null || targets.Count == 0)
                 return;
 
-            bool hasPick = _skills.TryBest(enemy, from, targets, out EnemySkillPick pick);
             bool canKeepSpace = CanKeepSpace(enemy);
+            bool hasPick = _skills.TryBest(enemy, from, targets, out EnemySkillPick pick);
+
+            if (canKeepSpace && _skills.TryCloseThreat(enemy, from, targets, out EnemySkillPick threatPick))
+            {
+                plan.SetTarget(threatPick.Target);
+
+                if (_moves.TryRetreatTile(enemy, from, threatPick, targets, tiles, out Vector2Int threatRetreatTile))
+                {
+                    plan.SetMoveTile(threatRetreatTile);
+                    return;
+                }
+
+                if (hasPick && (enemy.AIProfile == null || enemy.AIProfile.AttackCornered))
+                    plan.SetCombatDecision(pick.Target, pick.SkillSO);
+
+                return;
+            }
+
             bool wantsMove = hasPick && canKeepSpace && pick.Skill.WantsMove(from, pick.Target.gameObject);
 
             if (hasPick && !wantsMove)
@@ -64,7 +82,7 @@ namespace Code.UnitSystem.Enemies.AI
                 return;
             }
 
-            Unit target = PickClosest(from, targets);
+            Unit target = PickClosest(from, targets, routes);
 
             if (target == null)
                 return;
@@ -82,16 +100,17 @@ namespace Code.UnitSystem.Enemies.AI
 
             Vector2Int targetPos = GridMap.Instance.WorldToGridPos(target.transform.position);
 
-            if (_moves.TryApproachTile(from, targetPos, tiles, out Vector2Int approachTile))
+            if (_moves.TryApproachTile(from, target, targetPos, tiles, routes, out Vector2Int approachTile))
                 plan.SetMoveTile(approachTile);
         }
 
-        private static Unit PickClosest(Vector2Int from, IReadOnlyList<Unit> targets)
+        private static Unit PickClosest(Vector2Int from, IReadOnlyList<Unit> targets, EnemyRouteMap routes)
         {
             if (targets == null || GridMap.Instance == null)
                 return null;
 
             Unit closest = null;
+            var bestCost = int.MaxValue;
             var bestDistance = float.MaxValue;
 
             foreach (var target in targets)
@@ -101,6 +120,29 @@ namespace Code.UnitSystem.Enemies.AI
 
                 float distance = DistanceUtils.GetEuclideanDistance(from,
                     GridMap.Instance.WorldToGridPos(target.transform.position));
+
+                int cost = 0;
+                bool hasRoute = false;
+
+                if (routes != null)
+                    hasRoute = routes.TryGetCost(target, from, out cost);
+
+                if (hasRoute)
+                {
+                    if (closest != null && cost > bestCost)
+                        continue;
+
+                    if (closest != null && cost == bestCost && distance >= bestDistance)
+                        continue;
+
+                    closest = target;
+                    bestCost = cost;
+                    bestDistance = distance;
+                    continue;
+                }
+
+                if (bestCost != int.MaxValue)
+                    continue;
 
                 if (closest != null && distance >= bestDistance)
                     continue;
@@ -112,7 +154,7 @@ namespace Code.UnitSystem.Enemies.AI
             return closest;
         }
 
-        private List<EnemyMoveOption> BuildSkillTileOptions(AbstractEnemyUnit enemy, Vector2Int from, IReadOnlyList<Unit> targets, IReadOnlyList<Vector2Int> tiles)
+        private List<EnemyMoveOption> BuildSkillTileOptions(AbstractEnemyUnit enemy, Vector2Int from, IReadOnlyList<Unit> targets, IReadOnlyList<EnemyMoveTile> tiles)
         {
             var options = new List<EnemyMoveOption>();
             var gridMap = GridMap.Instance;
@@ -129,19 +171,19 @@ namespace Code.UnitSystem.Enemies.AI
 
                 foreach (var tile in tiles)
                 {
-                    if (tile == from)
+                    if (tile.Pos == from)
                         continue;
 
-                    if (!_skills.TrySkill(enemy, tile, target.gameObject, out EnemySkillPick pick))
+                    if (!_skills.TrySkill(enemy, tile.Pos, target.gameObject, out EnemySkillPick pick))
                         continue;
 
                     options.Add(new EnemyMoveOption(
                         target,
-                        tile,
+                        tile.Pos,
                         pick.Score,
-                        pick.Skill.PosScore(tile, target.gameObject),
-                        EnemyMoveSelector.GetCost(from, tile),
-                        DistanceUtils.GetChebyshevDistance(tile, targetPos)));
+                        pick.Skill.PosScore(tile.Pos, target.gameObject),
+                        tile.Cost,
+                        DistanceUtils.GetManhattanDistance(tile.Pos, targetPos)));
                 }
             }
 

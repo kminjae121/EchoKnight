@@ -12,7 +12,5 @@ namespace Code.UnitSystem.Enemies.AI
             Target = target;
             Tile = tile;
         }
-
-        public bool IsValid => Target != null;
     }
 }

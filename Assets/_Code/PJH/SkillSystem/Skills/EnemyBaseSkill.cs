@@ -173,6 +173,6 @@ namespace Code.SkillSystem
             => SkillSO == null ? 0 : Mathf.Max(0, SkillSO.MinRange);
 
         private static float RangeDistance(Vector2Int from, Vector2Int to)
-            => DistanceUtils.GetChebyshevDistance(from, to);
+            => DistanceUtils.GetManhattanDistance(from, to);
     }
 }

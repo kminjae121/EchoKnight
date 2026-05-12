@@ -153,6 +153,50 @@ namespace Code.UnitSystem.Enemies.AI
             return pick.IsValid;
         }
 
+        public bool TryCloseThreat(AbstractEnemyUnit enemy, Vector2Int from, IReadOnlyList<Unit> targets, out EnemySkillPick pick)
+        {
+            pick = default;
+
+            if (enemy == null || targets == null || enemy.SkillCompo?.Skills == null ||
+                enemy.SkillCompo.Skills.Count == 0 || GridMap.Instance == null)
+                return false;
+
+            float bestDistance = float.MaxValue;
+            float bestScore = float.MinValue;
+
+            foreach (var target in targets)
+            {
+                if (target == null)
+                    continue;
+
+                Vector2Int targetPos = GridMap.Instance.WorldToGridPos(target.transform.position);
+                float distance = DistanceUtils.GetManhattanDistance(from, targetPos);
+
+                foreach (var (skillSO, skill) in enemy.SkillCompo.Skills)
+                {
+                    if (skillSO == null || skill is not EnemyBaseSkill enemySkill)
+                        continue;
+
+                    if (!enemySkill.WantsMove(from, target.gameObject))
+                        continue;
+
+                    float score = skillSO.SkillDamage + enemySkill.AIPriority * 10f;
+
+                    if (pick.IsValid && distance > bestDistance)
+                        continue;
+
+                    if (pick.IsValid && Mathf.Approximately(distance, bestDistance) && score <= bestScore)
+                        continue;
+
+                    pick = new EnemySkillPick(target, skillSO, enemySkill, score);
+                    bestDistance = distance;
+                    bestScore = score;
+                }
+            }
+
+            return pick.IsValid;
+        }
+
         public bool IsTooClose(AbstractEnemyUnit enemy, Vector2Int from, GameObject target)
         {
             if (enemy?.SkillCompo?.Skills == null || target == null)

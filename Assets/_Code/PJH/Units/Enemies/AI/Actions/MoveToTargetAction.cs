@@ -66,7 +66,7 @@ namespace Code.UnitSystem.Enemies.AI
             _reservedTile = true;
             _isMoving = true;
             _mover.OnMoveEnd += HandleMovementEnd;
-            _mover.SetPathAndMove(startPos, destination, true);
+            _mover.SetPathAndMove(startPos, destination);
 
             return Status.Running;
         }

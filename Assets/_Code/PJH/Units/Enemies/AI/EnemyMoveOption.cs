@@ -11,8 +11,7 @@ namespace Code.UnitSystem.Enemies.AI
         public readonly int Cost;
         public readonly float Distance;
 
-        public EnemyMoveOption(Unit target, Vector2Int tile, float skillScore, float posScore,
-            int cost, float distance)
+        public EnemyMoveOption(Unit target, Vector2Int tile, float skillScore, float posScore, int cost, float distance)
         {
             Target = target;
             Tile = tile;

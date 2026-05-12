@@ -719,6 +719,7 @@ MonoBehaviour:
   <unitSO>k__BackingField: {fileID: 11400000, guid: 32ce4e1858963fe44b740451ca0d6f12, type: 2}
   <TurnGauge>k__BackingField: 0
   <PoolingType>k__BackingField: {fileID: 11400000, guid: 5d5dfd4c6ba3fa04fa0cf0d055c556bd, type: 2}
+  aiProfile: {fileID: 0}
 --- !u!114 &8828151466765253910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -949,9 +950,11 @@ MonoBehaviour:
       m_Calls: []
   isCanUseSkill: 0
   IsActive: 0
-  usePreferredRange: 0
-  preferredRange: 1
-  minSafeRange: 0
+  useRange: 0
+  prefRange: 1
+  safeRange: 0
+  aiPriority: 0
+  needSight: 0
   pierceLength: 3
   burnDuration: 2
   burnDamage: 5
@@ -1579,7 +1582,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Code.UnitSystem.UnitComponent.PathMover
   maxPathCount: 50
-  moveSpeed: 4
+  moveSpeed: 3
   pointArray: []
 --- !u!1 &4967720377376967426
 GameObject:
@@ -2174,9 +2177,11 @@ MonoBehaviour:
       m_Calls: []
   isCanUseSkill: 0
   IsActive: 0
-  usePreferredRange: 0
-  preferredRange: 1
-  minSafeRange: 0
+  useRange: 0
+  prefRange: 1
+  safeRange: 0
+  aiPriority: 0
+  needSight: 0
 --- !u!1 &7117012209051727178
 GameObject:
   m_ObjectHideFlags: 0

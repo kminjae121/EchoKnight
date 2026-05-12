@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Code.Map;
+using Code.Navigation;
 using Code.UnitSystem;
 using Code.UnitSystem.Enemies;
 using Code.UnitSystem.Enemies.AI;
@@ -13,10 +14,13 @@ namespace Code.Managers
     public class EnemyManager : MonoBehaviour, IDependencyProvider
     {
         [SerializeField] private UnitManager unitManager;
+        [Inject] private PathBaker _pathBaker;
 
         private readonly Dictionary<AbstractEnemyUnit, EnemyPlan> _plans = new();
         private readonly Dictionary<Vector2Int, AbstractEnemyUnit> _reservedTiles = new();
         private readonly EnemyPlanner _planner = new();
+        private readonly EnemyMoveMap _moveMap = new();
+        private readonly EnemyRouteMap _routeMap = new();
 
         public void RefreshPlan(AbstractEnemyUnit enemy)
         {
@@ -33,9 +37,10 @@ namespace Code.Managers
 
             Vector2Int currentPos = gridMap.WorldToGridPos(enemy.transform.position);
             List<Unit> targets = GetTargets();
-            List<Vector2Int> tiles = GetTiles(enemy, currentPos);
+            List<EnemyMoveTile> tiles = GetTiles(enemy, currentPos);
+            _routeMap.Build(targets, _pathBaker, tile => CanMoveTo(enemy, currentPos, tile));
 
-            _planner.Build(plan, enemy, currentPos, targets, tiles);
+            _planner.Build(plan, enemy, currentPos, targets, tiles, _routeMap);
         }
 
         public bool TryGetPlan(AbstractEnemyUnit enemy, out EnemyPlan plan)
@@ -116,40 +121,9 @@ namespace Code.Managers
                 .ToList();
         }
 
-        private List<Vector2Int> GetTiles(AbstractEnemyUnit enemy, Vector2Int currentPos)
-        {
-            var tiles = new List<Vector2Int>();
-            var gridMap = GridMap.Instance;
-
-            if (enemy == null || gridMap == null)
-                return tiles;
-
-            int moveRange = GetMoveRange(enemy);
-
-            if (moveRange <= 0)
-                return tiles;
-
-            for (int y = currentPos.y - moveRange; y <= currentPos.y + moveRange; ++y)
-            {
-                for (int x = currentPos.x - moveRange; x <= currentPos.x + moveRange; ++x)
-                {
-                    var tile = new Vector2Int(x, y);
-
-                    if (!gridMap.IsValidPosition(tile))
-                        continue;
-
-                    if (EnemyMoveSelector.GetCost(currentPos, tile) > moveRange)
-                        continue;
-
-                    if (!CanMoveTo(enemy, currentPos, tile))
-                        continue;
-
-                    tiles.Add(tile);
-                }
-            }
-
-            return tiles;
-        }
+        private List<EnemyMoveTile> GetTiles(AbstractEnemyUnit enemy, Vector2Int currentPos)
+            => _moveMap.Build(currentPos, GetMoveRange(enemy), _pathBaker,
+                tile => CanMoveTo(enemy, currentPos, tile));
 
         private static int GetMoveRange(AbstractEnemyUnit enemy)
             => enemy?.unitSO == null ? 0 : Mathf.Max(0, enemy.unitSO.MoveRange);

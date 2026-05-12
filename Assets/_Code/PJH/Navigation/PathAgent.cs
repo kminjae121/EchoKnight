@@ -144,6 +144,9 @@ namespace Code.Navigation
 
                 foreach (var link in currentNode.nodeData.neighbors)
                 {
+                    if (!IsCardinal(currentNode.cellPos, link.endCellPos))
+                        continue;
+
                     if (closedSet.Contains(link.endCellPos))
                         continue;
 
@@ -233,19 +236,11 @@ namespace Code.Navigation
             return blockedCells;
         }
 
-        private float CalculateH(Vector3Int startPoint, Vector3Int destination)
+        private static float CalculateH(Vector3Int startPoint, Vector3Int destination)
         {
-            // 유클리드
-            return Vector3Int.Distance(startPoint, destination);
-            
-            // 옥타일
-            // int dx = Mathf.Abs(startPoint.x - destination.x);
-            // int dy = Mathf.Abs(startPoint.y - destination.y);
-            //
-            // int min = Mathf.Min(dx, dy);
-            // int max = Mathf.Max(dx, dy);
-            //
-            // return min * Mathf.Sqrt(2)+ (max - min);
+            return Mathf.Abs(startPoint.x - destination.x) +
+                   Mathf.Abs(startPoint.y - destination.y) +
+                   Mathf.Abs(startPoint.z - destination.z);
         }
 
         private static void UpdateBestReachableNode(
@@ -258,7 +253,7 @@ namespace Code.Navigation
             if (candidate == null)
                 return;
 
-            float candidateDistance = Vector3Int.Distance(candidate.cellPos, destination);
+            float candidateDistance = CalculateH(candidate.cellPos, destination);
 
             if (bestNode != null && candidateDistance > bestDistance)
                 return;
@@ -269,6 +264,12 @@ namespace Code.Navigation
             bestNode = candidate;
             bestDistance = candidateDistance;
             bestCost = candidate.g;
+        }
+
+        private static bool IsCardinal(Vector3Int from, Vector3Int to)
+        {
+            Vector3Int delta = to - from;
+            return Mathf.Abs(delta.x) + Mathf.Abs(delta.y) + Mathf.Abs(delta.z) == 1;
         }
     }
 }

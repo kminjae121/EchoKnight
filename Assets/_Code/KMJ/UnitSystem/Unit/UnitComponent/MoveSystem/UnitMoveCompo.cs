@@ -171,9 +171,7 @@ namespace Code.UnitSystem
                 false, new Vector3(0.1f, 0.1f, 0.1f)));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             
-            _unit.TurnEnd();
             animationCompo.PlaySelectAnimation("IDLE");
-
             UnitRangeCompo.RemoveAllRange();
         }
 

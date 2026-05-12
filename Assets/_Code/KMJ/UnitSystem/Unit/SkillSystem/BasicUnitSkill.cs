@@ -67,7 +67,6 @@ namespace Code.SkillSystem
             IsActive = false;
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(null, false,new Vector3(0.1f,0.1f,0.1f)));
-            _characterUnit.TurnEnd();
         }
 
         public override void SkillFinished(bool isCancel) 

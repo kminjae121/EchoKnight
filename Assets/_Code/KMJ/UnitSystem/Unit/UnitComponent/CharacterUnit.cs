@@ -121,11 +121,15 @@ namespace Code.UnitSystem
 
         public override void OnTurnEnd()
         {
-            base.OnTurnEnd();
-            OnTurnEndEvent?.Invoke();
-            PassiveCompo.StopAllTurnPassives();
-            Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
-            Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
+            if (isMyTurn)
+            {
+                base.OnTurnEnd();
+                UnitRangeCompo.RemoveAllRange(); 
+                OnTurnEndEvent?.Invoke();
+                PassiveCompo.StopAllTurnPassives();
+                Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+                Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));      
+            }
         }
 
         protected override void Hit()
@@ -138,15 +142,7 @@ namespace Code.UnitSystem
             }
             base.Hit();
         }
-
-        public void TurnEnd()
-        {
-            if (isMyTurn)
-            {
-                UnitRangeCompo.RemoveAllRange(); 
-                OnTurnEnd();
-            }
-        }
+        
 
         public void HandleDieAnimationEnd()
         {

@@ -6,6 +6,7 @@ using Code.Managers;
 using Code.Map;
 using Code.UnitSystem;
 using Code.UnitSystem.Enemies;
+using Code.UnitSystem.Enemies.AI;
 using UnityEngine;
 
 namespace Code.SkillSystem
@@ -95,14 +96,9 @@ namespace Code.SkillSystem
                 Bus<ApplyStatusEffectEvent>.Raise(new ApplyStatusEffectEvent(targetUnit, EffectType.Burn,
                     new StatusEffectApplyData(burnDuration, burnDamage)));
             }
-
-            //UnityLogger.Log("범위 공격으로 데미지");
         }
 
-        private bool CanHitTarget(GameObject target)
-            => CanHitTargetFromPosition(GetCasterGridPosition(), target);
-
-        private bool CanHitTargetFromPosition(Vector2Int origin, GameObject target)
+        private bool CanHitTargetFromPos(Vector2Int origin, GameObject target)
         {
             if (target == null)
                 return false;
@@ -125,38 +121,45 @@ namespace Code.SkillSystem
             return false;
         }
 
-        public override bool CanUseOnTarget(GameObject target)
-            => CanHitTarget(target);
-        
-        public override bool CanUseOnTargetFromPosition(Vector2Int sourcePos, GameObject target)
-            => CanHitTargetFromPosition(sourcePos, target);
+        public override bool CanUse(GameObject target)
+            => CanUseAt(GetCasterGridPos(), target);
+
+        public override bool CanUseAt(Vector2Int sourcePos, GameObject target)
+        {
+            if (!CanHitTargetFromPos(sourcePos, target))
+                return false;
+
+            var gridMap = GridMap.Instance;
+
+            if (gridMap == null || target == null)
+                return false;
+
+            return PassRange(sourcePos, gridMap.WorldToGridPos(target.transform.position), false);
+        }
 
         public int GetPredictedHitCount(GameObject target)
-            => GetHitTargetsFromPosition(GetCasterGridPosition(), target).Count;
+            => GetHitTargetsFromPos(GetCasterGridPos(), target).Count;
 
-        private int GetPredictedHitCountFromPosition(Vector2Int sourcePos, GameObject target)
-            => GetHitTargetsFromPosition(sourcePos, target).Count;
+        private int GetPredictedHitCountFromPos(Vector2Int sourcePos, GameObject target)
+            => GetHitTargetsFromPos(sourcePos, target).Count;
 
-        public override float EvaluateEnemyUseScore(GameObject target)
-            => EvaluateEnemyUseScoreFromPosition(GetCasterGridPosition(), target);
-
-        public override float EvaluateEnemyUseScoreFromPosition(Vector2Int sourcePos, GameObject target)
+        public override float ScoreAt(Vector2Int sourcePos, GameObject target, EnemyAIProfileSO ai)
         {
-            if (target == null || SkillSO == null)
+            if (target == null || SkillSO == null || !CanUseAt(sourcePos, target))
                 return float.MinValue;
 
-            int predictedHitCount = GetPredictedHitCountFromPosition(sourcePos, target);
+            int predictedHitCount = GetPredictedHitCountFromPos(sourcePos, target);
             
             if (predictedHitCount <= 0)
                 return float.MinValue;
 
-            return predictedHitCount * SkillSO.SkillDamage;
+            return MakeScore(predictedHitCount * SkillSO.SkillDamage, sourcePos, target, ai);
         }
 
         private List<GameObject> GetHitTargets(GameObject target)
-            => GetHitTargetsFromPosition(GetCasterGridPosition(), target);
+            => GetHitTargetsFromPos(GetCasterGridPos(), target);
 
-        private List<GameObject> GetHitTargetsFromPosition(Vector2Int origin, GameObject target)
+        private List<GameObject> GetHitTargetsFromPos(Vector2Int origin, GameObject target)
         {
             var hitTargets = new List<GameObject>();
 
@@ -210,14 +213,14 @@ namespace Code.SkillSystem
             return hitTargets;
         }
 
-        private Vector2Int GetCasterGridPosition()
+        private Vector2Int GetCasterGridPos()
         {
             GridMap gridMap = GridMap.Instance;
 
             if (gridMap == null)
                 return Vector2Int.zero;
 
-            return gridMap.WorldToGridPos(GetCasterWorldPosition());
+            return gridMap.WorldToGridPos(GetCasterWorldPos());
         }
 
         private void SkillEnd()

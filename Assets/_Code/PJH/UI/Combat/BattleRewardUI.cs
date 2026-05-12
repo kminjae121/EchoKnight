@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using Code.Items;
+using Code.Tower;
 using Input;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Code.UI
@@ -48,7 +48,8 @@ namespace Code.UI
         private void HandleNextButton()
         {
             input._controls.Player.Enable();
-            SceneManager.LoadScene("ExpeditionMapScene");
+            TowerRunSession.CompleteCurrentRoom();
+            TowerSceneLoader.LoadScene(TowerRunSession.TowerSceneName);
         }
     }
 }

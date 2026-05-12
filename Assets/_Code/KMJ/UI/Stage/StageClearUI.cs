@@ -1,5 +1,5 @@
-﻿using UnityEngine;
-using UnityEngine.SceneManagement;
+using Code.Tower;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Code.UI
@@ -21,7 +21,8 @@ namespace Code.UI
         public void ReturnHome()
         {
             Time.timeScale = 1;
-            SceneManager.LoadScene("ExpeditionMapScene");
+            TowerRunSession.CompleteCurrentRoom();
+            TowerSceneLoader.LoadScene(TowerRunSession.TowerSceneName);
         }
     }
 }

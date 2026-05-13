@@ -37,7 +37,6 @@ namespace Code.UnitSystem
         #endregion
         
         public int PlayableUnitID { get; set; } = -1;
-        public bool IsConfirmationSkill { get; set; }
         
         public GameObject _startTile;
         
@@ -83,6 +82,7 @@ namespace Code.UnitSystem
         public override void OnTurnStart()
         {
             base.OnTurnStart();
+            
             Bus<UnitCamSettingEvent>.Raise(new UnitCamSettingEvent(gameObject, false,_dampingSpeed));
             Bus<SetAtkUIEvent>.Raise(new SetAtkUIEvent(true));
             Bus<TurnEndUIEvent>.Raise(new TurnEndUIEvent(false));
@@ -95,6 +95,7 @@ namespace Code.UnitSystem
 
             if (MoveCompo != null)
             {
+                UnitRangeCompo.RemoveAllRange(); 
                 MoveCompo.FindObjectInRange(unitSO.MoveRange);
                 MoveCompo.MoveCount = 0;
             }
@@ -110,6 +111,7 @@ namespace Code.UnitSystem
             {
                 if (MoveCompo.MoveCount < 1)
                 {
+                    UnitRangeCompo.RemoveAllRange(); 
                     MoveCompo.FindObjectInRange(unitSO.MoveRange);
                 }
                 else
@@ -119,11 +121,15 @@ namespace Code.UnitSystem
 
         public override void OnTurnEnd()
         {
-            base.OnTurnEnd();
-            OnTurnEndEvent?.Invoke();
-            PassiveCompo.StopAllTurnPassives();
-            Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
-            Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));
+            if (isMyTurn)
+            {
+                base.OnTurnEnd();
+                UnitRangeCompo.RemoveAllRange(); 
+                OnTurnEndEvent?.Invoke();
+                PassiveCompo.StopAllTurnPassives();
+                Bus<UnitMoveControlEvent>.Raise(new UnitMoveControlEvent(true));
+                Bus<UnitAttackControlEvent>.Raise(new UnitAttackControlEvent(true));      
+            }
         }
 
         protected override void Hit()
@@ -136,15 +142,7 @@ namespace Code.UnitSystem
             }
             base.Hit();
         }
-
-        public void TurnEnd()
-        {
-            if (isMyTurn)
-            {
-                UnitRangeCompo.RemoveAllRange(); 
-                OnTurnEnd();
-            }
-        }
+        
 
         public void HandleDieAnimationEnd()
         {

@@ -1,18 +1,22 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using Code.UI;
+using UnityEngine;
 
 namespace Code.UnitSystem.UnitAttributes
 {
     public class RogueCondition : MonoBehaviour, IUnitCondition
     {
-        private Unit _unit;
-        
+        [SerializeField] private RogueShadowSpawn rogueShadowCompo;
         public void Initialize(Unit unit)
         {
-            _unit = unit;
         }
 
-        public bool CheckCondition()
+        public bool CheckCondition(GameObject target)
         {
+            if (rogueShadowCompo.GetMaxShadowCnt() <= rogueShadowCompo.GetShadowCnt())
+            {
+                return true;
+            }
             return false;
         }
     }

@@ -1,11 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
+using Code.Core.Debugs;
 using Code.Map;
-using Code.SkillSystem;
+using Code.Navigation;
 using Code.UnitSystem;
 using Code.UnitSystem.Enemies;
 using Code.UnitSystem.Enemies.AI;
-using Code.Utils;
 using GondrLib.Dependencies;
 using UnityEngine;
 
@@ -15,192 +15,41 @@ namespace Code.Managers
     public class EnemyManager : MonoBehaviour, IDependencyProvider
     {
         [SerializeField] private UnitManager unitManager;
+        [Inject] private PathBaker _pathBaker;
 
         private readonly Dictionary<AbstractEnemyUnit, EnemyPlan> _plans = new();
         private readonly Dictionary<Vector2Int, AbstractEnemyUnit> _reservedTiles = new();
+        private readonly EnemyPlanner _planner = new();
+        private readonly EnemyMoveMap _moveMap = new();
+        private readonly EnemyRouteMap _routeMap = new();
+        private readonly HashSet<Vector2Int> _routeWatch = new();
 
         public void RefreshPlan(AbstractEnemyUnit enemy)
         {
             if (enemy == null)
+            {
+                UnityLogger.LogError("enemy is null.");
                 return;
+            }
 
             EnemyPlan plan = GetOrCreatePlan(enemy);
             plan.Clear();
 
-            if (unitManager == null || GridMap.Instance == null)
-                return;
+            var gridMap = GridMap.Instance;
 
-            Vector2Int currentPos = GridMap.Instance.WorldToGridPos(enemy.transform.position);
-
-            if (TrySelectBestCombatOption(enemy, currentPos, out Unit selectedTarget, out SkillSO selectedSkill))
+            if (unitManager == null || gridMap == null)
             {
-                plan.SetCombatDecision(selectedTarget, selectedSkill);
+                UnityLogger.LogError($"unitManager : {unitManager}, gridMap : {gridMap}.");
                 return;
             }
 
-            if (TrySelectBestMoveOption(enemy, currentPos, out Unit moveTarget, out Vector2Int moveTile))
-            {
-                plan.SetTarget(moveTarget);
-                plan.SetMoveTile(moveTile);
-                return;
-            }
+            Vector2Int currentPos = gridMap.WorldToGridPos(enemy.transform.position);
+            List<Unit> targets = GetTargets();
+            List<EnemyMoveTile> tiles = GetTiles(enemy, currentPos);
+            _routeMap.Build(targets, _pathBaker, tile => CanMoveTo(enemy, currentPos, tile),
+                GetRouteWatch(currentPos, tiles));
 
-            Unit fallbackTarget = GetClosestTarget(enemy);
-
-            if (fallbackTarget == null)
-                return;
-
-            plan.SetTarget(fallbackTarget);
-
-            if (TryGetBestApproachTile(enemy, currentPos,
-                    GridMap.Instance.WorldToGridPos(fallbackTarget.transform.position), out Vector2Int approachTile))
-                plan.SetMoveTile(approachTile);
-        }
-
-        private bool TrySelectBestCombatOption(AbstractEnemyUnit enemy, Vector2Int sourcePos, out Unit selectedTarget, out SkillSO selectedSkillSO)
-        {
-            selectedTarget = null;
-            selectedSkillSO = null;
-
-            if (enemy == null || unitManager == null || GridMap.Instance == null)
-                return false;
-
-            SkillSO bestSkill = null;
-            Unit bestTarget = null;
-            float bestScore = float.MinValue;
-            float bestDistance = float.MaxValue;
-
-            foreach (var target in GetCandidateTargets())
-            {
-                if (!TrySelectBestSkillForTarget(enemy, sourcePos, target.gameObject,
-                        out SkillSO candidateSkill, out float candidateScore))
-                    continue;
-
-                float candidateDistance = DistanceUtils.GetEuclideanDistance(sourcePos,
-                    GridMap.Instance.WorldToGridPos(target.transform.position));
-
-                if (bestTarget != null && candidateScore < bestScore)
-                    continue;
-
-                if (bestTarget != null && Mathf.Approximately(candidateScore, bestScore))
-                {
-                    if (candidateDistance > bestDistance)
-                        continue;
-
-                    if (Mathf.Approximately(candidateDistance, bestDistance) &&
-                        !IsBetterSkillCandidate(candidateSkill, bestSkill))
-                        continue;
-                }
-
-                bestTarget = target;
-                bestSkill = candidateSkill;
-                bestScore = candidateScore;
-                bestDistance = candidateDistance;
-            }
-
-            selectedTarget = bestTarget;
-            selectedSkillSO = bestSkill;
-            return selectedTarget != null && selectedSkillSO != null;
-        }
-
-        private bool TrySelectBestSkillForTarget(AbstractEnemyUnit enemy, Vector2Int sourcePos, GameObject target, out SkillSO selectedSkillSO, out float selectedScore)
-        {
-            selectedSkillSO = null;
-            selectedScore = float.MinValue;
-
-            if (enemy == null || target == null || enemy.SkillCompo?.Skills == null || enemy.SkillCompo.Skills.Count == 0)
-                return false;
-
-            foreach (var (skillSO, skill) in enemy.SkillCompo.Skills)
-            {
-                if (skillSO == null || skill == null)
-                    continue;
-
-                if (skill is not EnemyBaseSkill enemySkill)
-                    continue;
-
-                if (!enemySkill.CanUseOnTargetFromPosition(sourcePos, target))
-                    continue;
-
-                float score = enemySkill.EvaluateEnemyUseScoreFromPosition(sourcePos, target);
-                
-                if (Mathf.Approximately(score, float.MinValue))
-                    continue;
-
-                if (selectedSkillSO != null && score < selectedScore)
-                    continue;
-
-                if (selectedSkillSO != null && Mathf.Approximately(score, selectedScore) &&
-                    !IsBetterSkillCandidate(skillSO, selectedSkillSO))
-                    continue;
-
-                selectedSkillSO = skillSO;
-                selectedScore = score;
-            }
-
-            return selectedSkillSO != null;
-        }
-
-        private bool TrySelectBestMoveOption(AbstractEnemyUnit enemy, Vector2Int currentPos, out Unit selectedTarget, out Vector2Int selectedMoveTile)
-        {
-            selectedTarget = null;
-            selectedMoveTile = default;
-
-            if (enemy == null || GridMap.Instance == null)
-                return false;
-
-            int moveRange = GetMoveRange(enemy);
-
-            if (moveRange <= 0)
-                return false;
-
-            Unit bestTarget = null;
-            Vector2Int bestMoveTile = default;
-            float bestScore = float.MinValue;
-            int bestMoveCost = int.MaxValue;
-            float bestTargetDistance = float.MaxValue;
-
-            foreach (Unit target in GetCandidateTargets())
-            {
-                if (target == null)
-                    continue;
-
-                Vector2Int targetPos = GridMap.Instance.WorldToGridPos(target.transform.position);
-
-                foreach (Vector2Int candidateTile in GetCandidateMoveTiles(enemy, currentPos, moveRange))
-                {
-                    if (candidateTile == currentPos)
-                        continue;
-
-                    if (!TrySelectBestSkillForTarget(enemy, candidateTile, target.gameObject, out _, out float score))
-                        continue;
-
-                    int moveCost = GetMoveCost(currentPos, candidateTile);
-                    float targetDistance = DistanceUtils.GetEuclideanDistance(candidateTile, targetPos);
-
-                    if (bestTarget != null && score < bestScore)
-                        continue;
-
-                    if (bestTarget != null && Mathf.Approximately(score, bestScore))
-                    {
-                        if (moveCost > bestMoveCost)
-                            continue;
-
-                        if (moveCost == bestMoveCost && targetDistance >= bestTargetDistance)
-                            continue;
-                    }
-
-                    bestTarget = target;
-                    bestMoveTile = candidateTile;
-                    bestScore = score;
-                    bestMoveCost = moveCost;
-                    bestTargetDistance = targetDistance;
-                }
-            }
-
-            selectedTarget = bestTarget;
-            selectedMoveTile = bestMoveTile;
-            return selectedTarget != null;
+            _planner.Build(plan, enemy, currentPos, targets, tiles, _routeMap);
         }
 
         public bool TryGetPlan(AbstractEnemyUnit enemy, out EnemyPlan plan)
@@ -219,7 +68,7 @@ namespace Code.Managers
             if (enemy == null)
                 return false;
 
-            if (_reservedTiles.TryGetValue(tilePos, out AbstractEnemyUnit reservedEnemy) && reservedEnemy != enemy)
+            if (_reservedTiles.TryGetValue(tilePos, out var reservedEnemy) && reservedEnemy != enemy)
                 return false;
 
             ReleaseReservation(enemy);
@@ -263,7 +112,7 @@ namespace Code.Managers
 
         private EnemyPlan GetOrCreatePlan(AbstractEnemyUnit enemy)
         {
-            if (_plans.TryGetValue(enemy, out EnemyPlan plan))
+            if (_plans.TryGetValue(enemy, out var plan))
                 return plan;
 
             plan = new EnemyPlan();
@@ -271,136 +120,50 @@ namespace Code.Managers
             return plan;
         }
 
-        private Unit GetClosestTarget(AbstractEnemyUnit enemy)
-        {
-            if (enemy == null || unitManager == null || GridMap.Instance == null)
-                return null;
-
-            Vector2Int myPos = GridMap.Instance.WorldToGridPos(enemy.transform.position);
-
-            return GetCandidateTargets()
-                .OrderBy(unit => DistanceUtils.GetEuclideanDistance(myPos,
-                    GridMap.Instance.WorldToGridPos(unit.transform.position)))
-                .FirstOrDefault();
-        }
-
-        private bool TryGetBestApproachTile(AbstractEnemyUnit enemy, Vector2Int currentPos, Vector2Int targetPos, out Vector2Int moveTile)
-        {
-            moveTile = default;
-
-            if (enemy == null || GridMap.Instance == null)
-                return false;
-
-            int moveRange = GetMoveRange(enemy);
-
-            if (moveRange <= 0)
-                return false;
-
-            float currentDistance = DistanceUtils.GetEuclideanDistance(currentPos, targetPos);
-            float bestDistance = currentDistance;
-            int bestMoveCost = int.MaxValue;
-            bool found = false;
-
-            foreach (Vector2Int candidateTile in GetCandidateMoveTiles(enemy, currentPos, moveRange))
-            {
-                if (candidateTile == currentPos)
-                    continue;
-
-                float candidateDistance = DistanceUtils.GetEuclideanDistance(candidateTile, targetPos);
-                int moveCost = GetMoveCost(currentPos, candidateTile);
-
-                if (candidateDistance > bestDistance)
-                    continue;
-
-                if (Mathf.Approximately(candidateDistance, bestDistance) && moveCost >= bestMoveCost)
-                    continue;
-
-                bestDistance = candidateDistance;
-                bestMoveCost = moveCost;
-                moveTile = candidateTile;
-                found = true;
-            }
-
-            return found;
-        }
-
-        private IEnumerable<Unit> GetCandidateTargets()
+        private List<Unit> GetTargets()
         {
             if (unitManager == null)
-                return Enumerable.Empty<Unit>();
+            {
+                UnityLogger.LogError("unitManager is null.");
+                return new List<Unit>();
+            }
 
             return unitManager.GetPlayerUnits()
-                .Where(unit => unit != null && unit.gameObject.activeInHierarchy);
+                .Where(unit => unit != null && unit.gameObject.activeInHierarchy)
+                .ToList();
         }
 
-        private IEnumerable<Vector2Int> GetCandidateMoveTiles(AbstractEnemyUnit enemy, Vector2Int currentPos, int moveRange)
+        private List<EnemyMoveTile> GetTiles(AbstractEnemyUnit enemy, Vector2Int currentPos)
+            => _moveMap.Build(currentPos, GetMoveRange(enemy), _pathBaker,
+                tile => CanMoveTo(enemy, currentPos, tile));
+
+        private ISet<Vector2Int> GetRouteWatch(Vector2Int currentPos, IReadOnlyList<EnemyMoveTile> tiles)
         {
-            GridMap gridMap = GridMap.Instance;
+            _routeWatch.Clear();
+            _routeWatch.Add(currentPos);
 
-            if (gridMap == null)
-                yield break;
+            if (tiles == null)
+                return _routeWatch;
 
-            for (int y = currentPos.y - moveRange; y <= currentPos.y + moveRange; ++y)
-                for (int x = currentPos.x - moveRange; x <= currentPos.x + moveRange; ++x)
-                {
-                    Vector2Int candidateTile = new Vector2Int(x, y);
+            foreach (var tile in tiles)
+                _routeWatch.Add(tile.Pos);
 
-                    if (!gridMap.IsValidPosition(candidateTile))
-                        continue;
-
-                    if (GetMoveCost(currentPos, candidateTile) > moveRange)
-                        continue;
-
-                    if (!CanMoveToCandidate(enemy, currentPos, candidateTile))
-                        continue;
-
-                    yield return candidateTile;
-                }
+            return _routeWatch;
         }
 
         private static int GetMoveRange(AbstractEnemyUnit enemy)
-        {
-            if (enemy?.unitSO == null)
-                return 0;
+            => enemy?.unitSO == null ? 0 : Mathf.Max(0, enemy.unitSO.MoveRange);
 
-            return Mathf.Max(0, enemy.unitSO.MoveRange);
-        }
-
-        private bool CanMoveToCandidate(AbstractEnemyUnit enemy, Vector2Int currentPos, Vector2Int candidateTile)
+        private bool CanMoveTo(AbstractEnemyUnit enemy, Vector2Int currentPos, Vector2Int tile)
         {
-            if (candidateTile == currentPos)
+            if (tile == currentPos)
                 return true;
-
-            if (!GridMap.Instance.CanMoveTo(candidateTile))
+            
+            if (!GridMap.Instance.CanMoveTo(tile))
                 return false;
-
-            if (_reservedTiles.TryGetValue(candidateTile, out AbstractEnemyUnit reservedEnemy) && reservedEnemy != enemy)
-                return false;
-
-            return true;
-        }
-
-        private static int GetMoveCost(Vector2Int currentPos, Vector2Int candidateTile)
-        {
-            Vector2Int delta = candidateTile - currentPos;
-            return Mathf.Max(Mathf.Abs(delta.x), Mathf.Abs(delta.y));
-        }
-
-        private static bool IsBetterSkillCandidate(SkillSO candidate, SkillSO current)
-        {
-            if (candidate == null)
-                return false;
-
-            if (current == null)
-                return true;
-
-            if (candidate.SkillDamage != current.SkillDamage)
-                return candidate.SkillDamage > current.SkillDamage;
-
-            if (candidate.SkillCost != current.SkillCost)
-                return candidate.SkillCost < current.SkillCost;
-
-            return string.CompareOrdinal(candidate.skillName, current.skillName) < 0;
+            
+            // 예약된 칸이면 false, 그게 나면 상관 X
+            return !_reservedTiles.TryGetValue(tile, out var reservedEnemy) || reservedEnemy == enemy;
         }
     }
 }

@@ -70,8 +70,7 @@ namespace Code.Navigation
         {
             Vector2Int[] directions =
             {
-                Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right,
-                new(1, 1), new(1, -1), new(-1, 1), new(-1, -1)
+                Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
             };
 
             foreach (NodeData nodeData in bakedData.points)

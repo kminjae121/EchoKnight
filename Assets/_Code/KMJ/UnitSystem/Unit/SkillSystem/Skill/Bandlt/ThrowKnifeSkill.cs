@@ -12,12 +12,15 @@ using UnityEngine;
         private GameObject _target;
 
         private ShootItemAttackManager _shootItemManager;
+
+        private UnitGetEnemyCompo _getUnitCompo;
         
         protected void Start()
         {
             SkillEvent.AddListener(AttackAction);
             animtionCompo = _characterUnit.GetUnitCompo<UnitAnimation>();
             _shootItemManager = _characterUnit.GetUnitCompo<ShootItemAttackManager>();
+            _getUnitCompo = _characterUnit.GetUnitCompo<UnitGetEnemyCompo>();
         }
 
         protected override void StartEvent()
@@ -48,7 +51,11 @@ using UnityEngine;
         
         public void MakeThrowKnife()
         {
-            _characterUnit.IsConfirmationSkill = true;    
+            _getUnitCompo.FindEnemies();
+            int count = _getUnitCompo.Enemies.Count;
+            int randomInt = Random.Range(0, count);
+            
+            Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Bandlt,  _getUnitCompo.Enemies[randomInt].gameObject));
         }
         
         protected override void SkillEnd()

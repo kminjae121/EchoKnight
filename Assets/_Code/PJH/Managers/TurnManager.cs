@@ -4,6 +4,7 @@ using System.Linq;
 using Code.Core.Debugs;
 using Code.Core.Events.Bus;
 using Code.Core.Interfaces;
+using Code.UnitSystem;
 using GondrLib.Dependencies;
 using UnityEngine;
 
@@ -73,6 +74,8 @@ namespace Code.Managers
 
         private float CalculateBaseTurnGauge(ITurnable unit)
         {
+            if (unit == null)
+                return 0;
             return baseTurnGauge / Mathf.Max(1f, unit.TurnSpeed);
         }
 
@@ -81,14 +84,22 @@ namespace Code.Managers
             if (_currentTurnUnit == null)
                 return;
 
+            if (_currentTurnUnit.UnitObj.TryGetComponent(out CharacterUnit unit))
+            {
+                unit.OnTurnEnd();
+            }
+
             if (!ReferenceEquals(evt.Unit, _currentTurnUnit))
             {
                 UnityLogger.LogWarning($"[{nameof(TurnManager)}] 현재 턴 유닛이 [{_currentTurnUnit.UnitName}]이지만, [{evt.Unit?.UnitName}]의 턴 종료 이벤트가 발행됨.");
                 return;
             }
-            
-            _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
-            _currentTurnUnit = null;
+
+            if (_currentTurnUnit != null)
+            {
+                _currentTurnUnit.TurnGauge = CalculateBaseTurnGauge(_currentTurnUnit);
+                _currentTurnUnit = null;   
+            }
 
             _turnFlag = true;
         }

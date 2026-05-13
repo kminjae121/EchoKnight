@@ -31,11 +31,13 @@ namespace Code.UnitSystem.Combat
         private UnitShieldCompo _shieldCompo;
         
         private float _defensivePower;
+
+        public bool IsInvincibility { get;  set; } = false;
         
         public float CurrentHealth => currentHealth;
         public float MaxHealth => maxHealth;
 
-        public bool IsDead { get; private set; }= false;
+        public bool IsDead { get; private set; } = false;
 
 
         public UnityEvent<Unit,int> OnInteractionEvent;
@@ -73,6 +75,11 @@ namespace Code.UnitSystem.Combat
             _unitAnimation = _entity.GetUnitCompo<UnitAnimation>();
         }
 
+        public void SetMaxHp(float value)
+        {
+            MaxHealth = value;
+        }
+
         public void HealHp(float amount)
         {
             currentHealth += amount;
@@ -107,6 +114,9 @@ namespace Code.UnitSystem.Combat
             Unit dealer,bool isCritical, bool isPenetrate)
         {
             if (IsDead)
+                return;
+
+            if (IsInvincibility)
                 return;
             
             _actionData.HitNormal = hitNormal;      

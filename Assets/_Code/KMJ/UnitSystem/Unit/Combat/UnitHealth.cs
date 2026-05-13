@@ -75,6 +75,11 @@ namespace Code.UnitSystem.Combat
             _unitAnimation = _entity.GetUnitCompo<UnitAnimation>();
         }
 
+        public void SetMaxHp(float value)
+        {
+            MaxHealth = value;
+        }
+
         public void HealHp(float amount)
         {
             currentHealth += amount;

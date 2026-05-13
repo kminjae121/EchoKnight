@@ -8,10 +8,12 @@ namespace Code.UnitSystem.UnitAttributes
         [SerializeField] private ParticleSystem circleParticle;
         [SerializeField] private KnightDefenseRange defenseCompo;
         private Unit _unit;
+        private UnitHealth _healthCompo;
         
         public void Initialize(Unit unit)
         {
             _unit = unit;
+            _healthCompo = _unit.GetUnitCompo<UnitHealth>();
         }
 
         public void Perform(GameObject target)
@@ -19,10 +21,12 @@ namespace Code.UnitSystem.UnitAttributes
             foreach (var unit in defenseCompo.Targets)
             {
                 unit.GetUnitCompo<InvincibilityCompo>().SetUnitInvincibility(2);
+                unit.GetUnitCompo<UnitHealth>().HealHp(20);
             }
             
-            _unit.GetUnitCompo<InvincibilityCompo>().SetUnitInvincibility(3);
-            
+            _unit.GetUnitCompo<InvincibilityCompo>().SetUnitInvincibility(1);
+
+            _healthCompo.SetMaxHp(_unit.unitSO.Maxhealth);
             circleParticle.Play();
         }
     }

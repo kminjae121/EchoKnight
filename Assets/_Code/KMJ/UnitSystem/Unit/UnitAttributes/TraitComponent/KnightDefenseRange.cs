@@ -6,6 +6,7 @@ using Code.Core.Interfaces;
 using Code.Managers;
 using Code.Map;
 using Code.UnitSystem.Combat;
+using Code.UnitSystem.Enemies;
 using GondrLib.Dependencies;
 using UnityEngine;
 
@@ -20,6 +21,7 @@ namespace Code.UnitSystem.UnitAttributes
         [Inject] protected TurnManager _turnManager;
         
         public HashSet<CharacterUnit> Targets { get; private set; } = new();
+        public HashSet<AbstractEnemyUnit> Enemies { get; private set; } = new();
 
         public void Initialize(Unit owner)
         {
@@ -37,12 +39,9 @@ namespace Code.UnitSystem.UnitAttributes
                 UnityLogger.LogWarning("UnitHealth 컴포넌트가 없습니다");
                 return;
             }
-
-            _unitHealthCompo.OnDefenseEvent += ReduceDamage;
             
             Injector.InjectInto(this);
-
-
+            
             if (_turnManager != null)
             {
                 _turnManager.OnTurnStart += FindUnitInDefenseRange;
@@ -56,10 +55,16 @@ namespace Code.UnitSystem.UnitAttributes
                 if (target != null && target.HealthCompo != null)
                     target.HealthCompo.OnDefenseEvent -= ReduceDamage;
             }
-            Targets.Clear();
 
-            if (_unitHealthCompo != null)
-                _unitHealthCompo.OnDefenseEvent -= ReduceDamage;
+            foreach (var enemy in Enemies)
+            {
+                if (enemy != null && enemy.TurnSpeed != enemy.unitSO.Speed)
+                    enemy.TurnSpeed = enemy.unitSO.Speed;
+            }
+            
+            Targets.Clear();
+            Enemies.Clear();
+            
             
             if(_turnManager != null)
                 _turnManager.OnTurnStart -= FindUnitInDefenseRange;
@@ -98,16 +103,28 @@ namespace Code.UnitSystem.UnitAttributes
                 {   
                     IMapTile tile = GridMap.Instance.GetTile(center + new Vector2Int(x, y));
                     if (tile == null) continue;
-
-                    CharacterUnit characterUnit = tile.GetTileUnit() as CharacterUnit;
                     
-                    if (characterUnit == null) continue;
-                    if (characterUnit == _unit) continue;
-                    if (characterUnit.HealthCompo == null) continue;
-    
-                    if (Targets.Add(characterUnit))
+                    CharacterUnit characterUnit = tile.GetTileUnit() as CharacterUnit;
+
+                    if (characterUnit != null)
                     {
-                        characterUnit.HealthCompo.OnDefenseEvent += ReduceDamage;
+                        if (characterUnit == _unit) continue;
+                        if (characterUnit.HealthCompo == null) continue;
+    
+                        if (Targets.Add(characterUnit))
+                        {
+                            characterUnit.HealthCompo.OnDefenseEvent += ReduceDamage;
+                        }   
+                    }
+                    
+                    AbstractEnemyUnit enemyUnit = tile.GetTileUnit() as AbstractEnemyUnit;
+
+                    if (enemyUnit != null)
+                    {
+                        if (Enemies.Add(enemyUnit))
+                        {
+                            enemyUnit.TurnSpeed -= 1;
+                        }
                     }
                 }
             }
@@ -120,6 +137,8 @@ namespace Code.UnitSystem.UnitAttributes
         private void ReduceDamage(ref int damage)
         {
             damage = Mathf.RoundToInt(damage * 0.5f);
+
+            _unitHealthCompo.SetMaxHp(_unitHealthCompo.MaxHealth - 1);
             
             Bus<UseGimicEvent>.Raise(new UseGimicEvent(UnitType.Knight, null));
         }

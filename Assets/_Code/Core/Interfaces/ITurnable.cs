@@ -12,7 +12,7 @@ namespace Code.Core.Interfaces
         
         bool IsReadyDoAct { get; }
         
-        float TurnSpeed { get; }
+        int TurnSpeed { get; }
         
         Sprite UnitImage { get; }
 

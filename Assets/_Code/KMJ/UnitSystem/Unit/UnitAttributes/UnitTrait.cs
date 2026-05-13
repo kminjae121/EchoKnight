@@ -12,6 +12,8 @@ namespace Code.UnitSystem.UnitAttributes
         private Unit _unit;
         private IUnitPerform _perform;
         private List<IUnitCondition> _conditions;
+
+        private bool _isPerformed = false;
         
         private UnitType _unitType = UnitType.None;
         
@@ -67,15 +69,16 @@ namespace Code.UnitSystem.UnitAttributes
             {
                 if (condition.CheckCondition(evt.target))
                 {
-                    Perform(evt.target);
+                    _isPerformed = true;
                     break;
                 }
             }
         }
 
-        private void Perform(GameObject target)
+        public void Perform(GameObject target)
         {
             _perform.Perform(target);
+            _isPerformed = false;
         }
     }
 }

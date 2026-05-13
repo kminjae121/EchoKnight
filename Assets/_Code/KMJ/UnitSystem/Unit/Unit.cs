@@ -19,7 +19,7 @@ namespace Code.UnitSystem
         [Header("Status")]
         public bool isMyTurn { get; private set; }
         public bool IsPlayerUnit { get; private set; }
-        public float TurnSpeed { get; private set; }
+        public int TurnSpeed { get; set; }
         public Sprite UnitImage { get; private set; }
         public bool IsReadyDoAct => TurnGauge >= 100f;
 

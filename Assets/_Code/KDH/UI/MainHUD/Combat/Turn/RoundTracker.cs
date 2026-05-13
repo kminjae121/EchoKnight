@@ -13,7 +13,7 @@ namespace Code.Managers
         
         public bool IsReadyDoAct => false;
         
-        public float TurnSpeed => 0f;
+        public int TurnSpeed => 0;
         
         public Sprite UnitImage => null;
 

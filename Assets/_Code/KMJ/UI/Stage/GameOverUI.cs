@@ -1,4 +1,5 @@
-﻿using _Code.UnitSystem;
+using _Code.UnitSystem;
+using Code.Tower;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -24,9 +25,12 @@ namespace Code.UI
 
         public void ReturnHome()
         {
-            SceneManager.LoadScene("Lobby");
+            string lobbySceneName = TowerRunSession.LobbySceneName;
+            TowerRunSession.EndRun();
+            TowerSceneLoader.LoadScene(lobbySceneName);
             InGameStatCompo.Instance.ReStartGame();
         }
+
         public void RestartBtn()
         {
             Time.timeScale = 1;

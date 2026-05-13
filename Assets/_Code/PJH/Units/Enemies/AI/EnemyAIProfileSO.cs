@@ -13,7 +13,6 @@ namespace Code.UnitSystem.Enemies.AI
     {
         public EnemyCombatStyle Style = EnemyCombatStyle.Melee;
         public bool Kite;
-        public bool AttackCornered = true;
         public float DmgWeight = 1f;
         public float PrioWeight = 10f;
         public float PosWeight = 15f;

@@ -9,11 +9,6 @@ namespace Code.UnitSystem.Enemies.AI
 {
     public sealed class EnemyMoveMap
     {
-        private static readonly Vector2Int[] Dirs =
-        {
-            Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
-        };
-
         private readonly Queue<Vector2Int> _open = new();
         private readonly Dictionary<Vector2Int, int> _costs = new();
         private readonly List<EnemyMoveTile> _tiles = new();
@@ -29,14 +24,10 @@ namespace Code.UnitSystem.Enemies.AI
 
             Add(start, 0);
 
-            if (range == 0)
+            if (range == 0 || !CanUseBake(start, baker))
                 return _tiles;
 
-            if (CanUseBake(start, baker))
-                BuildBaked(range, baker, canEnter);
-            else
-                BuildGrid(range, canEnter);
-
+            BuildBaked(range, baker, canEnter);
             return _tiles;
         }
 
@@ -53,31 +44,12 @@ namespace Code.UnitSystem.Enemies.AI
                 if (!baker.bakedData.GetNodeIfExist(GridCoordUtils.GridToCell(pos), out NodeData node))
                     continue;
 
-                foreach (var link in node.neighbors)
+                foreach (var neighbor in node.neighbors)
                 {
-                    Vector2Int next = GridCoordUtils.CellToGrid(link.endCellPos);
+                    Vector2Int next = GridCoordUtils.CellToGrid(neighbor.endCellPos);
 
                     if (!IsCardinal(pos, next))
                         continue;
-
-                    TryAdd(next, cost + 1, range, canEnter);
-                }
-            }
-        }
-
-        private void BuildGrid(int range, Func<Vector2Int, bool> canEnter)
-        {
-            while (_open.Count > 0)
-            {
-                Vector2Int pos = _open.Dequeue();
-                int cost = _costs[pos];
-
-                if (cost >= range)
-                    continue;
-
-                foreach (var dir in Dirs)
-                {
-                    Vector2Int next = pos + dir;
 
                     TryAdd(next, cost + 1, range, canEnter);
                 }
@@ -111,6 +83,7 @@ namespace Code.UnitSystem.Enemies.AI
                    baker.bakedData.GetNodeIfExist(GridCoordUtils.GridToCell(start), out _);
         }
 
+        // 대각선 방지
         private static bool IsCardinal(Vector2Int from, Vector2Int to)
         {
             Vector2Int delta = to - from;

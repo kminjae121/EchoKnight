@@ -56,10 +56,7 @@ namespace Code.SkillSystem
 
         public virtual float ScoreAt(Vector2Int from, GameObject target, EnemyAIProfileSO ai)
         {
-            if (target == null || SkillSO == null)
-                return float.MinValue;
-
-            if (!CanUseAt(from, target))
+            if (target == null || SkillSO == null || !CanUseAt(from, target))
                 return float.MinValue;
 
             return MakeScore(SkillSO.SkillDamage, from, target, ai);

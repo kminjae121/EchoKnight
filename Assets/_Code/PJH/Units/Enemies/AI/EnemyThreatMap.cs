@@ -14,7 +14,7 @@ namespace Code.UnitSystem.Enemies.AI
             if (units == null || GridMap.Instance == null)
                 return;
 
-            foreach (Unit unit in units)
+            foreach (var unit in units)
             {
                 if (unit == null)
                     continue;
@@ -28,9 +28,9 @@ namespace Code.UnitSystem.Enemies.AI
             if (_positions.Count == 0)
                 return fallback;
 
-            float min = float.MaxValue;
+            var min = float.MaxValue;
 
-            foreach (Vector2Int pos in _positions)
+            foreach (var pos in _positions)
             {
                 float dist = DistanceUtils.GetManhattanDistance(from, pos);
 

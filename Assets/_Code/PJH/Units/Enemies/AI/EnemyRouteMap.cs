@@ -9,16 +9,11 @@ namespace Code.UnitSystem.Enemies.AI
 {
     public sealed class EnemyRouteMap
     {
-        private static readonly Vector2Int[] Dirs =
-        {
-            Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right
-        };
-
         private readonly Queue<Vector2Int> _open = new();
         private readonly Dictionary<Vector2Int, int> _costs = new();
         private readonly Dictionary<Unit, Dictionary<Vector2Int, int>> _routes = new();
 
-        public void Build(IReadOnlyList<Unit> targets, PathBaker baker, Func<Vector2Int, bool> canEnter)
+        public void Build(IReadOnlyList<Unit> targets, PathBaker baker, Func<Vector2Int, bool> canEnter, ISet<Vector2Int> watch = null)
         {
             _routes.Clear();
 
@@ -31,7 +26,7 @@ namespace Code.UnitSystem.Enemies.AI
                     continue;
 
                 Vector2Int goal = GridMap.Instance.WorldToGridPos(target.transform.position);
-                _routes[target] = BuildRoute(goal, baker, canEnter);
+                _routes[target] = BuildRoute(goal, baker, canEnter, watch);
             }
         }
 
@@ -48,23 +43,26 @@ namespace Code.UnitSystem.Enemies.AI
             return route.TryGetValue(pos, out cost);
         }
 
-        private Dictionary<Vector2Int, int> BuildRoute(Vector2Int goal, PathBaker baker, Func<Vector2Int, bool> canEnter)
+        private Dictionary<Vector2Int, int> BuildRoute(Vector2Int goal, PathBaker baker, Func<Vector2Int, bool> canEnter, ISet<Vector2Int> watch)
         {
             _open.Clear();
             _costs.Clear();
-            Add(goal, 0);
 
-            if (CanUseBake(goal, baker))
-                BuildBaked(baker, canEnter);
-            else
-                BuildGrid(canEnter);
+            if (!CanUseBake(goal, baker))
+                return new Dictionary<Vector2Int, int>();
+
+            int left = HasWatch(watch) ? watch.Count : 0;
+            Add(goal, 0, watch, ref left);
+
+            if (!IsDone(watch, left))
+                BuildBaked(baker, canEnter, watch, ref left);
 
             return new Dictionary<Vector2Int, int>(_costs);
         }
 
-        private void BuildBaked(PathBaker baker, Func<Vector2Int, bool> canEnter)
+        private void BuildBaked(PathBaker baker, Func<Vector2Int, bool> canEnter, ISet<Vector2Int> watch, ref int left)
         {
-            while (_open.Count > 0)
+            while (_open.Count > 0 && !IsDone(watch, left))
             {
                 Vector2Int pos = _open.Dequeue();
                 int cost = _costs[pos];
@@ -72,35 +70,22 @@ namespace Code.UnitSystem.Enemies.AI
                 if (!baker.bakedData.GetNodeIfExist(GridCoordUtils.GridToCell(pos), out NodeData node))
                     continue;
 
-                foreach (LinkData link in node.neighbors)
+                foreach (var neighbor in node.neighbors)
                 {
-                    Vector2Int next = GridCoordUtils.CellToGrid(link.endCellPos);
+                    Vector2Int next = GridCoordUtils.CellToGrid(neighbor.endCellPos);
 
                     if (!IsCardinal(pos, next))
                         continue;
 
-                    TryAdd(next, cost + 1, canEnter);
+                    TryAdd(next, cost + 1, canEnter, watch, ref left);
+
+                    if (IsDone(watch, left))
+                        break;
                 }
             }
         }
 
-        private void BuildGrid(Func<Vector2Int, bool> canEnter)
-        {
-            while (_open.Count > 0)
-            {
-                Vector2Int pos = _open.Dequeue();
-                int cost = _costs[pos];
-
-                foreach (Vector2Int dir in Dirs)
-                {
-                    Vector2Int next = pos + dir;
-
-                    TryAdd(next, cost + 1, canEnter);
-                }
-            }
-        }
-
-        private void TryAdd(Vector2Int pos, int cost, Func<Vector2Int, bool> canEnter)
+        private void TryAdd(Vector2Int pos, int cost, Func<Vector2Int, bool> canEnter, ISet<Vector2Int> watch, ref int left)
         {
             if (_costs.ContainsKey(pos))
                 return;
@@ -111,14 +96,23 @@ namespace Code.UnitSystem.Enemies.AI
             if (canEnter != null && !canEnter(pos))
                 return;
 
-            Add(pos, cost);
+            Add(pos, cost, watch, ref left);
         }
 
-        private void Add(Vector2Int pos, int cost)
+        private void Add(Vector2Int pos, int cost, ISet<Vector2Int> watch, ref int left)
         {
             _costs.Add(pos, cost);
             _open.Enqueue(pos);
+
+            if (HasWatch(watch) && watch.Contains(pos))
+                --left;
         }
+
+        private static bool HasWatch(ISet<Vector2Int> watch)
+            => watch is { Count: > 0 };
+
+        private static bool IsDone(ISet<Vector2Int> watch, int left)
+            => HasWatch(watch) && left <= 0;
 
         private static bool CanUseBake(Vector2Int goal, PathBaker baker)
         {
@@ -126,6 +120,7 @@ namespace Code.UnitSystem.Enemies.AI
                    baker.bakedData.GetNodeIfExist(GridCoordUtils.GridToCell(goal), out _);
         }
 
+        // 대각선 방지
         private static bool IsCardinal(Vector2Int from, Vector2Int to)
         {
             Vector2Int delta = to - from;

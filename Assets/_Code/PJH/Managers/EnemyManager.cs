@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using Code.Core.Debugs;
 using Code.Map;
 using Code.Navigation;
 using Code.UnitSystem;
@@ -21,11 +22,15 @@ namespace Code.Managers
         private readonly EnemyPlanner _planner = new();
         private readonly EnemyMoveMap _moveMap = new();
         private readonly EnemyRouteMap _routeMap = new();
+        private readonly HashSet<Vector2Int> _routeWatch = new();
 
         public void RefreshPlan(AbstractEnemyUnit enemy)
         {
             if (enemy == null)
+            {
+                UnityLogger.LogError("enemy is null.");
                 return;
+            }
 
             EnemyPlan plan = GetOrCreatePlan(enemy);
             plan.Clear();
@@ -33,12 +38,16 @@ namespace Code.Managers
             var gridMap = GridMap.Instance;
 
             if (unitManager == null || gridMap == null)
+            {
+                UnityLogger.LogError($"unitManager : {unitManager}, gridMap : {gridMap}.");
                 return;
+            }
 
             Vector2Int currentPos = gridMap.WorldToGridPos(enemy.transform.position);
             List<Unit> targets = GetTargets();
             List<EnemyMoveTile> tiles = GetTiles(enemy, currentPos);
-            _routeMap.Build(targets, _pathBaker, tile => CanMoveTo(enemy, currentPos, tile));
+            _routeMap.Build(targets, _pathBaker, tile => CanMoveTo(enemy, currentPos, tile),
+                GetRouteWatch(currentPos, tiles));
 
             _planner.Build(plan, enemy, currentPos, targets, tiles, _routeMap);
         }
@@ -114,7 +123,10 @@ namespace Code.Managers
         private List<Unit> GetTargets()
         {
             if (unitManager == null)
+            {
+                UnityLogger.LogError("unitManager is null.");
                 return new List<Unit>();
+            }
 
             return unitManager.GetPlayerUnits()
                 .Where(unit => unit != null && unit.gameObject.activeInHierarchy)
@@ -125,6 +137,20 @@ namespace Code.Managers
             => _moveMap.Build(currentPos, GetMoveRange(enemy), _pathBaker,
                 tile => CanMoveTo(enemy, currentPos, tile));
 
+        private ISet<Vector2Int> GetRouteWatch(Vector2Int currentPos, IReadOnlyList<EnemyMoveTile> tiles)
+        {
+            _routeWatch.Clear();
+            _routeWatch.Add(currentPos);
+
+            if (tiles == null)
+                return _routeWatch;
+
+            foreach (var tile in tiles)
+                _routeWatch.Add(tile.Pos);
+
+            return _routeWatch;
+        }
+
         private static int GetMoveRange(AbstractEnemyUnit enemy)
             => enemy?.unitSO == null ? 0 : Mathf.Max(0, enemy.unitSO.MoveRange);
 
@@ -132,10 +158,11 @@ namespace Code.Managers
         {
             if (tile == currentPos)
                 return true;
-
+            
             if (!GridMap.Instance.CanMoveTo(tile))
                 return false;
-
+            
+            // 예약된 칸이면 false, 그게 나면 상관 X
             return !_reservedTiles.TryGetValue(tile, out var reservedEnemy) || reservedEnemy == enemy;
         }
     }

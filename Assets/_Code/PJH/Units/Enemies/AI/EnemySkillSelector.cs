@@ -15,8 +15,8 @@ namespace Code.UnitSystem.Enemies.AI
             if (enemy == null || targets == null || GridMap.Instance == null)
                 return false;
 
-            float bestScore = float.MinValue;
-            float bestDistance = float.MaxValue;
+            var bestScore = float.MinValue;
+            var bestDistance = float.MaxValue;
 
             foreach (var target in targets)
             {
@@ -26,8 +26,7 @@ namespace Code.UnitSystem.Enemies.AI
                 if (!TrySkill(enemy, from, target.gameObject, out EnemySkillPick pick))
                     continue;
 
-                float distance = DistanceUtils.GetEuclideanDistance(from,
-                    GridMap.Instance.WorldToGridPos(target.transform.position));
+                float distance = DistanceUtils.GetEuclideanDistance(from, GridMap.Instance.WorldToGridPos(target.transform.position));
 
                 if (bestPick.IsValid && pick.Score < bestScore)
                     continue;
@@ -37,8 +36,7 @@ namespace Code.UnitSystem.Enemies.AI
                     if (distance > bestDistance)
                         continue;
 
-                    if (Mathf.Approximately(distance, bestDistance) &&
-                        !IsBetterSkill(pick.SkillSO, bestPick.SkillSO))
+                    if (Mathf.Approximately(distance, bestDistance) && !IsBetterSkill(pick.SkillSO, bestPick.SkillSO))
                         continue;
                 }
 
@@ -54,23 +52,19 @@ namespace Code.UnitSystem.Enemies.AI
         {
             pick = default;
 
-            if (enemy == null || target == null || enemy.SkillCompo?.Skills == null ||
-                enemy.SkillCompo.Skills.Count == 0)
+            if (enemy == null || target == null || enemy.SkillCompo?.Skills == null || enemy.SkillCompo.Skills.Count == 0)
                 return false;
 
             SkillSO bestSkillSO = null;
             EnemyBaseSkill bestSkill = null;
-            float bestScore = float.MinValue;
+            var bestScore = float.MinValue;
 
             foreach (var (skillSO, skill) in enemy.SkillCompo.Skills)
             {
                 if (skillSO == null || skill == null)
                     continue;
 
-                if (skill is not EnemyBaseSkill enemySkill)
-                    continue;
-
-                if (!enemySkill.CanUseAt(from, target))
+                if (skill is not EnemyBaseSkill enemySkill || !enemySkill.CanUseAt(from, target))
                     continue;
 
                 float score = enemySkill.ScoreAt(from, target, enemy.AIProfile);
@@ -81,8 +75,7 @@ namespace Code.UnitSystem.Enemies.AI
                 if (bestSkillSO != null && score < bestScore)
                     continue;
 
-                if (bestSkillSO != null && Mathf.Approximately(score, bestScore) &&
-                    !IsBetterSkill(skillSO, bestSkillSO))
+                if (bestSkillSO != null && Mathf.Approximately(score, bestScore) && !IsBetterSkill(skillSO, bestSkillSO))
                     continue;
 
                 bestSkillSO = skillSO;
@@ -161,8 +154,8 @@ namespace Code.UnitSystem.Enemies.AI
                 enemy.SkillCompo.Skills.Count == 0 || GridMap.Instance == null)
                 return false;
 
-            float bestDistance = float.MaxValue;
-            float bestScore = float.MinValue;
+            var bestDistance = float.MaxValue;
+            var bestScore = float.MinValue;
 
             foreach (var target in targets)
             {
@@ -223,7 +216,7 @@ namespace Code.UnitSystem.Enemies.AI
             if (candidate.SkillCost != current.SkillCost)
                 return candidate.SkillCost < current.SkillCost;
 
-            return string.CompareOrdinal(candidate.skillName, current.skillName) < 0;
+            return true;
         }
     }
 }

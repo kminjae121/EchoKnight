@@ -7,8 +7,7 @@ namespace Code.UnitSystem.Enemies.AI
 {
     public sealed class EnemyMoveSelector
     {
-        public bool TrySkillTile(AbstractEnemyUnit enemy, IReadOnlyList<EnemyMoveOption> options,
-            out EnemyMovePick move)
+        public bool TrySkillTile(AbstractEnemyUnit enemy, IReadOnlyList<EnemyMoveOption> options, out EnemyMovePick move)
         {
             move = default;
 
@@ -18,7 +17,7 @@ namespace Code.UnitSystem.Enemies.AI
             var best = default(EnemyMoveOption);
             var found = false;
 
-            foreach (EnemyMoveOption option in options)
+            foreach (var option in options)
             {
                 if (!option.IsValid || !EnemyMoveRanker.SkillTile(enemy, option, best, found))
                     continue;
@@ -34,8 +33,7 @@ namespace Code.UnitSystem.Enemies.AI
             return true;
         }
 
-        public bool TrySpaceTile(AbstractEnemyUnit enemy, Vector2Int from, EnemySkillPick pick,
-            IReadOnlyList<EnemyMoveTile> tiles, out Vector2Int selectedTile)
+        public bool TrySpaceTile(AbstractEnemyUnit enemy, Vector2Int from, EnemySkillPick pick, IReadOnlyList<EnemyMoveTile> tiles, out Vector2Int selectedTile)
         {
             selectedTile = default;
 
@@ -46,7 +44,7 @@ namespace Code.UnitSystem.Enemies.AI
             Vector2Int targetPos = GridMap.Instance.WorldToGridPos(pick.Target.transform.position);
             var best = EnemyMoveEval.Invalid;
 
-            foreach (EnemyMoveTile tile in tiles)
+            foreach (var tile in tiles)
             {
                 if (tile.Pos == from)
                     continue;
@@ -64,8 +62,7 @@ namespace Code.UnitSystem.Enemies.AI
             IReadOnlyList<EnemyMoveTile> tiles, out Vector2Int selectedTile)
             => TryRetreatTile(enemy, from, pick, null, tiles, out selectedTile);
 
-        public bool TryRetreatTile(AbstractEnemyUnit enemy, Vector2Int from, EnemySkillPick pick,
-            IReadOnlyList<Unit> threats, IReadOnlyList<EnemyMoveTile> tiles, out Vector2Int selectedTile)
+        public bool TryRetreatTile(AbstractEnemyUnit enemy, Vector2Int from, EnemySkillPick pick, IReadOnlyList<Unit> threats, IReadOnlyList<EnemyMoveTile> tiles, out Vector2Int selectedTile)
         {
             selectedTile = default;
 
@@ -79,13 +76,12 @@ namespace Code.UnitSystem.Enemies.AI
             float currentThreatDist = threatMap.MinDist(from, currentDist);
             var best = EnemyMoveEval.Invalid;
 
-            foreach (EnemyMoveTile tile in tiles)
+            foreach (var tile in tiles)
             {
                 if (tile.Pos == from)
                     continue;
 
-                EnemyMoveEval score = EnemyMoveScorer.Retreat(tile, pick, target, targetPos, threatMap,
-                    currentThreatDist);
+                EnemyMoveEval score = EnemyMoveScorer.Retreat(tile, pick, target, targetPos, threatMap, currentThreatDist);
 
                 if (EnemyMoveRanker.Retreat(score, best))
                     best = score;
@@ -94,8 +90,7 @@ namespace Code.UnitSystem.Enemies.AI
             return TrySet(best, out selectedTile);
         }
 
-        public bool TryApproachTile(Vector2Int from, Unit target, Vector2Int targetPos,
-            IReadOnlyList<EnemyMoveTile> tiles, EnemyRouteMap routes, out Vector2Int selectedTile)
+        public bool TryApproachTile(Vector2Int from, Unit target, Vector2Int targetPos, IReadOnlyList<EnemyMoveTile> tiles, EnemyRouteMap routes, out Vector2Int selectedTile)
         {
             selectedTile = default;
 
@@ -111,7 +106,7 @@ namespace Code.UnitSystem.Enemies.AI
             float currentDist = DistanceUtils.GetManhattanDistance(from, targetPos);
             var best = EnemyMoveEval.Invalid;
 
-            foreach (EnemyMoveTile tile in tiles)
+            foreach (var tile in tiles)
             {
                 if (tile.Pos == from)
                     continue;

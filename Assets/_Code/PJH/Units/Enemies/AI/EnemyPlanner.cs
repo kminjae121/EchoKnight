@@ -10,8 +10,8 @@ namespace Code.UnitSystem.Enemies.AI
         private readonly EnemySkillSelector _skills = new();
         private readonly EnemyMoveSelector _moves = new();
 
-        public void Build(EnemyPlan plan, AbstractEnemyUnit enemy, Vector2Int from, IReadOnlyList<Unit> targets,
-            IReadOnlyList<EnemyMoveTile> tiles, EnemyRouteMap routes)
+        public void Build(EnemyPlan plan, AbstractEnemyUnit enemy, Vector2Int from,
+            IReadOnlyList<Unit> targets, IReadOnlyList<EnemyMoveTile> tiles, EnemyRouteMap routes)
         {
             if (plan == null || enemy == null || targets == null || targets.Count == 0)
                 return;
@@ -19,6 +19,7 @@ namespace Code.UnitSystem.Enemies.AI
             bool canKeepSpace = CanKeepSpace(enemy);
             bool hasPick = _skills.TryBest(enemy, from, targets, out EnemySkillPick pick);
 
+            // 거리 유지형 적은 일반 공격 판단보다 가까운 위협을 먼저 처리한다.
             if (canKeepSpace && _skills.TryCloseThreat(enemy, from, targets, out EnemySkillPick threatPick))
             {
                 plan.SetTarget(threatPick.Target);
@@ -29,7 +30,7 @@ namespace Code.UnitSystem.Enemies.AI
                     return;
                 }
 
-                if (hasPick && (enemy.AIProfile == null || enemy.AIProfile.AttackCornered))
+                if (hasPick)
                     plan.SetCombatDecision(pick.Target, pick.SkillSO);
 
                 return;
@@ -37,12 +38,14 @@ namespace Code.UnitSystem.Enemies.AI
 
             bool wantsMove = hasPick && canKeepSpace && pick.Skill.WantsMove(from, pick.Target.gameObject);
 
+            // 선택한 스킬을 바로 쓸 수 있고 거리 문제가 없으면 즉시 공격한다.
             if (hasPick && !wantsMove)
             {
                 plan.SetCombatDecision(pick.Target, pick.SkillSO);
                 return;
             }
 
+            // 스킬 사용이 가능하면서 위험 거리에서 벗어나는 칸을 우선한다.
             if (hasPick && _moves.TrySpaceTile(enemy, from, pick, tiles, out Vector2Int spaceTile))
             {
                 plan.SetTarget(pick.Target);
@@ -50,6 +53,7 @@ namespace Code.UnitSystem.Enemies.AI
                 return;
             }
 
+            // 이상적인 거리 유지 칸이 없으면 일단 더 멀어지는 이동을 시도한다.
             if (wantsMove && _moves.TryRetreatTile(enemy, from, pick, tiles, out Vector2Int retreatTile))
             {
                 plan.SetTarget(pick.Target);
@@ -57,13 +61,15 @@ namespace Code.UnitSystem.Enemies.AI
                 return;
             }
 
-            if (hasPick && (enemy.AIProfile == null || enemy.AIProfile.AttackCornered))
+            // 거리 확보에 실패해도 스킬을 쓸 수 있으면 공격한다.
+            if (hasPick)
             {
                 plan.SetCombatDecision(pick.Target, pick.SkillSO);
                 return;
             }
 
-            if (!hasPick && canKeepSpace && _skills.TryTooClose(enemy, from, targets, out EnemySkillPick closePick))
+            // 현재 위치에서 쓸 스킬은 없지만 대상이 너무 가까우면 후퇴를 시도한다.
+            if (canKeepSpace && _skills.TryTooClose(enemy, from, targets, out EnemySkillPick closePick))
             {
                 plan.SetTarget(closePick.Target);
 
@@ -73,6 +79,7 @@ namespace Code.UnitSystem.Enemies.AI
                 return;
             }
 
+            // 이동 후 스킬을 사용할 수 있는 도달 가능 칸을 찾는다.
             List<EnemyMoveOption> skillTiles = BuildSkillTileOptions(enemy, from, targets, tiles);
 
             if (_moves.TrySkillTile(enemy, skillTiles, out EnemyMovePick move))
@@ -82,6 +89,7 @@ namespace Code.UnitSystem.Enemies.AI
                 return;
             }
 
+            // 마지막으로 직선거리가 아닌 실제 경로 비용 기준으로 가장 가까운 대상을 쫓는다.
             Unit target = PickClosest(from, targets, routes);
 
             if (target == null)
@@ -104,6 +112,7 @@ namespace Code.UnitSystem.Enemies.AI
                 plan.SetMoveTile(approachTile);
         }
 
+        // 벽과 우회 경로를 반영하기 위해 직선거리보다 실제 경로 비용을 우선한다.
         private static Unit PickClosest(Vector2Int from, IReadOnlyList<Unit> targets, EnemyRouteMap routes)
         {
             if (targets == null || GridMap.Instance == null)
@@ -154,7 +163,9 @@ namespace Code.UnitSystem.Enemies.AI
             return closest;
         }
 
-        private List<EnemyMoveOption> BuildSkillTileOptions(AbstractEnemyUnit enemy, Vector2Int from, IReadOnlyList<Unit> targets, IReadOnlyList<EnemyMoveTile> tiles)
+        // 현재 이동 가능 칸 중 이동 후 스킬 사용이 가능한 후보를 만든다.
+        private List<EnemyMoveOption> BuildSkillTileOptions(AbstractEnemyUnit enemy, Vector2Int from,
+            IReadOnlyList<Unit> targets, IReadOnlyList<EnemyMoveTile> tiles)
         {
             var options = new List<EnemyMoveOption>();
             var gridMap = GridMap.Instance;

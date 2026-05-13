@@ -10,21 +10,16 @@ namespace Code.UnitSystem.Enemies.AI
         private const float CanUse = 500f;
         private const float RetreatPos = 10f;
 
-        public static EnemyMoveEval Space(EnemyMoveTile tile, EnemySkillPick pick, GameObject target,
-            Vector2Int targetPos)
+        public static EnemyMoveEval Space(EnemyMoveTile tile, EnemySkillPick pick, GameObject target, Vector2Int targetPos)
         {
             if (!pick.Skill.CanUseAt(tile.Pos, target) || pick.Skill.WantsMove(tile.Pos, target))
                 return EnemyMoveEval.Invalid;
 
-            return new EnemyMoveEval(
-                tile.Pos,
-                pick.Skill.PosScore(tile.Pos, target),
-                tile.Cost,
+            return new EnemyMoveEval(tile.Pos, pick.Skill.PosScore(tile.Pos, target), tile.Cost,
                 DistanceUtils.GetManhattanDistance(tile.Pos, targetPos));
         }
 
-        public static EnemyMoveEval Retreat(EnemyMoveTile tile, EnemySkillPick pick, GameObject target,
-            Vector2Int targetPos, EnemyThreatMap threats, float currentThreatDist)
+        public static EnemyMoveEval Retreat(EnemyMoveTile tile, EnemySkillPick pick, GameObject target, Vector2Int targetPos, EnemyThreatMap threats, float currentThreatDist)
         {
             float dist = DistanceUtils.GetManhattanDistance(tile.Pos, targetPos);
             float threatDist = threats.MinDist(tile.Pos, dist);

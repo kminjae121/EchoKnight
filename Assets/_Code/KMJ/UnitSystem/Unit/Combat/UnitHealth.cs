@@ -77,7 +77,7 @@ namespace Code.UnitSystem.Combat
 
         public void SetMaxHp(float value)
         {
-            MaxHealth = value;
+            //MaxHealth = value;
         }
 
         public void HealHp(float amount)
